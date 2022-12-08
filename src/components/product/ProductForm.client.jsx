@@ -15,8 +15,16 @@ export function ProductForm() {
   const {pathname, search} = useUrl();
   const [params, setParams] = useState(new URLSearchParams(search));
 
-  const {options, setSelectedOption, selectedOptions, selectedVariant} =
-    useProductOptions();
+  const {
+    options,
+    setSelectedOption,
+    selectedOptions,
+    selectedVariant,
+
+    sellingPlanGroups,
+    selectedSellingPlan,
+    setSelectedSellingPlan,
+  } = useProductOptions();
 
   const isOutOfStock = !selectedVariant?.availableForSale || false;
   const isOnSale =
@@ -98,6 +106,38 @@ export function ProductForm() {
           })}
         </div>
       }
+      {sellingPlanGroups.map((sellingPlanGroup, key) => (
+        <div key={key}>
+          <Heading as="legend" size="lead" className="min-w-[4rem]">
+            Subscribe {sellingPlanGroup.name}
+          </Heading>
+          <ul>
+            <li className="flex items-center gap-2">
+              <input
+                type={'radio'}
+                onClick={() => setSelectedSellingPlan(null)}
+                checked={
+                  selectedSellingPlan === null ||
+                  selectedSellingPlan === undefined
+                }
+              />
+              <div>One time Purchase</div>
+            </li>
+            {sellingPlanGroup.sellingPlans.map((sellingPlan) => {
+              return (
+                <li key={sellingPlan.id} className="flex items-center gap-2">
+                  <input
+                    type={'radio'}
+                    onClick={() => setSelectedSellingPlan(sellingPlan)}
+                    checked={selectedSellingPlan === sellingPlan}
+                  />
+                  <div>{sellingPlan.name}</div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
       <div className="grid items-stretch gap-4">
         <AddToCartButton
           variantId={selectedVariant?.id}
@@ -105,6 +145,7 @@ export function ProductForm() {
           accessibleAddingToCartLabel="Adding item to your cart"
           disabled={isOutOfStock}
           type="button"
+          sellingPlanId={selectedSellingPlan?.id}
         >
           <Button
             width="full"
