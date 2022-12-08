@@ -1,6 +1,7 @@
 # THIS IS A STUB FOR NEW HYDROGEN APPS
 # THIS WILL EVENTUALLY MOVE TO A /TEMPLATE-* FOLDER
-
+.vscode
+.idea
 # Logs
 logs
 *.log
@@ -40,7 +41,8 @@ jspm_packages/
 
 # Optional npm cache directory
 .npm
-
+package-lock.json
+yarn.lock
 # Optional eslint cache
 .eslintcache
 
