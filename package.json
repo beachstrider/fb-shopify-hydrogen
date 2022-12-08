@@ -33,7 +33,6 @@
     "vite": "^2.9.13",
     "vitest": "^0.15.2"
   },
-  "prettier": "@shopify/prettier-config",
   "dependencies": {
     "@headlessui/react": "^1.7.0",
     "@shopify/hydrogen": "^1.6.4",
