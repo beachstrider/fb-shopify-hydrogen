@@ -96,7 +96,7 @@ export default function Product() {
                     <Text className={'opacity-50 font-medium'}>{vendor}</Text>
                   )}
                 </div>
-                <ProductForm />
+                <ProductForm product={product} />
                 <div className="grid gap-4 py-4">
                   {descriptionHtml && (
                     <ProductDetail
@@ -178,11 +178,105 @@ const PRODUCT_QUERY = gql`
             amount
             currencyCode
           }
+          sellingPlanAllocations(first: 10) {
+            nodes {
+              priceAdjustments {
+                compareAtPrice {
+                  currencyCode
+                  amount
+                }
+                perDeliveryPrice {
+                  currencyCode
+                  amount
+                }
+                price {
+                  currencyCode
+                  amount
+                }
+                unitPrice {
+                  currencyCode
+                  amount
+                }
+              }
+              sellingPlan {
+                id
+                description
+                name
+                options {
+                  name
+                  value
+                }
+                priceAdjustments {
+                  orderCount
+                  adjustmentValue {
+                    ... on SellingPlanFixedAmountPriceAdjustment {
+                      adjustmentAmount {
+                        currencyCode
+                        amount
+                      }
+                    }
+                    ... on SellingPlanFixedPriceAdjustment {
+                      price {
+                        currencyCode
+                        amount
+                      }
+                    }
+                    ... on SellingPlanPercentagePriceAdjustment {
+                      adjustmentPercentage
+                    }
+                  }
+                }
+                recurringDeliveries
+              }
+            }
+          }
         }
       }
       seo {
         description
         title
+      }
+      sellingPlanGroups(first: 10) {
+        nodes {
+          sellingPlans(first: 10) {
+            nodes {
+              id
+              description
+              name
+              options {
+                name
+                value
+              }
+              priceAdjustments {
+                orderCount
+                adjustmentValue {
+                  ... on SellingPlanFixedAmountPriceAdjustment {
+                    adjustmentAmount {
+                      currencyCode
+                      amount
+                    }
+                  }
+                  ... on SellingPlanFixedPriceAdjustment {
+                    price {
+                      currencyCode
+                      amount
+                    }
+                  }
+                  ... on SellingPlanPercentagePriceAdjustment {
+                    adjustmentPercentage
+                  }
+                }
+              }
+              recurringDeliveries
+            }
+          }
+          appName
+          name
+          options {
+            name
+            values
+          }
+        }
       }
     }
     shop {
