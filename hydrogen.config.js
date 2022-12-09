@@ -5,18 +5,13 @@ export default defineConfig({
     defaultCountryCode: 'US',
     defaultLanguageCode: 'EN',
     storeDomain:
-      // @ts-ignore
-      Oxygen?.env?.PUBLIC_STORE_DOMAIN || 'hydrogen-preview.myshopify.com',
+      Oxygen?.env?.PUBLIC_STORE_DOMAIN || 'hydrogen-preview.myshopify.com', // eslint-disable-line no-undef
     storefrontToken:
-      // @ts-ignore
-      Oxygen?.env?.PUBLIC_STOREFRONT_API_TOKEN ||
+      Oxygen?.env?.PUBLIC_STOREFRONT_API_TOKEN || // eslint-disable-line no-undef
       '3b580e70970c4528da70c98e097c2fa0',
-    privateStorefrontToken:
-      // @ts-ignore
-      Oxygen?.env?.PRIVATE_STOREFRONT_API_TOKEN,
+    privateStorefrontToken: Oxygen?.env?.PRIVATE_STOREFRONT_API_TOKEN, // eslint-disable-line no-undef
     storefrontApiVersion: '2022-07',
-    // @ts-ignore
-    storefrontId: Oxygen?.env?.PUBLIC_STOREFRONT_ID,
+    storefrontId: Oxygen?.env?.PUBLIC_STOREFRONT_ID, // eslint-disable-line no-undef
   },
   session: CookieSessionStorage('__session', {
     path: '/',
