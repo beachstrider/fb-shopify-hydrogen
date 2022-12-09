@@ -21,7 +21,7 @@ export function CountrySelector() {
 
     return {
       name: regionNamesInEnglish.of(isoCode),
-      isoCode: isoCode,
+      isoCode,
     };
   }, [isoCode]);
 
