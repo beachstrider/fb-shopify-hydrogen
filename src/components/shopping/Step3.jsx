@@ -5,7 +5,7 @@ export function Step3({
         <section className="overflow-x-hidden py-20">
             <div className="container mx-auto px-4">
                 <div className="max-w-4xl mx-auto">
-                    <label className="block text-gray-800 text-lg font-bold mb-2" for="" style={{ fontSize: '24px' }}>3. Choose your Price</label>
+                    <label className="block text-gray-800 text-lg font-bold mb-2" htmlFor="" style={{ fontSize: '24px' }}>3. Choose your Price</label>
                     <div className="flex flex-wrap -mx-4 mb-24">
                         <div className="w-full px-2">
                             <div className="relative  bg-gray-50">
@@ -26,7 +26,7 @@ export function Step3({
 
                                             </p><br />
                                             <p>Delivery Every: <span>
-                                                <u> Weekly</u> > Biweekly </span></p>
+                                                <u> Weekly</u> &gt; Biweekly </span></p>
                                             <p>Save $20</p>
                                             <p>No Commitments, Cancel Anytime</p>
                                         </div>
@@ -75,7 +75,7 @@ export function Step3({
 
                                             </p><br />
                                             <p>Delivery Every: <span>
-                                                <u> Weekly</u> > Biweekly </span></p>
+                                                <u> Weekly</u> &gt; Biweekly </span></p>
                                             <p>Save $20</p>
                                             <p>No Commitments, Cancel Anytime</p>
                                         </div>
