@@ -1,4 +1,4 @@
-import {Suspense} from 'react';
+import {Suspense} from "react"
 import {
   gql,
   ProductOptionsProvider,
@@ -8,11 +8,11 @@ import {
   useRouteParams,
   useServerAnalytics,
   useShopQuery,
-} from '@shopify/hydrogen';
+} from "@shopify/hydrogen"
 
-import {MEDIA_FRAGMENT} from '~/lib/fragments';
-import {getExcerpt} from '~/lib/utils';
-import {NotFound, Layout, ProductSwimlane} from '~/components/index.server';
+import {MEDIA_FRAGMENT} from "~/lib/fragments"
+import {getExcerpt} from "~/lib/utils"
+import {NotFound, Layout, ProductSwimlane} from "~/components/index.server"
 import {
   Heading,
   ProductDetail,
@@ -20,14 +20,14 @@ import {
   ProductGallery,
   Section,
   Text,
-} from '~/components';
+} from "~/components"
 
 export default function Product() {
-  const {handle} = useRouteParams();
+  const {handle} = useRouteParams()
   const {
     language: {isoCode: languageCode},
     country: {isoCode: countryCode},
-  } = useLocalization();
+  } = useLocalization()
 
   const {
     data: {product, shop},
@@ -39,20 +39,20 @@ export default function Product() {
       handle,
     },
     preload: true,
-  });
+  })
 
   if (!product) {
-    return <NotFound type="product" />;
+    return <NotFound type="product" />
   }
 
-  const {media, title, vendor, descriptionHtml, id, productType} = product;
-  const {shippingPolicy, refundPolicy} = shop;
+  const {media, title, vendor, descriptionHtml, id, productType} = product
+  const {shippingPolicy, refundPolicy} = shop
   const {
     priceV2,
     id: variantId,
     sku,
     title: variantTitle,
-  } = product.variants.nodes[0];
+  } = product.variants.nodes[0]
 
   useServerAnalytics({
     shopify: {
@@ -72,7 +72,7 @@ export default function Product() {
         },
       ],
     },
-  });
+  })
 
   return (
     <Layout>
@@ -93,10 +93,10 @@ export default function Product() {
                     {title}
                   </Heading>
                   {vendor && (
-                    <Text className={'opacity-50 font-medium'}>{vendor}</Text>
+                    <Text className={"opacity-50 font-medium"}>{vendor}</Text>
                   )}
                 </div>
-                <ProductForm />
+                <ProductForm product={product} />
                 <div className="grid gap-4 py-4">
                   {descriptionHtml && (
                     <ProductDetail
@@ -128,7 +128,7 @@ export default function Product() {
         </Suspense>
       </ProductOptionsProvider>
     </Layout>
-  );
+  )
 }
 
 const PRODUCT_QUERY = gql`
@@ -178,11 +178,105 @@ const PRODUCT_QUERY = gql`
             amount
             currencyCode
           }
+          sellingPlanAllocations(first: 10) {
+            nodes {
+              priceAdjustments {
+                compareAtPrice {
+                  currencyCode
+                  amount
+                }
+                perDeliveryPrice {
+                  currencyCode
+                  amount
+                }
+                price {
+                  currencyCode
+                  amount
+                }
+                unitPrice {
+                  currencyCode
+                  amount
+                }
+              }
+              sellingPlan {
+                id
+                description
+                name
+                options {
+                  name
+                  value
+                }
+                priceAdjustments {
+                  orderCount
+                  adjustmentValue {
+                    ... on SellingPlanFixedAmountPriceAdjustment {
+                      adjustmentAmount {
+                        currencyCode
+                        amount
+                      }
+                    }
+                    ... on SellingPlanFixedPriceAdjustment {
+                      price {
+                        currencyCode
+                        amount
+                      }
+                    }
+                    ... on SellingPlanPercentagePriceAdjustment {
+                      adjustmentPercentage
+                    }
+                  }
+                }
+                recurringDeliveries
+              }
+            }
+          }
         }
       }
       seo {
         description
         title
+      }
+      sellingPlanGroups(first: 10) {
+        nodes {
+          sellingPlans(first: 10) {
+            nodes {
+              id
+              description
+              name
+              options {
+                name
+                value
+              }
+              priceAdjustments {
+                orderCount
+                adjustmentValue {
+                  ... on SellingPlanFixedAmountPriceAdjustment {
+                    adjustmentAmount {
+                      currencyCode
+                      amount
+                    }
+                  }
+                  ... on SellingPlanFixedPriceAdjustment {
+                    price {
+                      currencyCode
+                      amount
+                    }
+                  }
+                  ... on SellingPlanPercentagePriceAdjustment {
+                    adjustmentPercentage
+                  }
+                }
+              }
+              recurringDeliveries
+            }
+          }
+          appName
+          name
+          options {
+            name
+            values
+          }
+        }
       }
     }
     shop {
@@ -196,4 +290,4 @@ const PRODUCT_QUERY = gql`
       }
     }
   }
-`;
+`
