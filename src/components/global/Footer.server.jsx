@@ -20,7 +20,7 @@ export function Footer({menu}) {
   return (
     <div>
       <section className="relative pt-24 pb-28 bg-black overflow-hidden pl-6">
-        <img className="absolute right-0 top-0" src="assets/gradient2.svg" alt=""/>
+        {/* <img className="absolute right-0 top-0" src="assets/gradient2.svg" alt=""/> */}
         <div className="relative z-10 container px-4 mx-auto">
           <div className="flex flex-wrap justify-between -m-8">
             <div className="w-full sm:w-1/2 lg:w-2/12 p-8"><Link className="inline-block" to="/"><img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_250/fb/logo/fb_logo_white.png" alt=""/></Link></div>
