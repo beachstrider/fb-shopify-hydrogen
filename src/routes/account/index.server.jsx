@@ -17,9 +17,9 @@ import {
   AccountDetails,
   AccountOrderHistory,
   FeaturedCollections,
-  LogoutButton,
   PageHeader,
 } from '~/components';
+import AccountPageHeaderMenu from '~/components/account/PageHeaderMenu';
 import {Layout, ProductSwimlane} from '~/components/index.server';
 
 export default function Account({response}) {
@@ -98,9 +98,8 @@ function AuthenticatedAccount({
       <Suspense>
         <Seo type="noindex" data={{title: 'Account details'}} />
       </Suspense>
-      <PageHeader heading={heading}>
-        <LogoutButton>Sign out</LogoutButton>
-      </PageHeader>
+      <AccountPageHeaderMenu />
+      <PageHeader heading={heading} />
       {orders && <AccountOrderHistory orders={orders} />}
       <AccountDetails
         firstName={customer.firstName}
