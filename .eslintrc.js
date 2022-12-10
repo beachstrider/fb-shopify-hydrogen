@@ -4,5 +4,6 @@ module.exports = {
     'node/no-missing-import': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/naming-convention': 'off',
+    'prettier/prettier': ['error', {endOfLine: 'auto'}],
   },
 };

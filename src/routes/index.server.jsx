@@ -58,8 +58,7 @@ function HomepageContent() {
 
   return (
     <>
-      
-      <Shopping/>
+      <Shopping />
     </>
   );
 }
