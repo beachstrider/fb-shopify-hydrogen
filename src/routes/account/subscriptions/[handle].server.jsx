@@ -7,15 +7,15 @@ import {
   useLocalization,
   useShopQuery,
   useServerAnalytics,
-  Image,
-  Link,
+  useRouteParams,
 } from '@shopify/hydrogen';
 
 import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import AccountPageHeaderMenu from '~/components/account/PageHeaderMenu';
+import SubscriptionDetail from '~/components/account/subscription/Detail.client';
 import {Layout} from '~/components/index.server';
 
-import {getSubscriptions} from '~/lib/recharge';
+import {getSubscription} from '~/lib/recharge';
 
 export default function Account({response}) {
   response.cache(CacheNone());
@@ -25,6 +25,8 @@ export default function Account({response}) {
     country: {isoCode: countryCode},
   } = useLocalization();
   const {customerAccessToken} = useSession();
+
+  const {handle} = useRouteParams();
 
   if (!customerAccessToken) return response.redirect('/account/login');
 
@@ -42,58 +44,21 @@ export default function Account({response}) {
 
   if (!customer) return response.redirect('/account/login');
 
-  // The logged-in analytics state.
   useServerAnalytics({
     shopify: {
       customerId: customer.id,
     },
   });
 
-  const external_customer_id = customer.id.slice(23);
-
-  const subscriptions = getSubscriptions({external_customer_id});
+  const subscription = getSubscription(handle);
 
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Account details'}} />
+        <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
       <AccountPageHeaderMenu />
-      <div className="px-12 py-4">
-        <div className="text-3xl mb-4">Active Subscriptions</div>
-        {subscriptions.map((subscription, key) => (
-          <Link to={`/account/subscriptions/${subscription.id}`} key={key}>
-            <div className="">
-              <div className="flex gap-2 max-w-3xl p-6 bg-white border border-gray-200 rounded-sm shadow-sm">
-                <Image
-                  className=""
-                  src={subscription.product.images.small}
-                  width={200}
-                  height={200}
-                  loaderOptions={{
-                    crop: 'center',
-                  }}
-                />
-                <div className="">
-                  <div className="text-xl font-bold">
-                    {subscription.product_title}
-                  </div>
-                  <div className="">{subscription.address.address1}</div>
-                  <div className="">{subscription.variant_title}</div>
-                  <div className="">
-                    {subscription.price} {subscription.presentment_currency} ×
-                    {subscription.quantity}
-                  </div>
-                  <div className="">
-                    Every {subscription.order_interval_frequency}{' '}
-                    {subscription.order_interval_unit}s
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+      <SubscriptionDetail subscription={subscription} />
     </Layout>
   );
 }

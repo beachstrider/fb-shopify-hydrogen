@@ -96,7 +96,7 @@ function AuthenticatedAccount({
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Account details'}} />
+        <Seo type="noindex" data={{title: 'Account Summary'}} />
       </Suspense>
       <AccountPageHeaderMenu />
       <PageHeader heading={heading} />
