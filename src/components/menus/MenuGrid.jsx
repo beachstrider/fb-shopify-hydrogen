@@ -1,6 +1,6 @@
 export function MenuGrid() {
     return (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid lg:grid-cols-4 sm:grid-cols-1 md:grid-cols-2 gap-4">
             <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
                 <a href="#">
                     <img class="rounded-t-lg" src="//cdn.shopify.com/s/files/1/0552/6549/3185/products/Balsamic_Maple_Chicken_LC_Web-127014_large.jpg?v=1670681924" alt="" />
