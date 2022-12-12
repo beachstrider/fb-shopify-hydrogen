@@ -1,0 +1,30 @@
+/* breakpoints */
+$breakpointMobile: 495px;
+$breakpointTablet: 768px;
+$breakpointDesktop: 1024px;
+
+/* rows */
+$rowWidth: 75vw;
+$rowWidthTable: 90vw;
+$rowWidthMobile: 100%;
+
+/* Cards */
+$cardWidth: 265px;
+$cardWidthWithoutBorder: 257px;
+$cardDateWidth: 223px;
+$cardDateHeight: 160px;
+$cardBorderWidth: 0.2rem;
+
+/* Mixins */
+@mixin responsive-wrapper {
+  @media only screen and (max-width: $breakpointDesktop) {
+    width: $rowWidthTable;
+    grid-template-columns: 50% 50%;
+    column-gap: 5rem;
+  }
+  @media only screen and (max-width: $breakpointTablet) {
+    width: $rowWidthMobile;
+    grid-template-columns: 100%;
+    column-gap: 0;
+  }
+}
