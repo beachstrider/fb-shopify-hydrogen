@@ -1,4 +1,4 @@
-export function Step1({...props}) {
+export function Step1({deliveryDates}) {
   return (
     <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
       <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>

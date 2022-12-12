@@ -1,0 +1,3 @@
+const ZIPCODE_CHARACTERS = 5;
+
+export {ZIPCODE_CHARACTERS};
