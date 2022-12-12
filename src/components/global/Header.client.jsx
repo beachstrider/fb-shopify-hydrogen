@@ -1,4 +1,4 @@
-import {Link, useUrl, useCart} from '@shopify/hydrogen';
+import {Link, Image, useUrl, useCart} from '@shopify/hydrogen';
 import {useWindowScroll} from 'react-use';
 
 import {
@@ -66,8 +66,8 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
     button: 'relative flex items-center justify-center w-8 h-8',
     container: `${
       isHome
-        ? 'bg-primary/80 dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
-        : 'bg-contrast/80 text-primary'
+        ? 'bg-primary dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
+        : 'bg-primary dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
     } ${
       y > 50 && !isHome ? 'shadow-lightHeader ' : ''
     }flex lg:hidden items-center h-nav sticky backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-4 px-4 md:px-8`,
@@ -79,33 +79,19 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
         <button onClick={openMenu} className={styles.button}>
           <IconMenu />
         </button>
-        <form
-          action={`/${countryCode ? countryCode + '/' : ''}search`}
-          className="items-center gap-2 sm:flex"
-        >
-          <button type="submit" className={styles.button}>
-            <IconSearch />
-          </button>
-          <Input
-            className={
-              isHome
-                ? 'focus:border-contrast/20 dark:focus:border-primary/20'
-                : 'focus:border-primary/20'
-            }
-            type="search"
-            variant="minisearch"
-            placeholder="Search"
-            name="q"
-          />
-        </form>
       </div>
 
       <Link
-        className="flex items-center self-stretch leading-[3rem] md:leading-[4rem] justify-center flex-grow w-full h-full"
+        className="flex items-center self-stretch leading-[1rem] md:leading-[4rem] justify-center flex-grow w-full h-full"
         to="/"
       >
         <Heading className="font-bold text-center" as={isHome ? 'h1' : 'h2'}>
-          {title}
+          <Image
+            src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_75/fb/logo/fb_logo_white.png"
+            width={'auto'}
+            height={'auto'}
+            alt={'Feastbox'}
+          />
         </Heading>
       </Link>
 
@@ -130,20 +116,27 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
       'relative flex items-center justify-center w-8 h-8 focus:ring-primary/5',
     container: `${
       isHome
-        ? 'bg-primary/80 dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
-        : 'bg-contrast/80 text-primary'
+        ? 'bg-primary dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
+        : 'bg-primary dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
     } ${
-      y > 50 && !isHome ? 'shadow-lightHeader ' : ''
-    }hidden h-nav lg:flex items-center sticky transition duration-300 backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-8 px-12 py-8`,
+      y > 50 && !isHome ? 'shadow-lightHeader ' : 'shadow-lightHeader '
+    }hidden lg:flex items-center sticky transition duration-300 backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-8 px-12 py-4`,
   };
 
   return (
     <header role="banner" className={styles.container}>
-      <div className="flex gap-12">
+      <div className="flex gap-1">
         <Link className={`font-bold`} to="/">
-          {title}
+          <Image
+            src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_75/fb/logo/fb_logo_white.png"
+            width={'auto'}
+            height={'auto'}
+            alt={'Feastbox'}
+          />
         </Link>
-        <nav className="flex gap-8">
+      </div>
+      <div className="flex gap-2">
+        <nav className="flex items-right gap-8">
           {/* Top level menu items */}
           {(menu?.items || []).map((item) => (
             <Link key={item.id} to={item.to} target={item.target}>
@@ -152,26 +145,14 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
           ))}
         </nav>
       </div>
-      <div className="flex items-center gap-1">
-        <form
-          action={`/${countryCode ? countryCode + '/' : ''}search`}
-          className="flex items-center gap-2"
+      <div className="flex items-center gap-2">
+        <Link
+          to={'/shop'}
+          className="text-sm inline-block bg-white text-black py-2 px-4 uppercase"
         >
-          <Input
-            className={
-              isHome
-                ? 'focus:border-contrast/20 dark:focus:border-primary/20'
-                : 'focus:border-primary/20'
-            }
-            type="search"
-            variant="minisearch"
-            placeholder="Search"
-            name="q"
-          />
-          <button type="submit" className={styles.button}>
-            <IconSearch />
-          </button>
-        </form>
+          SHOP NOW
+        </Link>
+
         <Link to={'/account'} className={styles.button}>
           <IconAccount />
         </Link>
