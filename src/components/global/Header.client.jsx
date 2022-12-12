@@ -147,7 +147,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
       </div>
       <div className="flex items-center gap-2">
         <Link
-          to={'/shop'}
+          to={'/shop/bundle'}
           className="text-sm inline-block bg-white text-black py-2 px-4 uppercase"
         >
           SHOP NOW
