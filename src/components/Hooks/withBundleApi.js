@@ -1,5 +1,4 @@
 import {request} from '../../utils';
-import {setDeliveryDates} from '../../store/slices/rootSlice';
 
 const getContents = async (token, bundleId, configurationId, queryString) => {
   try {
@@ -317,17 +316,14 @@ const generateRequestToken = async (value) => {
 };
 
 const getDeliveryDates = async (token) => {
-  return await request(
-    `${process.env.PROXY_APP_URL}/bundle-api/delivery-dates`,
-    {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      data: {},
+  return await request(`/api/bundle-api/delivery-dates`, {
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
-  );
+    data: {},
+  });
 };
 
 const getBundleConfigurations = async (token, bundleId) => {
