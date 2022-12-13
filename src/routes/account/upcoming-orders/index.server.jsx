@@ -10,10 +10,10 @@ import {
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
 import AccountPageHeaderMenu from '~/components/account/PageHeaderMenu';
-import SubscriptionList from '~/components/account/subscription/List.client';
+import UpcomingOrderList from '~/components/account/upcomingOrder/List.client';
 import {Layout} from '~/components/index.server';
 
-import {getSubscriptions} from '~/lib/recharge';
+import {getUpcomingOrders} from '~/lib/recharge';
 
 export default function Account({response}) {
   response.cache(CacheNone());
@@ -48,17 +48,17 @@ export default function Account({response}) {
 
   const external_customer_id = customer.id.slice(23);
 
-  const subscriptions = getSubscriptions({external_customer_id});
+  const orders = getUpcomingOrders({external_customer_id});
 
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Account Subscriptions'}} />
+        <Seo type="noindex" data={{title: 'Upcoming Orders'}} />
       </Suspense>
       <AccountPageHeaderMenu />
-      <SubscriptionList subscriptions={subscriptions} />
+      <UpcomingOrderList orders={orders} />
       <div className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60">
-        ALPHA, Dec 8 - Jason
+        ALPHA, Dec 12 - Jason
       </div>
     </Layout>
   );

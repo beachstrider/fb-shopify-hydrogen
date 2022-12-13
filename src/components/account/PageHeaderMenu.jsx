@@ -7,7 +7,7 @@ const Index = () => {
       <div className="flex gap-4">
         <Link to="/account">ACCOUNT SUMMARY</Link>
         <Link to="/account/subscriptions">SUBSCRIPTIONS</Link>
-        <Link to="/account/delivery-schedule">DELIVERY SCHEDULE</Link>
+        <Link to="/account/upcoming-orders">UPCOMING ORDERS</Link>
         <Link to="/account/purchase-history">PURCHASE HISTORY</Link>
         <Link to="/account/shipping-addresses">SHIPPING ADDRESSES</Link>
         <Link to="/account/payment-methods">PAYMENT METHODS</Link>

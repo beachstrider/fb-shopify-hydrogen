@@ -70,6 +70,19 @@ export const getSubscription = (id) => {
   return {...subscription, address, product};
 };
 
+export const getUpcomingOrders = (params) => {
+  const customer_id = rechargeFetch.get(`customers`, params).customers[0].id;
+
+  const {charges} = rechargeFetch.get(`charges`, {
+    customer_id,
+    status: ['pending', 'queued', 'skipped'],
+    sort_by: 'scheduled_at-asc',
+    scheduled_at_min: new Date().toISOString().split('T')[0],
+  });
+
+  return charges;
+};
+
 export const orderNow = async (customer_id) => {
   const charge = (
     await recharge.get(
@@ -82,7 +95,7 @@ export const orderNow = async (customer_id) => {
   return;
 };
 
-export const skipOrder = async (customer_id) => {
+export const skipUpcomingOrder = async (customer_id) => {
   const charge = (
     await recharge.get(
       `charges?customer_id=${customer_id}&status=queued&sort_by=scheduled_at-asc`,
@@ -94,6 +107,24 @@ export const skipOrder = async (customer_id) => {
       (lineItem) => lineItem.purchase_item_id,
     ),
   });
+
+  return;
+};
+
+export const skipOrder = async ({id, purchase_item_ids}) => {
+  await recharge.post(`charges/${id}/skip`, {purchase_item_ids});
+
+  return;
+};
+
+export const unskipOrder = async ({id, purchase_item_ids}) => {
+  await recharge.post(`charges/${id}/unskip`, {purchase_item_ids});
+
+  return;
+};
+
+export const processOrder = async ({id}) => {
+  await recharge.post(`charges/${id}/process`);
 
   return;
 };
