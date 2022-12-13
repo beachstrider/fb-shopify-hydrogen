@@ -57,7 +57,10 @@ export default function Account({response}) {
       </Suspense>
       <AccountPageHeaderMenu />
       <SubscriptionList subscriptions={subscriptions} />
-      <div className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60">
+      <div
+        id="version_mark"
+        className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
+      >
         ALPHA, Dec 8 - Jason
       </div>
     </Layout>

@@ -3,12 +3,12 @@ import axios from 'axios';
 
 const headers = {
   'X-Recharge-Version': '2021-11',
-  'X-Recharge-Access-Token': import.meta.env.PUBLIC_RECHARGE_API_TOKEN,
+  'X-Recharge-Access-Token': Oxygen?.env?.PRIVATE_RECHARGE_API_TOKEN, // eslint-disable-line no-undef
 };
 
 const headers_ = {
   'X-Recharge-Version': '2021-01',
-  'X-Recharge-Access-Token': import.meta.env.PUBLIC_RECHARGE_API_TOKEN,
+  'X-Recharge-Access-Token': Oxygen?.env?.PRIVATE_RECHARGE_API_TOKEN, // eslint-disable-line no-undef
 };
 
 const baseURL = 'https://api.rechargeapps.com/';
