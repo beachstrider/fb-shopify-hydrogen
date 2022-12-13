@@ -1,42 +1,25 @@
-import React, {useEffect, useState} from 'react';
-import {generateRequestToken, UseGuestToken} from '../../components/Hooks';
-import {displayFooter, setTokens} from '../../store/slices/rootSlice';
-import {useDispatch, useSelector} from 'react-redux';
-import dayjs from 'dayjs';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-dayjs.extend(isSameOrBefore);
-
-export function Step1() {
-  // const dispatch = useDispatch();
-  // const state = useSelector((state) => state);
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState({
-  //   open: false,
-  //   status: 'Success',
-  //   message: '',
-  // });
-  //
-  // const generateToken = async () => {
-  //   const currentToken = await UseGuestToken();
-  //   if (currentToken) {
-  //     dispatch(
-  //       setTokens({
-  //         ...state.tokens,
-  //         guestToken: currentToken,
-  //       }),
-  //     );
-  //     return currentToken;
-  //   } else {
-  //     setError({
-  //       open: true,
-  //       status: 'Danger',
-  //       message: 'There was an error. Please try again',
-  //     });
-  //     dispatch(displayFooter(false));
-  //   }
-  // };
-  //
-  // console.log(generateToken);
+import DeliveryDate from './components/DeliveryDate'
+const DateArray =[
+  {day:'TUESDAY',
+  date:"Jan 3, 2023"
+  },
+  {day:'WEDNESDAY',
+  date:"Jan 4, 2023"
+  },
+  {day:'THURSDAY',
+  date:"Jan 5, 2023"
+  },
+  {day:'FRIDAY',
+  date:"Jan 6, 2023"
+  },
+  {day:'SATURDAY',
+  date:"Jan 7, 2023"
+  },
+  {day:'SUNDAY',
+  date:"Jan 8, 2023"
+  }
+]
+export function Step1({deliveryDates}) {
 
   return (
     <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
@@ -96,105 +79,10 @@ export function Step1() {
         </div>
         <p></p>
       </div>
-      <div
-        className="flex flex-wrap -mx-4 -mb-4 md:mb-0"
-        style={{
-          maxWidth: '600px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          backgroundColor: '#FFFFFF',
-          padding: '20px 10px',
-        }}
-      >
-        <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-          <a
-            className="block py-5 text-sm text-center  uppercase font-bold leading-normal border-2"
-            href="#"
-            style={{color: '#DB9707', borderColor: '#DB9707'}}
-          >
-            TUESDAY
-            <br />
-            Jan 3, 2023
-          </a>
-        </div>
-        <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-          <a
-            className="block py-5 text-sm text-center text-blue-800 uppercase font-bold"
-            href="#"
-            style={{backgroundColor: '#DB9707', color: '#FFFFFF'}}
-          >
-            WEDNESDAY
-            <br />
-            Jan 4, 2023
-          </a>
-        </div>
-        <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-          <a
-            className="block py-5 text-sm text-center  uppercase font-bold leading-normal border-2"
-            href="#"
-            style={{color: '#DB9707', borderColor: '#DB9707'}}
-          >
-            THURSDAY
-            <br />
-            Jan 5, 2023
-          </a>
-        </div>
-      </div>
-      <br />
-      <div
-        className="flex flex-wrap -mx-4 -mb-4 md:mb-0"
-        style={{
-          maxWidth: '600px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          backgroundColor: '#FFFFFF',
-          padding: '20px 10px',
-        }}
-      >
-        <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0">
-          <a
-            className="block py-5 text-sm text-center  uppercase font-bold leading-normal border-2"
-            href="#"
-            style={{color: '#DB9707', borderColor: '#DB9707'}}
-          >
-            TUESDAY
-            <br />
-            Jan 3, 2023
-          </a>
-        </div>
-        <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0">
-          <a
-            className="block py-5 text-sm text-center text-blue-800 uppercase font-bold"
-            href="#"
-            style={{backgroundColor: '#DB9707', color: '#FFFFFF'}}
-          >
-            WEDNESDAY
-            <br />
-            Jan 4, 2023
-          </a>
-        </div>
-        <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0">
-          <a
-            className="block py-5 text-sm text-center  uppercase font-bold leading-normal border-2"
-            href="#"
-            style={{color: '#DB9707', borderColor: '#DB9707'}}
-          >
-            THURSDAY
-            <br />
-            Jan 5, 2023
-          </a>
-        </div>
-        <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0">
-          <a
-            className="block py-5 text-sm text-center  uppercase font-bold leading-normal border-2"
-            href="#"
-            style={{color: '#DB9707', borderColor: '#DB9707'}}
-          >
-            FRIDAY
-            <br />
-            Jan 6, 2023
-          </a>
-        </div>
+      <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0 max-w-[600px] ml-auto mr-auto px-2.5 py-5 bg-white">
+        {DateArray.map((data,index)=>{
+          return <DeliveryDate key={index} item={data}/>
+        })}
       </div>
     </div>
   );
