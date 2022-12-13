@@ -3,12 +3,14 @@ import axios from 'axios';
 
 const headers = {
   'X-Recharge-Version': '2021-11',
-  'X-Recharge-Access-Token': import.meta.env.PUBLIC_RECHARGE_API_TOKEN,
+  'X-Recharge-Access-Token':
+    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df', // eslint-disable-line no-undef
 };
 
 const headers_ = {
   'X-Recharge-Version': '2021-01',
-  'X-Recharge-Access-Token': import.meta.env.PUBLIC_RECHARGE_API_TOKEN,
+  'X-Recharge-Access-Token':
+    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df', // eslint-disable-line no-undef
 };
 
 const baseURL = 'https://api.rechargeapps.com/';
