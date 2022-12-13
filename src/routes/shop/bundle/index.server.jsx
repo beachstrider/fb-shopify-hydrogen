@@ -21,6 +21,12 @@ const Index = ({response}) => {
         <Step1 />
         <Step2 />
         <Step3 />
+        <div
+          id="version_mark"
+          className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
+        >
+          BETA, Dec 12 - MD
+        </div>
       </Section>
     </Layout>
   );
