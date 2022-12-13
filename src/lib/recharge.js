@@ -18,27 +18,36 @@ const recharge = axios.create({
   baseURL,
 });
 
-const convertUrlParams = (params) => {
-  return new URLSearchParams(params).toString();
-};
+class RechargeFetch {
+  constructor(h = headers) {
+    this.headers = h;
+  }
+
+  convertUrlParams(params) {
+    return new URLSearchParams(params).toString();
+  }
+
+  action(url, params, method = 'GET') {
+    return fetchSync(`${baseURL}${url}?${this.convertUrlParams(params)}`, {
+      headers: this.headers,
+      method,
+    }).json();
+  }
+
+  get(url, params = {}) {
+    return this.action(url, params);
+  }
+}
+
+const rechargeFetch = new RechargeFetch();
+const rechargeFetch_ = new RechargeFetch(headers_);
 
 export const getSubscriptions = (params) => {
-  let {subscriptions} = fetchSync(
-    `${baseURL}subscriptions?${convertUrlParams(params)}`,
-    {
-      headers,
-    },
-  ).json();
-  const {products} = fetchSync(`${baseURL}products`, {
-    headers: headers_,
-  }).json();
+  let {subscriptions} = rechargeFetch.get('subscriptions', params);
+  const {products} = rechargeFetch_.get('products');
+
   subscriptions = subscriptions.map((subscription) => {
-    const {address} = fetchSync(
-      `${baseURL}addresses/${subscription.address_id}`,
-      {
-        headers,
-      },
-    ).json();
+    const {address} = rechargeFetch.get(`addresses/${subscription.address_id}`);
     const product = products.find(
       (el) =>
         el.product_id.toString() === subscription.external_product_id.ecommerce,
@@ -49,20 +58,9 @@ export const getSubscriptions = (params) => {
 };
 
 export const getSubscription = (id) => {
-  const {subscription} = fetchSync(`${baseURL}subscriptions/${id}`, {
-    headers,
-  }).json();
-
-  const {products} = fetchSync(`${baseURL}products`, {
-    headers: headers_,
-  }).json();
-
-  const {address} = fetchSync(
-    `${baseURL}addresses/${subscription.address_id}`,
-    {
-      headers,
-    },
-  ).json();
+  const {subscription} = rechargeFetch.get(`subscriptions/${id}`);
+  const {products} = rechargeFetch_.get('products');
+  const {address} = rechargeFetch.get(`addresses/${subscription.address_id}`);
 
   const product = products.find(
     (el) =>
@@ -72,8 +70,67 @@ export const getSubscription = (id) => {
   return {...subscription, address, product};
 };
 
+export const getUpcomingOrders = (params) => {
+  const customer_id = rechargeFetch.get(`customers`, params).customers[0].id;
+
+  const {charges} = rechargeFetch.get(`charges`, {
+    customer_id,
+    status: ['pending', 'queued', 'skipped'],
+    sort_by: 'scheduled_at-asc',
+    scheduled_at_min: new Date().toISOString().split('T')[0],
+  });
+
+  return charges;
+};
+
+export const orderNow = async (customer_id) => {
+  const charge = (
+    await recharge.get(
+      `charges?customer_id=${customer_id}&status=queued&sort_by=scheduled_at-asc`,
+    )
+  ).data.charges[0];
+
+  await recharge.post(`charges/${charge.id}/process`);
+
+  return;
+};
+
+export const skipUpcomingOrder = async (customer_id) => {
+  const charge = (
+    await recharge.get(
+      `charges?customer_id=${customer_id}&status=queued&sort_by=scheduled_at-asc`,
+    )
+  ).data.charges[0];
+
+  await recharge.post(`charges/${charge.id}/skip`, {
+    purchase_item_ids: charge.line_items.map(
+      (lineItem) => lineItem.purchase_item_id,
+    ),
+  });
+
+  return;
+};
+
+export const skipOrder = async ({id, purchase_item_ids}) => {
+  await recharge.post(`charges/${id}/skip`, {purchase_item_ids});
+
+  return;
+};
+
+export const unskipOrder = async ({id, purchase_item_ids}) => {
+  await recharge.post(`charges/${id}/unskip`, {purchase_item_ids});
+
+  return;
+};
+
+export const processOrder = async ({id}) => {
+  await recharge.post(`charges/${id}/process`);
+
+  return;
+};
+
 export const cancelSubscription = async (id) => {
-  await recharge.post(`${baseURL}subscriptions/${id}/cancel`, {
+  await recharge.post(`subscriptions/${id}/cancel`, {
     cancellation_reason: 'Customer canceled',
   });
 
@@ -81,7 +138,7 @@ export const cancelSubscription = async (id) => {
 };
 
 export const activateSubscription = async (id) => {
-  await recharge.post(`${baseURL}subscriptions/${id}/activate`);
+  await recharge.post(`subscriptions/${id}/activate`);
 
   return;
 };
