@@ -4,13 +4,13 @@ import axios from 'axios';
 const headers = {
   'X-Recharge-Version': '2021-11',
   'X-Recharge-Access-Token':
-    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df', // eslint-disable-line no-undef
+    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 };
 
 const headers_ = {
   'X-Recharge-Version': '2021-01',
   'X-Recharge-Access-Token':
-    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df', // eslint-disable-line no-undef
+    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 };
 
 const baseURL = 'https://api.rechargeapps.com/';
