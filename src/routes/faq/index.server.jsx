@@ -1,7 +1,7 @@
 import {Suspense} from 'react';
 import {Seo, useLocalization} from '@shopify/hydrogen';
 import {Layout} from '~/components/index.server';
-import {Section, Faq} from '~/components';
+import {Section, Faq, FaqBanner} from '~/components';
 
 const Index = () => {
   const {
@@ -13,6 +13,7 @@ const Index = () => {
       <Suspense>
         <Seo type="noindex" data={{title: 'FeastBox Faq'}} />
       </Suspense>
+      <FaqBanner />
       <Section>
         <Faq/>
       </Section>

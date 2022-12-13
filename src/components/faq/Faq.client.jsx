@@ -57,9 +57,11 @@ export function Faq({...props}) {
   };
 
   return (
-    <div className="flex">
-      <FaqCategory data={data} handleClick={handleClick} />
-      <FaqQuestionAndAnswer questionData={selectedData} />
-    </div>
+    <>
+      <div className="flex">
+        <FaqCategory data={data} handleClick={handleClick} />
+        <FaqQuestionAndAnswer questionData={selectedData} />
+      </div>
+    </>
   );
 }
