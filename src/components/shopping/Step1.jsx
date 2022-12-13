@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 export function Step1({deliveryDates}) {
   return (
     <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>

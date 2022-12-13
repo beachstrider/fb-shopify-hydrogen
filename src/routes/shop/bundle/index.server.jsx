@@ -15,8 +15,8 @@ const Index = ({response}) => {
   let GUEST_TOKEN = '';
   const guestToken = async () => {
     const currentToken = await geGuestToken();
-    console.log("currentToken")
-    console.log(currentToken)
+    console.log('currentToken');
+    console.log(currentToken);
     if (currentToken) {
       GUEST_TOKEN = currentToken;
       return currentToken;
