@@ -17,6 +17,7 @@ const Index = ({subscription}) => {
     handleSubmit,
     watch,
     formState: {errors},
+    setValue,
   } = useForm({
     defaultValues: {
       frequency: subscription.order_interval_frequency,
@@ -32,11 +33,11 @@ const Index = ({subscription}) => {
       phone: subscription.address.phone,
     },
   });
-  const onSubmit = (data) => console.log('KKK', data);
-  watch('first_name', () => console.log('first_name-0--'));
+  const onSubmit = (data) => {
+    console.log('submit data: ', data);
+  };
 
   const [isChanging, setIsChanging] = useState(true);
-  const [isShippingChanging, setIsShippingChanging] = useState(false);
 
   const handleOrderNow = async () => {
     setProcessOrder(true);
@@ -152,10 +153,7 @@ const Index = ({subscription}) => {
                           textAlign: 'center',
                         }}
                       >
-                        <p
-                          className="mb-2 text-md text-gray-500"
-                          contentEditable="false"
-                        />
+                        <p className="mb-2 text-md text-gray-500" />
                         <div className="text-sm">
                           Delivery Day:
                           <strong>
@@ -297,12 +295,9 @@ const Index = ({subscription}) => {
                             <img
                               className="mx-auto object-contain"
                               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt
+                              alt="img"
                             />
-                            <h3
-                              className="font-bold font-heading text-sm text-center"
-                              contentEditable="false"
-                            >
+                            <h3 className="font-bold font-heading text-sm text-center">
                               BBQ FEASTbox
                             </h3>
                             <div className="text-center text-sm mb-2 ">
@@ -380,12 +375,9 @@ const Index = ({subscription}) => {
                             <img
                               className="mx-auto object-contain"
                               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt
+                              alt="img"
                             />
-                            <h3
-                              className="font-bold font-heading text-sm text-center"
-                              contentEditable="false"
-                            >
+                            <h3 className="font-bold font-heading text-sm text-center">
                               BBQ FEASTbox
                             </h3>
                             <div className="text-center text-sm mb-2 ">
@@ -418,12 +410,9 @@ const Index = ({subscription}) => {
                             <img
                               className="mx-auto object-contain"
                               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt
+                              alt="img"
                             />
-                            <h3
-                              className="font-bold font-heading text-sm text-center"
-                              contentEditable="false"
-                            >
+                            <h3 className="font-bold font-heading text-sm text-center">
                               BBQ FEASTbox
                             </h3>
                             <div className="text-center text-sm mb-2 ">
@@ -456,12 +445,9 @@ const Index = ({subscription}) => {
                             <img
                               className="mx-auto object-contain"
                               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt
+                              alt="img"
                             />
-                            <h3
-                              className="font-bold font-heading text-sm text-center"
-                              contentEditable="false"
-                            >
+                            <h3 className="font-bold font-heading text-sm text-center">
                               BBQ FEASTbox
                             </h3>
                             <div className="text-center text-sm mb-2 ">
@@ -494,12 +480,9 @@ const Index = ({subscription}) => {
                             <img
                               className="mx-auto object-contain"
                               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt
+                              alt="img"
                             />
-                            <h3
-                              className="font-bold font-heading text-sm text-center"
-                              contentEditable="false"
-                            >
+                            <h3 className="font-bold font-heading text-sm text-center">
                               BBQ FEASTbox
                             </h3>
                             <div className="text-center text-sm mb-2 ">
@@ -541,12 +524,9 @@ const Index = ({subscription}) => {
                             <img
                               className="mx-auto object-contain"
                               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt
+                              alt="img"
                             />
-                            <h3
-                              className="font-bold font-heading text-sm text-center"
-                              contentEditable="false"
-                            >
+                            <h3 className="font-bold font-heading text-sm text-center">
                               BBQ FEASTbox
                             </h3>
                             <div className="text-center text-sm mb-2 ">
@@ -579,12 +559,9 @@ const Index = ({subscription}) => {
                             <img
                               className="mx-auto object-contain"
                               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt
+                              alt="img"
                             />
-                            <h3
-                              className="font-bold font-heading text-sm text-center"
-                              contentEditable="false"
-                            >
+                            <h3 className="font-bold font-heading text-sm text-center">
                               BBQ FEASTbox
                             </h3>
                             <div className="text-center text-sm mb-2 ">
@@ -637,75 +614,71 @@ const Index = ({subscription}) => {
                       <style
                         dangerouslySetInnerHTML={{
                           __html:
-                            '\n                            .edit-frequency__item-action {\n                              display: flex;\n                              flex-wrap: wrap;\n                              justify-content: space-between;\n                              align-items: center;\n                            }\n                            .radio-buttons {\n                              display: flex;\n                              flex-wrap: wrap;\n                              align-items: center;\n                              margin: 0 -6px;\n                            }\n                            .radio-button {\n                              padding-left: 20px;\n                              padding-right: 20px;\n                            }\n                            .radio-button input[type=radio] {\n                              position: absolute;\n                              clip: rect(0 0 0 0);\n                              width: 1px;\n                              height: 1px;\n                              margin: -1px;\n                            }\n                            .radio-button label {\n                              display: inline-flex;\n                              align-items: center;\n                              transition: .4s;\n                              transition-property: background-color,color;\n                            }\n                            .radio-button .radio-button__label {\n                              padding-left: 4px;\n                              text-transform: uppercase;\n                            }\n                            /*.radio-button .radio-button__check {\n                            display: flex;\n                            visibility: hidden;\n                            opacity: 0;\n                            margin-left: -19px;\n                            padding-bottom: 2px;\n                            transition: .2s all;\n                            }*/\n                          ',
+                            '\n                            .edit-frequency__item-action {\n                              display: flex;\n                              flex-wrap: wrap;\n                              justify-content: space-between;\n                              align-items: center;\n                            }\n                            .radio-buttons {\n                              display: flex;\n                              flex-wrap: wrap;\n                              align-items: center;\n                              margin: 0 -6px;\n                            }\n                            .radio-button {\n                              padding-left: 20px;\n                              padding-right: 20px;\n                            }\n                            .radio-button input[type=radio] {\n                              position: absolute;\n                              clip: rect(0 0 0 0);\n                                             margin: -1px;\n                            }\n                            .radio-button label {\n                              display: inline-flex;\n                              align-items: center;\n                              transition: .4s;\n                              transition-property: background-color,color;\n                            }\n                            .radio-button .radio-button__label {\n                              padding-left: 4px;\n                              text-transform: uppercase;\n                            }\n                            /*.radio-button .radio-button__check {\n                            display: flex;\n                            visibility: hidden;\n                            opacity: 0;\n                            margin-left: -19px;\n                            padding-bottom: 2px;\n                            transition: .2s all;\n                            }*/\n                          ',
                         }}
                       />
-                      <form
-                        method="post"
-                        action="https://www.kachava.com/tools/recurring/portal/8137eb40ec57e93a/subscriptions/117118311?token=cab3cbd1d7034844aed60abb72a93a65"
-                        id="ReChargeForm_schedule"
-                      >
-                        <div className="edit-frequency__item-action text-right">
-                          <div>
-                            <div className="radio-buttons">
-                              {subscription.product.subscription_defaults.order_interval_frequency_options.map(
-                                (frequency, key) => (
-                                  <div key={key} className="radio-button">
-                                    <input
-                                      type="radio"
-                                      className="absolute w-full h-full"
-                                      name="frequency"
-                                      defaultValue={frequency}
-                                      data-frequency-option={7}
-                                    />
-                                    <label
-                                      htmlFor="frequency"
-                                      className="font-bold"
+                      <div className="edit-frequency__item-action text-right">
+                        <div>
+                          <div className="radio-buttons">
+                            {subscription.product.subscription_defaults.order_interval_frequency_options.map(
+                              (frequency, key) => (
+                                <button
+                                  type="button"
+                                  key={key}
+                                  className="radio-button relative cursor-pointer"
+                                  onClick={() => {
+                                    setValue('frequency', Number(frequency));
+                                  }}
+                                >
+                                  <div
+                                    htmlFor="frequency"
+                                    className="font-bold flex items-center"
+                                  >
+                                    {frequency}
+                                    <span className="radio-button__label hide-mobile">
+                                      Days
+                                    </span>
+                                    <span
+                                      className="radio-button__check"
+                                      style={{
+                                        visibility: 'visible !important',
+                                      }}
                                     >
-                                      {frequency}
-                                      <span className="radio-button__label hide-mobile">
-                                        Days
-                                      </span>
-                                      <span
-                                        className="radio-button__check"
-                                        style={{
-                                          visibility: 'visible !important',
-                                        }}
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="19.52"
+                                        height="14.56"
                                       >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="19.52"
-                                          height="14.56"
-                                        >
+                                        {watch('frequency') ===
+                                          Number(frequency) && (
                                           <path
                                             data-name="Icon awesome-check"
                                             d="M6.63 14.28.3 7.93a.98.98 0 0 1 0-1.38l1.38-1.38a.98.98 0 0 1 1.38 0l4.27 4.27L16.48.3a.98.98 0 0 1 1.38 0l1.38 1.38a.98.98 0 0 1 0 1.38L8.01 14.27a.98.98 0 0 1-1.38 0Z"
                                             fill="#5a3b36"
                                           />
-                                        </svg>
-                                      </span>
-                                    </label>
+                                        )}
+                                      </svg>
+                                    </span>
                                   </div>
-                                ),
-                              )}
-                            </div>
-                            <input
-                              type="hidden"
-                              name="order_interval_unit"
-                              defaultValue="day"
-                            />
-                            <input
-                              type="hidden"
-                              name="order_interval_frequency"
-                              defaultValue={14}
-                            />
+                                </button>
+                              ),
+                            )}
                           </div>
+                          <input
+                            type="hidden"
+                            name="order_interval_unit"
+                            defaultValue="day"
+                          />
+                          <input
+                            type="hidden"
+                            name="order_interval_frequency"
+                            defaultValue={14}
+                          />
                         </div>
-                        <span className="text-sm">
-                          (Choose how often you want your order to be placed)
-                        </span>
-                      </form>
-                      {/*--end kachava form------*/}
+                      </div>
+                      <span className="text-sm">
+                        (Choose how often you want your order to be placed)
+                      </span>
                     </div>
                   </span>
                 </div>
@@ -713,19 +686,17 @@ const Index = ({subscription}) => {
               <hr style={{margin: '20px 0'}} />
               <div className="py-3">
                 <div className="flex justify-between">
-                  <span
-                    className="font-bold text-base md:text-xl font-bold font-heading"
-                    contentEditable="true"
-                  >
+                  <span className="font-bold text-base md:text-xl font-bold font-heading">
                     Shipping Address
                   </span>
                   <span className="font-heading text-xl">
-                    <span
+                    <button
+                      type="button"
                       className="font-bold underline"
                       style={{fontSize: 14, float: 'right', color: '#DB9707'}}
                     >
                       Edit
-                    </span>
+                    </button>
                     <br />
                     <br />
                     {subscription.address.first_name}{' '}
@@ -742,6 +713,7 @@ const Index = ({subscription}) => {
                   <button
                     className="font-bold underline"
                     style={{fontSize: 14, float: 'right', color: '#DB9707'}}
+                    disabled={processSkip}
                     onClick={handleSkipThisOrder}
                   >
                     Skip Next Order
@@ -750,6 +722,7 @@ const Index = ({subscription}) => {
                   <button
                     className="font-bold underline"
                     style={{fontSize: 14, float: 'right', color: '#DB9707'}}
+                    disabled={processCancel}
                     onClick={handleCancelSubscription}
                   >
                     Cancel Subscription
@@ -757,176 +730,6 @@ const Index = ({subscription}) => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="px-12 py-4 flex gap-4">
-          <div className="w-96">
-            <Image
-              className=""
-              src={subscription.product.images.small}
-              width={384}
-              height={384}
-              loaderOptions={{
-                crop: 'center',
-              }}
-              alt="image"
-            />
-          </div>
-          <div>
-            <div className="mb-4 flex justify-between">
-              <div className="text-3xl ">{subscription.product_title}</div>
-            </div>
-            <div className="mb-4">
-              {subscription.price} {subscription.presentment_currency}
-            </div>
-            <div className="flex gap-2">
-              <div className="">Next Delivery Date:</div>
-              <div className="">{subscription.next_charge_scheduled_at}</div>
-            </div>
-            <div className="flex gap-2">
-              <div className="">Order Frequency:</div>
-              <div className="flex gap-4">
-                <label className="gap-2 flex items-center">
-                  <input {...register('frequency')} type="radio" value={7} />
-                  <div>Weekly (Every 7 days)</div>
-                </label>
-                <label className="gap-2 flex items-center">
-                  <input {...register('frequency')} type="radio" value={14} />
-                  <div>Bi-Weekly (Every 14 days)</div>
-                </label>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <div className="">Shipping:</div>
-              <div className="flex gap-4">
-                <div>
-                  {subscription.address.first_name}{' '}
-                  {subscription.address.last_name}, &nbsp;
-                  {subscription.address.address1}
-                </div>
-                <div>
-                  {!isShippingChanging && (
-                    <button
-                      className="block underline"
-                      onClick={() => setIsShippingChanging(true)}
-                    >
-                      Change
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-            {isShippingChanging && (
-              <div className="mb-4">
-                <div className="grid grid-cols-2 mb-2 gap-2">
-                  <input
-                    type="text"
-                    required
-                    placeholder="First Name"
-                    {...register('first_name')}
-                  />
-                  <input
-                    type="text"
-                    required
-                    placeholder="Last Name"
-                    {...register('last_name')}
-                  />
-                </div>
-                <div className="grid mb-2 gap-2">
-                  <input
-                    type="text"
-                    required
-                    placeholder="Address 1"
-                    {...register('address1')}
-                  />
-                </div>
-                <div className="grid mb-2 gap-2">
-                  <input
-                    type="text"
-                    required
-                    placeholder="Address 2"
-                    {...register('address2')}
-                  />
-                </div>
-                <div className="grid mb-2 gap-2">
-                  <input
-                    type="text"
-                    required
-                    placeholder="Company"
-                    {...register('company')}
-                  />
-                </div>
-                <div className="grid grid-cols-2 mb-2 gap-2">
-                  <input
-                    type="text"
-                    required
-                    placeholder="City"
-                    {...register('city')}
-                  />
-                  <input
-                    type="text"
-                    required
-                    placeholder="Zip/post"
-                    {...register('zip')}
-                  />
-                </div>
-                <div className="grid grid-cols-2 mb-2 gap-2">
-                  <input
-                    type="text"
-                    required
-                    placeholder="Country Code"
-                    {...register('country_code')}
-                  />
-                  <input
-                    type="text"
-                    required
-                    placeholder="Province"
-                    {...register('province')}
-                  />
-                </div>
-                <div className="grid mb-2 gap-2">
-                  <input
-                    type="text"
-                    required
-                    placeholder="Phone"
-                    {...register('phone')}
-                  />
-                </div>
-              </div>
-            )}
-            {subscription.status === 'active' ? (
-              <>
-                <button
-                  className={`block underline disabled:text-gray-400`}
-                  disabled={processOrder}
-                  onClick={handleOrderNow}
-                >
-                  ORDER NOW
-                </button>
-                <button
-                  className={`block underline disabled:text-gray-400`}
-                  disabled={processSkip}
-                  onClick={handleSkipThisOrder}
-                >
-                  SKIP THIS ORDER
-                </button>
-                <button
-                  className={`block underline disabled:text-gray-400`}
-                  disabled={processCancel}
-                  onClick={handleCancelSubscription}
-                >
-                  CANCEL SUBSCRIPTION
-                </button>
-              </>
-            ) : (
-              <button
-                className={`block underline disabled:text-gray-400`}
-                disabled={processReactivate}
-                onClick={handleReactiveSubscription}
-              >
-                REACTIVE
-              </button>
-            )}
           </div>
         </div>
       </form>
