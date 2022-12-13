@@ -115,20 +115,15 @@ export function Footer({menu}) {
               </h3>
               <ul>
                 <li className="mb-1.5">
-                  <Link
-                    className="font-medium text-white"
-                    to="tel:5555555555"
-                    suppressContentEditableWarning="false"
-                  >
+                  <Link className="font-medium text-white" to="tel:5555555555">
                     Phone: <br />
                     1-555-555-5555
                   </Link>
                 </li>
-                <li className="mb-1.5" suppressContentEditableWarning="false">
+                <li className="mb-1.5">
                   <Link
                     className="font-medium text-white"
                     to="mailto:support@feastbox.com"
-                    suppressContentEditableWarning="false"
                   >
                     Email:  support@feastbox.com
                   </Link>

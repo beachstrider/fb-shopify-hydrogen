@@ -87,3 +87,21 @@ export const CUSTOMER_QUERY = gql`
     }
   }
 `;
+
+export const CUSTOMER_UPDATE_MUTATION = gql`
+  mutation customerUpdate(
+    $customer: CustomerUpdateInput!
+    $customerAccessToken: String!
+  ) {
+    customerUpdate(
+      customer: $customer
+      customerAccessToken: $customerAccessToken
+    ) {
+      customerUserErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+`;
