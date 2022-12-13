@@ -1,46 +1,46 @@
 import {Suspense} from 'react';
-import {
-  CacheNone,
-  gql,
-  Seo,
-  useSession,
-  useLocalization,
-  useShopQuery,
-  useServerAnalytics,
-} from '@shopify/hydrogen';
-import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
-import AccountPageHeaderMenu from '~/components/account/PageHeaderMenu';
+import {CacheNone, Seo, useLocalization} from '@shopify/hydrogen';
 import {Layout} from '~/components/index.server';
-import {getDeliveryDates} from '~/lib/bundleApi';
-// import Bundle from '~/components/shopping/Bundle.client';
+import {geGuestToken} from '~/lib/bundleApi';
 import {Section} from '~/components';
 import {Step1} from '~/components/shopping/Step1';
 import {Step2} from '~/components/shopping/Step2';
 import {Step3} from '~/components/shopping/Step3';
 const Index = ({response}) => {
   response.cache(CacheNone());
-
   const {
     language: {isoCode: languageCode},
     country: {isoCode: countryCode},
   } = useLocalization();
-
-  const deliveryDates = getDeliveryDates();
-  console.log("deliveryDates");
-  console.log(deliveryDates);
+  let GUEST_TOKEN = '';
+  const guestToken = async () => {
+    const currentToken = await geGuestToken();
+    console.log("currentToken")
+    console.log(currentToken)
+    if (currentToken) {
+      GUEST_TOKEN = currentToken;
+      return currentToken;
+    } else {
+      // setError({
+      //   open: true,
+      //   status: 'Danger',
+      //   message: 'There was an error. Please try again'
+      // })
+      // dispatch(displayFooter(false))
+    }
+  };
+  guestToken();
 
   return (
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'FeastBox Bundle'}} />
       </Suspense>
-      <Suspense>
-        <Section>
-          <Step1 deliveryDates={deliveryDates} />
-          <Step2 />
-          <Step3 />
-        </Section>
-      </Suspense>
+      <Section>
+        <Step1 deliveryDates={100} />
+        <Step2 />
+        <Step3 />
+      </Section>
     </Layout>
   );
 };
