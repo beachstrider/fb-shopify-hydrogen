@@ -13,6 +13,7 @@ import {
   generateRequestToken,
   getBundleConfigurations,
   getEnabledBundles,
+  getDeliveryDates,
 } from './withBundleApi';
 import UseGuestToken from './UseGuestToken';
 import getSelectedBundle, {
@@ -57,4 +58,5 @@ export {
   getEnabledBundles,
   getSelectedBundleByPlatformId,
   getProductVariants,
+  getDeliveryDates,
 };

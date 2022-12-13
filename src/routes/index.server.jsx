@@ -11,7 +11,14 @@ import {
 
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import {getHeroPlaceholder} from '~/lib/placeholders';
-import {FeaturedCollections, Hero, ShoppingBanner, Step1, Step2, Step3} from '~/components';
+import {
+  FeaturedCollections,
+  Hero,
+  ShoppingBanner,
+  Step1,
+  Step2,
+  Step3,
+} from '~/components';
 import {Layout, ProductSwimlane} from '~/components/index.server';
 
 export default function Homepage() {

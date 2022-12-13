@@ -39,7 +39,7 @@ export function Header({title}) {
         title: 'Influencers',
         to: '/influencers',
       },
-    ]
+    ],
   };
 
   const {pathname} = useUrl();

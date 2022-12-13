@@ -1,27 +1,20 @@
-import {gql} from '@shopify/hydrogen';
-
-export async function api(_request, {queryShop}) {
-  const {
-    data: {
-      localization: {availableCountries},
-    },
-  } = await queryShop({
-    query: COUNTRIES_QUERY,
-  });
-
-  return availableCountries.sort((a, b) => a.name.localeCompare(b.name));
-}
-
-const COUNTRIES_QUERY = gql`
-  query Localization {
-    localization {
-      availableCountries {
-        isoCode
-        name
-        currency {
-          isoCode
-        }
-      }
-    }
+import {request as axiosRequest} from '../../../utils';
+export async function api(request, {session}) {
+  // eslint-disable-next-line no-undef
+  const baseURL = Oxygen?.env?.BUNDLE_API_URL; //'http://localhost:8080'; //import.meta.env.BUNDLE_API_URL
+  const storeDomain = Oxygen?.env?.PUBLIC_STORE_DOMAIN; //'feast-box-sandbox.myshopify.com';
+  if (session) {
+    const response = await axiosRequest(`${baseURL}/api/delivery-dates`, {
+      method: 'get',
+      headers: {
+        Accept: 'application/json',
+        authorization: `Bearer ${request.headers.get('authorization')}`,
+      },
+      data: {
+        shop: storeDomain,
+      },
+    });
+    return response;
   }
-`;
+  return new Response('Error');
+}

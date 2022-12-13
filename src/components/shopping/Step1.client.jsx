@@ -1,26 +1,13 @@
-import DeliveryDate from './components/DeliveryDate'
-const DateArray =[
-  {day:'TUESDAY',
-  date:"Jan 3, 2023"
-  },
-  {day:'WEDNESDAY',
-  date:"Jan 4, 2023"
-  },
-  {day:'THURSDAY',
-  date:"Jan 5, 2023"
-  },
-  {day:'FRIDAY',
-  date:"Jan 6, 2023"
-  },
-  {day:'SATURDAY',
-  date:"Jan 7, 2023"
-  },
-  {day:'SUNDAY',
-  date:"Jan 8, 2023"
-  }
-]
+import DeliveryDate from './components/DeliveryDate';
+const DateArray = [
+  {day: 'TUESDAY', date: 'Jan 3, 2023'},
+  {day: 'WEDNESDAY', date: 'Jan 4, 2023'},
+  {day: 'THURSDAY', date: 'Jan 5, 2023'},
+  {day: 'FRIDAY', date: 'Jan 6, 2023'},
+  {day: 'SATURDAY', date: 'Jan 7, 2023'},
+  {day: 'SUNDAY', date: 'Jan 8, 2023'},
+];
 export function Step1({deliveryDates}) {
-
   return (
     <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
       <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
@@ -80,8 +67,8 @@ export function Step1({deliveryDates}) {
         <p></p>
       </div>
       <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0 max-w-[600px] ml-auto mr-auto px-2.5 py-5 bg-white">
-        {DateArray.map((data,index)=>{
-          return <DeliveryDate key={index} item={data}/>
+        {DateArray.map((data, index) => {
+          return <DeliveryDate key={index} item={data} />;
         })}
       </div>
     </div>
