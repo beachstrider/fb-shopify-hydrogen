@@ -1,6 +1,5 @@
-import {fetchSync, useShop} from '@shopify/hydrogen';
 import axios from 'axios';
-import {parseJSON} from '@shopify/hydrogen/utilities/parse';
+import {request} from '../utils';
 
 const headers = {
   Accept: 'application/json',
@@ -22,14 +21,11 @@ const convertUrlParams = (params) => {
 export const geGuestToken = async () => {
   const generateGuestToken = async () => {
     try {
-      return await axios
-        .post(`${baseURL}/api/auth`, {shop: storeDomain}, {headers})
-        .then(function (response) {
-          return response;
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
+      return await request(`${baseURL}/api/auth`, {
+        method: 'post',
+        headers,
+        data: {shop: storeDomain},
+      });
     } catch (error) {
       return error;
     }

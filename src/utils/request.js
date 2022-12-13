@@ -29,7 +29,7 @@ const request = async (url, fetchOptions, retries = 3) => {
       if (retries > 0 && response.status === 429) {
         return setTimeout(() => {
           request(url, fetchOptions, retries - 1);
-        }, process.env.NEXT_PUBLIC_RETRY_INTERVAL);
+        }, 1000);
       } else {
         throw new Error('Maximum amount of retries exceeded');
       }
