@@ -7,7 +7,7 @@ export function FaqQuestionAndAnswer({questionData, ...props}) {
         <>
           <Disclosure.Button className={`${open ? 'text-green-600 border-l-[5px] border-green-600' : 'text-gray-600'} flex w-full justify-between bg-gray-100 p-4 text-left text-xl font-medium hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75`}>
             <span>{item.question}</span>
-            +
+            {open ? '-' : '+'}
           </Disclosure.Button>
           <Disclosure.Panel className={`${open ? 'border-l-[5px] border-green-600' : ''} p-2 text-sm text-black mt-2`}>
             {item.answer}
