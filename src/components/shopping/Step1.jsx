@@ -20,6 +20,7 @@ const DateArray =[
   }
 ]
 export function Step1({deliveryDates}) {
+
   return (
     <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
       <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
@@ -29,7 +30,6 @@ export function Step1({deliveryDates}) {
           style={{fontSize: '24px'}}
         >
           1. Choose your Week
-          {deliveryDates}
         </label>
         <div
           className="relative"
