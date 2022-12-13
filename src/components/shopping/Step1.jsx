@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 export function Step1({deliveryDates}) {
   return (
     <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
@@ -8,6 +9,7 @@ export function Step1({deliveryDates}) {
           style={{fontSize: '24px'}}
         >
           1. Choose your Week
+          {deliveryDates}
         </label>
         <div
           className="relative"
