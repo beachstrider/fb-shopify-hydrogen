@@ -109,6 +109,12 @@ const getDayUsa = (date) => {
   return getDate.day();
 };
 
+const getUsaStandard = (date) => {
+  return dayjs(date).format('MMM DD, YYYY');
+};
+
+const now = () => dayjs().format('YYYY-MM-DD');
+
 export {
   findWeekDayBetween,
   getCutOffDate,
@@ -121,4 +127,6 @@ export {
   formatUTDateToISO,
   addDays,
   getDayUsa,
+  getUsaStandard,
+  now,
 };

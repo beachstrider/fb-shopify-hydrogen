@@ -144,3 +144,17 @@ export const activateSubscription = async (id) => {
 
   return;
 };
+
+export const updateNextChargeScheduledAt = async ({id, date}) => {
+  await recharge.post(`subscriptions/${id}/set_next_charge_date`, {date});
+  return;
+};
+
+export const updateSubscription = async ({id, data}) => {
+  await recharge.put(`subscriptions/${id}`, {
+    order_interval_unit: 'day',
+    order_interval_frequency: data.order_interval_frequency,
+    charge_interval_frequency: data.order_interval_frequency,
+  });
+  return;
+};
