@@ -9,8 +9,8 @@ import {
 } from '@shopify/hydrogen';
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
-import AccountPageHeaderMenu from '~/components/account/PageHeaderMenu';
-import UpcomingOrderList from '~/components/account/upcomingOrder/List.client';
+import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
+import OrderSchedulesList from '~/components/account/orderSchedules/List.client';
 import {Layout} from '~/components/index.server';
 
 import {getUpcomingOrders} from '~/lib/recharge';
@@ -55,8 +55,9 @@ export default function Account({response}) {
       <Suspense>
         <Seo type="noindex" data={{title: 'Upcoming Orders'}} />
       </Suspense>
-      <AccountPageHeaderMenu />
-      <UpcomingOrderList orders={orders} />
+      <AccountPageLayout user={customer}>
+        <OrderSchedulesList orders={orders} />
+      </AccountPageLayout>
       <div
         id="version_mark"
         className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"

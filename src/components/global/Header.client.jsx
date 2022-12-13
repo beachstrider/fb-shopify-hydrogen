@@ -153,7 +153,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
           SHOP NOW
         </Link>
 
-        <Link to={'/account'} className={styles.button}>
+        <Link to={'/account/subscriptions'} className={styles.button}>
           <IconAccount />
         </Link>
         <button onClick={openCart} className={styles.button}>
