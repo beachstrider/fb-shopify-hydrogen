@@ -253,11 +253,11 @@ export function Step3({...props}) {
             </div>
           </div>
         </div>
-        <div class="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-            <div class="w-full md:w-1/2 px-4 mb-4 md:mb-0"><span class="font-bold" style={{ fontSize: '18px' }}>You're Saving $20!</span></div>
-            <div class="w-full md:w-1/2 px-4 mb-4 md:mb-0"><span class="font-bold" style={{ float: 'right' }}>Total: $169.95</span></div>
+        <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
+            <div className="w-full md:w-1/2 px-4 mb-4 md:mb-0"><span className="font-bold" style={{ fontSize: '18px' }}>You're Saving $20!</span></div>
+            <div className="w-full md:w-1/2 px-4 mb-4 md:mb-0"><span className="font-bold" style={{ float: 'right' }}>Total: $169.95</span></div>
         </div>
-        <div class="w-full mb-4 md:mb-0"><a class="block py-5 text-lg text-center uppercase font-bold" href="#" style={{ backgroundColor: '#DB9707', color: '#FFFFFF', marginTop: '10px' }}>CHECKOUT</a></div>
+        <div className="w-full mb-4 md:mb-0"><a className="block py-5 text-lg text-center uppercase font-bold" href="#" style={{ backgroundColor: '#DB9707', color: '#FFFFFF', marginTop: '10px' }}>CHECKOUT</a></div>
       </div>
     </section>
   );
