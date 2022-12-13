@@ -1,4 +1,43 @@
-export function Step1({deliveryDates}) {
+import React, {useEffect, useState} from 'react';
+import {generateRequestToken, UseGuestToken} from '../../components/Hooks';
+import {displayFooter, setTokens} from '../../store/slices/rootSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import dayjs from 'dayjs';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+dayjs.extend(isSameOrBefore);
+
+export function Step1() {
+  // const dispatch = useDispatch();
+  // const state = useSelector((state) => state);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState({
+  //   open: false,
+  //   status: 'Success',
+  //   message: '',
+  // });
+  //
+  // const generateToken = async () => {
+  //   const currentToken = await UseGuestToken();
+  //   if (currentToken) {
+  //     dispatch(
+  //       setTokens({
+  //         ...state.tokens,
+  //         guestToken: currentToken,
+  //       }),
+  //     );
+  //     return currentToken;
+  //   } else {
+  //     setError({
+  //       open: true,
+  //       status: 'Danger',
+  //       message: 'There was an error. Please try again',
+  //     });
+  //     dispatch(displayFooter(false));
+  //   }
+  // };
+  //
+  // console.log(generateToken);
+
   return (
     <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
       <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
@@ -8,7 +47,6 @@ export function Step1({deliveryDates}) {
           style={{fontSize: '24px'}}
         >
           1. Choose your Week
-          {deliveryDates}
         </label>
         <div
           className="relative"
