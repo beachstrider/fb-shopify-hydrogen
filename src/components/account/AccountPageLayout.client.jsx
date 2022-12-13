@@ -7,7 +7,7 @@ export const AccountPageLayout = ({user, children}) => {
         <div className="container px-4 mx-auto">
           <div className="flex flex-wrap -mx-4">
             <div className="w-full lg:w-1/5 px-4 mb-12 lg:mb-0">
-              <p className>
+              <p>
                 <Link
                   className="text-3xl font-bold font-heading uppercase"
                   to="#"

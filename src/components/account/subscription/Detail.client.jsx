@@ -3,6 +3,7 @@ import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';
 import {getUsaStandard} from '~/utils/dates';
+import {now} from '~/utils/dates';
 
 const Index = ({subscription}) => {
   console.log('subscription===', subscription);
@@ -20,53 +21,77 @@ const Index = ({subscription}) => {
     setValue,
   } = useForm({
     defaultValues: {
-      frequency: subscription.order_interval_frequency,
-      first_name: subscription.address.first_name,
-      last_name: subscription.address.last_name,
-      address1: subscription.address.address1,
-      address2: subscription.address.address2,
-      company: subscription.address.company,
-      city: subscription.address.city,
-      zip: subscription.address.zip,
-      country_code: subscription.address.country_code,
-      province: subscription.address.province,
-      phone: subscription.address.phone,
+      order_interval_frequency: subscription.order_interval_frequency,
     },
   });
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log('submit data: ', data);
+    await axios.post(`/api/account/subscriptions/update`, {
+      id: subscription.id,
+      data,
+    });
   };
 
   const [isChanging, setIsChanging] = useState(true);
+  const [changedDeliveryDate, setChangedDeliveryDate] = useState(false);
+  const [next_charge_scheduled_at, setNext_charge_scheduled_at] = useState(
+    subscription.next_charge_scheduled_at,
+  );
 
   const handleOrderNow = async () => {
+    await navigate(
+      `/account/subscriptions/${subscription.id}?action=processing`,
+    );
     setProcessOrder(true);
     await axios.post(`/api/account/orders/create`, {
       customer_id: subscription.customer_id,
     });
     setProcessOrder(false);
+    await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
   const handleSkipThisOrder = async () => {
+    await navigate(
+      `/account/subscriptions/${subscription.id}?action=processing`,
+    );
     setProcessSkip(true);
     await axios.post(`/api/account/orders/skipUpcomingOrder`, {
       customer_id: subscription.customer_id,
     });
     setProcessSkip(false);
+    await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
   const handleCancelSubscription = async () => {
+    await navigate(
+      `/account/subscriptions/${subscription.id}?action=processing`,
+    );
     setProcessCancel(true);
     await axios.delete(`/api/account/subscriptions/${subscription.id}`);
-    navigate('/account/subscriptions', {replace: true, reloadDocument: true});
     setProcessCancel(false);
+    await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
   const handleReactiveSubscription = async () => {
+    await navigate(
+      `/account/subscriptions/${subscription.id}?action=processing`,
+    );
     setProcessReactivate(true);
     await axios.patch(`/api/account/subscriptions/${subscription.id}`);
-    navigate('/account/subscriptions', {replace: true, reloadDocument: true});
     setProcessReactivate(false);
+    await navigate(`/account/subscriptions/${subscription.id}`);
+  };
+
+  const handleSaveDeliveryDate = async () => {
+    await navigate(
+      `/account/subscriptions/${subscription.id}?action=processing`,
+    );
+    await axios.post(`/api/account/subscriptions/updateNextDeliveryDate`, {
+      id: subscription.id,
+      date: next_charge_scheduled_at,
+    });
+    setChangedDeliveryDate(false);
+    await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
   return (
@@ -74,13 +99,6 @@ const Index = ({subscription}) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full flex justify-between max-w-2xl mb-4 text-3xl uppercase font-bold">
           EDIT YOUR SUBSCRIPTIONS
-          {isChanging && (
-            <input
-              type="submit"
-              className="underline cursor-pointer"
-              value="SAVE CHANGES"
-            />
-          )}
         </div>
         <div className="w-full  p-4">
           {/*-------Subscription box--------------------------*/}
@@ -97,17 +115,15 @@ const Index = ({subscription}) => {
                   <div className="mb-10 pb-10">
                     {/*--------------Step 1--------------------------------------*/}
                     <div
-                      className
                       style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}
                     >
                       <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
-                        <label
+                        <div
                           className="block text-gray-800 text-lg font-bold mb-2"
-                          htmlFor
                           style={{fontSize: 24}}
                         >
                           1. Choose your Week
-                        </label>
+                        </div>
                         <div
                           className="relative"
                           style={{boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)'}}
@@ -146,7 +162,6 @@ const Index = ({subscription}) => {
                         </div>
                       </div>
                       <div
-                        className
                         style={{
                           backgroundColor: '#EFEFEF',
                           paddingBottom: 20,
@@ -156,15 +171,40 @@ const Index = ({subscription}) => {
                         <p className="mb-2 text-md text-gray-500" />
                         <div className="text-sm">
                           Delivery Day:
-                          <strong>
-                            {getUsaStandard(
-                              subscription.next_charge_scheduled_at,
-                            )}
-                          </strong>
+                          {changedDeliveryDate ? (
+                            <input
+                              className="p-0 w-[83px] text-[11px]"
+                              type="date"
+                              min={now()}
+                              value={next_charge_scheduled_at}
+                              onChange={(e) =>
+                                setNext_charge_scheduled_at(e.target.value)
+                              }
+                            />
+                          ) : (
+                            <strong>
+                              {getUsaStandard(
+                                subscription.next_charge_scheduled_at,
+                              )}
+                            </strong>
+                          )}
                         </div>
                         <div className="text-sm" style={{color: '#DB9707'}}>
-                          <button href="#">
-                            <u>Change Delivery Day</u>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (changedDeliveryDate) {
+                                handleSaveDeliveryDate();
+                              } else {
+                                setChangedDeliveryDate(true);
+                              }
+                            }}
+                          >
+                            <u>
+                              {changedDeliveryDate
+                                ? 'Save changed Delivery Day'
+                                : 'Change Delivery Day'}
+                            </u>
                           </button>
                         </div>
                         <p />
@@ -277,13 +317,12 @@ const Index = ({subscription}) => {
                       </div>
                     </div>
                     {/*--------------Step 2--------------------------------------*/}
-                    <label
+                    <div
                       className="block text-gray-800 text-lg font-bold mb-2"
-                      htmlFor
                       style={{fontSize: 24, marginTop: 20}}
                     >
                       2. Choose your Meals
-                    </label>
+                    </div>
                     <div className="flex flex-wrap -mx-2 -mb-2">
                       {/*--1----*/}
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2">
@@ -506,13 +545,12 @@ const Index = ({subscription}) => {
                         </div>
                       </div>
                     </div>
-                    <label
+                    <div
                       className="block text-gray-800 text-lg font-bold mb-2"
-                      htmlFor
                       style={{fontSize: 24, marginTop: 20}}
                     >
                       Breakfast Meals
-                    </label>
+                    </div>
                     <div className="flex flex-wrap -mx-2 -mb-2">
                       {/*--1----*/}
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
@@ -627,13 +665,13 @@ const Index = ({subscription}) => {
                                   key={key}
                                   className="radio-button relative cursor-pointer"
                                   onClick={() => {
-                                    setValue('frequency', Number(frequency));
+                                    setValue(
+                                      'order_interval_frequency',
+                                      Number(frequency),
+                                    );
                                   }}
                                 >
-                                  <div
-                                    htmlFor="frequency"
-                                    className="font-bold flex items-center"
-                                  >
+                                  <div className="font-bold flex items-center">
                                     {frequency}
                                     <span className="radio-button__label hide-mobile">
                                       Days
@@ -649,7 +687,7 @@ const Index = ({subscription}) => {
                                         width="19.52"
                                         height="14.56"
                                       >
-                                        {watch('frequency') ===
+                                        {watch('order_interval_frequency') ===
                                           Number(frequency) && (
                                           <path
                                             data-name="Icon awesome-check"
@@ -709,24 +747,39 @@ const Index = ({subscription}) => {
                   </span>
                 </div>
                 <hr style={{margin: '20px 0'}} />
-                <div style={{margin: '40px 0'}}>
-                  <button
-                    className="font-bold underline"
-                    style={{fontSize: 14, float: 'right', color: '#DB9707'}}
-                    disabled={processSkip}
-                    onClick={handleSkipThisOrder}
-                  >
-                    Skip Next Order
-                  </button>
-                  <br />
-                  <button
-                    className="font-bold underline"
-                    style={{fontSize: 14, float: 'right', color: '#DB9707'}}
-                    disabled={processCancel}
-                    onClick={handleCancelSubscription}
-                  >
-                    Cancel Subscription
-                  </button>
+                <div
+                  className="flex justify-between"
+                  style={{margin: '40px 0'}}
+                >
+                  <div className="flex items-end">
+                    {isChanging && (
+                      <input
+                        type="submit"
+                        className="underline cursor-pointer font-bold"
+                        style={{fontSize: 14, float: 'right', color: '#DB9707'}}
+                        value="Save Changes"
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <button
+                      className="font-bold underline"
+                      style={{fontSize: 14, float: 'right', color: '#DB9707'}}
+                      disabled={processSkip}
+                      onClick={handleSkipThisOrder}
+                    >
+                      Skip Next Order
+                    </button>
+                    <br />
+                    <button
+                      className="font-bold underline"
+                      style={{fontSize: 14, float: 'right', color: '#DB9707'}}
+                      disabled={processCancel}
+                      onClick={handleCancelSubscription}
+                    >
+                      Cancel Subscription
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
