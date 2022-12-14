@@ -172,8 +172,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
       <div className="flex items-center gap-2 font-light">
         <Link
           to={'/shop/bundle'}
-          className="text-sm inline-block bg-white text-black py-1 px-4 uppercase"
-          style={{fontSize: '12px'}}
+          className="text-sm inline-block bg-white text-black py-1 px-4 uppercase text-xs"
         >
           SHOP NOW
         </Link>

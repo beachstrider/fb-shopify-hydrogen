@@ -9,23 +9,20 @@ const DateArray = [
 ];
 export function Step1({deliveryDates}) {
   return (
-    <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
-      <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
+    <div className="bg-slate-100 py-5 px-0">
+      <div className="mb-6 bg-grey max-w-full">
         <label
-          className="block text-gray-800 text-lg font-bold mb-2"
+          className="text-2xl block text-gray-800 text-lg font-bold mb-2"
           htmlFor=""
-          style={{fontSize: '24px'}}
         >
           1. Choose your Week
         </label>
         <div
-          className="relative"
-          style={{boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)'}}
+          className="relative shadow-[0 3px 10px rgb(0 0 0 / 0.2)]"
         >
           <select
-            className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
+            className="border-0 bg-none	appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
             name="field-name"
-            style={{borderWidth: '0', backgroundImage: 'none'}}
           >
             <option value="Jan 3-5, 2023">Jan 3-5, 2023</option>
             <option value="Jan 10-13, 2023">Jan 10-13, 2023</option>
@@ -46,11 +43,7 @@ export function Step1({deliveryDates}) {
         </div>
       </div>
       <div
-        style={{
-          backgroundColor: '#EFEFEF',
-          paddingBottom: '20px',
-          textAlign: 'center',
-        }}
+        className="bg-slate-100 pb-[20px] text-center"
       >
         <p
           className="mb-2 text-md text-gray-500"
@@ -59,7 +52,7 @@ export function Step1({deliveryDates}) {
         <div className="text-sm">
           Delivery Day: <strong>Wednesday, January 4.</strong>
         </div>
-        <div className="text-sm" style={{color: '#DB9707'}}>
+        <div className="text-sm text-yellow-600">
           <a href="#">
             <u>Change Delivery Day</u>
           </a>
