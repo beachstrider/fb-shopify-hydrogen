@@ -77,7 +77,7 @@ export const getUpcomingOrders = (params) => {
 
   const {charges} = rechargeFetch.get(`charges`, {
     customer_id,
-    status: ['pending', 'queued', 'skipped'],
+    status: ['queued'],
     sort_by: 'scheduled_at-asc',
     scheduled_at_min: new Date().toISOString().split('T')[0],
   });
