@@ -17,7 +17,31 @@ import {useDrawer} from './Drawer.client';
 /**
  * A client component that specifies the content of the header on the website
  */
-export function Header({title, menu}) {
+export function Header({title}) {
+  const menu = {
+    id: 'gid://shopify/Menu/180186611768',
+    items: [
+      {
+        id: 'gid://shopify/MenuItem/413612474424',
+        target: '_self',
+        title: 'Our Menu',
+        to: '/menus',
+      },
+      {
+        id: 'gid://shopify/MenuItem/413612507192',
+        target: '_self',
+        title: 'How It Works',
+        to: '/how-it-works',
+      },
+      {
+        id: 'gid://shopify/MenuItem/430541078584',
+        target: '_self',
+        title: 'Influencers',
+        to: '/influencers',
+      },
+    ],
+  };
+
   const {pathname} = useUrl();
 
   const localeMatch = /^\/([a-z]{2})(\/|$)/i.exec(pathname);
@@ -120,7 +144,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
         : 'bg-primary dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
     } ${
       y > 50 && !isHome ? 'shadow-lightHeader ' : 'shadow-lightHeader '
-    }hidden lg:flex items-center sticky transition duration-300 backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-8 px-12 py-4`,
+    }hidden lg:flex items-center sticky transition duration-300 backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-8 px-12 py-3`,
   };
 
   return (
@@ -135,7 +159,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
           />
         </Link>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 ml-auto font-light">
         <nav className="flex items-right gap-8">
           {/* Top level menu items */}
           {(menu?.items || []).map((item) => (
@@ -145,15 +169,16 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
           ))}
         </nav>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 font-light">
         <Link
           to={'/shop/bundle'}
-          className="text-sm inline-block bg-white text-black py-2 px-4 uppercase"
+          className="text-sm inline-block bg-white text-black py-1 px-4 uppercase"
+          style={{fontSize: '12px'}}
         >
           SHOP NOW
         </Link>
 
-        <Link to={'/account'} className={styles.button}>
+        <Link to={'/account/subscriptions'} className={styles.button}>
           <IconAccount />
         </Link>
         <button onClick={openCart} className={styles.button}>
@@ -171,6 +196,7 @@ function CartBadge({dark}) {
   if (totalQuantity < 1) {
     return null;
   }
+
   return (
     <div
       className={`${

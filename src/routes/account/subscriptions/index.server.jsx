@@ -1,7 +1,6 @@
 import {Suspense} from 'react';
 import {
   CacheNone,
-  gql,
   Seo,
   useSession,
   useLocalization,
@@ -9,10 +8,10 @@ import {
   useServerAnalytics,
 } from '@shopify/hydrogen';
 
-import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
-import AccountPageHeaderMenu from '~/components/account/PageHeaderMenu';
+import {CUSTOMER_QUERY} from '~/lib/gql';
 import SubscriptionList from '~/components/account/subscription/List.client';
 import {Layout} from '~/components/index.server';
+import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 
 import {getSubscriptions} from '~/lib/recharge';
 
@@ -56,95 +55,15 @@ export default function Account({response}) {
       <Suspense>
         <Seo type="noindex" data={{title: 'Account Subscriptions'}} />
       </Suspense>
-      <AccountPageHeaderMenu />
-      <SubscriptionList subscriptions={subscriptions} />
+      <AccountPageLayout user={customer}>
+        <SubscriptionList subscriptions={subscriptions} />
+      </AccountPageLayout>
+      <div
+        id="version_mark"
+        className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
+      >
+        ALPHA, Dec 8 - Jason
+      </div>
     </Layout>
   );
 }
-
-const CUSTOMER_QUERY = gql`
-  ${PRODUCT_CARD_FRAGMENT}
-  query CustomerDetails(
-    $customerAccessToken: String!
-    $country: CountryCode
-    $language: LanguageCode
-  ) @inContext(country: $country, language: $language) {
-    customer(customerAccessToken: $customerAccessToken) {
-      id
-      firstName
-      lastName
-      phone
-      email
-      defaultAddress {
-        id
-        formatted
-      }
-      addresses(first: 6) {
-        edges {
-          node {
-            id
-            formatted
-            firstName
-            lastName
-            company
-            address1
-            address2
-            country
-            province
-            city
-            zip
-            phone
-          }
-        }
-      }
-      orders(first: 250, sortKey: PROCESSED_AT, reverse: true) {
-        edges {
-          node {
-            id
-            orderNumber
-            processedAt
-            financialStatus
-            fulfillmentStatus
-            currentTotalPrice {
-              amount
-              currencyCode
-            }
-            lineItems(first: 2) {
-              edges {
-                node {
-                  variant {
-                    image {
-                      url
-                      altText
-                      height
-                      width
-                    }
-                  }
-                  title
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    featuredProducts: products(first: 12) {
-      nodes {
-        ...ProductCard
-      }
-    }
-    featuredCollections: collections(first: 3, sortKey: UPDATED_AT) {
-      nodes {
-        id
-        title
-        handle
-        image {
-          altText
-          width
-          height
-          url
-        }
-      }
-    }
-  }
-`;

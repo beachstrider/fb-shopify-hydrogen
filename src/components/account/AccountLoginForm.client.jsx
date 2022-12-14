@@ -46,7 +46,7 @@ export function AccountLoginForm({shopName}) {
         setHasSubmitError(true);
         resetForm();
       } else {
-        navigate('/account');
+        navigate('/account/subscriptions');
       }
     } else {
       setPasswordError(

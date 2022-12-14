@@ -1,9 +1,9 @@
-import {fetchSync, useShop} from '@shopify/hydrogen';
 import axios from 'axios';
+import {request} from '../utils';
 
 const headers = {
   Accept: 'application/json',
-  Authorization: 'DEVTOKEN',
+  authorization: 'Bearer DEVTOKEN',
 };
 
 const baseURL = 'http://localhost:8080'; //import.meta.env.BUNDLE_API_URL
@@ -18,9 +18,26 @@ const convertUrlParams = (params) => {
   return new URLSearchParams(params).toString();
 };
 
-export const getDeliveryDates = async () => {
-  await bundleApi.post(`${baseURL}/api/auth`, {
-    shop: storeDomain,
-  });
-  return;
+export const geGuestToken = async () => {
+  const generateGuestToken = async () => {
+    try {
+      return await request(`${baseURL}/api/auth`, {
+        method: 'post',
+        headers,
+        data: {shop: storeDomain},
+      });
+    } catch (error) {
+      return error;
+    }
+  };
+  try {
+    const tokenResponse = await generateGuestToken();
+    let currentToken = '';
+    if (tokenResponse.data) {
+      currentToken = tokenResponse.data?.token;
+    }
+    return currentToken;
+  } catch (error) {
+    return error;
+  }
 };
