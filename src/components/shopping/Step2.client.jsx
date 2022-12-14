@@ -25,9 +25,8 @@ export function Step2({...props}) {
   return (
     <div>
       <label
-        className="block text-gray-800 text-lg font-bold mb-2"
+        className="text-2xl mt-[20px] block text-gray-800 text-lg font-bold mb-2"
         htmlFor=""
-        style={{fontSize: '24px', marginTop: '20px'}}
       >
         2. Choose your Meals
       </label>
