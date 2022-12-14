@@ -37,7 +37,7 @@ export function FaqQuestionAndAnswer({questionData, ...props}) {
   ));
 
   return (
-    <div className="flex-auto p-4">
+    <div className="p-4">
       <div className="w-full">
         <div className="w-full">{listItems}</div>
       </div>
