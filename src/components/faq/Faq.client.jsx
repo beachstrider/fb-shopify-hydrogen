@@ -193,7 +193,62 @@ const data = [
       {
         question: 'How do I know which meals I should try?',
         answer:
-          'You can take this short quiz to find out which meal options are best suited to your lifestyle.',
+          'You can take short quiz to find out which meal options are best suited to your lifestyle.',
+      },
+      {
+        question: 'How long do meals last?',
+        answer:
+          'Packaging on each individual meal sleeve will have the best by date. Meals can last in the refrigerator for up to 14 days if the seal is still intact unless otherwise specified on packaging.',
+      },
+      {
+        question: 'Where can I find nutritional information about your meals?',
+        answer:
+          'All of the nutritional information is included on the meal packaging. You can also find the general macro and calorie information on our website when selecting your meals.',
+      },
+      {
+        question: 'What kind of ingredients do you use?',
+        answer:
+          'We use beef that is free-range and sourced locally. We use organic ingredients when they are available and cost effective. We buy our produce directly and we only use USDA certified suppliers.',
+      },
+      {
+        question: "What if I'm still hungry?",
+        answer:
+          'It is important to honor your hunger if it is truly physiological hunger. Make sure you are in tune with your emotions and stress levels to see if you could satisfy your needs without food. If this is a repeated pattern of hunger, speak to our team about potentially switching to a higher calorie meal plan.',
+      },
+      {
+        question: 'Do you change the meals on your menu?',
+        answer:
+          'Our menu changes weekly, on a 6 week rotation. You are guaranteed to not see the same meal 2 weeks in a row. New meals are also added to the menu after each full rotation.',
+      },
+    ],
+  },
+  {
+    title: 'Ordering & Billing',
+    items: [
+      {
+        question: 'When will I be billed?',
+        answer:
+          "Three days after each delivery, you will be charged for the following week's meals.",
+      },
+      {
+        question: 'Can I view my order online?',
+        answer:
+          'Yes, you can view your order by logging into your account, and clicking view/manage subscriptions.',
+      },
+      {
+        question: 'How much time do I have before delivery to adjust or cancel my order?',
+        answer:
+          'Any changes being made to your order, i.e. canceling, skipping, adjusting meals, need to be made before your charge date every week. You can make changes to your order/subscription and view your next charge date by logging into your account and clicking view/manage subscriptions.',
+      },
+      {
+        question: 'I have concerns or other questions about my order.',
+        answer:
+          'Let’s get those taken care of. You can contact us by using the chat feature on this site or or contact Customer Service at support@quickfresh.com or (435)-659-2345.',
+      },
+      {
+        question: 'Why is there a long waiting period between when I order and when I receive my first order?',
+        answer:
+          'Our weekly menu changes each Sunday and runs until Saturday. Any order placed during that time will be delivered starting on Tuesday the following week. This allows our production team time to order the necessary ingredients to make the selected meals. ',
       },
     ],
   },
