@@ -15,7 +15,7 @@ import {NotFound, Layout} from '~/components/index.server';
 const pageBy = 48;
 
 export default function Collection({params}) {
-  const {handle} = params;
+  /*const {handle} = params;
   const {
     language: {isoCode: language},
     country: {isoCode: country},
@@ -45,10 +45,11 @@ export default function Collection({params}) {
       resourceId: collection.id,
       collectionHandle: handle,
     },
-  });
+  });*/
 
   return (
-    <Layout>
+    <NotFound />
+    /*<Layout>
       <Suspense>
         <Seo type="collection" data={collection} />
       </Suspense>
@@ -70,7 +71,7 @@ export default function Collection({params}) {
           url={`/collections/${handle}?country=${country}`}
         />
       </Section>
-    </Layout>
+    </Layout>*/
   );
 }
 

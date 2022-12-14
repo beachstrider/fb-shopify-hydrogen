@@ -12,7 +12,7 @@ import {PageHeader} from '~/components';
 import {NotFound, Layout} from '~/components/index.server';
 
 export default function Page({params}) {
-  const {
+  /*const {
     language: {isoCode: languageCode},
   } = useLocalization();
 
@@ -33,10 +33,11 @@ export default function Page({params}) {
       pageType: ShopifyAnalyticsConstants.pageType.page,
       resourceId: page.id,
     },
-  });
+  });*/
 
   return (
-    <Layout>
+    <NotFound />
+    /*<Layout>
       <Suspense>
         <Seo type="page" data={page} />
       </Suspense>
@@ -46,7 +47,7 @@ export default function Page({params}) {
           className="prose dark:prose-invert"
         />
       </PageHeader>
-    </Layout>
+    </Layout>*/
   );
 }
 

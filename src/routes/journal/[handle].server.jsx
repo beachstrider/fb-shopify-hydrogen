@@ -17,7 +17,7 @@ import {ATTR_LOADING_EAGER} from '~/lib/const';
 const BLOG_HANDLE = 'journal';
 
 export default function Post({params, response}) {
-  response.cache(CacheLong());
+  /*response.cache(CacheLong());
   const {
     language: {isoCode: languageCode},
     country: {isoCode: countryCode},
@@ -52,14 +52,14 @@ export default function Post({params, response}) {
       month: 'long',
       day: 'numeric',
     },
-  ).format(new Date(publishedAt));
-
+  ).format(new Date(publishedAt));*/
   return (
-    <Layout>
-      {/* Loads Fraunces custom font only on articles */}
+    <NotFound />
+    /*<Layout>
+      {/!* Loads Fraunces custom font only on articles *!/}
       <CustomFont />
       <Suspense>
-        {/* @ts-expect-error Blog article types are not supported in TS */}
+        {/!* @ts-expect-error Blog article types are not supported in TS *!/}
         <Seo type="page" data={data.blog.articleByHandle} />
       </Suspense>
       <PageHeader heading={title} variant="blogPost">
@@ -87,7 +87,7 @@ export default function Post({params, response}) {
           className="article"
         />
       </Section>
-    </Layout>
+    </Layout>*/
   );
 }
 

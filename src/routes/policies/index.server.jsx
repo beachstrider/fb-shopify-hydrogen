@@ -33,7 +33,7 @@ export default function Policies() {
     shippingPolicy,
     termsOfService,
     refundPolicy,
-    subscriptionPolicy,
+    // subscriptionPolicy,
   } = data.shop;
 
   const policies = [
@@ -41,7 +41,7 @@ export default function Policies() {
     shippingPolicy,
     termsOfService,
     refundPolicy,
-    subscriptionPolicy,
+    // subscriptionPolicy,
   ];
 
   if (policies.every((element) => element === null)) {
