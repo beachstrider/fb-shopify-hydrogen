@@ -247,6 +247,7 @@ export function Step3({...props}) {
             CHECKOUT
           </a>
         </div>
+        <div className="w-full mb-4 md:mb-0"><a className="block py-5 text-lg text-center uppercase font-bold" href="#" style={{ backgroundColor: '#DB9707', color: '#FFFFFF', marginTop: '10px' }}>CHECKOUT</a></div>
       </div>
     </section>
   );
