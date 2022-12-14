@@ -263,9 +263,13 @@ export function Faq({...props}) {
 
   return (
     <>
-      <div className="flex">
-        <FaqCategory data={data} handleClick={handleClick} />
-        <FaqQuestionAndAnswer questionData={selectedData} />
+      <div className="grid md:grid-cols-4">
+        <div className="col-span-1">
+          <FaqCategory data={data} handleClick={handleClick} />
+        </div>
+        <div className="col-span-3">
+          <FaqQuestionAndAnswer questionData={selectedData} />
+        </div>
       </div>
     </>
   );
