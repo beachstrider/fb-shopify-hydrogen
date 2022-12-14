@@ -26,7 +26,7 @@ export function FaqQuestionAndAnswer({questionData, ...props}) {
             <Disclosure.Panel
               className={`${
                 open ? 'border-l-[5px] border-green-600' : ''
-              } p-2 text-sm text-black mt-2`}
+              } bg-white p-2 text-sm text-black mt-2`}
             >
               {item.answer}
             </Disclosure.Panel>
