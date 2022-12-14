@@ -8,8 +8,7 @@ export function FaqCategory({data, handleClick, ...props}) {
   };
 
   const listItems = data.map((item, index) => (
-    <a
-      href="#"
+    <div
       onClick={() => handleClickTab(index)}
       className={`p-2 font-bold text-xl text-gray-600 hover:text-green-600 hover:cursor-pointer ${
         activeTab === index ? 'text-green-600' : ''
@@ -17,7 +16,7 @@ export function FaqCategory({data, handleClick, ...props}) {
       key={index}
     >
       {item.title}
-    </a>
+    </div>
   ));
 
   return <div className="flex flex-col min-w-[300px] p-4">{listItems}</div>;

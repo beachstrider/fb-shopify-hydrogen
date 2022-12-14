@@ -89,7 +89,7 @@ export function Step3({...props}) {
                           </label>
                         </div>
                         <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-                          <span style={{float: 'right'}}>$12.66/Serving</span>
+                          <span className="float-right">$12.66/Serving</span>
                         </div>
                       </div>
                       <hr />
@@ -109,33 +109,24 @@ export function Step3({...props}) {
                   }}
                 >
                   <span
-                    className="font-bold"
-                    style={{
-                      float: 'right',
-                      backgroundColor: '#DB9725',
-                      color: '#FFFFFF',
-                      padding: '4px 44px',
-                      marginTop: '-48px',
-                      marginRight: '-28px',
-                    }}
+                    className="font-bold float-right text-white mt-[-48px] px-[44px] py-[4px] bg-yellow-600 mr-[-28px]"
                   >
                     Most Popular
                   </span>
                   <div className="mb-1">
-                    <div className="mb-1" style={{color: '#000000'}}>
+                    <div className="mb-1 text-black">
                       <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
                         <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0">
                           <label>
                             <input
+                              className="accent-yellow-600"
                               id="subscribe_save"
                               type="radio"
                               name="radio-name"
                               value="option 1"
-                              style={{accentColor: '#DB9707'}}
                             />
                             <span
-                              className="ml-3 font-bold"
-                              style={{fontSize: '18px'}}
+                              className="ml-3 font-bold text-lg"
                             >
                               SUBSCRIBE & SAVE
                             </span>
@@ -145,8 +136,7 @@ export function Step3({...props}) {
                                 <strike>$189.95</strike>
                               </span>
                               <span
-                                className="font-bold"
-                                style={{fontSize: '18px'}}
+                                className="font-bold text-lg"
                               >
                                 {' '}
                                 $169.95 /{' '}
@@ -157,22 +147,15 @@ export function Step3({...props}) {
                         </div>
                         <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
                           <span
-                            className="font-bold"
-                            style={{
-                              float: 'right',
-                              backgroundColor: '#DB9725',
-                              color: '#FFFFFF',
-                              padding: '10px 6px',
-                              marginTop: '-8px',
-                            }}
+                            className="font-bold float-right bg-yellow-600 text-white mt-[-8px] py-2.5 px-1.5"
                           >
                             $8.50/Serving
                           </span>
                         </div>
                       </div>
                       <hr />
-                      <p style={{color: '#DB9725', marginTop: '10px'}}>
-                        <span className="font-bold" style={{fontSize: '18px'}}>
+                      <p className="text-yellow-600 mt-2.5">
+                        <span className="font-bold text-lg">
                           Limited Time Promotion:
                         </span>
                         <br /> Get a FREE Breakfast with the life of your
@@ -203,7 +186,7 @@ export function Step3({...props}) {
                   }}
                 >
                   <div className="mb-1">
-                    <div className="mb-1" style={{color: '#000000'}}>
+                    <div className="mb-1 text-black">
                       <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
                         <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0">
                           <label>
@@ -212,18 +195,16 @@ export function Step3({...props}) {
                               type="radio"
                               name="radio-name"
                               value="option 1"
-                              style={{accentColor: '#DB9707'}}
+                              className="accent-yellow-600"
                             />
                             <span
-                              className="ml-3 font-bold"
-                              style={{fontSize: '18px'}}
+                              className="ml-3 font-bold text-lg"
                             >
                               ONE-TIME
                             </span>
                             <br />
                             <span
-                              className="font-bold"
-                              style={{fontSize: '18px'}}
+                              className="font-bold text-lg"
                             >
                               $189.95 /{' '}
                             </span>
@@ -232,14 +213,7 @@ export function Step3({...props}) {
                         </div>
                         <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
                           <span
-                            className="font-bold"
-                            style={{
-                              float: 'right',
-                              backgroundColor: '#DB9725',
-                              color: '#FFFFFF',
-                              padding: '10px 6px',
-                              marginTop: '-8px',
-                            }}
+                            className="font-bold float-right bg-yellow-600 text-white py-2.5 px-1.5 mt-[-8px]"
                           >
                             $12.66/Serving
                           </span>
@@ -255,29 +229,25 @@ export function Step3({...props}) {
         </div>
         <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
           <div className="w-full md:w-1/2 px-4 mb-4 md:mb-0">
-            <span className="font-bold" style={{fontSize: '18px'}}>
+            <span className="font-bold text-lg">
               You're Saving $20!
             </span>
           </div>
           <div className="w-full md:w-1/2 px-4 mb-4 md:mb-0">
-            <span className="font-bold" style={{float: 'right'}}>
+            <span className="font-bold float-right">
               Total: $169.95
             </span>
           </div>
         </div>
         <div className="w-full mb-4 md:mb-0">
           <a
-            className="block py-5 text-lg text-center uppercase font-bold"
+            className="block py-5 text-lg text-center uppercase font-bold bg-yellow-600 text-white mt-2.5"
             href="#"
-            style={{
-              backgroundColor: '#DB9707',
-              color: '#FFFFFF',
-              marginTop: '10px',
-            }}
           >
             CHECKOUT
           </a>
         </div>
+        <div className="w-full mb-4 md:mb-0"><a className="block py-5 text-lg text-center uppercase font-bold" href="#" style={{ backgroundColor: '#DB9707', color: '#FFFFFF', marginTop: '10px' }}>CHECKOUT</a></div>
       </div>
     </section>
   );

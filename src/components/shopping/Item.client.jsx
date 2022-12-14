@@ -26,8 +26,7 @@ export function Item({...props}) {
           <div className="text-center text-sm mb-2">Serves: 5</div>
         </a>
         <div
-          className="inline-flex items-center font-semibold font-heading text-gray-500 border border-gray-200 bg-white"
-          style={{backgroundColor: '#DB9707', color: '#FFFFFF'}}
+          className="bg-yellow-600 text-white inline-flex items-center font-semibold font-heading text-gray-500 border border-gray-200 bg-white"
         >
           <button
             onClick={decreaseCounts}
@@ -52,10 +51,9 @@ export function Item({...props}) {
             </svg>
           </button>
           <input
-            className="w-8 font-light m-0 px-2 text-center border-0 focus:ring-transparent focus:outline-none text-black"
+            className="p-0 w-8 font-light m-0 px-2 text-center border-0 focus:ring-transparent focus:outline-none text-black"
             type="number"
             placeholder="1"
-            style={{padding: '0 !important'}}
             value={counts}
             onChange={() => {}}
           />

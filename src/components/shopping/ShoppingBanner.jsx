@@ -1,7 +1,7 @@
 export function ShoppingBanner({...props}) {
   return (
     <div className="w-full px-4 mb-8 md:mb-0 md:w-1/3">
-      <div className="relative mb-10" style={{height: '564px'}}>
+      <div className="relative mb-10 h-[564px]">
         <a
           className="absolute top-1/2 left-0 ml-8 transform translate-1/2"
           href="#"
