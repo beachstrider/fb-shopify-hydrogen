@@ -86,7 +86,7 @@ export function Footer({menu}) {
                 <li className="mb-1.5">
                   <Link
                     className="font-medium leading-relaxed text-white"
-                    to="terms_or_service"
+                    to="/policies/terms-of-service"
                   >
                     Terms of Service
                   </Link>
@@ -94,7 +94,7 @@ export function Footer({menu}) {
                 <li className="mb-1.5">
                   <Link
                     className="font-medium leading-relaxed text-white"
-                    to="/refund_policy"
+                    to="/policies/refund-policy"
                   >
                     Refund Policy
                   </Link>
@@ -102,7 +102,7 @@ export function Footer({menu}) {
                 <li className="mb-1.5">
                   <Link
                     className="font-medium leading-relaxed text-white"
-                    to="/privacy_policy"
+                    to="/policies/privacy-policy"
                   >
                     Privacy Policy
                   </Link>

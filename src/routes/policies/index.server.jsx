@@ -29,18 +29,18 @@ export default function Policies() {
   });
 
   const {
-    privacyPolicy,
-    shippingPolicy,
     termsOfService,
     refundPolicy,
+    privacyPolicy,
+    shippingPolicy,
     // subscriptionPolicy,
   } = data.shop;
 
   const policies = [
-    privacyPolicy,
-    shippingPolicy,
     termsOfService,
     refundPolicy,
+    privacyPolicy,
+    shippingPolicy,
     // subscriptionPolicy,
   ];
 
