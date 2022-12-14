@@ -15,19 +15,20 @@ import {Layout} from '~/components/index.server';
 import {getImageLoadingPriority, PAGINATION_SIZE} from '~/lib/const';
 
 const BLOG_HANDLE = 'Journal';
+import {NotFound} from '~/components/index.server';
 
 export default function Blog({pageBy = PAGINATION_SIZE, response}) {
-  response.cache(CacheLong());
-
+  // response.cache(CacheLong());
   return (
-    <Layout>
+    <NotFound />
+    /*<Layout>
       <Seo type="page" data={{title: 'All Journals'}} />
       <PageHeader heading={BLOG_HANDLE} className="gap-0">
         <Suspense>
           <JournalsGrid pageBy={pageBy} />
         </Suspense>
       </PageHeader>
-    </Layout>
+    </Layout>*/
   );
 }
 

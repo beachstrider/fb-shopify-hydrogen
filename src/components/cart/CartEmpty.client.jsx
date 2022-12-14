@@ -31,7 +31,7 @@ export function CartEmpty({onClose, layout = 'drawer'}) {
           <Button onClick={onClose}>Continue shopping</Button>
         </div>
       </section>
-      <section className="grid gap-8 pt-4">
+      {/*<section className="grid gap-8 pt-4">
         <Heading format size="copy">
           Shop Best Sellers
         </Heading>
@@ -42,7 +42,7 @@ export function CartEmpty({onClose, layout = 'drawer'}) {
             <TopProducts onClose={onClose} />
           </Suspense>
         </div>
-      </section>
+      </section>*/}
     </div>
   );
 }
