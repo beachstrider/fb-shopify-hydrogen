@@ -9,15 +9,15 @@ const Index = ({orders}) => {
   };
 
   const handleSkip = async (params) => {
-    await navigate('/account/upcoming-orders?action=processing');
+    await navigate('/account/order-schedules?action=processing');
     await axios.post(`/api/account/orders/skip`, params);
-    await navigate('/account/upcoming-orders');
+    await navigate('/account/order-schedules');
   };
 
   const handleUnskip = async (params) => {
-    await navigate('/account/upcoming-orders?action=processing');
+    await navigate('/account/order-schedules?action=processing');
     await axios.post(`/api/account/orders/unskip`, params);
-    await navigate('/account/upcoming-orders');
+    await navigate('/account/order-schedules');
   };
 
   return (
