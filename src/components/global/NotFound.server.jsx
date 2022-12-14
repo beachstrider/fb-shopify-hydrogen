@@ -24,9 +24,9 @@ export function NotFound({response, type = 'page'}) {
           Take me to the home page
         </Button>
       </PageHeader>
-      <Suspense>
+      {/*<Suspense>
         <FeaturedSection />
-      </Suspense>
+      </Suspense>*/}
     </Layout>
   );
 }

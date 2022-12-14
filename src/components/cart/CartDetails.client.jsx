@@ -77,7 +77,6 @@ function CartCheckoutActions() {
             </Button>
           </Link>
         ) : null}
-        <CartShopPayButton />
       </div>
     </>
   );

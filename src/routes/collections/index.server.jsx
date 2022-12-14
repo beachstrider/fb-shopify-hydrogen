@@ -11,10 +11,12 @@ import {
 import {PageHeader, Section, Grid} from '~/components';
 import {Layout, CollectionCard} from '~/components/index.server';
 import {getImageLoadingPriority, PAGINATION_SIZE} from '~/lib/const';
+import {NotFound} from '~/components/index.server';
 
 export default function Collections() {
   return (
-    <Layout>
+    <NotFound />
+    /*<Layout>
       <Seo type="page" data={{title: 'All Collections'}} />
       <PageHeader heading="Collections" />
       <Section>
@@ -22,7 +24,7 @@ export default function Collections() {
           <CollectionGrid />
         </Suspense>
       </Section>
-    </Layout>
+    </Layout>*/
   );
 }
 

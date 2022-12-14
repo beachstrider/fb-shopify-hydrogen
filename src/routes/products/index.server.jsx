@@ -5,10 +5,12 @@ import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import {PAGINATION_SIZE} from '~/lib/const';
 import {ProductGrid, PageHeader, Section} from '~/components';
 import {Layout} from '~/components/index.server';
+import {NotFound} from '~/components/index.server';
 
 export default function AllProducts() {
   return (
-    <Layout>
+    <NotFound />
+    /*<Layout>
       <Seo type="page" data={{title: 'All Products'}} />
       <PageHeader heading="All Products" variant="allCollections" />
       <Section>
@@ -16,7 +18,7 @@ export default function AllProducts() {
           <AllProductsGrid />
         </Suspense>
       </Section>
-    </Layout>
+    </Layout>*/
   );
 }
 

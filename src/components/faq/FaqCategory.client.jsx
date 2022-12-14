@@ -19,5 +19,5 @@ export function FaqCategory({data, handleClick, ...props}) {
     </div>
   ));
 
-  return <div className="flex flex-col min-w-[300px] p-4">{listItems}</div>;
+  return <div className="flex flex-col p-4">{listItems}</div>;
 }

@@ -29,19 +29,19 @@ export default function Policies() {
   });
 
   const {
-    privacyPolicy,
-    shippingPolicy,
     termsOfService,
     refundPolicy,
-    subscriptionPolicy,
+    privacyPolicy,
+    shippingPolicy,
+    // subscriptionPolicy,
   } = data.shop;
 
   const policies = [
-    privacyPolicy,
-    shippingPolicy,
     termsOfService,
     refundPolicy,
-    subscriptionPolicy,
+    privacyPolicy,
+    shippingPolicy,
+    // subscriptionPolicy,
   ];
 
   if (policies.every((element) => element === null)) {
