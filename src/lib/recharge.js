@@ -158,3 +158,32 @@ export const updateSubscription = async ({id, data}) => {
   });
   return;
 };
+export const getBillingInfo = (params) => {
+  let {subscriptions} = rechargeFetch.get('subscriptions', params);
+
+  let billinginfo = subscriptions.map((subscription) => {
+    const {address} = rechargeFetch.get(`addresses/${subscription.address_id}`);
+    const {payment_method} = rechargeFetch.get(`payment_methods/${address.payment_method_id}`);
+    return {payment_method, address};
+  });
+
+  return billinginfo[0];
+};
+
+export const updateShippingAddress = (id, address) => {
+  let result = rechargeFetch.put(`addresses/${id}`, address);
+
+  return result;
+};
+
+export const getShippingAddress = (id) => {
+  let {address} = rechargeFetch.get(`addresses/${id}`);
+
+  return address;
+};
+
+export const updatePaymentMethod = (id, payment) => {
+  let result = rechargeFetch.put(`payment_method/${id}`, payment);
+
+  return result;
+};
