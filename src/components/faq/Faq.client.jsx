@@ -264,10 +264,10 @@ export function Faq({...props}) {
   return (
     <>
       <div className="grid md:grid-cols-4">
-        <div className="md:col-span-1 sm:col-span-4 xs:col-span-4">
+        <div className="col-span-1">
           <FaqCategory data={data} handleClick={handleClick} />
         </div>
-        <div className="md:col-span-3 sm:col-span-4 xs:col-span-4">
+        <div className="col-span-3">
           <FaqQuestionAndAnswer questionData={selectedData} />
         </div>
       </div>
