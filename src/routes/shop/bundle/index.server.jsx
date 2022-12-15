@@ -5,6 +5,7 @@ import {Section} from '~/components';
 import {Step1} from '~/components/shopping/Step1.client';
 import {Step2} from '~/components/shopping/Step2.client';
 import {Step3} from '~/components/shopping/Step3.client';
+import {ShoppingBanner} from '~/components/shopping/ShoppingBanner';
 import {getDeliveryDates, UseGuestToken} from '../../../components/Hooks';
 
 const Index = ({response}) => {
@@ -56,17 +57,24 @@ const Index = ({response}) => {
       <Suspense>
         <Seo type="noindex" data={{title: 'FeastBox Bundle'}} />
       </Suspense>
-      <Section>
-        <Step1 />
-        <Step2 />
-        <Step3 />
-        <div
-          id="version_mark"
-          className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
-        >
-          BETA, Dec 12 - MD
+      <section className="py-20" style={{backgroundColor: '#EFEFEF'}}>
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap -mx-4 mb-24">
+            <ShoppingBanner />
+            <div className="w-full px-4 md:w-2/3">
+              <Step1 />
+              <Step2 />
+              <Step3 />
+              <div
+                id="version_mark"
+                className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
+              >
+                BETA, Dec 12 - MD
+              </div>
+            </div>
+          </div>
         </div>
-      </Section>
+      </section>
     </Layout>
   );
 };
