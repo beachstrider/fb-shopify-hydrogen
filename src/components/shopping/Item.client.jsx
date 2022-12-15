@@ -25,9 +25,7 @@ export function Item({...props}) {
           </h3>
           <div className="text-center text-sm mb-2">Serves: 5</div>
         </a>
-        <div
-          className="bg-yellow-600 text-white inline-flex items-center font-semibold font-heading text-gray-500 border border-gray-200 bg-white"
-        >
+        <div className="bg-yellow-600 text-white inline-flex items-center font-semibold font-heading text-gray-500 border border-gray-200 bg-white">
           <button
             onClick={decreaseCounts}
             className="hover:text-gray-700 text-center"

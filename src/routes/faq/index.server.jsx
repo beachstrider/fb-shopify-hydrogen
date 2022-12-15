@@ -15,8 +15,13 @@ const Index = () => {
       </Suspense>
       <FaqBanner />
       <Section>
-        <div id="version_mark" className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60">BETHA, Dec 14 - WHITEBEAR</div>
-        <Faq/>
+        <div
+          id="version_mark"
+          className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
+        >
+          BETHA, Dec 14 - WHITEBEAR
+        </div>
+        <Faq />
       </Section>
     </Layout>
   );
