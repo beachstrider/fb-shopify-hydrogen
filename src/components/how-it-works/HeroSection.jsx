@@ -3,6 +3,7 @@ import RightImage from '../../assets/howItWorks/sealed_fresh.png';
 import ReftImage3 from '../../assets/howItWorks/heat_it_up.png';
 import leftImage4 from '../../assets/howItWorks/feast.png';
 import DownArrow from '../../assets/down_arrows.png';
+import {useUrl, Link} from '@shopify/hydrogen';
 export function HeroSection() {
   return (
     <section className="">
@@ -151,14 +152,13 @@ export function HeroSection() {
                   <br />
                   spread!{' '}
                   </p>
-                <div className="flex item-center mt-9">
-                 
-                  <div className="ml-[20]">
-                    <h2></h2>
-                  </div>
+
+                  <div className="flex item-center mt-9">
+                  <button className="bg-[#A60D1E] text-white font-bold  w-[207px]">
+                   <Link to="/shop/bundle">Hungry! Order Now</Link>
+                  </button>
                 </div>
               </div>
-
               <div className="flex w-1/2 justify-end pb-[1px]">
                 <div className="relative w-1/3">
                   <img
