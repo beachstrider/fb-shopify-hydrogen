@@ -6,7 +6,7 @@ import {getUsaStandard} from '~/utils/dates';
 import {now} from '~/utils/dates';
 
 const Index = ({subscription}) => {
-  console.log('subscription===', subscription);
+  // console.log('subscription===', subscription);
   const navigate = useNavigate();
   const [processOrder, setProcessOrder] = useState(false);
   const [processSkip, setProcessSkip] = useState(false);
@@ -24,6 +24,16 @@ const Index = ({subscription}) => {
       order_interval_frequency: subscription.order_interval_frequency,
     },
   });
+
+  useEffect(() => {
+    async function fetchDeliveryDates() {
+      const {data} = await axios.get('/api/bundle-api/delivery-dates');
+      console.log('===', data);
+    }
+
+    fetchDeliveryDates();
+  }, []);
+
   const onSubmit = async (data) => {
     console.log('submit data: ', data);
     await axios.post(`/api/account/subscriptions/update`, {
