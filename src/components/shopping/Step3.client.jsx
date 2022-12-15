@@ -1,7 +1,7 @@
-import MostPopularOneTime from "./components/MostPopularOneTime";
-import MostPopularSubscription from "./components/MostPopularSubscription";
-import OneTime from "./components/OneTime";
-import Subscription from "./components/Subscription";
+import MostPopularOneTime from './components/MostPopularOneTime';
+import MostPopularSubscription from './components/MostPopularSubscription';
+import OneTime from './components/OneTime';
+import Subscription from './components/Subscription';
 
 export function Step3({...props}) {
   return (
@@ -17,28 +17,24 @@ export function Step3({...props}) {
           </label>
           <div className="flex flex-wrap -mx-4 mb-24">
             <div className="w-full px-2">
-              <Subscription/>
+              <Subscription />
             </div>
 
-            <OneTime/>
+            <OneTime />
 
             <div className="w-full px-2">
-              <MostPopularSubscription/>
+              <MostPopularSubscription />
             </div>
 
-           <MostPopularOneTime/>
+            <MostPopularOneTime />
           </div>
         </div>
         <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
           <div className="w-full md:w-1/2 px-4 mb-4 md:mb-0">
-            <span className="font-bold text-lg">
-              You're Saving $20!
-            </span>
+            <span className="font-bold text-lg">You're Saving $20!</span>
           </div>
           <div className="w-full md:w-1/2 px-4 mb-4 md:mb-0">
-            <span className="font-bold float-right">
-              Total: $169.95
-            </span>
+            <span className="font-bold float-right">Total: $169.95</span>
           </div>
         </div>
         <div className="w-full mb-4 md:mb-0">
@@ -49,7 +45,19 @@ export function Step3({...props}) {
             CHECKOUT
           </a>
         </div>
-        <div className="w-full mb-4 md:mb-0"><a className="block py-5 text-lg text-center uppercase font-bold" href="#" style={{ backgroundColor: '#DB9707', color: '#FFFFFF', marginTop: '10px' }}>CHECKOUT</a></div>
+        <div className="w-full mb-4 md:mb-0">
+          <a
+            className="block py-5 text-lg text-center uppercase font-bold"
+            href="#"
+            style={{
+              backgroundColor: '#DB9707',
+              color: '#FFFFFF',
+              marginTop: '10px',
+            }}
+          >
+            CHECKOUT
+          </a>
+        </div>
       </div>
     </section>
   );
