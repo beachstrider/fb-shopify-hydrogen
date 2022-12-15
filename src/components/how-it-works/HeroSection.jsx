@@ -162,7 +162,7 @@ export function HeroSection() {
               <div className="flex w-1/2 justify-end pb-[1px]">
                 <div className="relative w-1/3">
                   <img
-                    src={RightImage}
+                    src={leftImage4}
                     className="absolute object-cover max-w-sm h-auto mt-[0px]"
                     alt=""
                   />
