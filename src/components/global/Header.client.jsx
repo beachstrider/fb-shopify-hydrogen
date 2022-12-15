@@ -101,6 +101,16 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
     }flex lg:hidden items-center h-nav sticky backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-4 px-4 md:px-8`,
   };
 
+  const [flag, setFlag] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setFlag(localStorage.getItem('isLoggedin'));
+    }
+  });
+
+  const ref = React.createRef();
+
   return (
     <header role="banner" className={styles.container}>
       <div className="flex items-center justify-start w-full gap-4">
@@ -124,7 +134,7 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
       </Link>
 
       <div className="flex items-center justify-end w-full gap-4">
-        <Menu as="div" className="relative inline-block text-left">
+      <Menu as="div" className="relative inline-block text-left">
           <div>
             <Menu.Button className="flex items-center text-gray-400  focus:outline-none ">
               <IconAccount />
@@ -146,10 +156,9 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
                   {({active}) => (
                     <Link
                       to={'/account'}
-                      className={classNames(
-                        active ? 'bg-gray-700 text-white' : 'text-white',
-                        'block px-4 py-2 text-sm',
-                      )}
+                      className={`block px-4 py-2 text-sm ${
+                        active ? 'bg-gray-700 text-white' : 'text-white'
+                      }`}
                     >
                       Account
                     </Link>
@@ -159,28 +168,33 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
                   {({active}) => (
                     <Link
                       to={'/account/subscriptions'}
-                      className={classNames(
-                        active ? 'bg-gray-700 text-white' : 'text-white',
-                        'block px-4 py-2 text-sm',
-                      )}
+                      className={`block px-4 py-2 text-sm ${
+                        active ? 'bg-gray-700 text-white' : 'text-white'
+                      }`}
                     >
                       Subscriptions
                     </Link>
                   )}
                 </Menu.Item>
-                <Menu.Item>
-                  {({active}) => (
-                    <button
-                      type="submit"
-                      className={classNames(
-                        active ? 'bg-gray-700 text-white' : 'text-white',
-                        'block w-full px-4 py-2 text-left text-sm',
-                      )}
-                    >
-                      Log out
-                    </button>
-                  )}
-                </Menu.Item>
+                {
+                flag? (
+                  <Menu.Item>
+                    {({active}) => <LogoutButton ref={ref} active={active} />}
+                  </Menu.Item>
+                ) : (
+                  <Menu.Item>
+                    {({active}) => (
+                      <Link
+                        to={'/account/login'}
+                        className={`block px-4 py-2 text-sm ${
+                        active ? 'bg-gray-700 text-white' : 'text-white'
+                        }`}
+                      >
+                        Login
+                      </Link>
+                    )}
+                  </Menu.Item>
+                )}
               </div>
             </Menu.Items>
           </Transition>
@@ -216,10 +230,6 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
       setFlag(localStorage.getItem('isLoggedin'));
     }
   });
-
-  
-  
-  console.log(flag)
 
   const ref = React.createRef();
 
