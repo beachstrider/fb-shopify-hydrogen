@@ -5,12 +5,14 @@ const headers = {
   'X-Recharge-Version': '2021-11',
   'X-Recharge-Access-Token':
     'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
+    
 };
 
 const headers_ = {
   'X-Recharge-Version': '2021-01',
   'X-Recharge-Access-Token':
     'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
+    
 };
 
 const baseURL = 'https://api.rechargeapps.com/';
@@ -170,15 +172,24 @@ export const getBillingInfo = (params) => {
   return billinginfo[0];
 };
 
-export const updateShippingAddress = (id, address) => {
-  let result = rechargeFetch.put(`addresses/${id}`, address);
+export const getBillingAddress = (id) =>{
+  let {payment_method} = rechargeFetch.get(`payment_methods/${id}`);
+  return payment_method ;
+}
 
-  return result;
+export const updateShippingAddress = async ({id, address}) => {
+  await recharge.put(`addresses/${id}`,{...address});
+  //  console.log(address)
+  return ;
+};
+
+export const updateBillingAddress = async({id, billing_address}) => {
+  await recharge.put(`payment_methods/${id}`, {...billing_address});
+ return ;
 };
 
 export const getShippingAddress = (id) => {
   let {address} = rechargeFetch.get(`addresses/${id}`);
-
   return address;
 };
 

@@ -3,10 +3,11 @@ import axios from 'axios';
 import {useMemo, useState} from 'react';
 import {Button, Text} from '~/components';
 import { getInputStyleClasses } from '../../../lib/styleUtils';
-import {updateShippingAddress} from '~/lib/recharge';
+import {updateBillingAddress} from '~/lib/recharge';
 
-const shippingAddress = ({address}) => {
- 
+const billingAddress = ({paymentMethod}) => {
+//   console.log(address.address1);
+ const address = paymentMethod.billing_address;
   const [saving, setSaving] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [address1, setAddress1] = useState(address?.address1 || '');
@@ -19,15 +20,15 @@ const shippingAddress = ({address}) => {
   const [city, setCity] = useState(address?.city || '');
   const [zip, setZip] = useState(address?.zip || '');
   const [phone, setPhone] = useState(address?.phone || '');
-  const navigate = useNavigate();
+
   async function onSubmit(event) {
     event.preventDefault();
     setSaving(true);
     
-    await axios.put('/api/account/shipping/updateShippingAddress', {id:address.id, 
-      address:{
-        first_name:firstName,
-        last_name:lastName,
+    await axios.put('/api/account/billing/updateBillingAddress',{id:paymentMethod.id, 
+      billing_address:{
+        firstName,
+        lastName,
         company,
         address1,
         address2,
@@ -38,13 +39,12 @@ const shippingAddress = ({address}) => {
         phone,
       }});
     setSaving(false);
-    await navigate(`/account/billing-accounts`);
   }
 
   return (
     <>
       <Text className="mt-4 mb-6" as="h3" size="lead">
-        {'Edit address'}
+        {'Edit billing address'}
       </Text>
       <div className="max-w-lg">
         <form noValidate onSubmit={onSubmit}>
@@ -234,5 +234,5 @@ const shippingAddress = ({address}) => {
   );
 };
 
-export default shippingAddress;
+export default billingAddress;
 
