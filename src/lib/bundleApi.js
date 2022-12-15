@@ -1,43 +1,21 @@
-import axios from 'axios';
-import {request} from '../utils';
+import {fetchSync} from '@shopify/hydrogen';
 
 const headers = {
-  Accept: 'application/json',
   authorization: 'Bearer DEVTOKEN',
+  Accept: 'application/json',
 };
 
-const baseURL = 'http://localhost:8080'; //import.meta.env.BUNDLE_API_URL
-const storeDomain = 'feast-box-sandbox.myshopify.com';
+const baseURL = 'https://feastbox-bundle-builder-proxy-dev.speedwayapp.com/';
 
-const bundleApi = axios.create({
-  headers,
-  baseURL,
-});
+const shop = 'feast-box-sandbox.myshopify.com';
 
-const convertUrlParams = (params) => {
-  return new URLSearchParams(params).toString();
-};
+export const getToken = () => {
+  const res = fetchSync(`${baseURL}bundle-api/token/guest`, {
+    headers,
+    method: 'post',
+    body: JSON.stringify({shop}),
+  }).json();
 
-export const geGuestToken = async () => {
-  const generateGuestToken = async () => {
-    try {
-      return await request(`${baseURL}/api/auth`, {
-        method: 'post',
-        headers,
-        data: {shop: storeDomain},
-      });
-    } catch (error) {
-      return error;
-    }
-  };
-  try {
-    const tokenResponse = await generateGuestToken();
-    let currentToken = '';
-    if (tokenResponse.data) {
-      currentToken = tokenResponse.data?.token;
-    }
-    return currentToken;
-  } catch (error) {
-    return error;
-  }
+  console.log('-=--', res);
+  return res;
 };

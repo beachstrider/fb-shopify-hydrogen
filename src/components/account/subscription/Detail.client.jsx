@@ -6,7 +6,7 @@ import {getUsaStandard} from '~/utils/dates';
 import {now} from '~/utils/dates';
 
 const Index = ({subscription}) => {
-  console.log('subscription===', subscription);
+  // console.log('subscription===', subscription);
   const navigate = useNavigate();
   const [processOrder, setProcessOrder] = useState(false);
   const [processSkip, setProcessSkip] = useState(false);

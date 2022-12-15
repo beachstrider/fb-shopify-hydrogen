@@ -12,6 +12,7 @@ import {
   useSession,
   useServerAnalytics,
   Seo,
+  fetchSync,
 } from '@shopify/hydrogen';
 import {HeaderFallback, EventsListener} from '~/components';
 import {NotFound} from '~/components/index.server';
@@ -23,7 +24,12 @@ function App({request}) {
 
   const isHome = pathname === `/${countryCode ? countryCode + '/' : ''}`;
 
-  const {customerAccessToken} = useSession();
+  const {customerAccessToken, bundleBuilderToken} = useSession();
+
+  console.log('bundleBuilderToken ===', bundleBuilderToken);
+  if (typeof bundleBuilderToken !== 'undefined') {
+    //
+  }
 
   useServerAnalytics({
     shopify: {
@@ -38,7 +44,7 @@ function App({request}) {
         <Seo
           type="defaultSeo"
           data={{
-            title: 'Hydrogen',
+            title: 'FeastBox',
             description:
               "A custom storefront powered by Hydrogen, Shopify's React-based framework for building headless.",
             titleTemplate: `%s · Hydrogen`,
