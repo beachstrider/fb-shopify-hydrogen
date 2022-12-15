@@ -123,7 +123,7 @@ export default function Product() {
             </div>
           </div>
         </Section>
-       {/* <Suspense>
+        {/* <Suspense>
           <ProductSwimlane title="Related Products" data={id} />
         </Suspense>*/}
       </ProductOptionsProvider>
