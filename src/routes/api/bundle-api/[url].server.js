@@ -1,9 +1,6 @@
 import axios from 'axios';
 
-const headers = {
-  authorization: 'Bearer DEVTOKEN',
-  Accept: 'application/json',
-};
+const headers = {Accept: 'application/json'};
 
 const baseURL = 'https://feastbox-bundle-builder-proxy-dev.speedwayapp.com/';
 
@@ -15,18 +12,19 @@ const bundleBuilder = axios.create({
 });
 
 export async function api(request, {session}) {
-  const url = new URL(request.normalizedUrl).pathname;
+  const url = new URL(request.normalizedUrl).pathname.substring(5);
   const method = request.method;
-  let data;
+  let data = {shop};
   let token;
 
   if (session) {
-    token = session.get().bundleBuilderToken;
-    console.log('token', token);
+    token = (await session.get()).bundleBuilderToken;
 
     if (request.method !== 'GET') {
-      data = await request.json();
+      const newData = await request.json();
+      data = {...data, ...newData};
     }
+
     if (typeof token === 'undefined') {
       const newToken = (
         await bundleBuilder.post(`bundle-api/token/guest`, {shop})
@@ -35,9 +33,17 @@ export async function api(request, {session}) {
       await session.set('bundleBuilderToken', token);
     }
 
-    // bundleBuilder({method, data});
+    headers.authorization = token;
 
-    return new Response(JSON.stringify({msg: token}));
+    const res = await axios({
+      baseURL,
+      url,
+      headers,
+      method,
+      data,
+    });
+
+    return res.data;
   }
 
   return new Response('Error');

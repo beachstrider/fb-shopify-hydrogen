@@ -12,7 +12,6 @@ import {
   useSession,
   useServerAnalytics,
   Seo,
-  fetchSync,
 } from '@shopify/hydrogen';
 import {HeaderFallback, EventsListener} from '~/components';
 import {NotFound} from '~/components/index.server';
@@ -24,12 +23,7 @@ function App({request}) {
 
   const isHome = pathname === `/${countryCode ? countryCode + '/' : ''}`;
 
-  const {customerAccessToken, bundleBuilderToken} = useSession();
-
-  console.log('bundleBuilderToken ===', bundleBuilderToken);
-  if (typeof bundleBuilderToken !== 'undefined') {
-    //
-  }
+  const {customerAccessToken} = useSession();
 
   useServerAnalytics({
     shopify: {
