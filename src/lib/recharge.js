@@ -5,12 +5,14 @@ const headers = {
   'X-Recharge-Version': '2021-11',
   'X-Recharge-Access-Token':
     'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
+    
 };
 
 const headers_ = {
   'X-Recharge-Version': '2021-01',
   'X-Recharge-Access-Token':
     'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
+    
 };
 
 const baseURL = 'https://api.rechargeapps.com/';
@@ -157,4 +159,42 @@ export const updateSubscription = async ({id, data}) => {
     charge_interval_frequency: data.order_interval_frequency,
   });
   return;
+};
+export const getBillingInfo = (params) => {
+  let {subscriptions} = rechargeFetch.get('subscriptions', params);
+
+  let billinginfo = subscriptions.map((subscription) => {
+    const {address} = rechargeFetch.get(`addresses/${subscription.address_id}`);
+    const {payment_method} = rechargeFetch.get(`payment_methods/${address.payment_method_id}`);
+    return {payment_method, address};
+  });
+
+  return billinginfo[0];
+};
+
+export const getBillingAddress = (id) =>{
+  let {payment_method} = rechargeFetch.get(`payment_methods/${id}`);
+  return payment_method ;
+}
+
+export const updateShippingAddress = async ({id, address}) => {
+  await recharge.put(`addresses/${id}`,{...address});
+  //  console.log(address)
+  return ;
+};
+
+export const updateBillingAddress = async({id, billing_address}) => {
+  await recharge.put(`payment_methods/${id}`, {...billing_address});
+ return ;
+};
+
+export const getShippingAddress = (id) => {
+  let {address} = rechargeFetch.get(`addresses/${id}`);
+  return address;
+};
+
+export const updatePaymentMethod = (id, payment) => {
+  let result = rechargeFetch.put(`payment_method/${id}`, payment);
+
+  return result;
 };
