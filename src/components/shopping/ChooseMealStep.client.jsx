@@ -31,7 +31,7 @@ const CardData = [
     serves: 5,
   },
 ];
-export function Step2({...props}) {
+export function ChooseMealStep({...props}) {
   return (
     <div>
       <label

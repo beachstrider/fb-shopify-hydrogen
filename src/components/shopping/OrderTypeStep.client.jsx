@@ -3,7 +3,7 @@ import MostPopularSubscription from './components/MostPopularSubscription';
 import OneTime from './components/OneTime';
 import Subscription from './components/Subscription';
 
-export function Step3({...props}) {
+export function OrderTypeStep({...props}) {
   return (
     <section className="overflow-x-hidden py-20">
       <div className="container mx-auto px-4">
