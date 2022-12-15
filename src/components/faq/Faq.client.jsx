@@ -17,24 +17,29 @@ const data = [
       },
       {
         question: 'Can I follow QuickFresh on social media?',
-        answer: 'We’d love to connect with you! QuickFresh has accounts on LinkedIn, Instagram, Facebook, YouTube and Tik Tok. Follow us to stay up-to-date with the latest QuickFresh news and be inspired on your journey to eat convenient, healthy food!'
+        answer:
+          'We’d love to connect with you! QuickFresh has accounts on LinkedIn, Instagram, Facebook, YouTube and Tik Tok. Follow us to stay up-to-date with the latest QuickFresh news and be inspired on your journey to eat convenient, healthy food!',
       },
       {
         question: 'Is QuickFresh hiring?',
-        answer: 'Great question! You can see any available job positions at QuickFresh by looking at our Careers page linked in our footer. Check back regularly to see new job opportunities with us.'
+        answer:
+          'Great question! You can see any available job positions at QuickFresh by looking at our Careers page linked in our footer. Check back regularly to see new job opportunities with us.',
       },
       {
         question: 'Is QuickFresh a subscription service?',
-        answer: 'Yes! Your account will be charged weekly and a new batch of amazing meals will be delivered to your door on the same day each week. Don’t stress though, you can cancel or pause your subscription at any time.'
+        answer:
+          'Yes! Your account will be charged weekly and a new batch of amazing meals will be delivered to your door on the same day each week. Don’t stress though, you can cancel or pause your subscription at any time.',
       },
       {
         question: 'Where are your meals prepared?',
-        answer: 'They are prepared at our QuickFresh production facility in Springville, UT.'
+        answer:
+          'They are prepared at our QuickFresh production facility in Springville, UT.',
       },
       {
         question: 'How can I contact you?',
-        answer: 'You can contact us by email at support@quickfresh.com or by phone at (435)-659-2345.'
-      }
+        answer:
+          'You can contact us by email at support@quickfresh.com or by phone at (435)-659-2345.',
+      },
     ],
   },
   {
@@ -101,7 +106,8 @@ const data = [
           'Our meals are packaged as individual servings. We have a variety of portion sizes to meet you individual nutritional needs.',
       },
       {
-        question: 'Where can I leave feedback on the meals that I have received?',
+        question:
+          'Where can I leave feedback on the meals that I have received?',
         answer:
           'You can speak with Customer Service at support@quickfresh.com or (435)-659-2345.',
       },
@@ -121,7 +127,8 @@ const data = [
           'If your delivery hasn’t arrived but you believe it should have been, please contact our team. We can help figure out what went wrong and issue a full refund if needed. You can contact us through the chat feature on this page or contact Customer Service at support@quickfresh.com or (435)-659-2345.',
       },
       {
-        question: 'The ice packs were melting when my food arrived. How do I know if it’s still good?',
+        question:
+          'The ice packs were melting when my food arrived. How do I know if it’s still good?',
         answer:
           'If the food inside of your package is still cold to the touch, refrigerate them immediately. If they are lukewarm, do not refrigerate or consume.',
       },
@@ -137,8 +144,7 @@ const data = [
       },
       {
         question: 'What delivery carriers do you use?',
-        answer:
-          'We deliver our meals in partnership with UPS and FedEx.',
+        answer: 'We deliver our meals in partnership with UPS and FedEx.',
       },
       {
         question: 'Do you deliver to my area?',
@@ -147,8 +153,7 @@ const data = [
       },
       {
         question: 'How much does shipping cost?',
-        answer:
-          'Currently, shipping costs $14.95 per box.',
+        answer: 'Currently, shipping costs $14.95 per box.',
       },
       {
         question: 'How do I know when my delivery is on the way?',
@@ -167,8 +172,7 @@ const data = [
       },
       {
         question: 'Is your packaging recyclable?',
-        answer:
-          'We use recyclable material in our trays.',
+        answer: 'We use recyclable material in our trays.',
       },
     ],
   },
@@ -236,7 +240,8 @@ const data = [
           'Yes, you can view your order by logging into your account, and clicking view/manage subscriptions.',
       },
       {
-        question: 'How much time do I have before delivery to adjust or cancel my order?',
+        question:
+          'How much time do I have before delivery to adjust or cancel my order?',
         answer:
           'Any changes being made to your order, i.e. canceling, skipping, adjusting meals, need to be made before your charge date every week. You can make changes to your order/subscription and view your next charge date by logging into your account and clicking view/manage subscriptions.',
       },
@@ -246,7 +251,8 @@ const data = [
           'Let’s get those taken care of. You can contact us by using the chat feature on this site or or contact Customer Service at support@quickfresh.com or (435)-659-2345.',
       },
       {
-        question: 'Why is there a long waiting period between when I order and when I receive my first order?',
+        question:
+          'Why is there a long waiting period between when I order and when I receive my first order?',
         answer:
           'Our weekly menu changes each Sunday and runs until Saturday. Any order placed during that time will be delivered starting on Tuesday the following week. This allows our production team time to order the necessary ingredients to make the selected meals. ',
       },
