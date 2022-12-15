@@ -113,6 +113,7 @@ export async function callLoginApi({email, password}) {
       body: JSON.stringify({email, password}),
     });
     if (res.ok) {
+      localStorage.setItem('isLoggedin', true);
       return {};
     } else {
       return res.json();

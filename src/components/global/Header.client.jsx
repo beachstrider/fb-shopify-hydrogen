@@ -1,5 +1,9 @@
 import {Link, Image, useUrl, useCart} from '@shopify/hydrogen';
 import {useWindowScroll} from 'react-use';
+import {Fragment, useEffect, useState} from 'react';
+import {Menu, Transition} from '@headlessui/react';
+import {LogoutButton} from '~/components';
+import React from 'react';
 
 import {
   Heading,
@@ -120,9 +124,67 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
       </Link>
 
       <div className="flex items-center justify-end w-full gap-4">
-        <Link to={'/account'} className={styles.button}>
-          <IconAccount />
-        </Link>
+        <Menu as="div" className="relative inline-block text-left">
+          <div>
+            <Menu.Button className="flex items-center text-gray-400  focus:outline-none ">
+              <IconAccount />
+            </Menu.Button>
+          </div>
+
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1 bg-black">
+                <Menu.Item>
+                  {({active}) => (
+                    <Link
+                      to={'/account'}
+                      className={classNames(
+                        active ? 'bg-gray-700 text-white' : 'text-white',
+                        'block px-4 py-2 text-sm',
+                      )}
+                    >
+                      Account
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({active}) => (
+                    <Link
+                      to={'/account/subscriptions'}
+                      className={classNames(
+                        active ? 'bg-gray-700 text-white' : 'text-white',
+                        'block px-4 py-2 text-sm',
+                      )}
+                    >
+                      Subscriptions
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({active}) => (
+                    <button
+                      type="submit"
+                      className={classNames(
+                        active ? 'bg-gray-700 text-white' : 'text-white',
+                        'block w-full px-4 py-2 text-left text-sm',
+                      )}
+                    >
+                      Log out
+                    </button>
+                  )}
+                </Menu.Item>
+              </div>
+            </Menu.Items>
+          </Transition>
+        </Menu>
         <button onClick={openCart} className={styles.button}>
           <IconBag />
           <CartBadge dark={isHome} />
@@ -146,6 +208,20 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
       y > 50 && !isHome ? 'shadow-lightHeader ' : 'shadow-lightHeader '
     }hidden lg:flex items-center sticky transition duration-300 backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-8 px-12 py-3`,
   };
+
+  const [flag, setFlag] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setFlag(localStorage.getItem('isLoggedin'));
+    }
+  });
+
+  
+  
+  console.log(flag)
+
+  const ref = React.createRef();
 
   return (
     <header role="banner" className={styles.container}>
@@ -177,9 +253,71 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
           SHOP NOW
         </Link>
 
-        <Link to={'/account/subscriptions'} className={styles.button}>
-          <IconAccount />
-        </Link>
+        <Menu as="div" className="relative inline-block text-left">
+          <div>
+            <Menu.Button className="flex items-center text-gray-400  focus:outline-none ">
+              <IconAccount />
+            </Menu.Button>
+          </div>
+
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1 bg-black">
+                <Menu.Item>
+                  {({active}) => (
+                    <Link
+                      to={'/account'}
+                      className={`block px-4 py-2 text-sm ${
+                        active ? 'bg-gray-700 text-white' : 'text-white'
+                      }`}
+                    >
+                      Account
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({active}) => (
+                    <Link
+                      to={'/account/subscriptions'}
+                      className={`block px-4 py-2 text-sm ${
+                        active ? 'bg-gray-700 text-white' : 'text-white'
+                      }`}
+                    >
+                      Subscriptions
+                    </Link>
+                  )}
+                </Menu.Item>
+                {
+                flag? (
+                  <Menu.Item>
+                    {({active}) => <LogoutButton ref={ref} active={active} />}
+                  </Menu.Item>
+                ) : (
+                  <Menu.Item>
+                    {({active}) => (
+                      <Link
+                        to={'/account/login'}
+                        className={`block px-4 py-2 text-sm ${
+                        active ? 'bg-gray-700 text-white' : 'text-white'
+                        }`}
+                      >
+                        Login
+                      </Link>
+                    )}
+                  </Menu.Item>
+                )}
+              </div>
+            </Menu.Items>
+          </Transition>
+        </Menu>
         <button onClick={openCart} className={styles.button}>
           <IconBag />
           <CartBadge dark={isHome} />
