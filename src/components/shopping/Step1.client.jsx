@@ -17,9 +17,7 @@ export function Step1({deliveryDates}) {
         >
           1. Choose your Week
         </label>
-        <div
-          className="relative shadow-[0 3px 10px rgb(0 0 0 / 0.2)]"
-        >
+        <div className="relative shadow-[0 3px 10px rgb(0 0 0 / 0.2)]">
           <select
             className="border-0 bg-none	appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
             name="field-name"
@@ -42,9 +40,7 @@ export function Step1({deliveryDates}) {
           </div>
         </div>
       </div>
-      <div
-        className="bg-slate-100 pb-[20px] text-center"
-      >
+      <div className="bg-slate-100 pb-[20px] text-center">
         <p
           className="mb-2 text-md text-gray-500"
           suppressContentEditableWarning="false"

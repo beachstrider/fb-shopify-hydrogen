@@ -12,9 +12,9 @@ const Index = () => {
       <Suspense>
         <Seo type="noindex" data={{title: 'FeastBox Home'}} />
       </Suspense>
-        <HeroSection/>
-        <HeroInnerSection/>
-        <PartyTime/>
+      <HeroSection />
+      <HeroInnerSection />
+      <PartyTime />
     </Layout>
   );
 };
