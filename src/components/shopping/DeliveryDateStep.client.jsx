@@ -7,7 +7,7 @@ const DateArray = [
   {day: 'SATURDAY', date: 'Jan 7, 2023'},
   {day: 'SUNDAY', date: 'Jan 8, 2023'},
 ];
-export function Step1({deliveryDates}) {
+export function DeliveryDateStep({deliveryDates}) {
   return (
     <div className="bg-slate-100 py-5 px-0">
       <div className="mb-6 bg-grey max-w-full">

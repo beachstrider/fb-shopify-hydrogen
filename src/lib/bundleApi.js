@@ -4,8 +4,8 @@ import {request} from '../utils';
 import axios from 'axios';
 
 const headers = {
-  Accept: 'application/json',
   authorization: 'Bearer DEVTOKEN',
+  Accept: 'application/json',
 };
 
 const baseURL = 'https://api.rechargeapps.com/';
@@ -37,8 +37,8 @@ export const getGuestToken = (params) => {
   };
   const bundleApiFetch = new BundleApiFetch(headers);
   const {guestToken} = bundleApiFetch.get(`/api/bundle-api/token/guest`);
-console.log("guestToken");
-console.log(guestToken);
+  console.log('guestToken');
+  console.log(guestToken);
   return guestToken;
 };
 

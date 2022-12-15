@@ -2,7 +2,6 @@ import {Link, Image} from '@shopify/hydrogen';
 import {getUsaStandard} from '~/utils/dates';
 
 const Index = ({subscriptions}) => {
-  console.log('==', subscriptions);
   const activateSubscriptions = subscriptions.filter(
     (el) => el.status === 'active',
   );
