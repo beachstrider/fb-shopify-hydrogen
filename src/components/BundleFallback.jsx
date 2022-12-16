@@ -1,5 +1,3 @@
-import DeliveryDates from "./shopping/components/DeliveryDates";
-
 export function BundleFallback() {
   const styles = 'bg-contrast/80 text-primary';
   return (
