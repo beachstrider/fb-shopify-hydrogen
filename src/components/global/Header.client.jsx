@@ -21,7 +21,7 @@ import {useDrawer} from './Drawer.client';
 /**
  * A client component that specifies the content of the header on the website
  */
-export function Header({title}) {
+export function Header({title, token}) {
   const menu = {
     id: 'gid://shopify/Menu/180186611768',
     items: [
@@ -75,6 +75,7 @@ export function Header({title}) {
         title={title}
         menu={menu}
         openCart={openCart}
+        token={token}
       />
       <MobileHeader
         countryCode={countryCode}
@@ -82,12 +83,13 @@ export function Header({title}) {
         title={title}
         openCart={openCart}
         openMenu={openMenu}
+        token={token}
       />
     </>
   );
 }
 
-function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
+function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
   const {y} = useWindowScroll();
 
   const styles = {
@@ -100,14 +102,6 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
       y > 50 && !isHome ? 'shadow-lightHeader ' : ''
     }flex lg:hidden items-center h-nav sticky backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-4 px-4 md:px-8`,
   };
-
-  const [flag, setFlag] = useState(false)
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setFlag(localStorage.getItem('isLoggedin'));
-    }
-  });
 
   const ref = React.createRef();
 
@@ -177,11 +171,7 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
                   )}
                 </Menu.Item>
                 {
-                flag? (
-                  <Menu.Item>
-                    {({active}) => <LogoutButton ref={ref} active={active} />}
-                  </Menu.Item>
-                ) : (
+                !token? (
                   <Menu.Item>
                     {({active}) => (
                       <Link
@@ -193,6 +183,10 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
                         Login
                       </Link>
                     )}
+                  </Menu.Item>
+                ) : (
+                  <Menu.Item>
+                    {({active}) => <LogoutButton ref={ref} active={active} />}
                   </Menu.Item>
                 )}
               </div>
@@ -208,7 +202,7 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
   );
 }
 
-function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
+function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
   const {y} = useWindowScroll();
 
   const styles = {
@@ -222,14 +216,6 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
       y > 50 && !isHome ? 'shadow-lightHeader ' : 'shadow-lightHeader '
     }hidden lg:flex items-center sticky transition duration-300 backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-8 px-12 py-3`,
   };
-
-  const [flag, setFlag] = useState(false)
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setFlag(localStorage.getItem('isLoggedin'));
-    }
-  });
 
   const ref = React.createRef();
 
@@ -306,11 +292,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
                   )}
                 </Menu.Item>
                 {
-                flag? (
-                  <Menu.Item>
-                    {({active}) => <LogoutButton ref={ref} active={active} />}
-                  </Menu.Item>
-                ) : (
+                !token? (
                   <Menu.Item>
                     {({active}) => (
                       <Link
@@ -322,6 +304,10 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
                         Login
                       </Link>
                     )}
+                  </Menu.Item>
+                ) : (
+                  <Menu.Item>
+                    {({active}) => <LogoutButton ref={ref} active={active} />}
                   </Menu.Item>
                 )}
               </div>

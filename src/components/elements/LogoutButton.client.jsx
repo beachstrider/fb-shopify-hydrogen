@@ -27,9 +27,7 @@ export const LogoutButton = React.forwardRef(({active, ...props}, ref) => {
         props.onClick();
       }
       
-      localStorage.setItem('isLoggedin', false);
       window.location.href = '/';
-      
     });
   };
 
