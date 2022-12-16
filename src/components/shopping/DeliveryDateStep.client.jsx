@@ -1,44 +1,11 @@
 import DeliveryDates from './components/DeliveryDates';
 import {useState, useEffect} from 'react';
 import {fetchSync, useUrl} from '@shopify/hydrogen';
-export const fetchDeliveryDates = () => {
-  const baseAppUrl = useUrl().origin;
-
-  const {data} = fetchSync(
-    `${baseAppUrl}/api/bundle-api/delivery-dates`,
-  ).json();
-  const deliveryDates = data;
-  const today = new Date();
-  today.setHours(0);
-  today.setMinutes(0);
-  today.setSeconds(0);
-
-  const filteredDates = deliveryDates
-    .filter((deliveryDate) => {
-      const date = new Date(deliveryDate.date);
-      return (
-        date > today.getTime() && deliveryDate.quantity > deliveryDate.used
-      );
-    })
-    .map((deliveryDate, index) => {
-      deliveryDate.isSelected = false;
-      deliveryDate.isDisabled = false;
-      deliveryDate.day = new Date(deliveryDate.date).getDay() + 1; // Add day since midnight is counting as previous day
-      return deliveryDate;
-    })
-    .sort((a, b) => (new Date(a.date) < new Date(b.date) ? -1 : 1));
-  return filteredDates;
-};
-
 export function DeliveryDateStep() {
-  const [error, setError] = useState(null);
-  let deliveryDatesData = fetchDeliveryDates();
-  // console.log(deliveryDatesData);
   // useEffect(() => {
   //   console.log(deliveryDatesData);
   // }, []);
 
-  const handleDeliveryDate = () => {};
   return (
     <div className="bg-slate-100 py-5 px-0">
       <div className="mb-6 bg-grey max-w-full">
@@ -87,15 +54,64 @@ export function DeliveryDateStep() {
         <p></p>
       </div>
       <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0 max-w-[600px] ml-auto mr-auto px-2.5 py-5 bg-white">
-        {deliveryDatesData.length > 0 && (
-          <DeliveryDates
-            onClick={handleDeliveryDate}
-            dates={deliveryDatesData}
-            selectedDate={deliveryDatesData[0]}
-            autoScrollDown
-          />
-        )}
+        <DeliveryDateList />
       </div>
+    </div>
+  );
+}
+
+export function DeliveryDateList() {
+  // const response = fetchSync('/api/countries');
+  const baseAppUrl = useUrl().origin;
+  const response = fetchSync(`${baseAppUrl}/api/bundle-api/delivery-dates`);
+
+  let deliveryDateList = [];
+  console.log('response');
+  console.log(response);
+  if (response.ok) {
+    deliveryDateList = response.json();
+    // const {data} = fetchSync(
+    //   `${baseAppUrl}/api/bundle-api/delivery-dates`,
+    // ).json();
+    const deliveryDates = deliveryDateList.data;
+    const today = new Date();
+    today.setHours(0);
+    today.setMinutes(0);
+    today.setSeconds(0);
+
+    const filteredDates = deliveryDates
+      .filter((deliveryDate) => {
+        const date = new Date(deliveryDate.date);
+        return (
+          date > today.getTime() && deliveryDate.quantity > deliveryDate.used
+        );
+      })
+      .map((deliveryDate, index) => {
+        deliveryDate.isSelected = false;
+        deliveryDate.isDisabled = false;
+        deliveryDate.day = new Date(deliveryDate.date).getDay() + 1; // Add day since midnight is counting as previous day
+        return deliveryDate;
+      })
+      .sort((a, b) => (new Date(a.date) < new Date(b.date) ? -1 : 1));
+    deliveryDateList = filteredDates;
+  } else {
+    console.error(
+      `Unable to load delivery dates ${response.url} returned a ${response.status}`,
+    );
+    deliveryDateList = [];
+  }
+  const handleDeliveryDate = () => {};
+
+  return deliveryDateList ? (
+    <DeliveryDates
+      onClick={handleDeliveryDate}
+      dates={deliveryDateList}
+      selectedDate={deliveryDateList[0]}
+      autoScrollDown
+    />
+  ) : (
+    <div>
+      <p>Sorry there are no available delivery dates</p>
     </div>
   );
 }
