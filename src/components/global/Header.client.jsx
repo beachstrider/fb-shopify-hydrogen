@@ -128,7 +128,7 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
       </Link>
 
       <div className="flex items-center justify-end w-full gap-4">
-      <Menu as="div" className="relative inline-block text-left">
+        <Menu as="div" className="relative inline-block text-left">
           <div>
             <Menu.Button className="flex items-center text-gray-400  focus:outline-none ">
               <IconAccount />
@@ -170,14 +170,13 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
                     </Link>
                   )}
                 </Menu.Item>
-                {
-                !token? (
+                {!token ? (
                   <Menu.Item>
                     {({active}) => (
                       <Link
                         to={'/account/login'}
                         className={`block px-4 py-2 text-sm ${
-                        active ? 'bg-gray-700 text-white' : 'text-white'
+                          active ? 'bg-gray-700 text-white' : 'text-white'
                         }`}
                       >
                         Login
@@ -291,14 +290,13 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
                     </Link>
                   )}
                 </Menu.Item>
-                {
-                !token? (
+                {!token ? (
                   <Menu.Item>
                     {({active}) => (
                       <Link
                         to={'/account/login'}
                         className={`block px-4 py-2 text-sm ${
-                        active ? 'bg-gray-700 text-white' : 'text-white'
+                          active ? 'bg-gray-700 text-white' : 'text-white'
                         }`}
                       >
                         Login
