@@ -39,7 +39,7 @@
     "@headlessui/react": "^1.7.0",
     "@hookform/resolvers": "^2.9.10",
     "@reduxjs/toolkit": "^1.9.1",
-    "@shopify/hydrogen": "^1.6.4",
+    "@shopify/hydrogen": "^1.6.5",
     "axios": "^1.2.1",
     "clsx": "^1.1.1",
     "dayjs": "^1.11.7",
