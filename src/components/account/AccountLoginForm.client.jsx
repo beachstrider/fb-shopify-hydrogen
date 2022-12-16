@@ -106,7 +106,7 @@ export function AccountLoginForm({shopName}) {
           </div>
           <p className="text-sm" style={{marginBottom: '20px'}}>
             <span className="font-bold underline" style={{color: '#DB9707'}}>
-              <a href="#">Forgot Password? </a>
+              <Link to={`/account/recover`}>Forgot Password? </Link>
             </span>
           </p>
           <button
@@ -116,6 +116,7 @@ export function AccountLoginForm({shopName}) {
               color: '#FFFFFF',
               marginBottom: '15px',
             }}
+            type="submit"
           >
             Sign In
           </button>
@@ -157,7 +158,7 @@ export function AccountLoginForm({shopName}) {
                 className="font-bold underline"
                 style={{color: '#DB9707', marginTop: '20px'}}
               >
-                <a href="#">Register</a>
+                <Link to={`/account/register`}>Register</Link>
               </span>
             </p>
           </div>
