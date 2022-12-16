@@ -1,3 +1,3 @@
-export {HeroInnerSection} from './HeroInnerSection';
+//export {HeroInnerSection} from './HeroInnerSection';
 export {HeroSection} from './HeroSection';
-export {PartyTime} from './PartyTime';
+//export {PartyTime} from './PartyTime';
