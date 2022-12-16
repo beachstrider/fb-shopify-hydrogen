@@ -46,7 +46,7 @@ export function HeroSection() {
       <div className="card-section container mx-auto mt-0 sm:mt-8">
         <div className="grid grid-cols-2 sm:grid-cols-2">
           <div className="w-100 text-right">
-            <h2 className="sm:mt-48 mt-12 mr-4 font-bold text-xl sm:text-8xl">
+            <h2 className="sm:mt-48 md:text-5xl lg:text-8xl mt-12 mr-4 font-bold text-xl sm:text-8xl">
               SEALED FRESH
             </h2>
             <p className="mt-1 font-bold text-sm sm:text-5xl card-para mr-5">
@@ -67,7 +67,7 @@ export function HeroSection() {
             <img className="mx-auto w-32 sm:w-auto" src={heatItUp} alt="" />
           </div>
           <div className="w-100 max-h-0">
-            <h2 className="sm:mt-24 mt-12 text-start font-bold text-xl sm:text-8xl">
+            <h2 className="md:text-5xl lg:text-8xl sm:mt-24 mt-12 text-start font-bold text-xl sm:text-8xl">
               HEAT IT UP
             </h2>
             <p className="mt-1 font-bold text-sm sm:text-5xl card-para text-start mr-5">
@@ -81,7 +81,7 @@ export function HeroSection() {
       <div className="card-section container mx-auto mt-0 sm:mt-8 mb-12 sm:mb-44">
         <div className="grid grid-cols-2 sm:grid-cols-2">
           <div className="w-100 text-right">
-            <h2 className="sm:mt-80 mt-12 mr-4 font-bold text-xl sm:text-8xl">
+            <h2 className="md:text-5xl lg:text-8xl sm:mt-80 mt-12 mr-4 font-bold text-xl sm:text-8xl">
               FEAST!
             </h2>
             <p className="mt-1 font-bold text-sm sm:text-5xl card-para mr-5">
@@ -94,7 +94,7 @@ export function HeroSection() {
           </div>
           <div className="mt-12 sm:mr-1">
             <img
-              className="sm:mt-[-300px] sm:ml-[300px]  invisible sm:visible"
+              className="sm:mt-[-300px] sm:ml-[300px]  invisible sm:visible  md:visible"
               src={backImageCircle}
               alt=""
             />
