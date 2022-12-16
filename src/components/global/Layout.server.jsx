@@ -1,5 +1,5 @@
 import {Suspense} from 'react';
-import {useLocalization, useShopQuery, CacheLong, gql} from '@shopify/hydrogen';
+import {useLocalization, useShopQuery, CacheLong, gql, useSession} from '@shopify/hydrogen';
 
 import {Header} from '~/components';
 import {Footer} from '~/components/index.server';
@@ -23,7 +23,7 @@ export function Layout({children}) {
           </a>
         </div>
         <Suspense fallback={<Header title={SHOP_NAME_FALLBACK} />}>
-          <HeaderWithMenu />
+          <HeaderWithMenuAndToken />
         </Suspense>
         <main role="main" id="mainContent" className="flex-grow">
           {children}
@@ -36,9 +36,10 @@ export function Layout({children}) {
   );
 }
 
-function HeaderWithMenu() {
+function HeaderWithMenuAndToken() {
   const {shopName, headerMenu} = useLayoutQuery();
-  return <Header title={shopName} menu={headerMenu} />;
+  const {customerAccessToken} = useSession();
+  return <Header token={customerAccessToken} title={shopName} menu={headerMenu} />;
 }
 
 function FooterWithMenu() {
