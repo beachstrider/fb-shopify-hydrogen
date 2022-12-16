@@ -11,6 +11,7 @@ export function AccountLoginForm({shopName}) {
   const [emailError, setEmailError] = useState(null);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(null);
+  const [failedCounts, setFailedCounts] = useState(0);
 
   function onSubmit(event) {
     event.preventDefault();
@@ -44,7 +45,8 @@ export function AccountLoginForm({shopName}) {
 
       if (response.error) {
         setHasSubmitError(true);
-        resetForm();
+        setFailedCounts(failedCounts+1);
+        if(failedCounts == 2) resetForm();
       } else {
         navigate('/account/subscriptions');
       }
@@ -63,6 +65,12 @@ export function AccountLoginForm({shopName}) {
     setEmailError(null);
     setPassword('');
     setPasswordError(null);
+    setFailedCounts(0);
+  }
+
+  function checkErrorThreeTimes() {
+    if(failedCounts >= 3) return true;
+    else false;
   }
 
   return (
@@ -70,7 +78,7 @@ export function AccountLoginForm({shopName}) {
       <div className="max-w-md w-full">
         <h1 className="text-4xl">Sign in.</h1>
         <form noValidate className="pt-6 pb-8 mt-4 mb-4" onSubmit={onSubmit}>
-          {hasSubmitError && (
+          {(hasSubmitError && checkErrorThreeTimes()) && (
             <div className="flex items-center justify-center mb-6 bg-zinc-500">
               <p className="m-4 text-s text-contrast">
                 Sorry we did not recognize either your email or password. Please
