@@ -7,14 +7,14 @@ export function PartyTime() {
         <div className=" h-[400px] bg-[#FFFFFF]">
           <div className="container max-w-screen-xl mx-auto">
             <div className="text-black text-lg relative flex justify-center">
-              <h1 className="absolute text-[180px] uppercase font-extrabold leading-[80px] mt-[-52px] mb-[-0.5rem]">
+              <h1 className="absolute text-[180px] text-neutral-900 uppercase font-extrabold leading-[80px] mt-[-52px] mb-[-0.5rem]">
                 {' '}
                 Party Time?
               </h1>
             </div>
             <div className="flex item-center justify-around pt-[110px]">
               <div className="w-1/2">
-                <p className="text-3xl pl-[55px]">
+                <p className="text-green-800 text-3xl pl-[55px]">
                   We love a good party!Whether it's for the Super Bowl, a
                   birthday, holiday, banquet,bechelor party, we want to be
                   there!Or at least our food does...(an invite would be cold
