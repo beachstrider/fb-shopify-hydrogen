@@ -11,6 +11,8 @@ export function AccountLoginForm({shopName}) {
   const [emailError, setEmailError] = useState(null);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(null);
+  const [failedCounts, setFailedCounts] = useState(0);
+  const [passwordIncorrect, setPasswordIncorrect] = useState(false);
 
   function onSubmit(event) {
     event.preventDefault();
@@ -43,8 +45,9 @@ export function AccountLoginForm({shopName}) {
       });
 
       if (response.error) {
-        setHasSubmitError(true);
-        resetForm();
+        setFailedCounts(failedCounts+1);
+        setPasswordIncorrect(true);
+        if(failedCounts == 2) resetForm();
       } else {
         navigate('/account/subscriptions');
       }
@@ -63,6 +66,9 @@ export function AccountLoginForm({shopName}) {
     setEmailError(null);
     setPassword('');
     setPasswordError(null);
+    setFailedCounts(0);
+    setHasSubmitError(true);
+    setPasswordIncorrect(false);
   }
 
   return (
@@ -70,6 +76,13 @@ export function AccountLoginForm({shopName}) {
       <div className="max-w-md w-full">
         <h1 className="text-4xl">Sign in.</h1>
         <form noValidate className="pt-6 pb-8 mt-4 mb-4" onSubmit={onSubmit}>
+          {passwordIncorrect && (
+            <div className="flex items-center justify-center mb-6 bg-zinc-500">
+              <p className="m-4 text-s text-contrast">
+                You entered password incorrectly {`(${failedCounts})`}. please type correct one.
+              </p>
+            </div>
+          )}
           {hasSubmitError && (
             <div className="flex items-center justify-center mb-6 bg-zinc-500">
               <p className="m-4 text-s text-contrast">
