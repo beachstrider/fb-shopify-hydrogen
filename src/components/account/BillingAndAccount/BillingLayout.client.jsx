@@ -1,65 +1,100 @@
-import {Image, Link} from '@shopify/hydrogen';
-import axios from 'axios';
+import {Image, Link, useNavigate} from '@shopify/hydrogen';
 import {useState} from 'react';
-// import Password from './Password.client'
-// import Addresses from './Addresses.client';
-// import Billing from './Billing.client';
+import axios from 'axios';
+import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+
+import {useForm} from 'react-hook-form';
+
+import {getUsaStandard} from '~/utils/dates';
 import PasswordSection from './Password.client';
 
-const BillingLayout = ({billinginfo}) => {
-  const [activeTab, setActiveTab] = useState('Addresses');
-  const openTab = (current) => {
-    setActiveTab(current);
-  };
-  console.log(billinginfo.payment_method.billing_address);
+const BillingLayout = ({
+  billingInfo: {customer_id, shippingAddresses, paymentMethods},
+  user: {email, phone, firstName, lastName},
+}) => {
+  const navigate = useNavigate();
+
+  shippingAddresses = [
+    ...new Map(shippingAddresses.map((v) => [v.id, v])).values(),
+  ];
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: {errors},
+    setError,
+  } = useForm({
+    defaultValues: {
+      email,
+      phone,
+      firstName,
+      lastName,
+      currentPassword: '',
+      newPassword: '',
+      newPassword2: '',
+    },
+  });
+
+  async function onPasswordResetSubmit(data) {
+    try {
+      await axios.patch('/account', data);
+      alert('Password changed, login again please.');
+      navigate('/account/login');
+    } catch (error) {
+      setError('currentPassword', {
+        type: 'string',
+        message: error.response.data.message,
+      });
+    }
+  }
+
+  async function handleEdit(payment_method_id) {
+    try {
+      await axios.post('/api/account/billing/sendPaymentMethodUpdateEmail', {
+        customer_id,
+        payment_method_id,
+      });
+      alert(
+        `We've sent you an email that contains a link to update the payment methods`,
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  console.info(paymentMethods);
+
   return (
-    <div className="px-12 py-4">
-      <div className="flex flex-wrap -m-4">
-        <div className="w-full  p-4">
-          <div className="w-full mb-4 text-3xl uppercase font-bold text-center xl:text-left lg:text-left md:text-left">
-            YOUR BILLING &amp; ACCOUNT INFO
-          </div>
-          <div className="w-full mb-4 text-lg text-left">
-            You can update your card, billing address &amp; account password
-            below.{' '}
-          </div>
-          <div className="flex flex-wrap " style={{maxWidth: '400px'}}>
-            <button
-              className="w-1/3 text-left uppercase font-bold"
-              onClick={() => openTab('Addresses')}
-              style={{textAlign: 'left'}}
-            >
-              Addresses
-            </button>
-            <button
-              className="w-1/3 text-left uppercase font-bold"
-              onClick={() => openTab('Billing')}
-            >
-              Billing
-            </button>
-            <button
-              className="w-1/3 text-left uppercase font-bold"
-              onClick={() => openTab('Password')}
-            >
-              Password
-            </button>
-          </div>
-          <hr />
-          <br />
-          {/*-------Addresses tab content--------------------------*/}
-          {activeTab == 'Addresses' && (
+    <div className="w-full  p-4">
+      <div className="w-full mb-4 text-3xl uppercase font-bold text-center xl:text-left lg:text-left md:text-left">
+        YOUR BILLING &amp; ACCOUNT INFO
+      </div>
+      <div className="w-full mb-4 text-lg text-left">
+        You can update your card, billing address &amp; account password below.{' '}
+      </div>
+      <Tabs selectedTabClassName="text-[#DB9707]">
+        <TabList
+          className="flex flex-wrap cursor-pointer"
+          style={{maxWidth: 400}}
+        >
+          <Tab className="w-1/3 text-left uppercase font-bold">Addresses</Tab>
+          <Tab className="w-1/3 text-left uppercase font-bold">Billing</Tab>
+          <Tab className="w-1/3 text-left uppercase font-bold">Password</Tab>
+        </TabList>
+
+        <hr />
+        <TabPanel>
+          {shippingAddresses.map((address, key) => (
             <div
+              key={key}
               id="Addresses"
-              className="tab container py-8 px-8 mx-auto subscription_box"
-              style={{
-                backgroundColor: '#EFEFEF',
-                boxShadow: '0 0 2px #0000004d',
-              }}
+              className="tab container py-8 px-8 mx-auto subscription_box mt-7"
             >
               <div className="flex flex-wrap -mx-4 -mb-0">
                 <div className="w-full px-4 md:w-1/1 xl:w-3/3 lg:w-3/3">
-                  <div className>
-                    <div className>
+                  <div>
+                    <div>
                       <div className="flex flex-wrap -mx-4 -mb-0">
                         {/*--left----*/}
                         <div
@@ -67,14 +102,13 @@ const BillingLayout = ({billinginfo}) => {
                           style={{borderRight: '1px solid #DB9707'}}
                         >
                           <div
-                            id
                             className="w-full mb-4 px-4 flex justify-between"
                             style={{position: 'relative'}}
                           >
                             <span
                               style={{
                                 color: 'rgb(90, 59, 54)',
-                                fontSize: '16px',
+                                fontSize: 16,
                                 backgroundColor: '#EFEFEF',
                               }}
                               className=" text-lg text-gray-500"
@@ -83,41 +117,31 @@ const BillingLayout = ({billinginfo}) => {
                             </span>
                             <span
                               className="font-bold underline"
-                              style={{fontSize: '18px', color: '#DB9707'}}
-                            >
-                              <Link
-                                className={`block underline disabled:text-gray-400`}
-                                to={`/account/shipping-address/${billinginfo.address.id}`}
-                              >
-                                Edit
-                              </Link>
-                            </span>
+                              style={{fontSize: 18, color: '#DB9707'}}
+                            ></span>
                           </div>
                           <div
-                            id
                             className="w-full mb-2 px-4"
                             style={{position: 'relative'}}
                           >
                             <div className="font-heading text-xl ">
-                              {billinginfo.address.first_name}{' '}
-                              {billinginfo.address.last_name}
+                              {address.first_name} {address.last_name}
                               <br />
-                              {billinginfo.address.address1}
+                              {address.address1}
                               <br />
-                              {billinginfo.address.address2}
+                              {address.address2}
                               <br />
                             </div>
                             <div
                               className="font-bold underline"
                               style={{
-                                fontSize: '18px',
+                                fontSize: 18,
                                 color: '#DB9707',
-                                marginTop: '20px',
+                                marginTop: 20,
                               }}
                             >
                               <Link
-                                className={`block underline disabled:text-gray-400`}
-                                to={`/account/shipping-address/${billinginfo.address.id}`}
+                                to={`/account/billing-account/shipping-address/${address.id}`}
                               >
                                 Edit Address
                               </Link>
@@ -134,7 +158,7 @@ const BillingLayout = ({billinginfo}) => {
                               style={{
                                 color: 'rgb(90, 59, 54)',
                                 fontFamily: 'AvenirNext, sans-serif',
-                                fontSize: '16px',
+                                fontSize: 16,
                                 backgroundColor: '#EFEFEF',
                               }}
                               className=" text-lg text-gray-500"
@@ -148,19 +172,26 @@ const BillingLayout = ({billinginfo}) => {
                           >
                             <div className="flex flex-wrap w-full  flex justify-between px-4  mb-4 md:mb-0">
                               <div className="text-sm xl:text-lg lg:text-lg md:text-md mb-4 md:mb-0">
-                                Visa ••••
                                 {
-                                  billinginfo.payment_method.payment_details.last4
+                                  address.include.payment_methods[0]
+                                    .payment_details.brand
+                                }{' '}
+                                ••••
+                                {
+                                  address.include.payment_methods[0]
+                                    .payment_details.last4
                                 }
                               </div>
                               <div className="text-sm xl:text-lg lg:text-lg md:text-md mb-4 md:mb-0 text-center">
                                 Expires{' '}
                                 {
-                                  billinginfo.payment_method.payment_details.exp_month
+                                  address.include.payment_methods[0]
+                                    .payment_details.exp_month
                                 }
                                 /
                                 {
-                                  billinginfo.payment_method.payment_details.exp_year
+                                  address.include.payment_methods[0]
+                                    .payment_details.exp_year
                                 }
                               </div>
                               <div
@@ -211,25 +242,20 @@ const BillingLayout = ({billinginfo}) => {
                 </div>
               </div>
             </div>
-          )}
-
-          {/*-------End Addresses Box--------------------------*/}
-          {/*-------Billing tab content--------------------------*/}
-          {activeTab == 'Billing' && (
+          ))}
+        </TabPanel>
+        <TabPanel>
+          {paymentMethods.map((paymentMethod, key) => (
             <div
+              key={key}
               id="Billing"
-              className="tab container py-8 px-8 mx-auto subscription_box"
-              style={{
-                backgroundColor: '#EFEFEF',
-                boxShadow: '0 0 2px #0000004d',
-              }}
+              className="tab container py-8 px-8 mt-7 mx-auto subscription_box"
             >
               <div className="flex flex-wrap -mx-4 -mb-0">
                 <div className="w-full px-4 md:w-1/1 xl:w-3/3 lg:w-3/3">
-                  <div className>
-                    <div className>
+                  <div>
+                    <div>
                       <div className="flex flex-wrap -mx-4 -mb-0">
-                        {/*--left----*/}
                         <div
                           className="swapping_borders w-full lg:w-1/2 px-4 py-4"
                           style={{borderRight: '1px solid #DB9707'}}
@@ -242,7 +268,7 @@ const BillingLayout = ({billinginfo}) => {
                               style={{
                                 color: 'rgb(90, 59, 54)',
                                 fontFamily: 'AvenirNext, sans-serif',
-                                fontSize: '16px',
+                                fontSize: 16,
                                 backgroundColor: '#EFEFEF',
                               }}
                               className=" text-lg text-gray-500"
@@ -256,7 +282,7 @@ const BillingLayout = ({billinginfo}) => {
                           >
                             <div className="flex flex-wrap  flex px-4  mb-4 md:mb-0">
                               <svg
-                                className="visa-icon"
+                                className="visa-icon flex ml-auto"
                                 width={36}
                                 height={24}
                                 viewBox="0 0 36 24"
@@ -290,46 +316,38 @@ const BillingLayout = ({billinginfo}) => {
                               </svg>
                             </div>
                             <div className="flex text-lg md:text-md mb-4 md:mb-0 mr-4">
-                              Visa ••••
-                              {billinginfo.payment_method.payment_details.last4}
+                              {paymentMethod.payment_details.brand} ••••
+                              {paymentMethod.payment_details.last4}
                             </div>
                             <div className="flex text-lg md:text-md mb-4 md:mb-0 text-center">
-                              Expires{' '}
-                              {
-                                billinginfo.payment_method.payment_details
-                                  .exp_month
-                              }
-                              /
-                              {
-                                billinginfo.payment_method.payment_details
-                                  .exp_year
-                              }
+                              Expires {paymentMethod.payment_details.exp_month}/
+                              {paymentMethod.payment_details.exp_year}
                             </div>
                           </div>
                           <div
                             className="font-bold underline px-4"
                             style={{
-                              fontSize: '18px',
+                              fontSize: 18,
                               color: '#DB9707',
-                              marginTop: '20px',
+                              marginTop: 20,
                             }}
                           >
-                            <Link to={`/account/update-payment/${billinginfo.payment_method.id}`}>
-								Edit Payment
-							</Link>
+                            <button
+                              onClick={() => handleEdit(paymentMethod.id)}
+                            >
+                              Edit Payment
+                            </button>
                           </div>
                         </div>
-                        {/*--right----*/}
                         <div className="w-full lg:w-1/2 px-4  py-4  swapping_borders">
                           <div
-                            id
                             className="w-full mb-4 px-4 flex justify-between"
                             style={{position: 'relative'}}
                           >
                             <span
                               style={{
                                 color: 'rgb(90, 59, 54)',
-                                fontSize: '16px',
+                                fontSize: 16,
                                 backgroundColor: '#EFEFEF',
                               }}
                               className=" text-lg text-gray-500"
@@ -338,147 +356,153 @@ const BillingLayout = ({billinginfo}) => {
                             </span>
                           </div>
                           <div
-                            id
                             className="w-full mb-2 px-4"
                             style={{position: 'relative'}}
                           >
                             <div className="font-heading text-xl ">
-                              {
-                                billinginfo.payment_method.billing_address
-                                  .first_name
-                              }{' '}
-                              {
-                                billinginfo.payment_method.billing_address
-                                  .last_name
-                              }
+                              {paymentMethod.billing_address.first_name}{' '}
+                              {paymentMethod.billing_address.last_name}
                               <br />
-                              {
-                                billinginfo.payment_method.billing_address
-                                  .address1
-                              }
+                              {paymentMethod.billing_address.address1}
                               <br />
-                              {
-                                billinginfo.payment_method.billing_address
-                                  .address2
-                              }
-                              <br />
-                              {
-                                billinginfo.payment_method.billing_address.city
-                              }{' '}
-                              {
-                                billinginfo.payment_method.billing_address
-                                  .country_code
-                              }{' '}
-                              {billinginfo.payment_method.billing_address.zip}
+                              {paymentMethod.billing_address.address2}
                               <br />
                             </div>
                             <div
                               className="font-bold underline"
                               style={{
-                                fontSize: '18px',
+                                fontSize: 18,
                                 color: '#DB9707',
-                                marginTop: '20px',
+                                marginTop: 20,
                               }}
                             >
-                              <Link
-                                className={`block underline disabled:text-gray-400`}
-                                to={`/account/billing-accounts/${billinginfo.payment_method.id}`}
+                              <button
+                                onClick={() => handleEdit(paymentMethod.id)}
                               >
                                 Edit Address
-                              </Link>
+                              </button>
                             </div>
                           </div>
                         </div>
-                        {/*-end right ----*/}
                       </div>
-                      {/*----associated subscriotions-----*/}
                       <div className="flex flex-wrap -mx-4 -mb-0 px-4 py-4">
-                        <div className="w-full  px-4">
-                          ASSOCIATED SUBSCRIPTIONS (1)
+                        <div className="w-full  px-4 mb-2">
+                          ASSOCIATED SUBSCRIPTIONS (
+                          {paymentMethod.subscriptions.length})
                         </div>
-                        <div className="w-full  px-4">
-                          <span>1025 N 920 W Apt 1016, Orem, Utah, 84057</span>
-                          <span> - Jan 8, 2023 (Next order)</span>
-                        </div>
+                        {paymentMethod.subscriptions.map(
+                          (subscription, key) => (
+                            <div className="w-full  px-4" key={key}>
+                              <span>
+                                {(() => {
+                                  const address = shippingAddresses.find(
+                                    (el) => el.id === subscription.address_id,
+                                  );
+
+                                  return (
+                                    address.address1 + ' ' + address.address2
+                                  );
+                                })()}
+                              </span>
+                              <span>
+                                {' '}
+                                -{' '}
+                                {getUsaStandard(
+                                  subscription.next_charge_scheduled_at,
+                                )}{' '}
+                                (Next order)
+                              </span>
+                            </div>
+                          ),
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          )}
-
-          {/*-------End Billing Box--------------------------*/}
-          {/*-------Forgot password--------------------------*/}
-          {activeTab == 'Password' && (
-            <div id="Password" className="tab container mx-auto ">
-              {/*------------form--------------*/}
-              <div>
-                <div
-                  className="lg:mt-0 py-4 max-w-md xl:max-w-sm  lg:max-w-sm"
-                  style={{}}
-                >
-                  <div className="container ">
-                    <div className="flex items-end justify-end">
-                      <div className="w-full">
-                        <form>
-                          <div className="mb-6">
-                            <input
-                              className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
-                              type="text"
-                              name="field-name"
-                              placeholder="Current Password"
-                            />
-                          </div>
-                          <div className="mb-6">
-                            <input
-                              className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
-                              type="text"
-                              name="field-name"
-                              placeholder="New Password (at least 5 characters)"
-                            />
-                          </div>
-                          <div className="mb-6">
-                            <input
-                              className="w-full py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
-                              type="text"
-                              name="field-name"
-                              placeholder="Confirm new password"
-                            />
-                          </div>
-                          <a
-                            className="block py-2 text-lg text-center uppercase font-bold"
-                            href="#"
-                            style={{
-                              backgroundColor: '#DB9707',
-                              color: '#FFFFFF',
-                              marginBottom: '15px',
-                            }}
-                          >
-                            Save
-                          </a>
-                        </form>
-                        <p className="text-sm">
-                          Don’t remember the current password?{' '}
-                          <span
-                            className="font-bold underline"
-                            style={{color: '#DB9707', marginTop: '20px'}}
-                          >
-                            <a href="#">Reset it here</a>
-                          </span>
-                        </p>
-                      </div>
+          ))}
+        </TabPanel>
+        <TabPanel>
+          <div id="Password" className="tab container mx-auto mt-7">
+            <div>
+              <div
+                className="lg:mt-0 py-4 max-w-md xl:max-w-sm  lg:max-w-sm"
+                style={{}}
+              >
+                <div className="container ">
+                  <div className="flex items-end justify-end">
+                    <div className="w-full">
+                      <form onSubmit={handleSubmit(onPasswordResetSubmit)}>
+                        <div className="mb-6">
+                          <p className="text-red-600">
+                            {errors?.currentPassword?.message}
+                          </p>
+                          <input
+                            className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
+                            type="password"
+                            name="currentPassword"
+                            placeholder="Current Password"
+                            {...register('currentPassword', {required: true})}
+                          />
+                        </div>
+                        <div className="mb-6">
+                          <input
+                            className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
+                            type="password"
+                            name="newPassword"
+                            minLength={6}
+                            placeholder="New Password (at least 5 characters)"
+                            {...register('newPassword', {required: true})}
+                          />
+                        </div>
+                        <div className="mb-6">
+                          <p className="text-red-600">
+                            {errors?.newPassword2?.message}
+                          </p>
+                          <input
+                            className="w-full py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
+                            type="password"
+                            name="newPassword2"
+                            minLength={6}
+                            placeholder="Confirm new password"
+                            {...register('newPassword2', {
+                              required: true,
+                              validate: (v) =>
+                                watch('newPassword') === v ||
+                                'The passwords do not match',
+                            })}
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          className="block w-full py-2 text-lg text-center uppercase font-bold"
+                          style={{
+                            backgroundColor: '#DB9707',
+                            color: '#FFFFFF',
+                            marginBottom: 15,
+                          }}
+                        >
+                          Save
+                        </button>
+                      </form>
+                      <p className="text-sm">
+                        Don’t remember the current password?{' '}
+                        <span
+                          className="font-bold underline"
+                          style={{color: '#DB9707', marginTop: 20}}
+                        >
+                          <Link to="/account/recover">Reset it here</Link>
+                        </span>
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          )}
-
-          {/*-----------end form-----------*/}
-        </div>
-        {/*-------End forgot password --------------------------*/}
-      </div>
+          </div>
+        </TabPanel>
+      </Tabs>
     </div>
   );
 };

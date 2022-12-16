@@ -14,12 +14,12 @@ const Index = ({subscription}) => {
 
   const handleBackSubscription = async () => {
     setProcessCancel(false);
-    await navigate(`/account/subscriptions/${subscription.id}`)
-  }
+    await navigate(`/account/subscriptions/${subscription.id}`);
+  };
   const handleBackToAccount = async () => {
     setProcessCancel(false);
-    await navigate(`/account/subscriptions`)
-  }
+    await navigate(`/account/subscriptions`);
+  };
   const handleCancelSubscription = async () => {
     await navigate(
       `/account/cancel-subscription/${subscription.id}?action=processing`,
@@ -97,15 +97,15 @@ const Index = ({subscription}) => {
               />
             </div>
             <button
-                className="w-full block py-2 text-lg text-center uppercase font-bold "
-                href="#"
-                style={{
-                    backgroundColor: '#DB9707',
-                    color: '#FFFFFF',
-                    margin: '16px 7px',
-                }}
-                disabled={processSkip}
-                onClick={handleSkipThisOrder}   
+              className="w-full block py-2 text-lg text-center uppercase font-bold "
+              href="#"
+              style={{
+                backgroundColor: '#DB9707',
+                color: '#FFFFFF',
+                margin: '16px 7px',
+              }}
+              disabled={processSkip}
+              onClick={handleSkipThisOrder}
             >
               Skip My Next Order
             </button>
@@ -279,7 +279,7 @@ const Index = ({subscription}) => {
               className="w-full px-4 mb-4 md:mb-0 bg-white"
               style={{padding: '10px 10px 0 10px'}}
             >
-              <p className="text-2xl font-bold" contentEditable="false">
+              <p className="text-2xl font-bold">
                 Anything else you'd like to share about your experience with
                 FEASTbox?
               </p>
@@ -331,4 +331,4 @@ const Index = ({subscription}) => {
   );
 };
 
-export default Index
+export default Index;

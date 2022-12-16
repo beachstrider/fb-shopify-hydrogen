@@ -10,13 +10,13 @@ import {
 } from '@shopify/hydrogen';
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
-import UpdatePayment from '~/components/account/BillingAndAccount/UpdatePayment.client';
-import {Layout} from '~/components/index.server';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
-import Billingaddress from '~/components/account/BillingAddress/billingAddress.client';
-import {getBillingPayment} from '~/lib/recharge';
+import CancelSubscription from '~/components/account/subscription/CancelSubscription.client';
+import {Layout} from '~/components/index.server';
 
-export default function Payment({response}) {
+import {getSubscription} from '~/lib/recharge';
+
+export default function Account({response}) {
   response.cache(CacheNone());
 
   const {
@@ -24,6 +24,8 @@ export default function Payment({response}) {
     country: {isoCode: countryCode},
   } = useLocalization();
   const {customerAccessToken} = useSession();
+
+  const {id} = useRouteParams();
 
   if (!customerAccessToken) return response.redirect('/account/login');
 
@@ -36,7 +38,7 @@ export default function Payment({response}) {
     },
     cache: CacheNone(),
   });
-  const {handle} = useRouteParams();
+
   const {customer} = data;
 
   if (!customer) return response.redirect('/account/login');
@@ -47,23 +49,21 @@ export default function Payment({response}) {
     },
   });
 
-  const external_customer_id = customer.id.slice(23);
-
-  const payment = getBillingPayment(handle);
+  const subscription = getSubscription(id);
 
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Billing And Account'}} />
+        <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
-      <AccountPageLayout user={customer} currentPath={'billing'}>
-        <UpdatePayment paymentMethod={payment} />
+      <AccountPageLayout user={customer} currentPath="subscriptions">
+        <CancelSubscription subscription={subscription} />
       </AccountPageLayout>
       <div
         id="version_mark"
         className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
       >
-        ALPHA, Dec 8 - Jason
+        ALPHA, Dec 17 - Jason
       </div>
     </Layout>
   );

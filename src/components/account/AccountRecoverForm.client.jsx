@@ -46,12 +46,11 @@ export function AccountRecoverForm() {
           <>
             <h2
               className="font-bold font-heading text-3xl mb-2 mb-8 uppercase"
-              contentEditable="false"
               style={{marginTop: '20px'}}
             >
               Forgot Your Password?
             </h2>
-            <p className="text-lg" contentEditable="false">
+            <p className="text-lg">
               We’ll send you an email to reset your password.
             </p>
           </>

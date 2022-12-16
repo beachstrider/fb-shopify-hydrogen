@@ -5,14 +5,12 @@ const headers = {
   'X-Recharge-Version': '2021-11',
   'X-Recharge-Access-Token':
     'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
-    
 };
 
 const headers_ = {
   'X-Recharge-Version': '2021-01',
   'X-Recharge-Access-Token':
     'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
-    
 };
 
 const baseURL = 'https://api.rechargeapps.com/';
@@ -116,7 +114,9 @@ export const skipUpcomingOrder = async (customer_id) => {
 };
 
 export const skipOrder = async ({id, purchase_item_ids}) => {
-  await recharge.post(`charges/${id}/skip`, {purchase_item_ids});
+  console.log('==>', id, purchase_item_ids);
+  const res = await recharge.post(`charges/${id}/skip`, {purchase_item_ids});
+  console.log('==>>>', res);
 
   return;
 };
@@ -160,37 +160,53 @@ export const updateSubscription = async ({id, data}) => {
   });
   return;
 };
-export const getBillingInfo = (params) => {
-  let {subscriptions} = rechargeFetch.get('subscriptions', params);
 
-  let billinginfo = subscriptions.map((subscription) => {
-    const {address} = rechargeFetch.get(`addresses/${subscription.address_id}`);
-    const {payment_method} = rechargeFetch.get(`payment_methods/${address.payment_method_id}`);
-    return {payment_method, address};
+export const getBillingInfo = (params) => {
+  const {subscriptions} = rechargeFetch.get('subscriptions', params);
+
+  const shippingAddresses = subscriptions.map((subscription) => {
+    const {address} = rechargeFetch.get(
+      `addresses/${subscription.address_id}`,
+      {include: 'payment_methods'},
+    );
+    return {...address, subscription};
   });
 
-  return billinginfo[0];
+  const customer_id = rechargeFetch.get('customers', params).customers[0].id;
+
+  const paymentMethods = rechargeFetch.get('payment_methods', {
+    customer_id,
+    include: 'addresses',
+  }).payment_methods;
+
+  const paymentMethodsWithSubscriptions = paymentMethods.map(
+    (paymentMethod) => {
+      const {subscriptions} = rechargeFetch.get('subscriptions', {
+        customer_id,
+        status: 'active',
+        address_ids: paymentMethod.include.addresses.map((el) => el.id),
+      });
+
+      return {...paymentMethod, subscriptions};
+    },
+  );
+
+  return {
+    customer_id,
+    shippingAddresses,
+    paymentMethods: paymentMethodsWithSubscriptions,
+  };
 };
 
-export const getBillingAddress = (id) =>{
+export const getBillingAddress = (id) => {
   let {payment_method} = rechargeFetch.get(`payment_methods/${id}`);
   return payment_method;
-}
-
-export const getBillingPayment = (id) => {
-  let {payment_method} = rechargeFetch.get(`payment_methods/${id}`);
-  return payment_method;
-}
+};
 
 export const updateShippingAddress = async ({id, address}) => {
-  await recharge.put(`addresses/${id}`,{...address});
+  await recharge.put(`addresses/${id}`, {...address});
   //  console.log(address)
-  return ;
-};
-
-export const updateBillingAddress = async({id, billing_address}) => {
-  await recharge.put(`payment_methods/${id}`, {...billing_address});
- return ;
+  return;
 };
 
 export const getShippingAddress = (id) => {
@@ -198,8 +214,16 @@ export const getShippingAddress = (id) => {
   return address;
 };
 
-export const updatePaymentMethod = (id, payment) => {
-  let result = rechargeFetch.put(`payment_method/${id}`, payment);
-
-  return result;
+export const sendPaymentMethodUpdateEmail = async ({
+  customer_id,
+  payment_method_id,
+}) => {
+  await recharge.post(`customers/${customer_id}/notifications`, {
+    template_type: 'shopify_update_payment_information',
+    template_vars: {
+      payment_method_id,
+    },
+    type: 'email',
+  });
+  return;
 };

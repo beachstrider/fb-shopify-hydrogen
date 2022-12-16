@@ -72,7 +72,6 @@ export function AccountLoginForm({shopName}) {
           <div className="w-full">
             <h2
               className="font-bold font-heading text-3xl mb-2 mb-8 uppercase"
-              contentEditable="false"
               style={{marginTop: '20px'}}
             >
               Login To Your Account
@@ -294,7 +293,7 @@ function PasswordField({password, setPassword, passwordError}) {
           placeholder="Password"
           aria-label="Password"
           value={password}
-          minLength={8}
+          minLength={6}
           required
           // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus

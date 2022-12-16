@@ -6,17 +6,16 @@ import {
   useLocalization,
   useShopQuery,
   useServerAnalytics,
-  useRouteParams,
 } from '@shopify/hydrogen';
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
-import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
-import SubscriptionDetail from '~/components/account/subscription/Detail.client';
+import BillingLayout from '~/components/account/BillingAndAccount/BillingLayout.client';
 import {Layout} from '~/components/index.server';
+import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 
-import {getSubscription} from '~/lib/recharge';
+import {getBillingInfo} from '~/lib/recharge';
 
-export default function Account({response}) {
+export default function BillingAndAccount({response}) {
   response.cache(CacheNone());
 
   const {
@@ -24,8 +23,6 @@ export default function Account({response}) {
     country: {isoCode: countryCode},
   } = useLocalization();
   const {customerAccessToken} = useSession();
-
-  const {handle} = useRouteParams();
 
   if (!customerAccessToken) return response.redirect('/account/login');
 
@@ -49,21 +46,23 @@ export default function Account({response}) {
     },
   });
 
-  const subscription = getSubscription(handle);
+  const external_customer_id = customer.id.slice(23);
+
+  const billingInfo = getBillingInfo({external_customer_id});
 
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Account Subscription'}} />
+        <Seo type="noindex" data={{title: 'Billing And Account'}} />
       </Suspense>
-      <AccountPageLayout user={customer} currentPath={'subscription'}>
-        <SubscriptionDetail subscription={subscription} />
+      <AccountPageLayout user={customer} currentPath="billing-account">
+        <BillingLayout billingInfo={billingInfo} user={customer} />
       </AccountPageLayout>
       <div
         id="version_mark"
         className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
       >
-        ALPHA, Dec 9 - Jason
+        ALPHA, Dec 16 - Jason
       </div>
     </Layout>
   );

@@ -10,13 +10,13 @@ import {
 } from '@shopify/hydrogen';
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
-import BillingLayout from '~/components/account/BillingAndAccount/BillingLayout.client';
-import {Layout} from '~/components/index.server';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
-import Billingaddress from '~/components/account/BillingAddress/billingAddress.client';
-import {getBillingAddress} from '~/lib/recharge';
+import ShippingAddress from '~/components/account/BillingAndAccount/ShippingAddress.client';
+import {Layout} from '~/components/index.server';
 
-export default function BillingAddress({response}) {
+import {getShippingAddress} from '~/lib/recharge';
+
+export default function Account({response}) {
   response.cache(CacheNone());
 
   const {
@@ -24,6 +24,8 @@ export default function BillingAddress({response}) {
     country: {isoCode: countryCode},
   } = useLocalization();
   const {customerAccessToken} = useSession();
+
+  const {handle} = useRouteParams();
 
   if (!customerAccessToken) return response.redirect('/account/login');
 
@@ -36,7 +38,7 @@ export default function BillingAddress({response}) {
     },
     cache: CacheNone(),
   });
-  const {handle} = useRouteParams();
+
   const {customer} = data;
 
   if (!customer) return response.redirect('/account/login');
@@ -47,23 +49,21 @@ export default function BillingAddress({response}) {
     },
   });
 
-  const external_customer_id = customer.id.slice(23);
-
-  const billingaddress = getBillingAddress(handle);
+  const shippingAddress = getShippingAddress(handle);
 
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Billing And Account'}} />
+        <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
-      <AccountPageLayout user={customer} currentPath={'billing'}>
-        <Billingaddress paymentMethod={billingaddress} />
+      <AccountPageLayout user={customer} currentPath="billing-account">
+        <ShippingAddress address={shippingAddress} />
       </AccountPageLayout>
       <div
         id="version_mark"
         className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
       >
-        ALPHA, Dec 8 - Jason
+        ALPHA, Dec 9 - Jason
       </div>
     </Layout>
   );

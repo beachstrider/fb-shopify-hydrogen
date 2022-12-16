@@ -11,7 +11,7 @@ import {
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
-import CancelSubscription from '~/components/account/subscription/CancelSubscription.client';
+import SubscriptionDetail from '~/components/account/subscription/Detail.client';
 import {Layout} from '~/components/index.server';
 
 import {getSubscription} from '~/lib/recharge';
@@ -25,7 +25,7 @@ export default function Account({response}) {
   } = useLocalization();
   const {customerAccessToken} = useSession();
 
-  const {handle} = useRouteParams();
+  const {id} = useRouteParams();
 
   if (!customerAccessToken) return response.redirect('/account/login');
 
@@ -49,15 +49,15 @@ export default function Account({response}) {
     },
   });
 
-  const subscription = getSubscription(handle);
+  const subscription = getSubscription(id);
 
   return (
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
-      <AccountPageLayout user={customer} currentPath={'subscription'}>
-        <CancelSubscription subscription={subscription} />
+      <AccountPageLayout user={customer} currentPath="subscriptions">
+        <SubscriptionDetail subscription={subscription} />
       </AccountPageLayout>
       <div
         id="version_mark"
