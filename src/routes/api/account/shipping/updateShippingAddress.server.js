@@ -5,7 +5,7 @@ export async function api(request, {session}) {
 
   if (session) {
     if (request.method === 'PUT') {
-        updateShippingAddress(params);
+      updateShippingAddress(params);
     }
     return new Response(JSON.stringify({msg: 'ok'}));
   }

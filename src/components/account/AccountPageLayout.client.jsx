@@ -35,7 +35,7 @@ export const AccountPageLayout = ({user, children}) => {
                 <li className="mb-2">
                   <Link
                     className="text-xl text-gray-200 hover:text-gray-300"
-                    to="/account/billing-accounts"
+                    to="/account/billing-account"
                   >
                     Billing &amp; Account
                   </Link>

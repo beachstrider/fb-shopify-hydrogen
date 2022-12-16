@@ -209,7 +209,7 @@ function PasswordField({password, setPassword, passwordError}) {
           placeholder="Password"
           aria-label="Password"
           value={password}
-          minLength={8}
+          minLength={6}
           required
           // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus

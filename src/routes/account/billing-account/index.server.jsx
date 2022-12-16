@@ -6,17 +6,16 @@ import {
   useLocalization,
   useShopQuery,
   useServerAnalytics,
-  useRouteParams,
 } from '@shopify/hydrogen';
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
 import BillingLayout from '~/components/account/BillingAndAccount/BillingLayout.client';
 import {Layout} from '~/components/index.server';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
-import Billingaddress from '~/components/account/BillingAddress/billingAddress.client';
-import {getBillingAddress} from '~/lib/recharge';
 
-export default function BillingAddress({response}) {
+import {getBillingInfo} from '~/lib/recharge';
+
+export default function BillingAndAccount({response}) {
   response.cache(CacheNone());
 
   const {
@@ -36,7 +35,7 @@ export default function BillingAddress({response}) {
     },
     cache: CacheNone(),
   });
-  const {handle} = useRouteParams();
+
   const {customer} = data;
 
   if (!customer) return response.redirect('/account/login');
@@ -49,7 +48,7 @@ export default function BillingAddress({response}) {
 
   const external_customer_id = customer.id.slice(23);
 
-  const billingaddress = getBillingAddress(handle);
+  const billingInfo = getBillingInfo({external_customer_id});
 
   return (
     <Layout>
@@ -57,13 +56,13 @@ export default function BillingAddress({response}) {
         <Seo type="noindex" data={{title: 'Billing And Account'}} />
       </Suspense>
       <AccountPageLayout user={customer}>
-        <Billingaddress paymentMethod={billingaddress}/>
+        <BillingLayout billingInfo={billingInfo} user={customer} />
       </AccountPageLayout>
       <div
         id="version_mark"
         className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
       >
-        ALPHA, Dec 8 - Jason
+        ALPHA, Dec 16 - Jason
       </div>
     </Layout>
   );

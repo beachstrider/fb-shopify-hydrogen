@@ -7,5 +7,6 @@ module.exports = {
     'prettier/prettier': [1, {endOfLine: 'auto'}],
     'no-unused-vars': 1,
     'hydrogen/prefer-image-component': 1,
+    'no-console': 0,
   },
 };

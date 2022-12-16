@@ -1,6 +1,7 @@
 import {Suspense} from 'react';
 import {useShopQuery, CacheLong, CacheNone, Seo, gql} from '@shopify/hydrogen';
 
+import {LOGIN_MUTATION} from '~/lib/gql';
 import {AccountLoginForm} from '~/components';
 import {Layout} from '~/components/index.server';
 
@@ -79,19 +80,3 @@ export async function api(request, {session, queryShop}) {
     );
   }
 }
-
-const LOGIN_MUTATION = gql`
-  mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
-    customerAccessTokenCreate(input: $input) {
-      customerUserErrors {
-        code
-        field
-        message
-      }
-      customerAccessToken {
-        accessToken
-        expiresAt
-      }
-    }
-  }
-`;

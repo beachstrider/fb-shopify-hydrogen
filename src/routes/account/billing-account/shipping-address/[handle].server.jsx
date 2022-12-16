@@ -6,16 +6,17 @@ import {
   useLocalization,
   useShopQuery,
   useServerAnalytics,
+  useRouteParams,
 } from '@shopify/hydrogen';
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
-import BillingLayout from '~/components/account/BillingAndAccount/BillingLayout.client';
-import {Layout} from '~/components/index.server';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
+import ShippingAddress from '~/components/account/BillingAndAccount/ShippingAddress.client';
+import {Layout} from '~/components/index.server';
 
-import {getBillingInfo} from '~/lib/recharge';
+import {getShippingAddress} from '~/lib/recharge';
 
-export default function BillingAndAccount({response}) {
+export default function Account({response}) {
   response.cache(CacheNone());
 
   const {
@@ -23,6 +24,8 @@ export default function BillingAndAccount({response}) {
     country: {isoCode: countryCode},
   } = useLocalization();
   const {customerAccessToken} = useSession();
+
+  const {handle} = useRouteParams();
 
   if (!customerAccessToken) return response.redirect('/account/login');
 
@@ -46,23 +49,21 @@ export default function BillingAndAccount({response}) {
     },
   });
 
-  const external_customer_id = customer.id.slice(23);
-
-  const billinginfo = getBillingInfo({external_customer_id});
+  const shippingAddress = getShippingAddress(handle);
 
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Billing And Account'}} />
+        <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
       <AccountPageLayout user={customer}>
-        <BillingLayout billinginfo={billinginfo} />
+        <ShippingAddress address={shippingAddress} />
       </AccountPageLayout>
       <div
         id="version_mark"
         className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
       >
-        ALPHA, Dec 8 - Jason
+        ALPHA, Dec 9 - Jason
       </div>
     </Layout>
   );
