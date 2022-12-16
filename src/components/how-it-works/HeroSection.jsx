@@ -1,10 +1,10 @@
-import chefMade from '../../assets/howItWorks/chef_made.png';
-import backImageCircle from '../../assets/howItWorks/circles.png';
-import downArrow from '../../assets/howItWorks/down_arrows.png';
-import feast from '../../assets/howItWorks/feast.png';
-import heatItUp from '../../assets/howItWorks/heat_it_up.png';
-import heroBg from '../../assets/howItWorks/hero_bg.png';
-import sealedFresh from '../../assets/howItWorks/sealed_fresh.png';
+import chefMade from '../../assets/chef_made.png';
+import backImageCircle from '../../assets/circles.png';
+import downArrow from '../../assets/down_arrows.png';
+import feast from '../../assets/feast.png';
+import heatItUp from '../../assets/heat_it_up.png';
+import heroBg from '../../assets/hero_bg.png';
+import sealedFresh from '../../assets/sealed_fresh.png';
 
 export function HeroSection() {
   return (
