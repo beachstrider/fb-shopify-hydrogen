@@ -1,183 +1,111 @@
-import plateImage from '../../assets/howItWorks/chef_made.png';
-import RightImage from '../../assets/howItWorks/sealed_fresh.png';
-import ReftImage3 from '../../assets/howItWorks/heat_it_up.png';
-import leftImage4 from '../../assets/howItWorks/feast.png';
-import DownArrow from '../../assets/down_arrows.png';
-import {useUrl, Link} from '@shopify/hydrogen';
+import chefMade from '../../assets/howItWorks/chef_made.png';
+import backImageCircle from '../../assets/howItWorks/circles.png';
+import downArrow from '../../assets/howItWorks/down_arrows.png';
+import feast from '../../assets/howItWorks/feast.png';
+import heatItUp from '../../assets/howItWorks/heat_it_up.png';
+import heroBg from '../../assets/howItWorks/hero_bg.png';
+import sealedFresh from '../../assets/howItWorks/sealed_fresh.png';
+
 export function HeroSection() {
   return (
-    <section className="">
-      <div className="">
-        <div className=" h-[500px] bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-image bg-[url('../assets/howItWorks/hero_bg.png')]">
-          <div className="container max-w-screen-xl mx-auto">
-            <div className="flex items-center justify-start h-full">
-              <div className="text-white text-lg  mt-[455px] ml-64">
-                <span className="text-[80px] font-extrabold leading-[80px] mb-[-0.5rem]">
-                  {' '}
-                  THE NITTY GRITTY<br/>
-                </span>
-                <span className="text-[30px] font-extrabold leading-[80px] mb-[-0.5rem] ml-[7rem]">
-                  {' '}
-                  A Look Into The World of FEASTbox
-                </span>
-              </div>
-            </div>
+    <section className="text-white pb-20 bg-[url('../assets/join_bg.png')]">
+      <div className="top-banner">
+        <div className="banner-section">
+          <img src={heroBg} alt="" />
+          <h1 className="sm:text-[80px] text-2xl text-center font-extrabold mt-[-18px]">
+            THE NITTY GRITTY
+          </h1>
+          <p className="text-center mb-0 sm:mt-12 font-bold sm:text-3xl">
+            A Look into the World of FEASTbox
+          </p>
+        </div>
+      </div>
+
+      <div className="card-section container mx-auto mt-0 sm:mt-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2">
+          <div className="mt-12">
+            <img className="mx-auto w-32 sm:w-auto" src={chefMade} alt="" />
+          </div>
+          <div className="w-100 max-h-0">
+            <h2 className="sm:mt-24 md:text-5xl mt-12 text-start font-bold lg:text-8xl sm:text-8xl">
+              CHEF-MADE
+            </h2>
+            <p className="mt-1 font-bold text-sm sm:text-5xl card-para text-start mr-5">
+              Our bomb-a$$ chef curates every scrumptious FEASTbox recipex and
+              every box is made by hand with care and love but mostly epicness.
+            </p>
+            <img
+              className="mt-52 sm:w-84 invisible sm:visible"
+              src={downArrow}
+              alt=""
+            />
           </div>
         </div>
-        <div className=" h-[750px] bg-right bg-center bg-no-repeat bg-cover z-0 bg-image bg-[url('../assets/join_bg.png')]">
-          <div className="container max-w-screen-xl mx-auto">
-            <div className="flex items-start  h-full pt-44 ">
-              <div className="flex w-1/2 justify-around">
-                <div className="relative w-1/3">
-                  <img
-                    src={plateImage}
-                    className="absolute object-cover max-w-sm h-auto mt-[0px]"
-                    alt=""
-                  />
-                </div>
-                {/* <div className="relative w-1/2]">
-                  <img
-                    src={DownArrow}
-                    className="absolute object-cover w-[100px]  max-w-md h-auto ml-[20px] mt-[-85px]"
-                    alt=""
-                  />
-                </div> */}
-              </div>
-              <div className="text-white text-lg mt-16 w">
-                <h2 className="font-bold text-5xl my-1">
-                  CHEF-GRAB <br />
-                </h2>
-                <p className="mt-5 text-2xl">
-                  Our bomb-a$$ chef curates every scrumptious {' '}
-                  <br />
-                  FEASTbo recipex and every box is made by hand  {' '}
-                  <br />
-                  with care and love but mostly epicness.{' '}
-                </p>
-                <div className="flex item-center mt-9">
-                <img
-                    src={DownArrow}
-                    className="absolute object-cover w-[100px]  max-w-md h-auto ml-[20px] mt-[-0px]"
-                    alt=""
-                  />
-                  <div className="ml-[20]">
-                    <h2></h2>
-                  </div>
-                </div>
-              </div>
-            </div>
+      </div>
+
+      <div className="card-section container mx-auto mt-0 sm:mt-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2">
+          <div className="w-100 text-right">
+            <h2 className="sm:mt-48 mt-12 mr-4 font-bold text-xl sm:text-8xl">
+              SEALED FRESH
+            </h2>
+            <p className="mt-1 font-bold text-sm sm:text-5xl card-para mr-5">
+              Our food is vacuumed sealed to preserve freshness and shipped
+              overnight. Unpack your insulated, chily box & store the grub in
+              the fridge.
+            </p>
+          </div>
+          <div className="mt-12">
+            <img className="mx-auto w-32 sm:w-auto" src={sealedFresh} alt="" />
           </div>
         </div>
-        
-        <div className=" h-[650px] bg-right bg-center bg-no-repeat bg-cover z-0 bg-image bg-[url('../assets/join_bg.png')]">
-          <div className="container flex item-center justify-around pt-[1px] ">
-            <div className="flex items-start h-full ">
-              <div className="text-white text-lg mt-24  pl-[55px]">
-                <h2 className="font-bold text-5xl my-1">
-                  SEALED FRESH <br />
-                </h2>
-                <p className="mt-5 text-2xl">
-                  Our food is vacuumed sealed to preserve freshness {' '}
-                  <br />
-                  and shipped overnight. Unpack your insulated, {' '}
-                  <br />
-                  chily box & store the grub in the fridge.{' '}
-                </p>
-                <div className="flex item-center mt-9">
-                 
-                  <div className="ml-[20]">
-                    <h2></h2>
-                  </div>
-                </div>
-              </div>
+      </div>
 
-              <div className="flex w-1/2 justify-end pb-[1px]">
-                <div className="relative w-1/3">
-                  <img
-                    src={RightImage}
-                    className="absolute object-cover max-w-sm h-auto mt-[0px]"
-                    alt=""
-                  />
-                </div>
-              </div>
-            </div>
+      <div className="card-section container mx-auto mt-0 sm:mt-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2">
+          <div className="mt-12">
+            <img className="mx-auto w-32 sm:w-auto" src={heatItUp} alt="" />
+          </div>
+          <div className="w-100 max-h-0">
+            <h2 className="sm:mt-24 mt-12 text-start font-bold text-xl sm:text-8xl">
+              HEAT IT UP
+            </h2>
+            <p className="mt-1 font-bold text-sm sm:text-5xl card-para text-start mr-5">
+              Follow the heating instructions to reheat each dish to the
+              ultimate feast-worthy temparature
+            </p>
           </div>
         </div>
+      </div>
 
-        <div className=" h-[600px] bg-right bg-center bg-no-repeat bg-cover z-0 bg-image bg-[url('../assets/join_bg.png')]">
-          <div className="container max-w-screen-xl mx-auto pt-[-100px]">
-            <div className="flex items-start  h-full  ">
-              <div className="flex w-1/2 justify-around">
-                <div className="relative w-1/3">
-                  <img
-                    src={ReftImage3}
-                    className="absolute object-cover max-w-sm h-auto mt-[0px]"
-                    alt=""
-                  />
-                </div>
-              </div>
-              <div className="text-white text-lg mt-28 w">
-                <h2 className="font-bold text-5xl my-1">
-                  HEAT IT UP <br />
-                </h2>
-                <p className="mt-5 text-2xl">
-                 Follow the heating instructions to reheat each{' '}
-                  <br />
-                  dish to the ultimate feast-worthy temparature  {' '}
-                 
-                 {' '}
-                </p>
-                <div className="flex item-center mt-9">
-                  <div className="ml-[20]">
-                   
-                    <h2></h2>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div className="card-section container mx-auto mt-0 sm:mt-8 mb-12 sm:mb-44">
+        <div className="grid grid-cols-2 sm:grid-cols-2">
+          <div className="w-100 text-right">
+            <h2 className="sm:mt-80 mt-12 mr-4 font-bold text-xl sm:text-8xl">
+              FEAST!
+            </h2>
+            <p className="mt-1 font-bold text-sm sm:text-5xl card-para mr-5">
+              Lay out the feast, pass out the plates & watch the drool, I mean
+              smiles, spread!
+            </p>
+            <button className="btn bg-[#A60D1E] sm:px-6 sm:py-2 px-1 py-1 rounded sm:mr-8 mr-5 mt-2 sm:mt-8 ">
+              Hungry ! Order now
+            </button>
+          </div>
+          <div className="mt-12 sm:mr-1">
+            <img
+              className="sm:mt-[-300px] sm:ml-[300px]  invisible sm:visible"
+              src={backImageCircle}
+              alt=""
+            />
+            <img
+              className="mx-auto w-32 sm:w-auto mt-[-180px] sm:mt-[-300px]"
+              src={feast}
+              alt=""
+            />
           </div>
         </div>
-
-        <div className=" h-[650px] bg-right bg-center bg-no-repeat bg-cover z-0 bg-image bg-[url('../assets/join_bg.png')]">
-          <div className="container flex item-center justify-around pt-[1px] ">
-            <div className="flex items-start h-full ">
-              <div className="text-white text-lg mt-24  pl-[55px]">
-                <h2 className="font-bold text-5xl my-1">
-                  FEAST! <br />
-                </h2>
-                <p className="mt-5 text-2xl">
-                  Lay out the feast, pass out the plates {' '}
-                  <br />
-                  & watch the drool, I mean smiles,  {' '}
-                  <br />
-                  spread!{' '}
-                  </p>
-
-                  <div className="flex item-center mt-9">
-                  <button className="bg-[#A60D1E] text-white font-bold  w-[207px]">
-                   <Link to="/shop/bundle">Hungry! Order Now</Link>
-                  </button>
-                </div>
-              </div>
-              <div className="flex w-1/2 justify-end pb-[1px]">
-                <div className="relative w-1/3">
-                  <img
-                    src={leftImage4}
-                    className="absolute object-cover max-w-sm h-auto mt-[0px]"
-                    alt=""
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-       
-
-        <div className="h-[10px] bg-[#DB9707]"></div>
       </div>
     </section>
   );
 }
-
-
-
