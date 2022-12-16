@@ -11,10 +11,10 @@ import {
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
-import ShippingAddress from '~/components/account/BillingAndAccount/ShippingAddress.client';
+import CancelSubscription from '~/components/account/subscription/CancelSubscription.client';
 import {Layout} from '~/components/index.server';
 
-import {getShippingAddress} from '~/lib/recharge';
+import {getSubscription} from '~/lib/recharge';
 
 export default function Account({response}) {
   response.cache(CacheNone());
@@ -25,7 +25,7 @@ export default function Account({response}) {
   } = useLocalization();
   const {customerAccessToken} = useSession();
 
-  const {handle} = useRouteParams();
+  const {id} = useRouteParams();
 
   if (!customerAccessToken) return response.redirect('/account/login');
 
@@ -49,21 +49,21 @@ export default function Account({response}) {
     },
   });
 
-  const shippingAddress = getShippingAddress(handle);
+  const subscription = getSubscription(id);
 
   return (
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
-      <AccountPageLayout user={customer} currentPath="billing-account">
-        <ShippingAddress address={shippingAddress} />
+      <AccountPageLayout user={customer} currentPath="subscriptions">
+        <CancelSubscription subscription={subscription} />
       </AccountPageLayout>
       <div
         id="version_mark"
         className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
       >
-        ALPHA, Dec 9 - Jason
+        ALPHA, Dec 17 - Jason
       </div>
     </Layout>
   );

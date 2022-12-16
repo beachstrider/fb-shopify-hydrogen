@@ -1,5 +1,5 @@
 import {useState} from 'react';
-
+import {Image, useNavigate, Link} from '@shopify/hydrogen';
 import {emailValidation} from '~/lib/utils';
 import {getInputStyleClasses} from '../../lib/styleUtils';
 
@@ -44,10 +44,14 @@ export function AccountRecoverForm() {
           </>
         ) : (
           <>
-            <h1 className="text-4xl">Forgot Password.</h1>
-            <p className="mt-4">
-              Enter the email address associated with your account to receive a
-              link to reset your password.
+            <h2
+              className="font-bold font-heading text-3xl mb-2 mb-8 uppercase"
+              style={{marginTop: '20px'}}
+            >
+              Forgot Your Password?
+            </h2>
+            <p className="text-lg">
+              We’ll send you an email to reset your password.
             </p>
           </>
         )}
@@ -57,36 +61,68 @@ export function AccountRecoverForm() {
               <p className="m-4 text-s text-contrast">{submitError}</p>
             </div>
           )}
-          <div className="mb-3">
-            <input
-              className={`mb-1 ${getInputStyleClasses(emailError)}`}
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              placeholder="Email address"
-              aria-label="Email address"
-              // eslint-disable-next-line jsx-a11y/no-autofocus
-              autoFocus
-              value={email}
-              onChange={(event) => {
-                setEmail(event.target.value);
-              }}
-            />
-            {!emailError ? (
-              ''
-            ) : (
-              <p className={`text-red-500 text-xs`}>{emailError} &nbsp;</p>
-            )}
-          </div>
-          <div className="flex items-center justify-between">
-            <button
-              className="bg-primary text-contrast rounded py-2 px-4 focus:shadow-outline block w-full"
-              type="submit"
-            >
-              Request Reset Link
-            </button>
+          <div className="flex items-end justify-end">
+            <div className="w-full">
+              <br />
+              <div className="mb-10">
+                <div>
+                  <div className="mb-6">
+                    <input
+                      className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
+                      id="email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      placeholder="Email address"
+                      aria-label="Email address"
+                      autoFocus
+                      value={email}
+                      onChange={(event) => {
+                        setEmail(event.target.value);
+                      }}
+                    />
+                    {!emailError ? (
+                      ''
+                    ) : (
+                      <p className={`text-red-500 text-xs`}>
+                        {emailError} &nbsp;
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <button
+                  className="block py-2 text-lg text-center uppercase font-bold w-full "
+                  style={{
+                    backgroundColor: '#DB9707',
+                    color: '#FFFFFF',
+                    marginBottom: '15px',
+                  }}
+                  type="submit"
+                >
+                  Send Email
+                </button>
+
+                <p className="text-sm">
+                  Already have an account?{' '}
+                  <span
+                    className="font-bold underline"
+                    style={{color: '#DB9707', marginTop: '20px'}}
+                  >
+                    <Link to={'/account/login'}>Log In</Link>
+                  </span>
+                </p>
+                <p className="text-sm">
+                  Don't have an account created?{' '}
+                  <span
+                    className="font-bold underline"
+                    style={{color: '#DB9707', marginTop: '20px'}}
+                  >
+                    <Link to={'/account/register'}>Register here</Link>
+                  </span>
+                </p>
+              </div>
+            </div>
           </div>
         </form>
       </div>

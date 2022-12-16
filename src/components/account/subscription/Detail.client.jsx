@@ -96,16 +96,6 @@ const Index = ({subscription}) => {
     await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
-  const handleCancelSubscription = async () => {
-    await navigate(
-      `/account/subscriptions/${subscription.id}?action=processing`,
-    );
-    setProcessCancel(true);
-    await axios.delete(`/api/account/subscriptions/${subscription.id}`);
-    setProcessCancel(false);
-    await navigate(`/account/subscriptions/${subscription.id}`);
-  };
-
   const handleReactiveSubscription = async () => {
     await navigate(
       `/account/subscriptions/${subscription.id}?action=processing`,
@@ -805,14 +795,14 @@ const Index = ({subscription}) => {
                       Skip Next Order
                     </button>
                     <br />
-                    <button
+                    <Link
                       className="font-bold underline"
                       style={{fontSize: 14, float: 'right', color: '#DB9707'}}
                       disabled={processCancel}
-                      onClick={handleCancelSubscription}
+                      to={`/account/subscriptions/${subscription.id}/cancel`}
                     >
                       Cancel Subscription
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

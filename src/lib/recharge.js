@@ -114,7 +114,9 @@ export const skipUpcomingOrder = async (customer_id) => {
 };
 
 export const skipOrder = async ({id, purchase_item_ids}) => {
-  await recharge.post(`charges/${id}/skip`, {purchase_item_ids});
+  console.log('==>', id, purchase_item_ids);
+  const res = await recharge.post(`charges/${id}/skip`, {purchase_item_ids});
+  console.log('==>>>', res);
 
   return;
 };

@@ -55,7 +55,7 @@ export default function BillingAndAccount({response}) {
       <Suspense>
         <Seo type="noindex" data={{title: 'Billing And Account'}} />
       </Suspense>
-      <AccountPageLayout user={customer}>
+      <AccountPageLayout user={customer} currentPath="billing-account">
         <BillingLayout billingInfo={billingInfo} user={customer} />
       </AccountPageLayout>
       <div
