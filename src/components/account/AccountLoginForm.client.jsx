@@ -12,6 +12,7 @@ export function AccountLoginForm({shopName}) {
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(null);
   const [failedCounts, setFailedCounts] = useState(0);
+  const [passwordIncorrect, setPasswordIncorrect] = useState(false);
 
   function onSubmit(event) {
     event.preventDefault();
@@ -44,8 +45,8 @@ export function AccountLoginForm({shopName}) {
       });
 
       if (response.error) {
-        setHasSubmitError(true);
         setFailedCounts(failedCounts+1);
+        setPasswordIncorrect(true);
         if(failedCounts == 2) resetForm();
       } else {
         navigate('/account/subscriptions');
@@ -66,19 +67,24 @@ export function AccountLoginForm({shopName}) {
     setPassword('');
     setPasswordError(null);
     setFailedCounts(0);
+    setHasSubmitError(true);
+    setPasswordIncorrect(false);
   }
 
-  function checkErrorThreeTimes() {
-    if(failedCounts >= 3) return true;
-    else false;
-  }
 
   return (
     <div className="flex justify-center my-24 px-4">
       <div className="max-w-md w-full">
         <h1 className="text-4xl">Sign in.</h1>
         <form noValidate className="pt-6 pb-8 mt-4 mb-4" onSubmit={onSubmit}>
-          {(hasSubmitError && checkErrorThreeTimes()) && (
+          {passwordIncorrect && (
+            <div className="flex items-center justify-center mb-6 bg-zinc-500">
+              <p className="m-4 text-s text-contrast">
+                You entered password incorrectly {`(${failedCounts})`}. please type correct one.
+              </p>
+            </div>
+          )}
+          {hasSubmitError && (
             <div className="flex items-center justify-center mb-6 bg-zinc-500">
               <p className="m-4 text-s text-contrast">
                 Sorry we did not recognize either your email or password. Please
