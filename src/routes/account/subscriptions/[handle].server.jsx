@@ -56,7 +56,7 @@ export default function Account({response}) {
       <Suspense>
         <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
-      <AccountPageLayout user={customer}>
+      <AccountPageLayout user={customer} currentPath={'subscription'}>
         <SubscriptionDetail subscription={subscription} />
       </AccountPageLayout>
       <div

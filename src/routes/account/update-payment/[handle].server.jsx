@@ -10,13 +10,13 @@ import {
 } from '@shopify/hydrogen';
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
-import BillingLayout from '~/components/account/BillingAndAccount/BillingLayout.client';
+import UpdatePayment from '~/components/account/BillingAndAccount/UpdatePayment.client';
 import {Layout} from '~/components/index.server';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 import Billingaddress from '~/components/account/BillingAddress/billingAddress.client';
-import {getBillingAddress} from '~/lib/recharge';
+import {getBillingPayment} from '~/lib/recharge';
 
-export default function BillingAddress({response}) {
+export default function Payment({response}) {
   response.cache(CacheNone());
 
   const {
@@ -49,7 +49,7 @@ export default function BillingAddress({response}) {
 
   const external_customer_id = customer.id.slice(23);
 
-  const billingaddress = getBillingAddress(handle);
+  const payment = getBillingPayment(handle);
 
   return (
     <Layout>
@@ -57,7 +57,7 @@ export default function BillingAddress({response}) {
         <Seo type="noindex" data={{title: 'Billing And Account'}} />
       </Suspense>
       <AccountPageLayout user={customer} currentPath={'billing'}>
-        <Billingaddress paymentMethod={billingaddress} />
+        <UpdatePayment paymentMethod={payment} />
       </AccountPageLayout>
       <div
         id="version_mark"

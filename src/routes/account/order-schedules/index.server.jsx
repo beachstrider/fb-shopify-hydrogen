@@ -55,7 +55,7 @@ export default function Account({response}) {
       <Suspense>
         <Seo type="noindex" data={{title: 'Your Upcoming Orders'}} />
       </Suspense>
-      <AccountPageLayout user={customer}>
+      <AccountPageLayout user={customer} currentPath={'order-schedule'}>
         <OrderSchedulesList orders={orders} />
       </AccountPageLayout>
       <div

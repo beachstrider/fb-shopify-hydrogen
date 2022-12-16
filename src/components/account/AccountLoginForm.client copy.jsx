@@ -68,100 +68,16 @@ export function AccountLoginForm({shopName}) {
   return (
     <div className="flex justify-center my-24 px-4">
       <div className="max-w-md w-full">
-        <div className="flex items-end justify-end">
-          <div className="w-full">
-            <h2
-              className="font-bold font-heading text-3xl mb-2 mb-8 uppercase"
-              contentEditable="false"
-              style={{marginTop: '20px'}}
-            >
-              Login To Your Account
-            </h2>
-            {hasSubmitError && (
-              <div className="flex items-center justify-center mb-6 bg-zinc-500">
-                <p className="m-4 text-s text-contrast">
-                  Sorry we did not recognize either your email or password.
-                  Please try to sign in again or create a new account.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+        <h1 className="text-4xl">Sign in.</h1>
         <form noValidate className="pt-6 pb-8 mt-4 mb-4" onSubmit={onSubmit}>
-          <div className="mb-6">
-            <input
-              className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
-              type="text"
-              name="field-name"
-              placeholder="Email"
-            />
-          </div>
-          <div className="mb-6">
-            <input
-              className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
-              type="text"
-              name="field-name"
-              placeholder="Password"
-            />
-          </div>
-          <p className="text-sm" style={{marginBottom: '20px'}}>
-            <span className="font-bold underline" style={{color: '#DB9707'}}>
-              <a href="#">Forgot Password? </a>
-            </span>
-          </p>
-          <button
-            className="block py-2 text-lg text-center uppercase font-bold w-full "
-            style={{
-              backgroundColor: '#DB9707',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign In
-          </button>
-          <button
-            className="block py-2 text-lg text-center  font-bold w-full"
-            href="#"
-            style={{
-              backgroundColor: '#4285F4',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign in with Google
-          </button>
-          <button
-            className="block py-2 text-lg text-center  font-bold w-full"
-            style={{
-              backgroundColor: '#4267B2',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign in with Facebook
-          </button>
-          <button
-            className="block py-2 text-lg text-center  font-bold w-full "
-            style={{
-              backgroundColor: '#35465C',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign in with Amazon
-          </button>
-          <div className="mb-10">
-            <p className="text-sm py-4">
-              Don't have an account?{' '}
-              <span
-                className="font-bold underline"
-                style={{color: '#DB9707', marginTop: '20px'}}
-              >
-                <a href="#">Register</a>
-              </span>
-            </p>
-          </div>
-
+          {hasSubmitError && (
+            <div className="flex items-center justify-center mb-6 bg-zinc-500">
+              <p className="m-4 text-s text-contrast">
+                Sorry we did not recognize either your email or password. Please
+                try to sign in again or create a new account.
+              </p>
+            </div>
+          )}
           {showEmailField && (
             <EmailField
               shopName={shopName}

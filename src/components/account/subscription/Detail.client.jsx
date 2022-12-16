@@ -74,12 +74,12 @@ const Index = ({subscription}) => {
 
   const handleCancelSubscription = async () => {
     await navigate(
-      `/account/subscriptions/${subscription.id}?action=processing`,
+      `/account/cancel-subscription/${subscription.id}`,
     );
-    setProcessCancel(true);
-    await axios.delete(`/api/account/subscriptions/${subscription.id}`);
-    setProcessCancel(false);
-    await navigate(`/account/subscriptions/${subscription.id}`);
+    // setProcessCancel(true);
+    // await axios.delete(`/api/account/subscriptions/${subscription.id}`);
+    // setProcessCancel(false);
+    // await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
   const handleReactiveSubscription = async () => {

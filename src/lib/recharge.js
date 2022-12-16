@@ -174,7 +174,12 @@ export const getBillingInfo = (params) => {
 
 export const getBillingAddress = (id) =>{
   let {payment_method} = rechargeFetch.get(`payment_methods/${id}`);
-  return payment_method ;
+  return payment_method;
+}
+
+export const getBillingPayment = (id) => {
+  let {payment_method} = rechargeFetch.get(`payment_methods/${id}`);
+  return payment_method;
 }
 
 export const updateShippingAddress = async ({id, address}) => {
