@@ -1,15 +1,6 @@
 import DeliveryDates from './components/DeliveryDates';
 import {useState, useEffect} from 'react';
 import {fetchSync, useUrl} from '@shopify/hydrogen';
-const DateArray = [
-  {day: 'TUESDAY', date: 'Jan 3, 2023'},
-  {day: 'WEDNESDAY', date: 'Jan 4, 2023'},
-  {day: 'THURSDAY', date: 'Jan 5, 2023'},
-  {day: 'FRIDAY', date: 'Jan 6, 2023'},
-  {day: 'SATURDAY', date: 'Jan 7, 2023'},
-  {day: 'SUNDAY', date: 'Jan 8, 2023'},
-];
-
 export const fetchDeliveryDates = () => {
   const baseAppUrl = useUrl().origin;
 
