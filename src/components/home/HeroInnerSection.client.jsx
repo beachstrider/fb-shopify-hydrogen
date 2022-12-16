@@ -4,20 +4,21 @@ import Carousel3 from '../../assets/carousel_3.png';
 import Marquee from 'react-fast-marquee';
 export function HeroInnerSection() {
   return (
-    <section className="h-[490px]  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-image bg-[url('../assets/join_bg.png')]">
+    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-image bg-[url('../assets/join_bg.png')]">
       <div className="container max-w-screen-xl m-auto">
-        <h1 className="text-center text-[38px] text-white uppercase font-extrabold leading-[80px]">
+        <h1 className="text-center text-6xl text-white uppercase font-extrabold leading-[80px]">
           Welcome to the robot-free zone
         </h1>
-        <p className="text-center text-[20px] text-white capitalize">
+        <p className="text-center text-4xl text-white capitalize px-6">
           Just clean, Natural ingredients Prepared by Clean, Natural Humans
         </p>
+        </div>
         <div className="flex items-center justify-center pt-[15px]">
           <Marquee 
               pauseOnHover={false} 
               direction={"right"} 
               speed={50} 
-              gradient={true} 
+              gradient={false} 
               pauseOnClick={true}
           >
               <div className="w-1/4 ml-[10px]">
@@ -39,7 +40,7 @@ export function HeroInnerSection() {
             Learn More
           </button>
         </div>
-      </div>
+      
     </section>
   );
 }
