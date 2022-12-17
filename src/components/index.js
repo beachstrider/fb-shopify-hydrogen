@@ -10,6 +10,7 @@ export * from './menu/index';
 export * from './faq/index';
 export * from './home/index';
 export * from './howitworks/index';
+export * from './heatingInstructions/index';
 
 export {CountrySelector} from './CountrySelector.client';
 export {CustomFont} from './CustomFont.client';
