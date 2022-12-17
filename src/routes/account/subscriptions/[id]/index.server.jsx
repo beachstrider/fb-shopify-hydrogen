@@ -25,7 +25,7 @@ export default function Account({response}) {
   } = useLocalization();
   const {customerAccessToken} = useSession();
 
-  const {handle} = useRouteParams();
+  const {id} = useRouteParams();
 
   if (!customerAccessToken) return response.redirect('/account/login');
 
@@ -49,14 +49,14 @@ export default function Account({response}) {
     },
   });
 
-  const subscription = getSubscription(handle);
+  const subscription = getSubscription(id);
 
   return (
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
-      <AccountPageLayout user={customer}>
+      <AccountPageLayout user={customer} currentPath="subscriptions">
         <SubscriptionDetail subscription={subscription} />
       </AccountPageLayout>
       <div

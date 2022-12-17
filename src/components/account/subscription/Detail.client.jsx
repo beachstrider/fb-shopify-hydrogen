@@ -1,12 +1,18 @@
-import {Image, useNavigate, Link} from '@shopify/hydrogen';
+import {Image, useNavigate, Link, fetchSync} from '@shopify/hydrogen';
 import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';
 import {getUsaStandard} from '~/utils/dates';
-import {now} from '~/utils/dates';
+import {
+  isFuture,
+  now,
+  sortByDateProperty,
+  dayjs,
+  getCutOffDate,
+} from '~/utils/dates';
 
 const Index = ({subscription}) => {
-  // console.log('subscription===', subscription);
+  console.log('subscription===', subscription);
   const navigate = useNavigate();
   const [processOrder, setProcessOrder] = useState(false);
   const [processSkip, setProcessSkip] = useState(false);
@@ -26,13 +32,31 @@ const Index = ({subscription}) => {
   });
 
   useEffect(() => {
-    async function fetchDeliveryDates() {
-      const {data} = await axios.get('/api/bundle-api/delivery-dates');
-      console.log('===', data);
-    }
-
-    fetchDeliveryDates();
+    async function fetch() {}
   }, []);
+
+  const allDeliveryDates = fetchSync('/api/bundle-api/delivery-dates').json()
+    .data;
+
+  const deliveryDates = sortByDateProperty(
+    allDeliveryDates.filter((el) => isFuture(el.date)),
+    'date',
+  );
+
+  // console.log('===', deliveryDates);
+
+  // const weeks = [...new Array(6)].map(() => {
+  //   var curr = new Date(); // get current date
+  //   var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+  //   var last = first + 6; // last day is the first day + 6
+
+  //   var firstDate = new Date(curr.setDate(first)).toUTCString();
+  //   var lastDate = new Date(curr.setDate(last)).toUTCString();
+
+  //   return {firstDate, lastDate};
+  // });
+
+  // console.log('weeks===', getCutOffDate(dayjs()));
 
   const onSubmit = async (data) => {
     console.log('submit data: ', data);
@@ -69,16 +93,6 @@ const Index = ({subscription}) => {
       customer_id: subscription.customer_id,
     });
     setProcessSkip(false);
-    await navigate(`/account/subscriptions/${subscription.id}`);
-  };
-
-  const handleCancelSubscription = async () => {
-    await navigate(
-      `/account/subscriptions/${subscription.id}?action=processing`,
-    );
-    setProcessCancel(true);
-    await axios.delete(`/api/account/subscriptions/${subscription.id}`);
-    setProcessCancel(false);
     await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
@@ -738,13 +752,13 @@ const Index = ({subscription}) => {
                     Shipping Address
                   </span>
                   <span className="font-heading text-xl">
-                    <button
-                      type="button"
+                    <Link
+                      to={`/account/billing-account/shipping-address/${subscription.address_id}`}
                       className="font-bold underline"
                       style={{fontSize: 14, float: 'right', color: '#DB9707'}}
                     >
                       Edit
-                    </button>
+                    </Link>
                     <br />
                     <br />
                     {subscription.address.first_name}{' '}
@@ -781,14 +795,14 @@ const Index = ({subscription}) => {
                       Skip Next Order
                     </button>
                     <br />
-                    <button
+                    <Link
                       className="font-bold underline"
                       style={{fontSize: 14, float: 'right', color: '#DB9707'}}
                       disabled={processCancel}
-                      onClick={handleCancelSubscription}
+                      to={`/account/subscriptions/${subscription.id}/cancel`}
                     >
                       Cancel Subscription
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

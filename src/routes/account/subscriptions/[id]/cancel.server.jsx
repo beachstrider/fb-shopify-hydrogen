@@ -6,14 +6,15 @@ import {
   useLocalization,
   useShopQuery,
   useServerAnalytics,
+  useRouteParams,
 } from '@shopify/hydrogen';
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
-import OrderSchedulesList from '~/components/account/orderSchedules/List.client';
+import CancelSubscription from '~/components/account/subscription/CancelSubscription.client';
 import {Layout} from '~/components/index.server';
 
-import {getUpcomingOrders} from '~/lib/recharge';
+import {getSubscription} from '~/lib/recharge';
 
 export default function Account({response}) {
   response.cache(CacheNone());
@@ -23,6 +24,8 @@ export default function Account({response}) {
     country: {isoCode: countryCode},
   } = useLocalization();
   const {customerAccessToken} = useSession();
+
+  const {id} = useRouteParams();
 
   if (!customerAccessToken) return response.redirect('/account/login');
 
@@ -46,27 +49,22 @@ export default function Account({response}) {
     },
   });
 
-  const external_customer_id = customer.id.slice(23);
-
-  // const orders = getUpcomingOrders({external_customer_id});
+  const subscription = getSubscription(id);
 
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Your Upcoming Orders'}} />
-        <AccountPageLayout user={customer} currentPath="order-schedules">
-          <OrderSchedulesList
-            // orders={orders}
-            external_customer_id={external_customer_id}
-          />
-        </AccountPageLayout>
-        <div
-          id="version_mark"
-          className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
-        >
-          ALPHA, Dec 12 - Jason
-        </div>
+        <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
+      <AccountPageLayout user={customer} currentPath="subscriptions">
+        <CancelSubscription subscription={subscription} />
+      </AccountPageLayout>
+      <div
+        id="version_mark"
+        className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
+      >
+        ALPHA, Dec 17 - Jason
+      </div>
     </Layout>
   );
 }

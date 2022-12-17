@@ -11,8 +11,6 @@ export function AccountLoginForm({shopName}) {
   const [emailError, setEmailError] = useState(null);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(null);
-  const [failedCounts, setFailedCounts] = useState(0);
-  const [passwordIncorrect, setPasswordIncorrect] = useState(false);
 
   function onSubmit(event) {
     event.preventDefault();
@@ -45,9 +43,8 @@ export function AccountLoginForm({shopName}) {
       });
 
       if (response.error) {
-        setFailedCounts(failedCounts + 1);
-        setPasswordIncorrect(true);
-        if (failedCounts == 2) resetForm();
+        setHasSubmitError(true);
+        resetForm();
       } else {
         navigate('/account/subscriptions');
       }
@@ -66,41 +63,13 @@ export function AccountLoginForm({shopName}) {
     setEmailError(null);
     setPassword('');
     setPasswordError(null);
-    setFailedCounts(0);
-    setHasSubmitError(true);
-    setPasswordIncorrect(false);
   }
 
   return (
     <div className="flex justify-center my-24 px-4">
       <div className="max-w-md w-full">
-        <div className="flex items-end justify-end">
-          <div className="w-full">
-            <h2
-              className="font-bold font-heading text-3xl mb-2 mb-8 uppercase"
-              style={{marginTop: '20px'}}
-            >
-              Login To Your Account
-            </h2>
-            {hasSubmitError && (
-              <div className="flex items-center justify-center mb-6 bg-zinc-500">
-                <p className="m-4 text-s text-contrast">
-                  Sorry we did not recognize either your email or password.
-                  Please try to sign in again or create a new account.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+        <h1 className="text-4xl">Sign in.</h1>
         <form noValidate className="pt-6 pb-8 mt-4 mb-4" onSubmit={onSubmit}>
-          {passwordIncorrect && (
-            <div className="flex items-center justify-center mb-6 bg-zinc-500">
-              <p className="m-4 text-s text-contrast">
-                You entered password incorrectly {`(${failedCounts})`}. please
-                type correct one.
-              </p>
-            </div>
-          )}
           {hasSubmitError && (
             <div className="flex items-center justify-center mb-6 bg-zinc-500">
               <p className="m-4 text-s text-contrast">
@@ -144,7 +113,6 @@ export async function callLoginApi({email, password}) {
       body: JSON.stringify({email, password}),
     });
     if (res.ok) {
-      localStorage.setItem('isLoggedin', true);
       return {};
     } else {
       return res.json();
@@ -241,7 +209,7 @@ function PasswordField({password, setPassword, passwordError}) {
           placeholder="Password"
           aria-label="Password"
           value={password}
-          minLength={6}
+          minLength={8}
           required
           // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus

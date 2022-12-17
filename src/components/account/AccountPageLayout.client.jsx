@@ -1,6 +1,6 @@
 import {Link} from '@shopify/hydrogen';
 
-export const AccountPageLayout = ({user, children}) => {
+export const AccountPageLayout = ({user, currentPath, children}) => {
   return (
     <div className="marker:before:">
       <section className="py-20">
@@ -18,7 +18,11 @@ export const AccountPageLayout = ({user, children}) => {
               <ul style={{marginTop: 40}}>
                 <li className="mb-2">
                   <Link
-                    className="text-xl text-black-400 font-bold hover:text-gray-300"
+                    className={
+                      currentPath == 'subscriptions'
+                        ? 'text-xl text-black-400 font-bold '
+                        : 'text-xl text-gray-200 hover:text-gray-300'
+                    }
                     to="/account/subscriptions"
                   >
                     My Subscriptions
@@ -26,7 +30,11 @@ export const AccountPageLayout = ({user, children}) => {
                 </li>
                 <li className="mb-2">
                   <Link
-                    className="text-xl text-gray-200 hover:text-gray-300"
+                    className={
+                      currentPath == 'order-schedules'
+                        ? 'text-xl text-black-400 font-bold  '
+                        : 'text-xl text-gray-200 hover:text-gray-300 '
+                    }
                     to="/account/order-schedules"
                   >
                     Order Schedules
@@ -34,15 +42,23 @@ export const AccountPageLayout = ({user, children}) => {
                 </li>
                 <li className="mb-2">
                   <Link
-                    className="text-xl text-gray-200 hover:text-gray-300"
-                    to="/account/billing-accounts"
+                    className={
+                      currentPath == 'billing-account'
+                        ? 'text-xl text-black-400 font-bold  '
+                        : 'text-xl text-gray-200 hover:text-gray-300 '
+                    }
+                    to="/account/billing-account"
                   >
                     Billing &amp; Account
                   </Link>
                 </li>
                 <li className="mb-2">
                   <Link
-                    className="text-xl text-gray-200 hover:text-gray-300"
+                    className={
+                      currentPath == 'order-history'
+                        ? 'text-xl text-black-400 font-bold  '
+                        : 'text-xl text-gray-200 hover:text-gray-300 '
+                    }
                     to="/account/order-history"
                   >
                     Order History
