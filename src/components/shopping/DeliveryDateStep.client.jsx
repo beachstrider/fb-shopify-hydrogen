@@ -64,15 +64,9 @@ export function DeliveryDateList() {
   // const response = fetchSync('/api/countries');
   const baseAppUrl = useUrl().origin;
   const response = fetchSync(`${baseAppUrl}/api/bundle-api/delivery-dates`);
-
   let deliveryDateList = [];
-  console.log('response');
-  console.log(response);
   if (response.ok) {
     deliveryDateList = response.json();
-    // const {data} = fetchSync(
-    //   `${baseAppUrl}/api/bundle-api/delivery-dates`,
-    // ).json();
     const deliveryDates = deliveryDateList.data;
     const today = new Date();
     today.setHours(0);

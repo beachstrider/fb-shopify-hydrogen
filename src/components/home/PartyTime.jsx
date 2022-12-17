@@ -4,38 +4,38 @@ export function PartyTime() {
     <section className="">
       <div className="">
         <div className=" h-[120px] bg-[#DB9707]"></div>
-        <div className=" h-[400px] bg-[#FFFFFF]">
+        <div className=" h-auto bg-[#FFFFFF]">
           <div className="container max-w-screen-xl mx-auto">
             <div className="text-black text-lg relative flex justify-center">
-              <h1 className="absolute text-[180px] text-neutral-900 uppercase font-extrabold leading-[80px] mt-[-52px] mb-[-0.5rem]">
+              <h1 className="text-[100px] md:text-[120px] text-center text-neutral-900 uppercase font-extrabold leading-[100px] md:leading-[80px] mt-[-52px] mb-[-0.5rem]">
                 {' '}
                 Party Time?
               </h1>
             </div>
-            <div className="flex item-center justify-around pt-[110px]">
-              <div className="w-1/2">
-                <p className="text-green-800 text-3xl pl-[55px]">
+            <div className="flex item-center justify-around flex-col flex-col-reverse md:flex-row py-6 px-4">
+              <div className="w-full md:w-1/2">
+                <p className="text-green-800 text-3xl">
                   We love a good party!Whether it's for the Super Bowl, a
                   birthday, holiday, banquet,bechelor party, we want to be
                   there!Or at least our food does...(an invite would be cold
                   too).{' '}
                 </p>
-                <div className="flex items-center pt-[40px] pl-[55px]">
-                  <button className="bg-[#A60D1E] text-white font-bold px-4 py-2">
+                <div className="flex items-center pt-[40px] flex-col md:flex-row">
+                  <button className="bg-[#A60D1E] text-white font-bold px-4 py-2 mb-2 md:mb-0">
                     Cater Your Event
                   </button>
                   <a
                     href=""
-                    className="text-[#A60D1E] ml-[40px] font-bold underline"
+                    className="text-[#A60D1E] mx-[20px] font-bold underline"
                   >
                     LEARN MORE
                   </a>
                 </div>
               </div>
-              <div className="w-1/2 ml-[50px]">
+              <div className="w-full md:w-1/2">
                 <img
                   src={PartyTimeImg}
-                  className="w-[450px] h-[310px]"
+                  className="w-full h-auto mx-auto"
                   alt=""
                 />
               </div>

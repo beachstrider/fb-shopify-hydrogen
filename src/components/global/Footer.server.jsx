@@ -1,5 +1,4 @@
-import {useUrl, Link} from '@shopify/hydrogen';
-import {Section, Heading, FooterMenu, CountrySelector} from '~/components';
+import {Link, useUrl} from '@shopify/hydrogen';
 
 /**
  * A server component that specifies the content of the footer on the website
@@ -78,7 +77,7 @@ export function Footer({menu}) {
                 <li className="mb-1.5">
                   <Link
                     className="font-medium leading-relaxed text-white"
-                    to="/heating"
+                    to="/heating-instructions"
                   >
                     Heating Instructions
                   </Link>

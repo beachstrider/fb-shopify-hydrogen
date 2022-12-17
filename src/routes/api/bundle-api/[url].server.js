@@ -1,43 +1,18 @@
 import axios from 'axios';
+const headers = {Accept: 'application/json'};
+// const baseURL = 'https://feastbox-bundle-builder-proxy-dev.speedwayapp.com/';
+// eslint-disable-next-line no-undef
+const baseURL = 'https://bundle-builder-api-dev.speedwayapp.com/'; //Oxygen?.env?.BUNDLE_API_URL;
+// eslint-disable-next-line no-undef
+const initialToken =
+  'ENkHRqH8tc9WuUAMV3N7zFYp38kayEWu4Gs2sTvwEe8M9h8CLDy3Ak3fB3Zsgv8WxDUf6ZHq9ufR42XBcE8JE9wUG83WfWz8ZQ68AaLxmnmWkD5LwrLeXBN2VPhVP6HhqV6zArVFAAAxmZwPBSuT7wSgvruspkd6xwhwfc9mLQ3NR7kdWyXJQsYjbgKZvNeD2Lt8J3P9e4aJuDtLXtbrmy964AX2uuyvqESzaNEDJPmJgsDLCaZv4LG6WnqcjZEh'; //Oxygen?.env?.BUNDLE_API_SECRET;
 
-const headers = {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-};
-
-const baseURL = 'https://feastbox-bundle-builder-proxy-dev.speedwayapp.com/';
 const shop = 'feast-box-sandbox.myshopify.com';
 
-const convertUrlParams = (params) => {
-  return new URLSearchParams(params).toString();
-};
-
-const bundleBuilderFetch = async (
-  url,
-  params,
-  method = 'GET',
-  headers = headers,
-) => {
-  const res = await fetch(
-    `${baseURL}${url}${
-      params && method.toUpperCase() === 'GET'
-        ? '?' + convertUrlParams(params)
-        : ''
-    }`,
-    {
-      headers,
-      method,
-      ...(method !== 'GET' &&
-      typeof params === 'object' &&
-      Object.keys(params).length > 0
-        ? {body: JSON.stringify(params)}
-        : {}),
-    },
-  );
-  const data = await res.json();
-
-  return data;
-};
+const bundleBuilder = axios.create({
+  headers,
+  baseURL,
+});
 
 export async function api(request, {session}) {
   const url = new URL(request.normalizedUrl).pathname.substring(5);
@@ -54,16 +29,38 @@ export async function api(request, {session}) {
     }
 
     if (typeof token === 'undefined') {
-      const newToken = await (
-        await bundleBuilderFetch(`bundle-api/token/guest`, {shop}, 'POST')
-      ).json();
+      const newToken = (
+        await bundleBuilder.post(
+          `api/auth`,
+          {shop},
+          {
+            headers: {
+              Accept: 'application/json',
+              authorization: `Bearer ${initialToken}`,
+            },
+          },
+        )
+      ).data.token;
       token = `Bearer ${newToken}`;
       await session.set('bundleBuilderToken', token);
     }
 
     headers.authorization = token;
 
-    const res = await bundleBuilderFetch(url, data, method, headers);
+    // const res = await axios({
+    //   baseURL,
+    //   url,
+    //   headers,
+    //   method,
+    //   data,
+    // });
+
+    const res = await bundleBuilder.get(`api/delivery-dates`, {
+      headers: {
+        Accept: 'application/json',
+        authorization: `${token}`,
+      },
+    });
 
     return res.data;
   }

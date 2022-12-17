@@ -6,16 +6,18 @@ import heatItUp from '../../assets/heat_it_up.png';
 import heroBg from '../../assets/hero_bg.png';
 import sealedFresh from '../../assets/sealed_fresh.png';
 
-export function HeroSection() {
+export function HowItWorks() {
   return (
-    <section className="text-white pb-20 bg-[url('../assets/join_bg.png')]">
+    <section className="text-white pb-8 bg-[url('../assets/join_bg.png')]">
       <div className="top-banner">
         <div className="banner-section">
           <img src={heroBg} alt="" />
-          <h1 className="sm:text-[80px] text-2xl text-center font-extrabold mt-[-18px]">
+          <h1 className="text-[26px] md:text-6xl lg:text-8xl text-center font-extrabold lg:mt-[-62px]
+          md:mt-[-30px] mt-[-22px]
+          ">
             THE NITTY GRITTY
           </h1>
-          <p className="text-center mb-0 sm:mt-12 font-bold sm:text-3xl">
+          <p className="text-center mb-0 sm:mt-12 md:mt-5 font-bold sm:text-3xl">
             A Look into the World of FEASTbox
           </p>
         </div>
@@ -26,16 +28,16 @@ export function HeroSection() {
           <div className="mt-12">
             <img className="mx-auto w-32 sm:w-auto" src={chefMade} alt="" />
           </div>
-          <div className="w-100 max-h-0">
-            <h2 className="sm:mt-24 md:text-5xl mt-12 text-start font-bold lg:text-8xl sm:text-8xl">
+          <div className="w-auto max-h-0 md:ml-5 lg:ml-0">
+            <h2 className="sm:mt-24 mt-12 text-start font-bold lg:text-8xl sm:text-8xl md:text-5xl">
               CHEF-MADE
             </h2>
-            <p className="mt-1 font-bold text-sm sm:text-5xl card-para text-start mr-5">
+            <p className="mt-1 font-bold text-sm md:text-3xl lg:text-5xl sm:text-5xl card-para text-start mr-5">
               Our bomb-a$$ chef curates every scrumptious FEASTbox recipex and
               every box is made by hand with care and love but mostly epicness.
             </p>
             <img
-              className="mt-52 sm:w-84 invisible sm:visible"
+              className="lg:mt-52 invisible sm:visible md:mt-12 md:w-28 lg:w-52"
               src={downArrow}
               alt=""
             />
@@ -45,11 +47,11 @@ export function HeroSection() {
 
       <div className="card-section container mx-auto mt-0 sm:mt-8">
         <div className="grid grid-cols-2 sm:grid-cols-2">
-          <div className="w-100 text-right">
+          <div className="w-auto text-right">
             <h2 className="sm:mt-48 md:text-5xl lg:text-8xl mt-12 mr-4 font-bold text-xl sm:text-8xl">
               SEALED FRESH
             </h2>
-            <p className="mt-1 font-bold text-sm sm:text-5xl card-para mr-5">
+            <p className="mt-1 font-bold text-sm sm:text-5xl md:text-3xl lg:text-5xl card-para mr-5">
               Our food is vacuumed sealed to preserve freshness and shipped
               overnight. Unpack your insulated, chily box & store the grub in
               the fridge.
@@ -66,11 +68,11 @@ export function HeroSection() {
           <div className="mt-12">
             <img className="mx-auto w-32 sm:w-auto" src={heatItUp} alt="" />
           </div>
-          <div className="w-100 max-h-0">
+          <div className="w-auto max-h-0 md:ml-5 lg:ml-0">
             <h2 className="md:text-5xl lg:text-8xl sm:mt-24 mt-12 text-start font-bold text-xl sm:text-8xl">
               HEAT IT UP
             </h2>
-            <p className="mt-1 font-bold text-sm sm:text-5xl card-para text-start mr-5">
+            <p className="mt-1 font-bold text-sm sm:text-5xl md:text-3xl lg:text-5xl card-para text-start mr-5">
               Follow the heating instructions to reheat each dish to the
               ultimate feast-worthy temparature
             </p>
@@ -80,11 +82,11 @@ export function HeroSection() {
 
       <div className="card-section container mx-auto mt-0 sm:mt-8 mb-12 sm:mb-44">
         <div className="grid grid-cols-2 sm:grid-cols-2">
-          <div className="w-100 text-right">
-            <h2 className="md:text-5xl lg:text-8xl sm:mt-80 mt-12 mr-4 font-bold text-xl sm:text-8xl">
+          <div className="w-auto text-right">
+            <h2 className="md:text-5xl lg:text-8xl mt-24 md:mt-24 lg:mt-80 mr-4 font-bold text-xl sm:text-8xl">
               FEAST!
             </h2>
-            <p className="mt-1 font-bold text-sm sm:text-5xl card-para mr-5">
+            <p className="mt-1 font-bold text-sm sm:text-5xl md:text-3xl lg:text-5xl card-para mr-5">
               Lay out the feast, pass out the plates & watch the drool, I mean
               smiles, spread!
             </p>
@@ -94,7 +96,7 @@ export function HeroSection() {
           </div>
           <div className="mt-12 sm:mr-1">
             <img
-              className="sm:mt-[-300px] sm:ml-[300px]  invisible sm:visible  md:visible"
+              className="sm:mt-[-300px] lg:ml-[300px] md:ml-3 invisible sm:visible lg:visible"
               src={backImageCircle}
               alt=""
             />
@@ -109,3 +111,4 @@ export function HeroSection() {
     </section>
   );
 }
+
