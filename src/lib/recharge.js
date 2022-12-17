@@ -57,7 +57,9 @@ export const rechargeFetch = async (url, params, method = 'GET') => {
     {
       headers,
       method,
-      ...(method !== 'GET' && typeof params !== 'undefined'
+      ...(method !== 'GET' &&
+      typeof params === 'object' &&
+      Object.keys(params).length > 0
         ? {body: JSON.stringify(params)}
         : {}),
     },
@@ -109,6 +111,7 @@ export const getUpcomingOrders = async (params) => {
       sort_by: 'scheduled_at-asc',
       scheduled_at_min: now(),
     });
+
     return new Response(JSON.stringify(charges));
   } catch (error) {
     return new Response(JSON.stringify(error.message), {status: 400});
@@ -172,9 +175,13 @@ export const processOrder = async ({id}) => {
 };
 
 export const cancelSubscription = async (id) => {
-  await recharge.post(`subscriptions/${id}/cancel`, {
-    cancellation_reason: 'Customer canceled',
-  });
+  await rechargeFetch(
+    `subscriptions/${id}/cancel`,
+    {
+      cancellation_reason: 'Customer canceled',
+    },
+    'POST',
+  );
 
   return;
 };
@@ -186,16 +193,24 @@ export const activateSubscription = async (id) => {
 };
 
 export const updateNextChargeScheduledAt = async ({id, date}) => {
-  await recharge.post(`subscriptions/${id}/set_next_charge_date`, {date});
+  await rechargeFetch(
+    `subscriptions/${id}/set_next_charge_date`,
+    {date},
+    'POST',
+  );
   return;
 };
 
 export const updateSubscription = async ({id, data}) => {
-  await recharge.put(`subscriptions/${id}`, {
-    order_interval_unit: 'day',
-    order_interval_frequency: data.order_interval_frequency,
-    charge_interval_frequency: data.order_interval_frequency,
-  });
+  await rechargeFetch(
+    `subscriptions/${id}`,
+    {
+      order_interval_unit: data.order_interval_unit,
+      order_interval_frequency: data.order_interval_frequency,
+      charge_interval_frequency: data.order_interval_frequency,
+    },
+    'PUT',
+  );
   return;
 };
 
@@ -237,17 +252,11 @@ export const getBillingInfo = (params) => {
   };
 };
 
-export const getBillingAddress = (id) => {
-  let {payment_method} = rechargeFetchSync.get(`payment_methods/${id}`);
-  return payment_method;
-};
-
 export const updateShippingAddress = async ({id, address}) => {
   try {
-    await recharge.put(`addresses/${id}`, {...address});
+    await rechargeFetch(`addresses/${id}`, {...address}, 'PUT');
     return new Response(null, {status: 200});
   } catch (error) {
-    console.log('-------------------!!!!', error.response.data.errors);
     return new Response(JSON.stringify(error.response.data.errors), {
       status: 400,
     });
@@ -263,14 +272,24 @@ export const sendPaymentMethodUpdateEmail = async ({
   customer_id,
   payment_method_id,
 }) => {
-  await recharge.post(`customers/${customer_id}/notifications`, {
-    template_type: 'shopify_update_payment_information',
-    template_vars: {
-      payment_method_id,
-    },
-    type: 'email',
-  });
-  return;
+  try {
+    await rechargeFetch(
+      `customers/${customer_id}/notifications`,
+      {
+        template_type: 'shopify_update_payment_information',
+        template_vars: {
+          payment_method_id,
+        },
+        type: 'email',
+      },
+      'POST',
+    );
+    return new Response(null, {status: 200});
+  } catch (error) {
+    return new Response(JSON.stringify(error), {
+      status: 400,
+    });
+  }
 };
 
 export const getOrderHistory = () => {

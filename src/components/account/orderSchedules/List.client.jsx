@@ -1,9 +1,9 @@
-import {Image, useNavigate} from '@shopify/hydrogen';
+import {Image, useNavigate, Link} from '@shopify/hydrogen';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import {getUsaStandard} from '~/utils/dates';
 
-const Index = ({external_customer_id}) => {
+const Index = ({external_customer_id, subscriptions}) => {
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
 
@@ -45,7 +45,9 @@ const Index = ({external_customer_id}) => {
         below.
       </div>
       {!orders.length ? (
-        <div className="flex justify-center items-center py-8 text-lg">•••</div>
+        <div className="flex w-full justify-center items-center py-8 text-lg">
+          •••
+        </div>
       ) : (
         <>
           {orders.map((order, key) => (
@@ -53,7 +55,7 @@ const Index = ({external_customer_id}) => {
               className="container py-8 px-8 mx-auto subscription_box mt-7"
               key={key}
             >
-              <div className="hidden lg:flex flex-wrap -mx-4 -mb-0 ">
+              <div className="flex flex-wrap -mx-4 -mb-0 ">
                 <div className="w-full px-4 md:w-1/1 xl:w-3/3 lg:w-3/3">
                   <div>
                     <div className="mb-10 pb-10">
@@ -64,14 +66,14 @@ const Index = ({external_customer_id}) => {
                         }}
                       >
                         <div style={{maxWidth: '100%'}}>
-                          <div className="flex justify-between">
+                          <div className="flex lg:justify-between justify-center lg:flex-row flex-col lg:gap-0 gap-4">
                             <span
-                              className="font-bold text-lg font-medium"
+                              className="lg:text-left text-center text-lg font-medium"
                               style={{fontSize: '24px', marginTop: '10px'}}
                             >
                               {getUsaStandard(order.scheduled_at)}
                             </span>
-                            <div className="relative w_full font-bold">
+                            <div className="relative w_full font-bold lg:block flex justify-center">
                               <button
                                 className="block py-2 text-lg text-center uppercase font-bold "
                                 style={{
@@ -99,90 +101,99 @@ const Index = ({external_customer_id}) => {
                         </div>
                       </div>
                       <hr style={{margin: '20px 0'}} />
-                      {/*--------------Step 2--------------------------------------*/}
-                      <div className="flex flex-wrap -mx-4 -mb-0">
-                        <div
-                          id="address"
-                          className="w-full mb-12 px-4"
-                          style={{position: 'relative'}}
-                        >
-                          <span
-                            style={{
-                              color: 'rgb(90, 59, 54)',
-                              fontFamily: 'AvenirNext, sans-serif',
-                              fontSize: '16px',
-                              backgroundColor: '#EFEFEF',
-                              margin: '0 10px',
-                            }}
-                            className=" text-lg text-gray-500 leading-loose address"
-                          >
-                            {order.shipping_address.address1}
-                          </span>
-                        </div>
-                        <div className="w-full lg:w-4/6 px-4">
-                          <div className="flex flex-wrap">
-                            <div className="w-full sm:w-1/3 md:w-1/3 lg:w-1/3 px-8 mb-4 lg:mb-0 text-center">
-                              <Image
-                                style={{
-                                  position: 'relative',
-                                  zIndex: 1,
-                                  float: 'left',
-                                  marginRight: '20px',
-                                }}
-                                className="rounded-lg mb-0"
-                                width={'100%'}
-                                height={'100%'}
-                                src={order.line_items[0].images.small}
-                                alt=""
-                              />
-                            </div>
-                            <div className="w-full sm:w-1/3 md:w-2/3 lg:w-2/3 px-8 mb-4 lg:mb-0">
-                              <h2 className="mb-2 font-bold font-heading uppercase text-lg">
-                                Products
-                              </h2>
-                              {order.line_items.map((item, key) => (
-                                <p
-                                  key={key}
-                                  className="text-lg text-black-500"
-                                  style={{lineHeight: '1.2'}}
-                                >
-                                  • {item.quantity} x {item.variant_title}
-                                </p>
-                              ))}
 
-                              <p
-                                className="underline text-lg underline"
-                                style={{marginTop: '8px'}}
+                      {order.line_items.map((subscription, key) => (
+                        <div key={key}>
+                          <div className="flex flex-wrap -mx-4 -mb-0">
+                            <div
+                              id="address"
+                              className="w-full mb-12 px-4"
+                              style={{position: 'relative'}}
+                            >
+                              <span
+                                style={{
+                                  color: 'rgb(90, 59, 54)',
+                                  fontFamily: 'AvenirNext, sans-serif',
+                                  fontSize: '16px',
+                                  backgroundColor: '#EFEFEF',
+                                  margin: '0 10px',
+                                }}
+                                className="lg:text-left text-center w-full text-lg text-gray-500 leading-loose address"
                               >
-                                Edit Subscription
+                                {order.shipping_address.address1}
+                              </span>
+                            </div>
+                            <div className="w-full lg:w-4/6 px-4">
+                              <div className="flex flex-wrap">
+                                <div className="w-full sm:w-1/3 md:w-1/3 lg:w-1/3 px-8 mb-4 lg:mb-0 text-center">
+                                  <Image
+                                    style={{
+                                      position: 'relative',
+                                      zIndex: 1,
+                                      float: 'left',
+                                      marginRight: '20px',
+                                    }}
+                                    className="rounded-lg mb-0"
+                                    width={'100%'}
+                                    height={'100%'}
+                                    src={order.line_items[0].images.small}
+                                    alt=""
+                                  />
+                                </div>
+                                <div className="w-full sm:w-1/3 md:w-2/3 lg:w-2/3 px-8 mb-4 lg:mb-0 lg:text-left text-right">
+                                  <h2 className="mb-2 font-bold font-heading uppercase text-lg">
+                                    Products
+                                  </h2>
+                                  <p
+                                    key={key}
+                                    className="text-lg text-black-500"
+                                    style={{lineHeight: '1.2'}}
+                                  >
+                                    • {subscription.quantity} x{' '}
+                                    {subscription.variant_title}
+                                  </p>
+                                  <Link
+                                    to={`/account/subscriptions/${subscription.purchase_item_id}`}
+                                    className="underline text-lg"
+                                    style={{marginTop: '8px'}}
+                                  >
+                                    Edit Subscription
+                                  </Link>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="w-full lg:w-1/6 px-4 lg:text-left text-right">
+                              <h2 className="mb-2 font-bold font-heading uppercase text-lg lg:px-0 px-8">
+                                Frequency
+                              </h2>
+                              <p
+                                className="text-lg text-black-500 lg:px-0 px-8"
+                                style={{lineHeight: '1.2'}}
+                              >
+                                {
+                                  subscriptions.find(
+                                    (s) =>
+                                      s.id === subscription.purchase_item_id,
+                                  ).order_interval_frequency
+                                }{' '}
+                                Days
+                              </p>
+                            </div>
+                            <div className="w-full lg:w-1/6 px-4 text-right">
+                              <h2 className="mb-2 font-bold font-heading uppercase text-lg lg:px-0 px-8">
+                                Subtotal
+                              </h2>
+                              <p
+                                className="mb-4 text-lg text-black-500 lg:px-0 px-8"
+                                style={{lineHeight: '1.2'}}
+                              >
+                                ${subscription.total_price}
                               </p>
                             </div>
                           </div>
+                          <hr style={{margin: '20px 0'}} />
                         </div>
-                        <div className="w-full lg:w-1/6 px-4">
-                          <h2 className="mb-2 font-bold font-heading uppercase text-lg">
-                            Frequency
-                          </h2>
-                          <p
-                            className="text-lg text-black-500"
-                            style={{lineHeight: '1.2'}}
-                          >
-                            7 Days
-                          </p>
-                        </div>
-                        <div className="w-full lg:w-1/6 px-4 text-right">
-                          <h2 className="mb-2 font-bold font-heading uppercase text-lg">
-                            Subtotal
-                          </h2>
-                          <p
-                            className="mb-4 text-lg text-black-500"
-                            style={{lineHeight: '1.2'}}
-                          >
-                            ${order.subtotal_price}
-                          </p>
-                        </div>
-                      </div>
-                      <hr style={{margin: '20px 0'}} />
+                      ))}
                       <div
                         className="flex justify-between"
                         style={{maxWidth: '200px', marginLeft: 'auto'}}
@@ -200,163 +211,6 @@ const Index = ({external_customer_id}) => {
                             </div>
                           </span>
                         </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="lg:hidden flex flex-wrap -mx-4 -mb-0">
-                <div className="w-full px-4 md:w-1/1 xl:w-3/3 lg:w-3/3">
-                  <div>
-                    <div className="mb-10 pb-10">
-                      <div
-                        style={{
-                          backgroundColor: '#EFEFEF',
-                          paddingTop: '20px',
-                        }}
-                      >
-                        <div style={{maxWidth: '100%'}}>
-                          <div className=" text-center">
-                            <div>
-                              <span
-                                className="font-bold text-lg font-medium"
-                                style={{fontSize: '24px', marginTop: '10px'}}
-                              >
-                                {getUsaStandard(order.scheduled_at)}
-                              </span>
-                            </div>
-                            <hr style={{margin: '20px 0'}} />
-                            <div className="relative font-bold  text-center">
-                              <button
-                                className=" py-2 text-lg text-center uppercase font-bold "
-                                href="#"
-                                style={{
-                                  backgroundColor: '#DB9707',
-                                  color: '#FFFFFF',
-                                  padding: '5px 20px',
-                                }}
-                                onClick={() =>
-                                  handleSkip({
-                                    id: order.id,
-                                    purchase_item_ids: order.line_items.map(
-                                      (line_item) => line_item.purchase_item_id,
-                                    ),
-                                  })
-                                }
-                              >
-                                SKIP ORDER
-                              </button>
-                            </div>
-                            <div
-                              id="address"
-                              className="w-full mb-12 px-4 py-4 text-center"
-                              style={{}}
-                            >
-                              <span
-                                style={{
-                                  color: 'rgb(90, 59, 54)',
-                                  fontFamily: 'AvenirNext, sans-serif',
-                                  fontSize: '16px',
-                                  backgroundColor: '#EFEFEF',
-                                  margin: '0 10px',
-                                }}
-                                className=" text-lg text-gray-500 leading-loose address"
-                              >
-                                {order.shipping_address.address1}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap">
-                        <div className="w-full md:w-1/2 py-4 px-8 mb-4 md:mb-0">
-                          <Image
-                            style={{
-                              position: 'relative',
-                              zIndex: 1,
-                              float: 'left',
-                              marginRight: '20px',
-                            }}
-                            width={'100%'}
-                            height={'100%'}
-                            className="rounded-lg mb-0"
-                            src={order.line_items[0].images.small}
-                            alt=""
-                          />
-                        </div>
-                        <div className="w-full md:w-1/2 py-4 px-8 mb-4 md:mb-0">
-                          <div className="py-3">
-                            <div className="flex justify-between">
-                              <span className="text-md font-bold uppercase">
-                                Products
-                              </span>
-                              <span className="font-bold font-heading text-right">
-                                <div className="w-full mb-4 lg:mb-0">
-                                  <p
-                                    className="text-md text-black-500"
-                                    style={{lineHeight: '1.2'}}
-                                  >
-                                    1 x Family Feastbox Subscription
-                                  </p>
-                                  <p
-                                    className="text-md text-black-500"
-                                    style={{lineHeight: '1.2'}}
-                                  >
-                                    1 x Meal Name
-                                  </p>
-                                  <p
-                                    className="text-md text-black-500"
-                                    style={{lineHeight: '1.2'}}
-                                  >
-                                    1 x Meal Name
-                                  </p>
-                                  <p
-                                    className="text-md text-black-500"
-                                    style={{lineHeight: '1.2'}}
-                                  >
-                                    1 x Meal Name
-                                  </p>
-                                </div>
-                              </span>
-                            </div>
-                          </div>
-                          <hr />
-                          <div className="py-3">
-                            <div className="flex justify-between">
-                              <span className="text-md font-bold uppercase">
-                                Frequency
-                              </span>
-                              <span className="font-bold font-heading">
-                                7 days
-                              </span>
-                            </div>
-                          </div>
-                          <hr />
-                          <div className="py-3">
-                            <div className="flex justify-between">
-                              <span className="text-md font-bold uppercase">
-                                Total
-                              </span>
-                              <span className="font-bold font-heading">
-                                {order.subtotal_price}
-                              </span>
-                            </div>
-                            <div
-                              className="underline text-sm underline text-right"
-                              style={{}}
-                            >
-                              Details
-                            </div>
-                          </div>
-                          <div className="py-3 text-right">
-                            <p
-                              className="underline text-lg underline"
-                              style={{marginTop: '8px'}}
-                            >
-                              Edit Subscription
-                            </p>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>

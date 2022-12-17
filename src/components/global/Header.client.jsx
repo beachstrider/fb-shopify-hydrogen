@@ -144,20 +144,8 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Menu.Items className="bg-primary absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="py-1 bg-primary">
-                <Menu.Item>
-                  {({active}) => (
-                    <Link
-                      to={'/account'}
-                      className={`block px-4 py-2 text-sm ${
-                        active ? 'bg-gray-700 text-white' : 'text-white'
-                      }`}
-                    >
-                      Account
-                    </Link>
-                  )}
-                </Menu.Item>
                 <Menu.Item>
                   {({active}) => (
                     <Link
@@ -166,7 +154,7 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
                         active ? 'bg-gray-700 text-white' : 'text-white'
                       }`}
                     >
-                      Subscriptions
+                      Account
                     </Link>
                   )}
                 </Menu.Item>
@@ -266,30 +254,6 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
           >
             <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <div className="py-1 bg-primary">
-                <Menu.Item>
-                  {({active}) => (
-                    <Link
-                      to={'/account'}
-                      className={`block px-4 py-2 text-sm ${
-                        active ? 'bg-gray-700 text-white' : 'text-white'
-                      }`}
-                    >
-                      Account
-                    </Link>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({active}) => (
-                    <Link
-                      to={'/account/subscriptions'}
-                      className={`block px-4 py-2 text-sm ${
-                        active ? 'bg-gray-700 text-white' : 'text-white'
-                      }`}
-                    >
-                      Subscriptions
-                    </Link>
-                  )}
-                </Menu.Item>
                 {!token ? (
                   <Menu.Item>
                     {({active}) => (
@@ -304,9 +268,23 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
                     )}
                   </Menu.Item>
                 ) : (
-                  <Menu.Item>
-                    {({active}) => <LogoutButton ref={ref} active={active} />}
-                  </Menu.Item>
+                  <>
+                    <Menu.Item>
+                      {({active}) => (
+                        <Link
+                          to={'/account/subscriptions'}
+                          className={`block px-4 py-2 text-sm ${
+                            active ? 'bg-gray-700 text-white' : 'text-white'
+                          }`}
+                        >
+                          Account
+                        </Link>
+                      )}
+                    </Menu.Item>
+                    <Menu.Item>
+                      {({active}) => <LogoutButton ref={ref} active={active} />}
+                    </Menu.Item>
+                  </>
                 )}
               </div>
             </Menu.Items>

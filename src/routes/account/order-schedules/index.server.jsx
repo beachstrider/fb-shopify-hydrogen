@@ -13,6 +13,8 @@ import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 import OrderSchedulesList from '~/components/account/orderSchedules/List.client';
 import {Layout} from '~/components/index.server';
 
+import {getSubscriptions} from '~/lib/recharge';
+
 export default function Account({response}) {
   response.cache(CacheNone());
 
@@ -45,8 +47,7 @@ export default function Account({response}) {
   });
 
   const external_customer_id = customer.id.slice(23);
-
-  // const orders = getUpcomingOrders({external_customer_id});
+  const subscriptions = getSubscriptions({external_customer_id});
 
   return (
     <Layout>
@@ -54,8 +55,8 @@ export default function Account({response}) {
         <Seo type="noindex" data={{title: 'Your Upcoming Orders'}} />
         <AccountPageLayout user={customer} currentPath="order-schedules">
           <OrderSchedulesList
-            // orders={orders}
             external_customer_id={external_customer_id}
+            subscriptions={subscriptions}
           />
         </AccountPageLayout>
         <div

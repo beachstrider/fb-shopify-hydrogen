@@ -23,18 +23,15 @@ const Index = ({subscription}) => {
   const handleCancelSubscription = async () => {
     setProcessCancel(true);
     await axios.delete(`/api/account/subscriptions/${subscription.id}`);
-    setProcessCancel(false);
+    alert('The subscription is canceled.');
     await navigate(`/account/subscriptions`);
   };
   const handleSkipThisOrder = async () => {
-    await navigate(
-      `/account/subscriptions/${subscription.id}?action=processing`,
-    );
     setProcessSkip(true);
     await axios.post(`/api/account/orders/skipUpcomingOrder`, {
       customer_id: subscription.customer_id,
     });
-    setProcessSkip(false);
+    alert('Your right next order is skipped.');
     await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
