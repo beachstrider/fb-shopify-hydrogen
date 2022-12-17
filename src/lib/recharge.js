@@ -6,14 +6,16 @@ export const headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-Recharge-Version': '2021-11',
-  'X-Recharge-Access-Token': Oxygen.env.PRIVATE_RECHARGE_API_TOKEN, // eslint-disable-line no-undef
+  'X-Recharge-Access-Token':
+    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 };
 
 export const headers_ = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-Recharge-Version': '2021-01',
-  'X-Recharge-Access-Token': Oxygen.env.PRIVATE_RECHARGE_API_TOKEN, // eslint-disable-line no-undef
+  'X-Recharge-Access-Token':
+    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 };
 
 export const baseURL = 'https://api.rechargeapps.com/';
@@ -203,7 +205,7 @@ export const updateSubscription = async ({id, data}) => {
   await rechargeFetch(
     `subscriptions/${id}`,
     {
-      order_interval_unit: 'day',
+      order_interval_unit: data.order_interval_unit,
       order_interval_frequency: data.order_interval_frequency,
       charge_interval_frequency: data.order_interval_frequency,
     },

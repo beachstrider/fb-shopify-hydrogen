@@ -28,6 +28,7 @@ const Index = ({subscription}) => {
   } = useForm({
     defaultValues: {
       order_interval_frequency: subscription.order_interval_frequency,
+      order_interval_unit: subscription.order_interval_unit,
     },
   });
 
