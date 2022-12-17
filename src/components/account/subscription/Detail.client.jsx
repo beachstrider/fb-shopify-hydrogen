@@ -59,11 +59,11 @@ const Index = ({subscription}) => {
   // console.log('weeks===', getCutOffDate(dayjs()));
 
   const onSubmit = async (data) => {
-    console.log('submit data: ', data);
     await axios.post(`/api/account/subscriptions/update`, {
       id: subscription.id,
       data,
     });
+    alert('The subscription info is updated.');
   };
 
   const [isChanging, setIsChanging] = useState(true);
@@ -86,6 +86,8 @@ const Index = ({subscription}) => {
       customer_id: subscription.customer_id,
     });
     setProcessSkip(false);
+    alert('The next order is skipped.');
+    navigate('/account/subscriptions', {replace: true});
   };
 
   const handleReactiveSubscription = async () => {

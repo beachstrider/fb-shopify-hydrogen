@@ -111,6 +111,7 @@ export const getUpcomingOrders = async (params) => {
       sort_by: 'scheduled_at-asc',
       scheduled_at_min: now(),
     });
+
     return new Response(JSON.stringify(charges));
   } catch (error) {
     return new Response(JSON.stringify(error.message), {status: 400});
@@ -201,11 +202,15 @@ export const updateNextChargeScheduledAt = async ({id, date}) => {
 };
 
 export const updateSubscription = async ({id, data}) => {
-  await recharge.put(`subscriptions/${id}`, {
-    order_interval_unit: 'day',
-    order_interval_frequency: data.order_interval_frequency,
-    charge_interval_frequency: data.order_interval_frequency,
-  });
+  await rechargeFetch(
+    `subscriptions/${id}`,
+    {
+      order_interval_unit: 'day',
+      order_interval_frequency: data.order_interval_frequency,
+      charge_interval_frequency: data.order_interval_frequency,
+    },
+    'PUT',
+  );
   return;
 };
 
