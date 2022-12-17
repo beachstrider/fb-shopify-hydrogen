@@ -48,14 +48,17 @@ export default function Account({response}) {
 
   const external_customer_id = customer.id.slice(23);
 
-  const orders = getUpcomingOrders({external_customer_id});
+  // const orders = getUpcomingOrders({external_customer_id});
 
   return (
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'Your Upcoming Orders'}} />
         <AccountPageLayout user={customer} currentPath="order-schedules">
-          <OrderSchedulesList orders={orders} />
+          <OrderSchedulesList
+            // orders={orders}
+            external_customer_id={external_customer_id}
+          />
         </AccountPageLayout>
         <div
           id="version_mark"

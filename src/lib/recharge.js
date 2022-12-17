@@ -20,17 +20,17 @@ const recharge = axios.create({
   baseURL,
 });
 
+const convertUrlParams = (params) => {
+  return new URLSearchParams(params).toString();
+};
+
 class RechargeFetch {
   constructor(h = headers) {
     this.headers = h;
   }
 
-  convertUrlParams(params) {
-    return new URLSearchParams(params).toString();
-  }
-
   action(url, params, method = 'GET') {
-    return fetchSync(`${baseURL}${url}?${this.convertUrlParams(params)}`, {
+    return fetchSync(`${baseURL}${url}?${convertUrlParams(params)}`, {
       headers: this.headers,
       method,
     }).json();
@@ -85,6 +85,25 @@ export const getUpcomingOrders = (params) => {
   return charges;
 };
 
+export const getUpcomingOrdersAxios = async ({external_customer_id}) => {
+  const customer_id = (
+    await recharge.get(`customers?external_customer_id=${external_customer_id}`)
+  ).data.customers[0].id;
+
+  const {charges} = (
+    await recharge.get(
+      `charges?${convertUrlParams({
+        customer_id,
+        status: ['queued'],
+        sort_by: 'scheduled_at-asc',
+        scheduled_at_min: new Date().toISOString().split('T')[0],
+      })}`,
+    )
+  ).data;
+
+  return charges;
+};
+
 export const orderNow = async (customer_id) => {
   const charge = (
     await recharge.get(
@@ -114,10 +133,7 @@ export const skipUpcomingOrder = async (customer_id) => {
 };
 
 export const skipOrder = async ({id, purchase_item_ids}) => {
-  console.log('==>', id, purchase_item_ids);
-  const res = await recharge.post(`charges/${id}/skip`, {purchase_item_ids});
-  console.log('==>>>', res);
-
+  await recharge.post(`charges/${id}/skip`, {purchase_item_ids});
   return;
 };
 
@@ -205,7 +221,6 @@ export const getBillingAddress = (id) => {
 
 export const updateShippingAddress = async ({id, address}) => {
   await recharge.put(`addresses/${id}`, {...address});
-  //  console.log(address)
   return;
 };
 

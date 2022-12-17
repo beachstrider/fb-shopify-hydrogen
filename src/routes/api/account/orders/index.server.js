@@ -1,9 +1,8 @@
-import {useShopQuery} from '@shopify/hydrogen';
-
-import {CUSTOMER_QUERY} from '~/lib/gql';
-import {getUpcomingOrders} from '~/lib/recharge';
+import {getUpcomingOrdersAxios} from '~/lib/recharge';
 
 export async function api(request, {session}) {
+  const {external_customer_id} = await request.json();
+
   if (session) {
     const {customerAccessToken} = await session.get();
 
@@ -12,20 +11,9 @@ export async function api(request, {session}) {
         JSON.stringify({message: 'No session'}, {status: 400}),
       );
 
-    const {data} = useShopQuery({
-      query: CUSTOMER_QUERY,
-    });
+    const orders = await getUpcomingOrdersAxios({external_customer_id});
 
-    const {customer} = data;
-
-    if (!customer)
-      return new Response(JSON.stringify({message: 'No login'}, {status: 400}));
-
-    const external_customer_id = customer.id.slice(23);
-
-    const orders = getUpcomingOrders({external_customer_id});
-
-    return new Response(JSON.stringify(orders));
+    return orders;
   }
 
   return new Response('Error');
