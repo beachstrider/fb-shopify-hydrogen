@@ -5,7 +5,7 @@ export function HeroInnerSection() {
   return (
     <section className="h-[420px]  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-image bg-[url('../assets/join_bg.png')]">
       <div className="container max-w-screen-xl m-auto">
-        <h1 className="text-center text-[38px] text-white uppercase font-extrabold leading-[80px]">
+        <h1 className="text-center text-[38px] text-white uppercase font-extrabold leading-[40px] md:leading-[80px]">
           Welcome to the robot-free zone
         </h1>
         <p className="text-center text-[20px] text-white capitalize">
