@@ -15,7 +15,6 @@ import {
 } from '@shopify/hydrogen';
 import {HeaderFallback, EventsListener} from '~/components';
 import {NotFound} from '~/components/index.server';
-import '~/styles/custom-style.css';
 
 function App({request}) {
   const pathname = new URL(request.normalizedUrl).pathname;

@@ -13,6 +13,16 @@
   src: url('/fonts/IBMPlexSerif-TextItalic.woff2') format('woff2');
 }
 
+* {
+  outline: none;
+}
+
+.subscription_box {
+  background-color: #EFEFEF;
+  box-shadow: 0 0 2px #0000004d;
+  border-radius: 5px;
+}
+
 #version_mark {
   /* display: none; */
 }
