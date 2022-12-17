@@ -6,7 +6,7 @@ import heatItUp from '../../assets/heat_it_up.png';
 import heroBg from '../../assets/hero_bg.png';
 import sealedFresh from '../../assets/sealed_fresh.png';
 
-export function HeroSection() {
+export function HowItWorks() {
   return (
     <section className="text-white pb-20 bg-[url('../assets/join_bg.png')]">
       <div className="top-banner">

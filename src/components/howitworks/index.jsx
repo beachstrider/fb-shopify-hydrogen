@@ -1,1 +1,1 @@
-export {HeroSection} from './HeroSection.client';
+export {HowItWorks} from './HowItWorks.client';

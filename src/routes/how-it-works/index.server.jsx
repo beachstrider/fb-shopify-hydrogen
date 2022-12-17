@@ -2,7 +2,7 @@ import {Suspense} from 'react';
 import '../../assets/CSS/style.css'
 import {Seo, useLocalization} from '@shopify/hydrogen';
 import {Layout} from '~/components/index.server';
-import {HeroSection} from '~/components';
+import {HowItWorks} from '~/components';
 
 const Index = () => {
   const {
@@ -14,7 +14,7 @@ const Index = () => {
       <Suspense>
         <Seo type="noindex" data={{title: 'FeastBox How it works page'}} />
       </Suspense>
-      <HeroSection />
+      <HowItWorks />
     </Layout>
   );
 };
