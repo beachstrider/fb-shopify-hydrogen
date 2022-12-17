@@ -13,7 +13,7 @@ export async function api(request, {session}) {
 
     const orders = await getUpcomingOrders({external_customer_id});
 
-    return new Response(JSON.stringify(orders));
+    return orders;
   }
 
   return new Response('Error');

@@ -6,19 +6,19 @@ import {getUsaStandard} from '~/utils/dates';
 const Index = ({external_customer_id}) => {
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
+
   const handleProcess = async (params) => {
     await axios.post(`/api/account/orders/process`, params);
   };
 
   const handleSkip = async (params) => {
     await axios.post(`/api/account/orders/skip`, params);
+    alert('The order is skipped.');
     fetchOrders();
   };
 
   const handleUnskip = async (params) => {
-    await navigate('/account/order-schedules?action=processing');
     await axios.post(`/api/account/orders/unskip`, params);
-    await navigate('/account/order-schedules');
   };
 
   const fetchOrders = async () => {
