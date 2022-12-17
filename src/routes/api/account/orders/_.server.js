@@ -11,10 +11,9 @@ export async function api(request, {session}) {
         JSON.stringify({message: 'No session'}, {status: 400}),
       );
 
-    // const orders = await getUpcomingOrdersAxios({external_customer_id});
+    const orders = await getUpcomingOrdersAxios({external_customer_id});
 
-    // return orders;
-    return 'Ok';
+    return orders;
   }
 
   return new Response('Error');

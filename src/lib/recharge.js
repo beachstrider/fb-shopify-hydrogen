@@ -86,22 +86,23 @@ export const getUpcomingOrders = (params) => {
 };
 
 export const getUpcomingOrdersAxios = async ({external_customer_id}) => {
-  const customer_id = (
-    await recharge.get(`customers?external_customer_id=${external_customer_id}`)
-  ).data.customers[0].id;
+  return {external_customer_id};
+  // const customer_id = (
+  //   await recharge.get(`customers?external_customer_id=${external_customer_id}`)
+  // ).data.customers[0].id;
 
-  const {charges} = (
-    await recharge.get(
-      `charges?${convertUrlParams({
-        customer_id,
-        status: ['queued'],
-        sort_by: 'scheduled_at-asc',
-        scheduled_at_min: new Date().toISOString().split('T')[0],
-      })}`,
-    )
-  ).data;
+  // const {charges} = (
+  //   await recharge.get(
+  //     `charges?${convertUrlParams({
+  //       customer_id,
+  //       status: ['queued'],
+  //       sort_by: 'scheduled_at-asc',
+  //       scheduled_at_min: new Date().toISOString().split('T')[0],
+  //     })}`,
+  //   )
+  // ).data;
 
-  return charges;
+  // return charges;
 };
 
 export const orderNow = async (customer_id) => {
