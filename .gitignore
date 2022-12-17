@@ -85,3 +85,4 @@ package-lock.json
 yarn.lock
 
 .script
+__hydrogen.config.js
