@@ -93,7 +93,6 @@ export function AccountLoginForm({shopName}) {
           </div>
         </div>
         <form noValidate className="pt-6 pb-8 mt-4 mb-4" onSubmit={onSubmit}>
-<<<<<<< HEAD
           <div className="mb-6">
             <input
               className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
@@ -169,24 +168,6 @@ export function AccountLoginForm({shopName}) {
             </p>
           </div>
 
-=======
-          {passwordIncorrect && (
-            <div className="flex items-center justify-center mb-6 bg-zinc-500">
-              <p className="m-4 text-s text-contrast">
-                You entered password incorrectly {`(${failedCounts})`}. please
-                type correct one.
-              </p>
-            </div>
-          )}
-          {hasSubmitError && (
-            <div className="flex items-center justify-center mb-6 bg-zinc-500">
-              <p className="m-4 text-s text-contrast">
-                Sorry we did not recognize either your email or password. Please
-                try to sign in again or create a new account.
-              </p>
-            </div>
-          )}
->>>>>>> c47333d595f2d817866b8e14035b22a60244c1fd
           {showEmailField && (
             <EmailField
               shopName={shopName}

@@ -10,6 +10,7 @@ import {
 
 import {CUSTOMER_QUERY} from '~/lib/gql';
 import BillingLayout from '~/components/account/BillingAndAccount/BillingLayout.client';
+import OrderHisotry from '~/components/account/orderHistory/OrderHistoryList.client';
 import {Layout} from '~/components/index.server';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 
@@ -48,7 +49,7 @@ export default function OrderHistory({response}) {
 
   const external_customer_id = customer.id.slice(23);
 
-  const billingInfo = getOrderHistory({external_customer_id});
+  const order_history = getOrderHistory({external_customer_id});
 
   return (
     <Layout>
@@ -56,7 +57,7 @@ export default function OrderHistory({response}) {
         <Seo type="noindex" data={{title: 'Billing And Account'}} />
       </Suspense>
       <AccountPageLayout user={customer} currentPath="order-history">
-        <BillingLayout billingInfo={billingInfo} user={customer} />
+        <OrderHisotry order={order_history} user={customer} />
       </AccountPageLayout>
       <div
         id="version_mark"

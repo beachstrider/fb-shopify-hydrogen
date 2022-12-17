@@ -273,3 +273,6 @@ export const sendPaymentMethodUpdateEmail = async ({
   return;
 };
 
+export const getOrderHistory = () => {
+  
+}
