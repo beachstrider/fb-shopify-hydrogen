@@ -1,4 +1,4 @@
-import chefMade from '../../assets/chef_made_v2.png';
+import chefMade from '../../assets/test.jpg';
 import backImageCircle from '../../assets/circles.png';
 import downArrow from '../../assets/down_arrows.png';
 import feast from '../../assets/feast.png';
