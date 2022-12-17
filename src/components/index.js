@@ -13,4 +13,5 @@ export * from './home/index';
 export {CountrySelector} from './CountrySelector.client';
 export {CustomFont} from './CustomFont.client';
 export {HeaderFallback} from './HeaderFallback';
+export {BundleFallback} from './BundleFallback';
 export {EventsListener} from './EventsListener.client';

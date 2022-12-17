@@ -752,13 +752,13 @@ const Index = ({subscription}) => {
                     Shipping Address
                   </span>
                   <span className="font-heading text-xl">
-                    <button
-                      type="button"
+                    <Link
+                      to={`/account/billing-account/shipping-address/${subscription.address_id}`}
                       className="font-bold underline"
                       style={{fontSize: 14, float: 'right', color: '#DB9707'}}
                     >
                       Edit
-                    </button>
+                    </Link>
                     <br />
                     <br />
                     {subscription.address.first_name}{' '}

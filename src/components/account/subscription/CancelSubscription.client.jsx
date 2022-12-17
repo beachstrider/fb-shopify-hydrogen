@@ -21,13 +21,10 @@ const Index = ({subscription}) => {
     await navigate(`/account/subscriptions`);
   };
   const handleCancelSubscription = async () => {
-    await navigate(
-      `/account/cancel-subscription/${subscription.id}?action=processing`,
-    );
     setProcessCancel(true);
     await axios.delete(`/api/account/subscriptions/${subscription.id}`);
     setProcessCancel(false);
-    await navigate(`/account/subscriptions/${subscription.id}`);
+    await navigate(`/account/subscriptions`);
   };
   const handleSkipThisOrder = async () => {
     await navigate(

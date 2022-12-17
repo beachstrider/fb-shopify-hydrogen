@@ -3,26 +3,36 @@ import {useState, useEffect} from 'react';
 import axios from 'axios';
 import {getUsaStandard} from '~/utils/dates';
 
-const Index = ({orders}) => {
-  console.log('orders', orders);
+const Index = ({external_customer_id}) => {
+  const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
+
   const handleProcess = async (params) => {
     await axios.post(`/api/account/orders/process`, params);
   };
 
   const handleSkip = async (params) => {
-    await navigate('/account/order-schedules?action=processing');
     await axios.post(`/api/account/orders/skip`, params);
-    await setTimeout(async () => {
-      await navigate('/account/order-schedules');
-    }, [1000]);
+    alert('The order is skipped.');
+    fetchOrders();
   };
 
   const handleUnskip = async (params) => {
-    await navigate('/account/order-schedules?action=processing');
     await axios.post(`/api/account/orders/unskip`, params);
-    await navigate('/account/order-schedules');
   };
+
+  const fetchOrders = async () => {
+    const ordersData = (
+      await axios.post(`/api/account/orders`, {
+        external_customer_id,
+      })
+    ).data;
+
+    setOrders(ordersData);
+  };
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   return (
     <div className="px-4 py-4">
@@ -35,9 +45,7 @@ const Index = ({orders}) => {
         below.
       </div>
       {!orders.length ? (
-        <div className="flex justify-center items-center py-8 text-lg">
-          No Item
-        </div>
+        <div className="flex justify-center items-center py-8 text-lg">•••</div>
       ) : (
         <>
           {orders.map((order, key) => (
