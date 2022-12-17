@@ -213,7 +213,7 @@ function EmailField({email, setEmail, emailError, shopName}) {
     <>
       <div className="mb-3">
         <input
-          className={`mb-1 ${getInputStyleClasses(emailError)}`}
+          className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
           id="email"
           name="email"
           type="email"
@@ -285,7 +285,7 @@ function PasswordField({password, setPassword, passwordError}) {
     <>
       <div className="mb-3">
         <input
-          className={`mb-1 ${getInputStyleClasses(passwordError)}`}
+         className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
           id="password"
           name="password"
           type="password"
