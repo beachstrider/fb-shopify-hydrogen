@@ -1,0 +1,9 @@
+* {
+  outline: none;
+}
+
+.subscription_box {
+  background-color: #EFEFEF;
+  box-shadow: 0 0 2px #0000004d;
+  border-radius: 5px;
+}

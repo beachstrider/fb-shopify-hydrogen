@@ -15,6 +15,7 @@ import {
 } from '@shopify/hydrogen';
 import {HeaderFallback, EventsListener} from '~/components';
 import {NotFound} from '~/components/index.server';
+import '~/styles/custom-style.css';
 
 function App({request}) {
   const pathname = new URL(request.normalizedUrl).pathname;
@@ -38,7 +39,7 @@ function App({request}) {
         <Seo
           type="defaultSeo"
           data={{
-            title: 'Hydrogen',
+            title: 'FeastBox',
             description:
               "A custom storefront powered by Hydrogen, Shopify's React-based framework for building headless.",
             titleTemplate: `%s · Hydrogen`,

@@ -7,6 +7,7 @@ export function HeaderFallback({isHome}) {
       role="banner"
       className={`${styles} flex h-nav items-center backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-8 px-12 py-8`}
     >
+      <Box isHome={isHome} wide={true} />
       <div className="flex space-x-4">
         <Box isHome={isHome} />
         <Box isHome={isHome} />
@@ -14,7 +15,6 @@ export function HeaderFallback({isHome}) {
         <Box isHome={isHome} />
         <Box isHome={isHome} />
       </div>
-      <Box isHome={isHome} wide={true} />
     </header>
   );
 }

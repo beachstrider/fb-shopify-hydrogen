@@ -48,22 +48,25 @@ export default function Account({response}) {
 
   const external_customer_id = customer.id.slice(23);
 
-  const orders = getUpcomingOrders({external_customer_id});
+  // const orders = getUpcomingOrders({external_customer_id});
 
   return (
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'Your Upcoming Orders'}} />
+        <AccountPageLayout user={customer} currentPath="order-schedules">
+          <OrderSchedulesList
+            // orders={orders}
+            external_customer_id={external_customer_id}
+          />
+        </AccountPageLayout>
+        <div
+          id="version_mark"
+          className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
+        >
+          ALPHA, Dec 12 - Jason
+        </div>
       </Suspense>
-      <AccountPageLayout user={customer}>
-        <OrderSchedulesList orders={orders} />
-      </AccountPageLayout>
-      <div
-        id="version_mark"
-        className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
-      >
-        ALPHA, Dec 12 - Jason
-      </div>
     </Layout>
   );
 }

@@ -9,7 +9,11 @@ import {
   useServerAnalytics,
 } from '@shopify/hydrogen';
 
-import {CUSTOMER_QUERY, CUSTOMER_UPDATE_MUTATION} from '~/lib/gql';
+import {
+  CUSTOMER_QUERY,
+  CUSTOMER_UPDATE_MUTATION,
+  LOGIN_MUTATION,
+} from '~/lib/gql';
 import {getApiErrorMessage} from '~/lib/utils';
 import {
   AccountAddressBook,
@@ -139,11 +143,40 @@ export async function api(request, {session, queryShop}) {
     });
   }
 
-  const {customerAccessToken} = await session.get();
+  let customerAccessToken;
 
-  if (!customerAccessToken) return new Response(null, {status: 401});
+  const {
+    email,
+    phone,
+    firstName,
+    lastName,
+    currentPassword: password,
+    newPassword,
+  } = await request.json();
 
-  const {email, phone, firstName, lastName, newPassword} = await request.json();
+  const {data: loginData} = await queryShop({
+    query: LOGIN_MUTATION,
+    variables: {
+      input: {
+        email,
+        password,
+      },
+    },
+    // @ts-expect-error `queryShop.cache` is not yet supported but soon will be.
+    cache: CacheNone(),
+  });
+
+  if (loginData?.customerAccessTokenCreate?.customerAccessToken?.accessToken) {
+    customerAccessToken =
+      loginData.customerAccessTokenCreate.customerAccessToken.accessToken;
+
+    await session.set('customerAccessToken', customerAccessToken);
+  } else {
+    return new Response(
+      JSON.stringify({message: 'The current password you input is wrong.'}),
+      {status: 401},
+    );
+  }
 
   const customer = {};
 
@@ -167,5 +200,7 @@ export async function api(request, {session, queryShop}) {
 
   if (error) return new Response(JSON.stringify({error}), {status: 400});
 
-  return new Response(null);
+  return new Response(null, {
+    status: 200,
+  });
 }
