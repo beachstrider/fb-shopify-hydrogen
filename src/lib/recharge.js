@@ -97,7 +97,7 @@ export const getUpcomingOrdersAxios = async ({external_customer_id}) => {
       customer_id,
     };
   } catch (error) {
-    return 'ERROR!!';
+    return error.message;
     // return new Response(JSON.stringify(error.message));
   }
 
