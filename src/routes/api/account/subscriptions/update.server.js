@@ -5,9 +5,8 @@ export async function api(request, {session}) {
 
   if (session) {
     if (request.method === 'POST') {
-      updateSubscription(params);
+      return await updateSubscription(params);
     }
-    return new Response(JSON.stringify({msg: 'ok'}));
   }
 
   return new Response('Error');

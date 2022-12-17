@@ -15,8 +15,8 @@ const Index = ({subscriptions}) => {
         Edit &amp; active subscription.
       </div>
       {!activateSubscriptions.length ? (
-        <div className="flex justify-center items-center py-8 text-lg">
-          No Item
+        <div className="flex w-full  max-w-2xl justify-center items-center py-8 text-lg">
+          •••
         </div>
       ) : (
         <>
