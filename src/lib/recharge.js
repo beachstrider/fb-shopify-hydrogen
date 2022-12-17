@@ -89,16 +89,16 @@ export const getUpcomingOrdersAxios = async ({external_customer_id}) => {
   try {
     const customer_id = (
       await recharge.get(
-        `customers?external_customer_id=${external_customer_id}`,
+        `customers___?external_customer_id=${external_customer_id}`,
       )
     ).data.customers[0].id;
 
     return {
       customer_id,
-      PUBLIC_RECHARGE_API_TOKEN: Oxygen.env.PUBLIC_RECHARGE_API_TOKEN,
     };
   } catch (error) {
-    return new Response(JSON.stringify(error));
+    return 'ERROR!!';
+    // return new Response(JSON.stringify(error.message));
   }
 
   // const {charges} = (
