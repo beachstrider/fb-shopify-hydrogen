@@ -1,21 +1,21 @@
 import {fetchSync} from '@shopify/hydrogen';
 import axios from 'axios';
 
-const headers = {
+export const headers = {
   'X-Recharge-Version': '2021-11',
   'X-Recharge-Access-Token':
     'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 };
 
-const headers_ = {
+export const headers_ = {
   'X-Recharge-Version': '2021-01',
   'X-Recharge-Access-Token':
     'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 };
 
-const baseURL = 'https://api.rechargeapps.com/';
+export const baseURL = 'https://api.rechargeapps.com/';
 
-const recharge = axios.create({
+export const recharge = axios.create({
   headers,
   baseURL,
 });
@@ -89,7 +89,7 @@ export const getUpcomingOrdersAxios = async ({external_customer_id}) => {
   try {
     const customer_id = (
       await recharge.get(
-        `customers___?external_customer_id=${external_customer_id}`,
+        `customers?external_customer_id=${external_customer_id}`,
       )
     ).data.customers[0].id;
 
