@@ -11,7 +11,7 @@ const Modal = (setOpenModal) => {
         <div 
           role="tablist"
           aria-label="tabs"
-          class="relative w-max mx-auto  grid grid-cols-2 items-center bg-white-900/20 border-[2px] text-black-800 font-bold border-amber-500 overflow-hidden"
+          class="relative w-max mx-auto  grid grid-cols-2 items-center bg-white-900/20 border-[2px] font-bold border-amber-500 overflow-hidden"
         >
           <div class="absolute indicator my-auto top-0 bottom-0 left-0 bg-white shadow-md"></div>
           <button
@@ -23,7 +23,7 @@ const Modal = (setOpenModal) => {
             class={selectedTag === 1 ?"relative block h-10 px-6 tab bg-amber-500 text-white":"relative block h-10 px-6 tab bg-white"}
             onClick={()=>handleSelect(1)}
           >
-            <span class="text-gray-800">Details</span>
+            <span class={selectedTag===1?"text-white":"text-black"}>Details</span>
           </button>
           <button
             role="tab"
@@ -34,7 +34,7 @@ const Modal = (setOpenModal) => {
             class={selectedTag === 2 ? "relative block h-10 px-6 tab bg-amber-500 text-white":"relative block h-10 px-6 tab bg-white"}
             onClick={()=>handleSelect(2)}
           >
-            <span class="text-gray-800">Nutritions</span>
+            <span class={selectedTag===2?"text-white":"text-black"}>Nutritions</span>
           </button>
        
         </div>
