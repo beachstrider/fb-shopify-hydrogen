@@ -86,10 +86,11 @@ export const getUpcomingOrders = (params) => {
 };
 
 export const getUpcomingOrdersAxios = async ({external_customer_id}) => {
-  return {external_customer_id};
-  // const customer_id = (
-  //   await recharge.get(`customers?external_customer_id=${external_customer_id}`)
-  // ).data.customers[0].id;
+  const customer_id = (
+    await recharge.get(`customers?external_customer_id=${external_customer_id}`)
+  ).data.customers[0].id;
+
+  return {customer_id};
 
   // const {charges} = (
   //   await recharge.get(
