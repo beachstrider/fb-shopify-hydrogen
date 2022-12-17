@@ -89,7 +89,7 @@ export const getUpcomingOrdersAxios = async ({external_customer_id}) => {
   try {
     const customer_id = (
       await recharge.get(
-        `customers?external_customer_id=${external_customer_id}`,
+        `customers___?external_customer_id=${external_customer_id}`,
       )
     ).data.customers[0].id;
 
