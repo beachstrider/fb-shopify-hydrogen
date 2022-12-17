@@ -13,8 +13,6 @@ import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 import OrderSchedulesList from '~/components/account/orderSchedules/List.client';
 import {Layout} from '~/components/index.server';
 
-import {getUpcomingOrders} from '~/lib/recharge';
-
 export default function Account({response}) {
   response.cache(CacheNone());
 

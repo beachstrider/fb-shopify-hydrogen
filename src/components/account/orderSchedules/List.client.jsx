@@ -12,7 +12,7 @@ const Index = ({external_customer_id}) => {
 
   const handleSkip = async (params) => {
     await axios.post(`/api/account/orders/skip`, params);
-    fetch();
+    fetchOrders();
   };
 
   const handleUnskip = async (params) => {
@@ -21,7 +21,7 @@ const Index = ({external_customer_id}) => {
     await navigate('/account/order-schedules');
   };
 
-  async function fetch() {
+  const fetchOrders = async () => {
     const ordersData = (
       await axios.post(`/api/account/orders`, {
         external_customer_id,
@@ -29,10 +29,9 @@ const Index = ({external_customer_id}) => {
     ).data;
 
     setOrders(ordersData);
-  }
-
+  };
   useEffect(() => {
-    fetch();
+    fetchOrders();
   }, []);
 
   return (

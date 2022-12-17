@@ -1,5 +1,6 @@
 import {fetchSync} from '@shopify/hydrogen';
 import axios from 'axios';
+import {now} from '~/utils/dates';
 
 export const headers = {
   'X-Recharge-Version': '2021-11',
@@ -72,34 +73,41 @@ export const getSubscription = (id) => {
   return {...subscription, address, product};
 };
 
-export const getUpcomingOrders = (params) => {
-  const customer_id = rechargeFetch.get(`customers`, params).customers[0].id;
+export const getUpcomingOrders = async (params) => {
+  const customersData = await fetch(
+    `${baseURL}customers?${convertUrlParams(params)}`,
+    {headers},
+  );
+  const {customers} = await customersData.json();
+  const customer_id = customers[0].id;
 
-  const {charges} = rechargeFetch.get(`charges`, {
-    customer_id,
-    status: ['queued'],
-    sort_by: 'scheduled_at-asc',
-    scheduled_at_min: new Date().toISOString().split('T')[0],
-  });
+  const chargesData = await fetch(
+    `${baseURL}charges?${convertUrlParams({
+      customer_id,
+      status: ['queued'],
+      sort_by: 'scheduled_at-asc',
+      scheduled_at_min: now(),
+    })}`,
+    {headers},
+  );
+  const {charges} = await chargesData.json();
 
   return charges;
 };
 
 export const getUpcomingOrdersAxios = async ({external_customer_id}) => {
-  try {
-    const customer_id = (
-      await recharge.get(
-        `customers?external_customer_id=${external_customer_id}`,
-      )
-    ).data.customers[0].id;
+  const customer_id = (
+    await recharge.get(`customers?external_customer_id=${external_customer_id}`)
+  ).data.customers[0].id;
 
-    return {
-      customer_id,
-    };
-  } catch (error) {
-    return error.message;
-    // return new Response(JSON.stringify(error.message));
-  }
+  return {
+    customer_id,
+  };
+  // try {
+  // } catch (error) {
+  //   return error;
+  //   // return new Response(JSON.stringify(error.message));
+  // }
 
   // const {charges} = (
   //   await recharge.get(
