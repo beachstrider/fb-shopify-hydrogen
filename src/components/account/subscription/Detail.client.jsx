@@ -32,18 +32,18 @@ const Index = ({subscription}) => {
   });
 
   useEffect(() => {
-    async function fetch() {}
+    fetch();
   }, []);
 
-  const allDeliveryDates = fetchSync('/api/bundle-api/delivery-dates').json()
-    .data;
+  async function fetch() {
+    // const res = (await axios.get('/api/bundle-api/delivery-dates')).data;
+    // console.log('===', res);
+  }
 
-  const deliveryDates = sortByDateProperty(
-    allDeliveryDates.filter((el) => isFuture(el.date)),
-    'date',
-  );
-
-  // console.log('===', deliveryDates);
+  // const deliveryDates = sortByDateProperty(
+  //   allDeliveryDates.filter((el) => isFuture(el.date)),
+  //   'date',
+  // );
 
   // const weeks = [...new Array(6)].map(() => {
   //   var curr = new Date(); // get current date
@@ -73,49 +73,33 @@ const Index = ({subscription}) => {
   );
 
   const handleOrderNow = async () => {
-    await navigate(
-      `/account/subscriptions/${subscription.id}?action=processing`,
-    );
     setProcessOrder(true);
     await axios.post(`/api/account/orders/create`, {
       customer_id: subscription.customer_id,
     });
     setProcessOrder(false);
-    await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
   const handleSkipThisOrder = async () => {
-    await navigate(
-      `/account/subscriptions/${subscription.id}?action=processing`,
-    );
     setProcessSkip(true);
     await axios.post(`/api/account/orders/skipUpcomingOrder`, {
       customer_id: subscription.customer_id,
     });
     setProcessSkip(false);
-    await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
   const handleReactiveSubscription = async () => {
-    await navigate(
-      `/account/subscriptions/${subscription.id}?action=processing`,
-    );
     setProcessReactivate(true);
     await axios.patch(`/api/account/subscriptions/${subscription.id}`);
     setProcessReactivate(false);
-    await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
   const handleSaveDeliveryDate = async () => {
-    await navigate(
-      `/account/subscriptions/${subscription.id}?action=processing`,
-    );
     await axios.post(`/api/account/subscriptions/updateNextDeliveryDate`, {
       id: subscription.id,
       date: next_charge_scheduled_at,
     });
     setChangedDeliveryDate(false);
-    await navigate(`/account/subscriptions/${subscription.id}`);
   };
 
   return (
@@ -195,35 +179,14 @@ const Index = ({subscription}) => {
                         <p className="mb-2 text-md text-gray-500" />
                         <div className="text-sm">
                           Delivery Day:
-                          {changedDeliveryDate ? (
-                            <input
-                              className="p-0 w-[83px] text-[11px]"
-                              type="date"
-                              min={now()}
-                              value={next_charge_scheduled_at}
-                              onChange={(e) =>
-                                setNext_charge_scheduled_at(e.target.value)
-                              }
-                            />
-                          ) : (
-                            <strong>
-                              {getUsaStandard(
-                                subscription.next_charge_scheduled_at,
-                              )}
-                            </strong>
-                          )}
+                          <strong>
+                            {getUsaStandard(
+                              subscription.next_charge_scheduled_at,
+                            )}
+                          </strong>
                         </div>
                         <div className="text-sm" style={{color: '#DB9707'}}>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (changedDeliveryDate) {
-                                handleSaveDeliveryDate();
-                              } else {
-                                setChangedDeliveryDate(true);
-                              }
-                            }}
-                          >
+                          <button type="button" onClick={() => {}}>
                             <u>
                               {changedDeliveryDate
                                 ? 'Save changed Delivery Day'

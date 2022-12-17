@@ -57,7 +57,9 @@ export const rechargeFetch = async (url, params, method = 'GET') => {
     {
       headers,
       method,
-      ...(method !== 'GET' && typeof params !== 'undefined'
+      ...(method !== 'GET' &&
+      typeof params === 'object' &&
+      Object.keys(params).length > 0
         ? {body: JSON.stringify(params)}
         : {}),
     },
@@ -237,17 +239,11 @@ export const getBillingInfo = (params) => {
   };
 };
 
-export const getBillingAddress = (id) => {
-  let {payment_method} = rechargeFetchSync.get(`payment_methods/${id}`);
-  return payment_method;
-};
-
 export const updateShippingAddress = async ({id, address}) => {
   try {
-    await recharge.put(`addresses/${id}`, {...address});
+    await rechargeFetch(`addresses/${id}`, {...address}, 'PUT');
     return new Response(null, {status: 200});
   } catch (error) {
-    console.log('-------------------!!!!', error.response.data.errors);
     return new Response(JSON.stringify(error.response.data.errors), {
       status: 400,
     });
@@ -263,12 +259,22 @@ export const sendPaymentMethodUpdateEmail = async ({
   customer_id,
   payment_method_id,
 }) => {
-  await recharge.post(`customers/${customer_id}/notifications`, {
-    template_type: 'shopify_update_payment_information',
-    template_vars: {
-      payment_method_id,
-    },
-    type: 'email',
-  });
-  return;
+  try {
+    await rechargeFetch(
+      `customers/${customer_id}/notifications`,
+      {
+        template_type: 'shopify_update_payment_information',
+        template_vars: {
+          payment_method_id,
+        },
+        type: 'email',
+      },
+      'POST',
+    );
+    return new Response(null, {status: 200});
+  } catch (error) {
+    return new Response(JSON.stringify(error), {
+      status: 400,
+    });
+  }
 };
