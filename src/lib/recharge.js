@@ -95,7 +95,9 @@ export const getUpcomingOrdersAxios = async ({external_customer_id}) => {
 
     return {customer_id};
   } catch (error) {
-    return error;
+    return new Response(JSON.stringify(error.response.data.errors), {
+      status: 400,
+    });
   }
 
   // const {charges} = (
