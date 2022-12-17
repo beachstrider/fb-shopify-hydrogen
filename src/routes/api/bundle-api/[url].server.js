@@ -1,7 +1,9 @@
 import axios from 'axios';
 const headers = {Accept: 'application/json'};
 // const baseURL = 'https://feastbox-bundle-builder-proxy-dev.speedwayapp.com/';
+// eslint-disable-next-line no-undef
 const baseURL = Oxygen?.env?.BUNDLE_API_URL;
+// eslint-disable-next-line no-undef
 const initialToken = Oxygen?.env?.BUNDLE_API_SECRET;
 
 const shop = 'feast-box-sandbox.myshopify.com';
