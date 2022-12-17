@@ -220,8 +220,15 @@ export const getBillingAddress = (id) => {
 };
 
 export const updateShippingAddress = async ({id, address}) => {
-  await recharge.put(`addresses/${id}`, {...address});
-  return;
+  try {
+    await recharge.put(`addresses/${id}`, {...address});
+    return new Response(null, {status: 200});
+  } catch (error) {
+    console.log('-------------------!!!!', error.response.data.errors);
+    return new Response(JSON.stringify(error.response.data.errors), {
+      status: 400,
+    });
+  }
 };
 
 export const getShippingAddress = (id) => {

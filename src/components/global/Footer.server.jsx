@@ -47,7 +47,7 @@ export function Footer({menu}) {
                 <li className="mb-1.5">
                   <Link
                     className="font-medium leading-relaxed text-white"
-                    to="/how_it_works"
+                    to="/how-it-works"
                   >
                     How it Works
                   </Link>

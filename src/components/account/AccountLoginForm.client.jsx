@@ -11,6 +11,8 @@ export function AccountLoginForm({shopName}) {
   const [emailError, setEmailError] = useState(null);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(null);
+  const [failedCounts, setFailedCounts] = useState(0);
+  const [passwordIncorrect, setPasswordIncorrect] = useState(false);
 
   function onSubmit(event) {
     event.preventDefault();
@@ -43,8 +45,9 @@ export function AccountLoginForm({shopName}) {
       });
 
       if (response.error) {
-        setHasSubmitError(true);
-        resetForm();
+        setFailedCounts(failedCounts + 1);
+        setPasswordIncorrect(true);
+        if (failedCounts == 2) resetForm();
       } else {
         navigate('/account/subscriptions');
       }
@@ -63,6 +66,9 @@ export function AccountLoginForm({shopName}) {
     setEmailError(null);
     setPassword('');
     setPasswordError(null);
+    setFailedCounts(0);
+    setHasSubmitError(true);
+    setPasswordIncorrect(false);
   }
 
   return (
@@ -87,80 +93,22 @@ export function AccountLoginForm({shopName}) {
           </div>
         </div>
         <form noValidate className="pt-6 pb-8 mt-4 mb-4" onSubmit={onSubmit}>
-          <div className="mb-6">
-            <input
-              className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
-              type="text"
-              name="field-name"
-              placeholder="Email"
-            />
-          </div>
-          <div className="mb-6">
-            <input
-              className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
-              type="text"
-              name="field-name"
-              placeholder="Password"
-            />
-          </div>
-          <p className="text-sm" style={{marginBottom: '20px'}}>
-            <span className="font-bold underline" style={{color: '#DB9707'}}>
-              <a href="#">Forgot Password? </a>
-            </span>
-          </p>
-          <button
-            className="block py-2 text-lg text-center uppercase font-bold w-full "
-            style={{
-              backgroundColor: '#DB9707',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign In
-          </button>
-          <button
-            className="block py-2 text-lg text-center  font-bold w-full"
-            href="#"
-            style={{
-              backgroundColor: '#4285F4',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign in with Google
-          </button>
-          <button
-            className="block py-2 text-lg text-center  font-bold w-full"
-            style={{
-              backgroundColor: '#4267B2',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign in with Facebook
-          </button>
-          <button
-            className="block py-2 text-lg text-center  font-bold w-full "
-            style={{
-              backgroundColor: '#35465C',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign in with Amazon
-          </button>
-          <div className="mb-10">
-            <p className="text-sm py-4">
-              Don't have an account?{' '}
-              <span
-                className="font-bold underline"
-                style={{color: '#DB9707', marginTop: '20px'}}
-              >
-                <a href="#">Register</a>
-              </span>
-            </p>
-          </div>
-
+          {passwordIncorrect && (
+            <div className="flex items-center justify-center mb-6 bg-zinc-500">
+              <p className="m-4 text-s text-contrast">
+                You entered password incorrectly {`(${failedCounts})`}. please
+                type correct one.
+              </p>
+            </div>
+          )}
+          {hasSubmitError && (
+            <div className="flex items-center justify-center mb-6 bg-zinc-500">
+              <p className="m-4 text-s text-contrast">
+                Sorry we did not recognize either your email or password. Please
+                try to sign in again or create a new account.
+              </p>
+            </div>
+          )}
           {showEmailField && (
             <EmailField
               shopName={shopName}
@@ -196,6 +144,7 @@ export async function callLoginApi({email, password}) {
       body: JSON.stringify({email, password}),
     });
     if (res.ok) {
+      localStorage.setItem('isLoggedin', true);
       return {};
     } else {
       return res.json();

@@ -46,9 +46,7 @@ const Index = ({external_customer_id}) => {
         below.
       </div>
       {!orders.length ? (
-        <div className="flex justify-center items-center py-8 text-lg">
-          No Item
-        </div>
+        <div className="flex justify-center items-center py-8 text-lg">•••</div>
       ) : (
         <>
           {orders.map((order, key) => (

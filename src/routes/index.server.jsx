@@ -11,7 +11,7 @@ import {
 
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import {getHeroPlaceholder} from '~/lib/placeholders';
-import {HeroSection, HeroInnerSection, PartyTime} from '~/components';
+import {HeroSection, HeroInnerSection, PartyTime, CounterSection, FanClub} from '~/components';
 
 import {Layout, ProductSwimlane} from '~/components/index.server';
 
@@ -62,6 +62,8 @@ function HomepageContent() {
       <HeroSection />
       <HeroInnerSection />
       <PartyTime />
+      <CounterSection />
+      <FanClub/>
     </div>
   );
 }

@@ -1,5 +1,9 @@
 import {Link, Image, useUrl, useCart} from '@shopify/hydrogen';
 import {useWindowScroll} from 'react-use';
+import {Fragment, useEffect, useState} from 'react';
+import {Menu, Transition} from '@headlessui/react';
+import {LogoutButton} from '~/components';
+import React from 'react';
 
 import {
   Heading,
@@ -17,7 +21,7 @@ import {useDrawer} from './Drawer.client';
 /**
  * A client component that specifies the content of the header on the website
  */
-export function Header({title}) {
+export function Header({title, token}) {
   const menu = {
     id: 'gid://shopify/Menu/180186611768',
     items: [
@@ -71,6 +75,7 @@ export function Header({title}) {
         title={title}
         menu={menu}
         openCart={openCart}
+        token={token}
       />
       <MobileHeader
         countryCode={countryCode}
@@ -78,12 +83,13 @@ export function Header({title}) {
         title={title}
         openCart={openCart}
         openMenu={openMenu}
+        token={token}
       />
     </>
   );
 }
 
-function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
+function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
   const {y} = useWindowScroll();
 
   const styles = {
@@ -96,6 +102,8 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
       y > 50 && !isHome ? 'shadow-lightHeader ' : ''
     }flex lg:hidden items-center h-nav sticky backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-4 px-4 md:px-8`,
   };
+
+  const ref = React.createRef();
 
   return (
     <header role="banner" className={styles.container}>
@@ -120,9 +128,70 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
       </Link>
 
       <div className="flex items-center justify-end w-full gap-4">
-        <Link to={'/account'} className={styles.button}>
-          <IconAccount />
-        </Link>
+        <Menu as="div" className="relative inline-block text-left">
+          <div>
+            <Menu.Button className="flex items-center text-gray-400  focus:outline-none ">
+              <IconAccount />
+            </Menu.Button>
+          </div>
+
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1 bg-primary">
+                <Menu.Item>
+                  {({active}) => (
+                    <Link
+                      to={'/account'}
+                      className={`block px-4 py-2 text-sm ${
+                        active ? 'bg-gray-700 text-white' : 'text-white'
+                      }`}
+                    >
+                      Account
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({active}) => (
+                    <Link
+                      to={'/account/subscriptions'}
+                      className={`block px-4 py-2 text-sm ${
+                        active ? 'bg-gray-700 text-white' : 'text-white'
+                      }`}
+                    >
+                      Subscriptions
+                    </Link>
+                  )}
+                </Menu.Item>
+                {!token ? (
+                  <Menu.Item>
+                    {({active}) => (
+                      <Link
+                        to={'/account/login'}
+                        className={`block px-4 py-2 text-sm ${
+                          active ? 'bg-gray-700 text-white' : 'text-white'
+                        }`}
+                      >
+                        Login
+                      </Link>
+                    )}
+                  </Menu.Item>
+                ) : (
+                  <Menu.Item>
+                    {({active}) => <LogoutButton ref={ref} active={active} />}
+                  </Menu.Item>
+                )}
+              </div>
+            </Menu.Items>
+          </Transition>
+        </Menu>
         <button onClick={openCart} className={styles.button}>
           <IconBag />
           <CartBadge dark={isHome} />
@@ -132,7 +201,7 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu}) {
   );
 }
 
-function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
+function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
   const {y} = useWindowScroll();
 
   const styles = {
@@ -146,6 +215,8 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
       y > 50 && !isHome ? 'shadow-lightHeader ' : 'shadow-lightHeader '
     }hidden lg:flex items-center sticky transition duration-300 backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-8 px-12 py-3`,
   };
+
+  const ref = React.createRef();
 
   return (
     <header role="banner" className={styles.container}>
@@ -177,9 +248,70 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title}) {
           SHOP NOW
         </Link>
 
-        <Link to={'/account/subscriptions'} className={styles.button}>
-          <IconAccount />
-        </Link>
+        <Menu as="div" className="relative inline-block text-left">
+          <div>
+            <Menu.Button className="flex items-center text-gray-400  focus:outline-none ">
+              <IconAccount />
+            </Menu.Button>
+          </div>
+
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1 bg-primary">
+                <Menu.Item>
+                  {({active}) => (
+                    <Link
+                      to={'/account'}
+                      className={`block px-4 py-2 text-sm ${
+                        active ? 'bg-gray-700 text-white' : 'text-white'
+                      }`}
+                    >
+                      Account
+                    </Link>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({active}) => (
+                    <Link
+                      to={'/account/subscriptions'}
+                      className={`block px-4 py-2 text-sm ${
+                        active ? 'bg-gray-700 text-white' : 'text-white'
+                      }`}
+                    >
+                      Subscriptions
+                    </Link>
+                  )}
+                </Menu.Item>
+                {!token ? (
+                  <Menu.Item>
+                    {({active}) => (
+                      <Link
+                        to={'/account/login'}
+                        className={`block px-4 py-2 text-sm ${
+                          active ? 'bg-gray-700 text-white' : 'text-white'
+                        }`}
+                      >
+                        Login
+                      </Link>
+                    )}
+                  </Menu.Item>
+                ) : (
+                  <Menu.Item>
+                    {({active}) => <LogoutButton ref={ref} active={active} />}
+                  </Menu.Item>
+                )}
+              </div>
+            </Menu.Items>
+          </Transition>
+        </Menu>
         <button onClick={openCart} className={styles.button}>
           <IconBag />
           <CartBadge dark={isHome} />
