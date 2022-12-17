@@ -45,7 +45,9 @@ const Index = ({external_customer_id}) => {
         below.
       </div>
       {!orders.length ? (
-        <div className="flex justify-center items-center py-8 text-lg">•••</div>
+        <div className="flex w-full justify-center items-center py-8 text-lg">
+          •••
+        </div>
       ) : (
         <>
           {orders.map((order, key) => (
@@ -167,7 +169,7 @@ const Index = ({external_customer_id}) => {
                             className="text-lg text-black-500"
                             style={{lineHeight: '1.2'}}
                           >
-                            7 Days
+                            ? Days
                           </p>
                         </div>
                         <div className="w-full lg:w-1/6 px-4 text-right">

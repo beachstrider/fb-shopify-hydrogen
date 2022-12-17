@@ -174,9 +174,13 @@ export const processOrder = async ({id}) => {
 };
 
 export const cancelSubscription = async (id) => {
-  await recharge.post(`subscriptions/${id}/cancel`, {
-    cancellation_reason: 'Customer canceled',
-  });
+  await rechargeFetch(
+    `subscriptions/${id}/cancel`,
+    {
+      cancellation_reason: 'Customer canceled',
+    },
+    'POST',
+  );
 
   return;
 };
@@ -188,7 +192,11 @@ export const activateSubscription = async (id) => {
 };
 
 export const updateNextChargeScheduledAt = async ({id, date}) => {
-  await recharge.post(`subscriptions/${id}/set_next_charge_date`, {date});
+  await rechargeFetch(
+    `subscriptions/${id}/set_next_charge_date`,
+    {date},
+    'POST',
+  );
   return;
 };
 
