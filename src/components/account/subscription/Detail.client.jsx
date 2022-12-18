@@ -88,7 +88,7 @@ const Index = ({subscription}) => {
     });
     setProcessSkip(false);
     alert('The next order is skipped.');
-    navigate('/account/subscriptions', {replace: true});
+    navigate('/account/subscriptions', {replace: true, reloadDocument: true});
   };
 
   const handleReactiveSubscription = async () => {
