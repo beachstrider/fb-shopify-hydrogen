@@ -63,7 +63,7 @@ export default function Account({response}) {
           id="version_mark"
           className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
         >
-          ALPHA, Dec 12 - Jason
+          BETA, Dec 12 - Jason
         </div>
       </Suspense>
     </Layout>

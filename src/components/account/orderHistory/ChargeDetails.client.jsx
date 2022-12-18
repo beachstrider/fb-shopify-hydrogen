@@ -2,18 +2,27 @@ import {Image, useNavigate, Link} from '@shopify/hydrogen';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import {getUsaStandard} from '~/utils/dates';
-import Moment from 'moment';
 
 const Index = ({orderdetail}) => {
-
   const total_price = Number(orderdetail.total_price);
   const subtotal_price = Number(orderdetail.subtotal_price);
   const total_discounts = Number(orderdetail.total_discounts);
   const total_tax = Number(orderdetail.total_tax);
 
-  const shipping_price = (total_price + total_discounts - subtotal_price - total_tax).toFixed(2);
+  const shipping_price = (
+    total_price +
+    total_discounts -
+    subtotal_price -
+    total_tax
+  ).toFixed(2);
 
-  console.log(total_price, subtotal_price, total_discounts, total_tax, shipping_price)
+  console.log(
+    total_price,
+    subtotal_price,
+    total_discounts,
+    total_tax,
+    shipping_price,
+  );
 
   return (
     <div className="container px-4 mx-auto">
@@ -24,7 +33,7 @@ const Index = ({orderdetail}) => {
         >
           YOUR ORDER SUMMARY
         </h2>
-        <p className="text-md" >
+        <p className="text-md">
           Find your billing, shipping and order information below:
         </p>
         <p
@@ -36,19 +45,22 @@ const Index = ({orderdetail}) => {
       </div>
       {/*---------------*/}
       <div className="max-w-4xl mx-auto">
-        <div className="flex flex-wrap order_sum_box">
+        <div className="flex flex-wrap order_sum_box border border-[#888] rounded-sm bg-white">
           {/*-row 1--------------*/}
           <div className="w-full flex flex-wrap">
             <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md">
               Date
               <br />
-              <span className="mb-4 md:mb-0 font-bold">{Moment(orderdetail.processed_at).format('MMM d, YYYY')}</span>
+              <span className="mb-4 md:mb-0 font-bold">
+                {getUsaStandard(orderdetail.processed_at)}
+              </span>
             </div>
             <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md">
               Billing Address
               <br />
               <span className=" mb-4 md:mb-0 font-bold">
-                {orderdetail.billing_address.first_name} {orderdetail.billing_address.last_name}
+                {orderdetail.billing_address.first_name}{' '}
+                {orderdetail.billing_address.last_name}
                 <br />
                 {orderdetail.billing_address.address1}
                 <br />
@@ -61,7 +73,8 @@ const Index = ({orderdetail}) => {
               Shipping Information
               <br />
               <span className="mb-4 md:mb-0 font-bold">
-               {orderdetail.shipping_address.first_name} {orderdetail.shipping_address.last_name}
+                {orderdetail.shipping_address.first_name}{' '}
+                {orderdetail.shipping_address.last_name}
                 <br />
                 {orderdetail.shipping_address.address1}
                 <br />
@@ -74,7 +87,9 @@ const Index = ({orderdetail}) => {
               Status
               <br />
               <div className="flex">
-                <span className="mb-4 md:mb-0 font-bold ">{orderdetail.status}</span>
+                <span className="mb-4 md:mb-0 font-bold ">
+                  {orderdetail.status}
+                </span>
                 <span className="flex">
                   {' '}
                   {/* <svg
@@ -123,87 +138,77 @@ const Index = ({orderdetail}) => {
           {/*-row 3--------------*/}
           {orderdetail.line_items.map((item, key) => (
             <div className="w-full flex flex-wrap" style={{}} key={key}>
-                <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 font-bold lg:mb-0 text-sm xl:text-md lg:text-md">
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 font-bold lg:mb-0 text-sm xl:text-md lg:text-md">
                 {item.variant_title}
-                </div>
-                <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md">
+              </div>
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md">
                 {item.unit_price}
-                </div>
-                <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md">
+              </div>
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md">
                 x{item.quantity}
-                </div>
-                <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
+              </div>
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
                 {item.total_price}
-                </div>
+              </div>
             </div>
           ))}
-          
-          {/*-end row 3--------------*/}
-          {/*-row 4--------------*/}
-          <div
-            className="w-full flex  justify-between xl:w-1/2 lg:w-1/2 md:w-1/2 xl:ml-50 lg:ml-50 md:ml-50"
-            style={{}}
-          >
-            <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 font-bold lg:mb-0 text-sm xl:text-md lg:text-md">
-              Subtotal
+          <div className="w-full flex flex-col items-end mt-6">
+            <div
+              className="w-full flex  justify-between xl:w-1/2 lg:w-1/2 md:w-1/2 xl:ml-50 lg:ml-50 md:ml-50"
+              style={{}}
+            >
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 font-bold lg:mb-0 text-sm xl:text-md lg:text-md">
+                Subtotal
+              </div>
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
+                {orderdetail.subtotal_price}
+              </div>
             </div>
-            <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
-              {orderdetail.subtotal_price}
+            <div
+              className="w-full flex  justify-between xl:w-1/2 lg:w-1/2 md:w-1/2 xl:ml-50 lg:ml-50 md:ml-50"
+              style={{}}
+            >
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 font-bold lg:mb-0 text-sm xl:text-md lg:text-md">
+                Taxes
+              </div>
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
+                {orderdetail.total_tax}
+              </div>
             </div>
-          </div>
-          {/*-end row 4--------------*/}
-          {/*-row 5--------------*/}
-          <div
-            className="w-full flex  justify-between xl:w-1/2 lg:w-1/2 md:w-1/2 xl:ml-50 lg:ml-50 md:ml-50"
-            style={{}}
-          >
-            <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 font-bold lg:mb-0 text-sm xl:text-md lg:text-md">
-              Taxes
+            <div
+              className="w-full flex  justify-between xl:w-1/2 lg:w-1/2 md:w-1/2 xl:ml-50 lg:ml-50 md:ml-50"
+              style={{}}
+            >
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 font-bold lg:mb-0 text-sm xl:text-md lg:text-md">
+                Shipping
+              </div>
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
+                {shipping_price}
+              </div>
             </div>
-            <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
-              {orderdetail.total_tax}
+            <div
+              className="w-full flex  justify-between xl:w-1/2 lg:w-1/2 md:w-1/2 xl:ml-50 lg:ml-50 md:ml-50"
+              style={{}}
+            >
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 font-bold mb-4 lg:mb-0 text-sm xl:text-md lg:text-md">
+                Discount
+              </div>
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
+                {orderdetail.total_discounts}
+              </div>
             </div>
-          </div>
-          {/*-end row 5--------------*/}
-          {/*-row 6--------------*/}
-          <div
-            className="w-full flex  justify-between xl:w-1/2 lg:w-1/2 md:w-1/2 xl:ml-50 lg:ml-50 md:ml-50"
-            style={{}}
-          >
-            <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 font-bold lg:mb-0 text-sm xl:text-md lg:text-md">
-              Shipping
-            </div>
-            <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
-              {shipping_price}
-            </div>
-          </div>
-          {/*-end row 6--------------*/}
-          {/*-row 7--------------*/}
-          <div
-            className="w-full flex  justify-between xl:w-1/2 lg:w-1/2 md:w-1/2 xl:ml-50 lg:ml-50 md:ml-50"
-            style={{}}
-          >
-            <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 font-bold mb-4 lg:mb-0 text-sm xl:text-md lg:text-md">
-              Discount
-            </div>
-            <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
-              {orderdetail.total_discounts}
-            </div>
-          </div>
-          {/*-end row 7--------------*/}
-          {/*-row 8--------------*/}
-          <div
-            className="w-full flex  justify-between xl:w-1/2 lg:w-1/2 md:w-1/2 xl:ml-50 lg:ml-50 md:ml-50"
-            style={{}}
-          >
-            <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 font-bold lg:mb-0 text-sm xl:text-md lg:text-md">
-              Total
-            </div>
-            <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
-              {orderdetail.total_price}
+            <div
+              className="w-full flex  justify-between xl:w-1/2 lg:w-1/2 md:w-1/2 xl:ml-50 lg:ml-50 md:ml-50"
+              style={{}}
+            >
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 font-bold lg:mb-0 text-sm xl:text-md lg:text-md">
+                Total
+              </div>
+              <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md ">
+                {orderdetail.total_price}
+              </div>
             </div>
           </div>
-          {/*-end row 8--------------*/}
         </div>
       </div>
     </div>

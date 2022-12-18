@@ -53,20 +53,20 @@ export default function ChargeDetails({response}) {
     },
   });
   const orderdetail = getOrderDetail(id);
-  console.log(orderdetail)
+  console.log(orderdetail);
   return (
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
       <AccountPageLayout user={customer} currentPath="order-history">
-        <ChargeDetail orderdetail={orderdetail}/>
+        <ChargeDetail orderdetail={orderdetail} />
       </AccountPageLayout>
       <div
         id="version_mark"
         className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
       >
-        ALPHA, Dec 9 - Jason
+        BETA, Dec 17 - Jason
       </div>
     </Layout>
   );
