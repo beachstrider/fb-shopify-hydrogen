@@ -45,7 +45,7 @@ const Index = ({orderdetail}) => {
       </div>
       {/*---------------*/}
       <div className="max-w-4xl mx-auto">
-        <div className="flex flex-wrap order_sum_box border border-[#888] rounded-sm bg-white">
+        <div className="flex flex-wrap order_sum_box border border-[#ddd] rounded-sm bg-white">
           {/*-row 1--------------*/}
           <div className="w-full flex flex-wrap">
             <div className="w-full md:w-1/2 lg:w-1/4 py-4 px-8 mb-4 lg:mb-0 text-sm xl:text-md lg:text-md">

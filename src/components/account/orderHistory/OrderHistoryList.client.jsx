@@ -32,7 +32,7 @@ const Index = ({orders}) => {
       ) : (
         orders.map((order, key) => (
           <div
-            className="max-w-4xl mx-auto relative overflow-hidden mb-4 border border-[#888] rounded-sm"
+            className="max-w-4xl mx-auto relative overflow-hidden mb-4 border border-[#ddd] rounded-sm"
             style={{backgroundColor: '#EFEFEF'}}
             key={key}
           >
