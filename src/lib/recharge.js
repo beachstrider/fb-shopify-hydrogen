@@ -292,6 +292,23 @@ export const sendPaymentMethodUpdateEmail = async ({
   }
 };
 
-export const getOrderHistory = () => {
-  
+export const getOrderHistory = async ({external_customer_id, statuslist}) => {
+  try {
+    const customer_id = (await rechargeFetch('customers', external_customer_id)).customers[0]
+    .id;
+    const {charges} = await rechargeFetch('charges', {
+      customer_id,
+      status: ['success','error','refunded','partially_refunded','skipped','pending_manual_payment','pending'],
+      sort_by: 'scheduled_at-asc',
+      scheduled_at_min: now(),
+    });
+    console.log("===", charges)
+    return charges;
+  } catch (error) {
+    return new Response(JSON.stringify(error.message), {status: 400});
+  }
+}
+export const getOrderDetail =  (id) => {
+  let {charge} = rechargeFetchSync.get(`charges/${id}`);
+  return charge;
 }
