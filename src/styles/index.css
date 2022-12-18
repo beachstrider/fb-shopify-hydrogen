@@ -63,7 +63,7 @@ shop-pay-button {
   }
 
   body {
-    @apply antialiased text-primary/90 bg-contrast border-primary/10;
+    @apply antialiased text-primary/90 border-primary/10;
   }
 
   html {
@@ -164,7 +164,10 @@ shop-pay-button {
       box-shadow: 0.5px 0.5px 0px 0.5px rgb(var(--color-contrast));
     }
   }
-
+  input:checked~.past_orders_desc {
+    max-height: 100vh;
+    padding: 16px;
+}
   .card-image {
     @apply relative rounded overflow-clip flex justify-center items-center;
     &::before {

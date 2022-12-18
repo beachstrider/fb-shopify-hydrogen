@@ -1,8 +1,7 @@
 import {fetchSync} from '@shopify/hydrogen';
-import axios from 'axios';
 import {now} from '~/utils/dates';
 
-export const headers = {
+export const headers1 = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-Recharge-Version': '2021-11',
@@ -10,7 +9,7 @@ export const headers = {
     'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 };
 
-export const headers_ = {
+export const headers2 = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-Recharge-Version': '2021-01',
@@ -20,36 +19,16 @@ export const headers_ = {
 
 export const baseURL = 'https://api.rechargeapps.com/';
 
-export const recharge = axios.create({
-  headers,
-  baseURL,
-});
-
 const convertUrlParams = (params) => {
   return new URLSearchParams(params).toString();
 };
 
-class RechargeFetchSync {
-  constructor(h = headers) {
-    this.headers = h;
-  }
-
-  action(url, params, method = 'GET') {
-    return fetchSync(`${baseURL}${url}?${convertUrlParams(params)}`, {
-      headers: this.headers,
-      method,
-    }).json();
-  }
-
-  get(url, params = {}) {
-    return this.action(url, params);
-  }
-}
-
-const rechargeFetchSync = new RechargeFetchSync();
-const rechargeFetchSync_ = new RechargeFetchSync(headers_);
-
-export const rechargeFetch = async (url, params, method = 'GET') => {
+export const rechargeFetch = async (
+  url,
+  params,
+  method = 'GET',
+  headers = headers1,
+) => {
   const res = await fetch(
     `${baseURL}${url}${
       params && method === 'GET' ? '?' + convertUrlParams(params) : ''
@@ -64,19 +43,44 @@ export const rechargeFetch = async (url, params, method = 'GET') => {
         : {}),
     },
   );
+
   const data = await res.json();
+
+  if (res.status !== 200) throw data.errors;
 
   return data;
 };
 
+export const rechargeFetchSync = (
+  url,
+  params,
+  method = 'GET',
+  headers = headers1,
+) => {
+  const res = fetchSync(
+    `${baseURL}${url}${
+      params && method === 'GET' ? '?' + convertUrlParams(params) : ''
+    }`,
+    {
+      headers,
+      method,
+      ...(method !== 'GET' &&
+      typeof params === 'object' &&
+      Object.keys(params).length > 0
+        ? {body: JSON.stringify(params)}
+        : {}),
+    },
+  ).json();
+
+  return res;
+};
+
 export const getSubscriptions = (params) => {
-  let {subscriptions} = rechargeFetchSync.get('subscriptions', params);
-  const {products} = rechargeFetchSync_.get('products');
+  let {subscriptions} = rechargeFetchSync('subscriptions', params);
+  const {products} = rechargeFetchSync('products', {}, 'GET', headers2);
 
   subscriptions = subscriptions.map((subscription) => {
-    const {address} = rechargeFetchSync.get(
-      `addresses/${subscription.address_id}`,
-    );
+    const {address} = rechargeFetchSync(`addresses/${subscription.address_id}`);
     const product = products.find(
       (el) =>
         el.product_id.toString() === subscription.external_product_id.ecommerce,
@@ -87,11 +91,9 @@ export const getSubscriptions = (params) => {
 };
 
 export const getSubscription = (id) => {
-  const {subscription} = rechargeFetchSync.get(`subscriptions/${id}`);
-  const {products} = rechargeFetchSync_.get('products');
-  const {address} = rechargeFetchSync.get(
-    `addresses/${subscription.address_id}`,
-  );
+  const {subscription} = rechargeFetchSync(`subscriptions/${id}`);
+  const {products} = rechargeFetchSync('products', {}, 'GET', headers2);
+  const {address} = rechargeFetchSync(`addresses/${subscription.address_id}`);
 
   const product = products.find(
     (el) =>
@@ -120,12 +122,14 @@ export const getUpcomingOrders = async (params) => {
 
 export const orderNow = async (customer_id) => {
   const charge = (
-    await recharge.get(
-      `charges?customer_id=${customer_id}&status=queued&sort_by=scheduled_at-asc`,
-    )
+    await rechargeFetch(`charges`, {
+      customer_id,
+      status: ['queued'],
+      sort_by: 'scheduled_at-asc',
+    })
   ).data.charges[0];
 
-  await recharge.post(`charges/${charge.id}/process`);
+  await rechargeFetch(`charges/${charge.id}/process`, {}, 'POST');
 
   return;
 };
@@ -138,7 +142,6 @@ export const skipUpcomingOrder = async (customer_id) => {
       sort_by: 'scheduled_at-asc',
     })
   ).charges[0];
-  console.log('ddddd', charge);
 
   await rechargeFetch(
     `charges/${charge.id}/skip`,
@@ -163,13 +166,13 @@ export const skipOrder = async ({id, purchase_item_ids}) => {
 };
 
 export const unskipOrder = async ({id, purchase_item_ids}) => {
-  await recharge.post(`charges/${id}/unskip`, {purchase_item_ids});
+  await rechargeFetch(`charges/${id}/unskip`, {purchase_item_ids}, 'POST');
 
   return;
 };
 
 export const processOrder = async ({id}) => {
-  await recharge.post(`charges/${id}/process`);
+  await rechargeFetch(`charges/${id}/process`, {}, 'POST');
 
   return;
 };
@@ -187,7 +190,7 @@ export const cancelSubscription = async (id) => {
 };
 
 export const activateSubscription = async (id) => {
-  await recharge.post(`subscriptions/${id}/activate`);
+  await rechargeFetch(`subscriptions/${id}/activate`, {}, 'POST');
 
   return;
 };
@@ -215,27 +218,26 @@ export const updateSubscription = async ({id, data}) => {
 };
 
 export const getBillingInfo = (params) => {
-  const {subscriptions} = rechargeFetchSync.get('subscriptions', params);
+  const {subscriptions} = rechargeFetchSync('subscriptions', params);
 
   const shippingAddresses = subscriptions.map((subscription) => {
-    const {address} = rechargeFetchSync.get(
+    const {address} = rechargeFetchSync(
       `addresses/${subscription.address_id}`,
       {include: 'payment_methods'},
     );
     return {...address, subscription};
   });
 
-  const customer_id = rechargeFetchSync.get('customers', params).customers[0]
-    .id;
+  const customer_id = rechargeFetchSync('customers', params).customers[0].id;
 
-  const paymentMethods = rechargeFetchSync.get('payment_methods', {
+  const paymentMethods = rechargeFetchSync('payment_methods', {
     customer_id,
     include: 'addresses',
   }).payment_methods;
 
   const paymentMethodsWithSubscriptions = paymentMethods.map(
     (paymentMethod) => {
-      const {subscriptions} = rechargeFetchSync.get('subscriptions', {
+      const {subscriptions} = rechargeFetchSync('subscriptions', {
         customer_id,
         status: 'active',
         address_ids: paymentMethod.include.addresses.map((el) => el.id),
@@ -257,14 +259,14 @@ export const updateShippingAddress = async ({id, address}) => {
     await rechargeFetch(`addresses/${id}`, {...address}, 'PUT');
     return new Response(null, {status: 200});
   } catch (error) {
-    return new Response(JSON.stringify(error.response.data.errors), {
+    return new Response(JSON.stringify(error), {
       status: 400,
     });
   }
 };
 
 export const getShippingAddress = (id) => {
-  let {address} = rechargeFetchSync.get(`addresses/${id}`);
+  let {address} = rechargeFetchSync(`addresses/${id}`);
   return address;
 };
 
@@ -290,4 +292,29 @@ export const sendPaymentMethodUpdateEmail = async ({
       status: 400,
     });
   }
+};
+
+export const getOrderHistory = (params) => {
+  const customer_id = rechargeFetchSync('customers', params).customers[0].id;
+
+  const {charges} = rechargeFetchSync('charges', {
+    customer_id,
+    status: [
+      'success',
+      'error',
+      'refunded',
+      'partially_refunded',
+      'skipped',
+      'pending_manual_payment',
+      'pending',
+    ],
+    sort_by: 'scheduled_at-desc',
+  });
+
+  return charges;
+};
+
+export const getOrderDetail = (id) => {
+  let {charge} = rechargeFetchSync(`charges/${id}`);
+  return charge;
 };
