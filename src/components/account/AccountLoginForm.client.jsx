@@ -82,92 +82,25 @@ export function AccountLoginForm({shopName}) {
             >
               Login To Your Account
             </h2>
-            {hasSubmitError && (
-              <div className="flex items-center justify-center mb-6 bg-zinc-500">
-                <p className="m-4 text-s text-contrast">
-                  Sorry we did not recognize either your email or password.
-                  Please try to sign in again or create a new account.
-                </p>
-              </div>
-            )}
           </div>
         </div>
         <form noValidate className="pt-6 pb-8 mt-4 mb-4" onSubmit={onSubmit}>
-          <div className="mb-6">
-            <input
-              className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
-              type="text"
-              name="field-name"
-              placeholder="Email"
-            />
-          </div>
-          <div className="mb-6">
-            <input
-              className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
-              type="text"
-              name="field-name"
-              placeholder="Password"
-            />
-          </div>
-          <p className="text-sm" style={{marginBottom: '20px'}}>
-            <span className="font-bold underline" style={{color: '#DB9707'}}>
-              <Link to={`/account/recover`}>Forgot Password? </Link>
-            </span>
-          </p>
-          <button
-            className="block py-2 text-lg text-center uppercase font-bold w-full "
-            style={{
-              backgroundColor: '#DB9707',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-            type="submit"
-          >
-            Sign In
-          </button>
-          <button
-            className="block py-2 text-lg text-center  font-bold w-full"
-            href="#"
-            style={{
-              backgroundColor: '#4285F4',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign in with Google
-          </button>
-          <button
-            className="block py-2 text-lg text-center  font-bold w-full"
-            style={{
-              backgroundColor: '#4267B2',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign in with Facebook
-          </button>
-          <button
-            className="block py-2 text-lg text-center  font-bold w-full "
-            style={{
-              backgroundColor: '#35465C',
-              color: '#FFFFFF',
-              marginBottom: '15px',
-            }}
-          >
-            Sign in with Amazon
-          </button>
-          <div className="mb-10">
-            <p className="text-sm py-4">
-              Don't have an account?{' '}
-              <span
-                className="font-bold underline"
-                style={{color: '#DB9707', marginTop: '20px'}}
-              >
-                <Link to={`/account/register`}>Register</Link>
-              </span>
-            </p>
-          </div>
-
+          {passwordIncorrect && (
+            <div className="flex items-center justify-center mb-6 bg-zinc-500">
+              <p className="m-4 text-s text-contrast">
+                You entered password incorrectly {`(${failedCounts})`}. please
+                type correct one.
+              </p>
+            </div>
+          )}
+          {hasSubmitError && (
+            <div className="flex items-center justify-center mb-6 bg-zinc-500">
+              <p className="m-4 text-s text-contrast">
+                Sorry we did not recognize either your email or password. Please
+                try to sign in again or create a new account.
+              </p>
+            </div>
+          )}
           {showEmailField && (
             <EmailField
               shopName={shopName}
@@ -186,6 +119,51 @@ export function AccountLoginForm({shopName}) {
               passwordError={passwordError}
             />
           )}
+          <button
+            type="button"
+            className="block py-2 text-lg text-center mt-8 font-bold w-full"
+            href="#"
+            style={{
+              backgroundColor: '#4285F4',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Google
+          </button>
+          <button
+            type="button"
+            className="block py-2 text-lg text-center  font-bold w-full"
+            style={{
+              backgroundColor: '#4267B2',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Facebook
+          </button>
+          <button
+            type="button"
+            className="block py-2 text-lg text-center  font-bold w-full "
+            style={{
+              backgroundColor: '#35465C',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Amazon
+          </button>
+          <div className="mb-10">
+            <p className="text-sm py-4">
+              Don&apos;t have an account?{' '}
+              <span
+                className="font-bold underline"
+                style={{color: '#DB9707', marginTop: '20px'}}
+              >
+                <Link to={`/account/register`}>Register</Link>
+              </span>
+            </p>
+          </div>
         </form>
       </div>
     </div>
@@ -220,7 +198,7 @@ function EmailField({email, setEmail, emailError, shopName}) {
     <>
       <div className="mb-3">
         <input
-          className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
+          className={`w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs`}
           id="email"
           name="email"
           type="email"
@@ -243,19 +221,16 @@ function EmailField({email, setEmail, emailError, shopName}) {
       </div>
       <div className="flex items-center justify-between">
         <button
-          className="bg-primary rounded text-contrast py-2 px-4 focus:shadow-outline block w-full"
+          className="block py-2 text-lg text-center uppercase font-bold w-full "
+          style={{
+            backgroundColor: '#DB9707',
+            color: '#FFFFFF',
+            marginBottom: '15px',
+          }}
           type="submit"
         >
           Next
         </button>
-      </div>
-      <div className="flex items-center mt-8 border-t  border-gray-300">
-        <p className="align-baseline text-sm mt-6">
-          New to {shopName}? &nbsp;
-          <Link className="inline underline" to="/account/register">
-            Create an account
-          </Link>
-        </p>
       </div>
     </>
   );
@@ -292,7 +267,7 @@ function PasswordField({password, setPassword, passwordError}) {
     <>
       <div className="mb-3">
         <input
-         className="w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs"
+          className={`w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs`}
           id="password"
           name="password"
           type="password"
@@ -316,7 +291,12 @@ function PasswordField({password, setPassword, passwordError}) {
       </div>
       <div className="flex items-center justify-between">
         <button
-          className="bg-primary text-contrast rounded py-2 px-4 focus:shadow-outline block w-full"
+          className="block py-2 text-lg text-center uppercase font-bold w-full "
+          style={{
+            backgroundColor: '#DB9707',
+            color: '#FFFFFF',
+            marginBottom: '15px',
+          }}
           type="submit"
         >
           Sign in
@@ -324,12 +304,11 @@ function PasswordField({password, setPassword, passwordError}) {
       </div>
       <div className="flex items-center justify-between mt-4">
         <div className="flex-1"></div>
-        <Link
-          className="inline-block align-baseline text-sm text-primary/50"
-          to="/account/recover"
-        >
-          Forgot password
-        </Link>
+        <p className="text-sm" style={{marginBottom: '20px'}}>
+          <span className="font-bold underline" style={{color: '#DB9707'}}>
+            <Link to={`/account/recover`}>Forgot Password? </Link>
+          </span>
+        </p>
       </div>
     </>
   );
