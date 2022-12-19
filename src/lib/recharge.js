@@ -222,9 +222,12 @@ export const updateSubscription = async ({id, data}) => {
 };
 
 export const getBillingInfo = (params) => {
-  const {subscriptions} = rechargeFetchSync('subscriptions', params);
+  const res = rechargeFetchSync('subscriptions', params);
 
-  const shippingAddresses = subscriptions.map((subscription) => {
+  if (typeof res.errors.external_customer_id !== 'undefined')
+    return {customer_id: null, shippingAddresses: [], paymentMethods: []};
+
+  const shippingAddresses = res.subscriptions.map((subscription) => {
     const {address} = rechargeFetchSync(
       `addresses/${subscription.address_id}`,
       {include: 'payment_methods'},
@@ -299,7 +302,11 @@ export const sendPaymentMethodUpdateEmail = async ({
 };
 
 export const getOrderHistory = (params) => {
-  const customer_id = rechargeFetchSync('customers', params).customers[0].id;
+  const {customers} = rechargeFetchSync('customers', params);
+
+  if (!customers.length) return [];
+
+  const {customer_id} = customers[0];
 
   const {charges} = rechargeFetchSync('charges', {
     customer_id,
