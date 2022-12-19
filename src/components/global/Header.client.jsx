@@ -10,8 +10,6 @@ import {
   IconAccount,
   IconBag,
   IconMenu,
-  IconSearch,
-  Input,
 } from '~/components';
 
 import {CartDrawer} from './CartDrawer.client';
@@ -96,8 +94,8 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
     button: 'relative flex items-center justify-center w-8 h-8',
     container: `${
       isHome
-        ? 'bg-primary dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
-        : 'bg-primary dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
+        ? 'bg-[#121111]  text-contrast text-primary shadow-darkHeader'
+        : 'bg-[#121111]  text-contrast text-primary shadow-darkHeader'
     } ${
       y > 50 && !isHome ? 'shadow-lightHeader ' : ''
     }flex lg:hidden items-center h-nav sticky backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-4 px-4 md:px-8`,
@@ -144,8 +142,8 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="bg-primary absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="py-1 bg-primary">
+            <Menu.Items className="bg-[#121111] absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1 bg-[#121111]">
                 <Menu.Item>
                   {({active}) => (
                     <Link
@@ -197,8 +195,8 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
       'relative flex items-center justify-center w-8 h-8 focus:ring-primary/5',
     container: `${
       isHome
-        ? 'bg-primary dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
-        : 'bg-primary dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
+        ? 'bg-[#121111]  text-contrast text-primary shadow-darkHeader'
+        : 'bg-[#121111]  text-contrast text-primary shadow-darkHeader'
     } ${
       y > 50 && !isHome ? 'shadow-lightHeader ' : 'shadow-lightHeader '
     }hidden lg:flex items-center sticky transition duration-300 backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-8 px-12 py-3`,
@@ -253,7 +251,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
             leaveTo="transform opacity-0 scale-95"
           >
             <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="py-1 bg-primary">
+              <div className="py-1 bg-[#121111]">
                 {!token ? (
                   <Menu.Item>
                     {({active}) => (
@@ -310,8 +308,8 @@ function CartBadge({dark}) {
     <div
       className={`${
         dark
-          ? 'text-primary bg-contrast dark:text-contrast dark:bg-primary'
-          : 'text-contrast bg-primary'
+          ? 'text-primary bg-contrast text-contrast bg-[#121111]'
+          : 'text-contrast bg-[#121111]'
       } absolute bottom-1 right-1 text-[0.625rem] font-medium subpixel-antialiased h-3 min-w-[0.75rem] flex items-center justify-center leading-none text-center rounded-full w-auto px-[0.125rem] pb-px`}
     >
       <span>{totalQuantity}</span>

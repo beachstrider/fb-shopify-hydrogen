@@ -41,15 +41,20 @@ export function DeliveryDateStep() {
   return (
     <div className="bg-slate-100 py-5 px-0">
       <div className="mb-6 bg-grey max-w-full">
+<<<<<<< HEAD
         <div
           className="text-2xl block text-gray-800 text-lg font-bold mb-2"
+=======
+        <label
+          className="text-2xl block text-gray-800 text-lg font-bold mb-2 "
+>>>>>>> cf4fef23051409bdf197ca6735b6829a29b98bb8
           htmlFor=""
         >
           1. Choose your Week
         </div>
         <div className="relative shadow-[0 3px 10px rgb(0 0 0 / 0.2)]">
           <select
-            className="border-0 bg-none	appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
+            className="border-0 bg-none	appearance-none block w-full py-4 pl-6 mb-2 text-md text-gray-800 bg-white"
             name="field-name"
           >
             <option value="Jan 3-5, 2023">Jan 3-5, 2023</option>
@@ -75,7 +80,7 @@ export function DeliveryDateStep() {
           className="mb-2 text-md text-gray-500"
           suppressContentEditableWarning="false"
         ></p>
-        <div className="text-sm">
+        <div className="text-sm text-gray-800">
           Delivery Day: <strong>Wednesday, January 4.</strong>
         </div>
         <div className="text-sm text-yellow-600">
