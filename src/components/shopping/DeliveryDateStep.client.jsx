@@ -41,13 +41,8 @@ export function DeliveryDateStep() {
   return (
     <div className="bg-slate-100 py-5 px-0">
       <div className="mb-6 bg-grey max-w-full">
-<<<<<<< HEAD
         <div
           className="text-2xl block text-gray-800 text-lg font-bold mb-2"
-=======
-        <label
-          className="text-2xl block text-gray-800 text-lg font-bold mb-2 "
->>>>>>> cf4fef23051409bdf197ca6735b6829a29b98bb8
           htmlFor=""
         >
           1. Choose your Week
