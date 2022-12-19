@@ -21,7 +21,7 @@ export const AccountPageLayout = ({user, currentPath, children}) => {
                     className={
                       currentPath == 'subscriptions'
                         ? 'text-xl text-black-400 font-bold '
-                        : 'text-xl text-gray-200 hover:text-gray-300'
+                        : 'text-xl text-gray-400 hover:text-gray-500'
                     }
                     to="/account/subscriptions"
                   >
@@ -33,7 +33,7 @@ export const AccountPageLayout = ({user, currentPath, children}) => {
                     className={
                       currentPath == 'order-schedules'
                         ? 'text-xl text-black-400 font-bold  '
-                        : 'text-xl text-gray-200 hover:text-gray-300 '
+                        : 'text-xl text-gray-400 hover:text-gray-500'
                     }
                     to="/account/order-schedules"
                   >
@@ -45,7 +45,7 @@ export const AccountPageLayout = ({user, currentPath, children}) => {
                     className={
                       currentPath == 'billing-account'
                         ? 'text-xl text-black-400 font-bold  '
-                        : 'text-xl text-gray-200 hover:text-gray-300 '
+                        : 'text-xl text-gray-400 hover:text-gray-500'
                     }
                     to="/account/billing-account"
                   >
@@ -57,7 +57,7 @@ export const AccountPageLayout = ({user, currentPath, children}) => {
                     className={
                       currentPath == 'order-history'
                         ? 'text-xl text-black-400 font-bold  '
-                        : 'text-xl text-gray-200 hover:text-gray-300 '
+                        : 'text-xl text-gray-400 hover:text-gray-500'
                     }
                     to="/account/order-history"
                   >

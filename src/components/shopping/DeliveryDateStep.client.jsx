@@ -1,20 +1,57 @@
 import DeliveryDates from './components/DeliveryDates';
 import {useState, useEffect} from 'react';
 import {fetchSync, useUrl} from '@shopify/hydrogen';
+import axios from 'axios';
+
+import {getUsaStandard} from '~/utils/dates';
+import {
+  isFuture,
+  now,
+  sortByDateProperty,
+  dayjs,
+  getCutOffDate,
+} from '~/utils/dates';
+
 export function DeliveryDateStep() {
-  // useEffect(() => {
-  //   console.log(deliveryDatesData);
-  // }, []);
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  // async function fetch() {
+  //   const res = (await axios.get('/api/bundle-api/delivery-dates')).data;
+  //   console.log('===', res);
+  // }
+
+  // const deliveryDates = sortByDateProperty(
+  //   allDeliveryDates.filter((el) => isFuture(el.date)),
+  //   'date',
+  // );
+
+  const weeks = [...new Array(6)].map(() => {
+    var curr = new Date(); // get current date
+    var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+    var last = first + 6; // last day is the first day + 6
+
+    var firstDate = new Date(curr.setDate(first)).toUTCString();
+    var lastDate = new Date(curr.setDate(last)).toUTCString();
+
+    return {firstDate, lastDate};
+  });
 
   return (
     <div className="bg-slate-100 py-5 px-0">
       <div className="mb-6 bg-grey max-w-full">
+<<<<<<< HEAD
+        <div
+          className="text-2xl block text-gray-800 text-lg font-bold mb-2"
+=======
         <label
           className="text-2xl block text-gray-800 text-lg font-bold mb-2 "
+>>>>>>> cf4fef23051409bdf197ca6735b6829a29b98bb8
           htmlFor=""
         >
           1. Choose your Week
-        </label>
+        </div>
         <div className="relative shadow-[0 3px 10px rgb(0 0 0 / 0.2)]">
           <select
             className="border-0 bg-none	appearance-none block w-full py-4 pl-6 mb-2 text-md text-gray-800 bg-white"
