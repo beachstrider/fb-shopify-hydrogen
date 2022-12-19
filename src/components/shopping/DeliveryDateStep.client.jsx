@@ -14,10 +14,10 @@ import {
 
 export function DeliveryDateStep() {
   useEffect(() => {
-    fetch();
+    // fetchDeliveryDates();
   }, []);
 
-  // async function fetch() {
+  // async function fetchDeliveryDates() {
   //   const res = (await axios.get('/api/bundle-api/delivery-dates')).data;
   //   console.log('===', res);
   // }
