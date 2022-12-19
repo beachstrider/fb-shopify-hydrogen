@@ -10,10 +10,10 @@ const CardQuantities = ({title, image, serves}) => {
             <div onClick={() => setOpenModal(true)}>
               <img className="mx-auto object-contain" src={image} alt="" />
             </div>
-            <h3 className="font-bold font-heading text-sm text-center">
+            <h3 className="font-bold font-heading text-sm text-center text-[#2C2C2C]">
               {title}
             </h3>
-            <div className="text-center text-sm mb-2">Serves: {serves}</div>
+            <div className="text-center text-sm mb-2 text-[#2C2C2C]">Serves: {serves}</div>
           </a>
           <div className="px-4 mb-4 xl:mb-0 text-center">
             <a
