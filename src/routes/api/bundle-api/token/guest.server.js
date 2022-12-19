@@ -1,0 +1,45 @@
+import axios from 'axios';
+const headers = {Accept: 'application/json'};
+// eslint-disable-next-line no-undef
+const baseURL = Oxygen?.env?.BUNDLE_API_URL; //'https://bundle-builder-api-dev.speedwayapp.com/'; //
+// const initialToken ='ENkHRqH8tc9WuUAMV3N7zFYp38kayEWu4Gs2sTvwEe8M9h8CLDy3Ak3fB3Zsgv8WxDUf6ZHq9ufR42XBcE8JE9wUG83WfWz8ZQ68AaLxmnmWkD5LwrLeXBN2VPhVP6HhqV6zArVFAAAxmZwPBSuT7wSgvruspkd6xwhwfc9mLQ3NR7kdWyXJQsYjbgKZvNeD2Lt8J3P9e4aJuDtLXtbrmy964AX2uuyvqESzaNEDJPmJgsDLCaZv4LG6WnqcjZEh'; //Oxygen?.env?.BUNDLE_API_SECRET;
+// eslint-disable-next-line no-undef
+const initialToken = Oxygen?.env?.BUNDLE_API_SECRET;
+const shop = 'feast-box-sandbox.myshopify.com';
+
+const bundleBuilder = axios.create({
+  headers,
+  baseURL,
+});
+
+export async function api(request, {session}) {
+  // const url = new URL(request.normalizedUrl).pathname.substring(5);
+  // const method = request.method;
+  // let data = {shop};
+  let token = null;
+
+  if (session) {
+    // if (request.method !== 'GET') {
+    //   const newData = await request.json();
+    //   data = {...data, ...newData};
+    // }
+    const newToken = (
+      await bundleBuilder.post(
+        `api/auth`,
+        {shop},
+        {
+          headers: {
+            Accept: 'application/json',
+            authorization: `Bearer ${initialToken}`,
+          },
+        },
+      )
+    ).data.token;
+    if (newToken){
+      token = `Bearer ${newToken}`;
+    }
+    return token;
+  }
+
+  return new Response('Error');
+}
