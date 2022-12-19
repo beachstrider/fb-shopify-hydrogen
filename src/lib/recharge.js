@@ -57,7 +57,7 @@ export const rechargeFetchSync = (
   method = 'GET',
   headers = headers1,
 ) => {
-  const res = fetchSync(
+  const data = fetchSync(
     `${baseURL}${url}${
       params && method === 'GET' ? '?' + convertUrlParams(params) : ''
     }`,
@@ -72,14 +72,17 @@ export const rechargeFetchSync = (
     },
   ).json();
 
-  return res;
+  return data;
 };
 
 export const getSubscriptions = (params) => {
-  let {subscriptions} = rechargeFetchSync('subscriptions', params);
+  const res = rechargeFetchSync('subscriptions', params);
+
+  if (typeof res.errors.external_customer_id !== 'undefined') return [];
+
   const {products} = rechargeFetchSync('products', {}, 'GET', headers2);
 
-  subscriptions = subscriptions.map((subscription) => {
+  const subscriptions = res.subscriptions.map((subscription) => {
     const {address} = rechargeFetchSync(`addresses/${subscription.address_id}`);
     const product = products.find(
       (el) =>
@@ -87,6 +90,7 @@ export const getSubscriptions = (params) => {
     );
     return {...subscription, address, product};
   });
+
   return subscriptions;
 };
 
