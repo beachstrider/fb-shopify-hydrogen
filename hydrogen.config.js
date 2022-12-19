@@ -1,6 +1,6 @@
 import {defineConfig, CookieSessionStorage} from '@shopify/hydrogen/config';
 
-console.log(Oxygen?.env?.PUBLIC_STORE_DOMAIN);
+console.log(Oxygen?.env?.PUBLIC_STOREFRONT_API_TOKEN); // eslint-disable-line no-undef
 
 export default defineConfig({
   shopify: {
