@@ -10,8 +10,6 @@ import {
   IconAccount,
   IconBag,
   IconMenu,
-  IconSearch,
-  Input,
 } from '~/components';
 
 import {CartDrawer} from './CartDrawer.client';
@@ -144,8 +142,8 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="bg-primary absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="py-1 bg-primary">
+            <Menu.Items className="bg-[#141414] absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1 bg-[#141414]">
                 <Menu.Item>
                   {({active}) => (
                     <Link
@@ -253,7 +251,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
             leaveTo="transform opacity-0 scale-95"
           >
             <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="py-1 bg-primary">
+              <div className="py-1 bg-[#141414]">
                 {!token ? (
                   <Menu.Item>
                     {({active}) => (
