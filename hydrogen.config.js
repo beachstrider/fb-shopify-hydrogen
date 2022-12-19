@@ -1,5 +1,7 @@
 import {defineConfig, CookieSessionStorage} from '@shopify/hydrogen/config';
 
+console.log(Oxygen?.env?.PRIVATE_RECHARGE_API_TOKEN);
+
 export default defineConfig({
   shopify: {
     defaultCountryCode: 'US',
