@@ -5,8 +5,11 @@ export const headers1 = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-Recharge-Version': '2021-11',
-  'X-Recharge-Access-Token': Oxygen?.env?.PUBLIC_RECHARGE_API_TOKEN,
+  'X-Recharge-Access-Token':
+    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 };
+
+console.log(Oxygen?.env?.PUBLIC_RECHARGE_API_TOKEN);
 
 export const headers2 = {
   Accept: 'application/json',
