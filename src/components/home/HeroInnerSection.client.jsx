@@ -1,12 +1,12 @@
 import Marquee from 'react-fast-marquee';
 export function HeroInnerSection() {
   return (
-    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-[#231f20]">
+    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-[#231F20]">
       <div className="container max-w-screen-xl m-auto">
-        <h1 className="text-center text-6xl text-white uppercase font-extrabold leading-[80px]">
+        <h1 className="font-bungee text-center text-6xl text-white uppercase leading-[80px] mt-5">
           Welcome to the robot-free zone
         </h1>
-        <p className="text-center text-4xl text-white capitalize px-6">
+        <p className="font-opensans text-center text-2xl text-white capitalize px-6 mb-5">
           Just clean, Natural ingredients Prepared by Clean, Natural Humans
         </p>
         </div>
@@ -33,8 +33,8 @@ export function HeroInnerSection() {
           </Marquee>
         </div>
         <div className="text-center py-5">
-          <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
-            Learn More
+          <button className="font-opensans bg-[#A60D1E] text-white font-bold px-8 py-2">
+            How It Works
           </button>
         </div>
       
