@@ -38,7 +38,7 @@ const Modal = (setOpenModal) => {
           </button>
        
         </div>
-        <div className="my-6 relative">
+        <div className="my-6 relative text-black">
           <div
             role="tabpanel"
             id="panel-1"

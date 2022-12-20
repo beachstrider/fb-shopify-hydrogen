@@ -54,22 +54,19 @@ const CardQuantities = ({title, image, serves}) => {
             </svg>
          </button>
          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 px-5 py-5" >
+          <div>
       <img
         alt="Laptop"
         src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
         className="h-full w-full object-cover"
       />
-
+        </div>
       <div>
-        <h1 className="text-lg font-bold text-center">
+        <h1 className="text-lg font-bold text-center mb-4 text-black">
           BBQ FeastBox
         </h1>
-      </div>
-    </div>
-    <div>
-    <Tabs/>
-    </div>
-        <div className='px-12'>
+        <Tabs/>
+        <div className='px-12 text-black'>
           <h3 className='font-bold text-lg'>What's in the box</h3>
           <div>
           <p className='font-bold text-sm'>Main courses</p>
@@ -86,10 +83,15 @@ const CardQuantities = ({title, image, serves}) => {
           <span className='text-sm'>30oz BBQ sauce</span>
           </div>
         </div>
-        <div className='px-12 pt-2 pb-6'>
+        <div className='px-12 pt-2 pb-6 text-black'>
           <h3 className='font-bold text-lg'>Allergens</h3>
           <span className='text-sm'>Wheat,milk</span>
         </div>
+        
+      </div>
+    </div>
+       
+      
        </div>
      </div>
    </div>
