@@ -49,7 +49,8 @@ module.exports = {
       fontFamily: {
         sans: ['Helvetica Neue', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         serif: ['"IBMPlexSerif"', 'Palatino', 'ui-serif'],
-        bungee:['Bungee']
+        bungee:['Bungee'],
+        opensans:['Open Sans', 'sans-serif']
       },
       fontSize: {
         display: ['var(--font-size-display)', '1.1'],

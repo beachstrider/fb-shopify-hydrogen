@@ -1,8 +1,8 @@
 export function CounterSection() {
   return (
-    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pt-10 pb-20 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/join_bg.png')]">
+    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pt-10 pb-20 bg-[#231F20]">
       <div className="container max-w-screen-xl m-auto px-2">
-        <h1 className="md:text-center text-left text-[20px] md:text-[60px] text-white uppercase font-extrabold md:leading-[80px] pt-4 md:pt-[70px]">
+        <h1 className="font-bungee md:text-center text-left text-[20px] md:text-[60px] text-white uppercase font-extrabold md:leading-[80px] pt-4 md:pt-[70px]">
           Every order Feeds another
         </h1>
         <div className="bg-white max-w-3xl px-5 py-4 m-auto mt-[25px]">
@@ -39,21 +39,20 @@ export function CounterSection() {
             </div>
           </div>
         </div>
-        <h2 className="text-right md:text-center text-[40px] text-[#DB9707] uppercase font-bold leading-[60px]">
+        <h2 className="font-opensans text-right md:text-center text-[40px] text-[#DB9707] uppercase font-bold leading-[60px]">
           Meals Served
         </h2>
-        <h3 className="text-left md:text-center text-[25px] text-white capitalize font-light leading-[40px]">
-          1 Box purchase = 1 meal donated
+        <h3 className="font-opensans text-left md:text-center text-[25px] text-white capitalize font-light leading-[40px]">
+          1 Box Purchase = 1 meal donated
         </h3>
-        <h3 className="text-left md:text-center text-[25px] text-white capitalize font-light leading-[40px]">
+        <h3 className="font-opensans text-left md:text-center text-[25px] text-white capitalize font-light leading-[40px]">
           Because we all deserve to drool over dinner.
         </h3>
-        <h3 className="text-left md:text-center md:text-center text-[25px] text-white capitalize font-normal leading-[40px]">
-          Visit{' '}
+        <h3 className="font-opensans text-left md:text-center md:text-center text-[25px] text-white capitalize font-normal leading-[40px]">
           <a href="" className="underline text-[#DB9707]">
-            Full of Hope
+            Learn More
           </a>{' '}
-          to learn more
+          About Full of Hope
         </h3>
       </div>
     </section>

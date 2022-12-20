@@ -6,26 +6,23 @@ export function PartyTime() {
         <div className=" h-auto bg-[#FFFFFF]">
           <div className="container max-w-screen-xl mx-auto">
             <div className="text-black text-lg relative flex justify-center">
-              <h1 className="text-[100px] md:text-[120px] text-center text-neutral-900 uppercase font-extrabold leading-[100px] md:leading-[80px] mt-[-52px] mb-[-0.5rem]">
+              <h1 className="font-bungee text-[100px] md:text-[120px] text-center text-neutral-900 uppercase leading-[100px] md:leading-[80px] mt-[-52px] mb-[-0.5rem]">
                 {' '}
                 Party Time?
               </h1>
             </div>
             <div className="flex item-center justify-around flex-col flex-col-reverse md:flex-row py-6 px-4">
               <div className="w-full md:w-1/2">
-                <p className="text-green-800 text-3xl">
-                  We love a good party!Whether it's for the Super Bowl, a
-                  birthday, holiday, banquet,bechelor party, we want to be
-                  there!Or at least our food does...(an invite would be cold
-                  too).{' '}
+                <p className="font-opensans text-3xl py-2">
+                  We love a good party! Whether it’s for the Super Bowl, a birthday, holiday, banquet, bachelor party, we want to be there! Or at least our food does… (an invite would be cool too).{' '}
                 </p>
                 <div className="flex items-center pt-[40px] flex-col md:flex-row">
-                  <button className="bg-[#A60D1E] text-white font-bold px-4 py-2 mb-2 md:mb-0">
+                  <button className="font-opensans font-bold bg-[#A60D1E] text-white font-bold px-4 py-2 mb-2 md:mb-0">
                     Cater Your Event
                   </button>
                   <a
                     href=""
-                    className="text-[#A60D1E] mx-[20px] font-bold underline"
+                    className="font-opensans font-bold text-[#A60D1E] mx-[20px] font-bold underline"
                   >
                     LEARN MORE
                   </a>
