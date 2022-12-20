@@ -1,6 +1,6 @@
 export function CounterSection() {
   return (
-    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pt-10 pb-20 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/join_bg.png')]">
+    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pt-10 pb-20 bg-[#231f20]">
       <div className="container max-w-screen-xl m-auto px-2">
         <h1 className="md:text-center text-left text-[20px] md:text-[60px] text-white uppercase font-extrabold md:leading-[80px] pt-4 md:pt-[70px]">
           Every order Feeds another

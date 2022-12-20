@@ -17,7 +17,7 @@ export function HeroSection() {
             </div>
           </div>
         </div>
-        <div className="bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/join_bg.png')]">
+        <div className="bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-[#231f20]">
           <div className="container max-w-screen-xl mx-auto">
             <div className="md:flex block items-start justify-between h-full">
               <div className="w-full md:w-1/2 relative">
