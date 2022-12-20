@@ -1,20 +1,17 @@
-import chefMade from '../../assets/chef_made.png';
-import backImageCircle from '../../assets/circles.png';
-import downArrow from '../../assets/down_arrows.png';
-import feast from '../../assets/feast.png';
-import heatItUp from '../../assets/heat_it_up.png';
-import heroBg from '../../assets/hero_bg.png';
-import sealedFresh from '../../assets/sealed_fresh.png';
-
 export function HowItWorks() {
   return (
     <section className="text-white pb-8 bg-[url('../assets/join_bg.png')]">
       <div className="top-banner">
         <div className="banner-section">
-          <img src={heroBg} alt="" />
-          <h1 className="text-[26px] md:text-6xl lg:text-8xl text-center font-extrabold lg:mt-[-62px]
+          <img
+            src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/hero_bg.png"
+            alt=""
+          />
+          <h1
+            className="text-[26px] md:text-6xl lg:text-8xl text-center font-extrabold lg:mt-[-62px]
           md:mt-[-30px] mt-[-22px]
-          ">
+          "
+          >
             THE NITTY GRITTY
           </h1>
           <p className="text-center mb-0 sm:mt-12 md:mt-5 font-bold sm:text-3xl">
@@ -26,7 +23,11 @@ export function HowItWorks() {
       <div className="card-section container mx-auto mt-0 sm:mt-8">
         <div className="grid grid-cols-2 sm:grid-cols-2">
           <div className="mt-12">
-            <img className="mx-auto w-32 sm:w-auto" src={chefMade} alt="" />
+            <img
+              className="mx-auto w-32 sm:w-auto"
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/chef_made.png"
+              alt=""
+            />
           </div>
           <div className="w-auto max-h-0 md:ml-5 lg:ml-0">
             <h2 className="sm:mt-24 mt-12 text-start font-bold lg:text-8xl sm:text-8xl md:text-5xl">
@@ -38,7 +39,7 @@ export function HowItWorks() {
             </p>
             <img
               className="lg:mt-52 invisible sm:visible md:mt-12 md:w-28 lg:w-52"
-              src={downArrow}
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/down_arrows.png"
               alt=""
             />
           </div>
@@ -58,7 +59,11 @@ export function HowItWorks() {
             </p>
           </div>
           <div className="mt-12">
-            <img className="mx-auto w-32 sm:w-auto" src={sealedFresh} alt="" />
+            <img
+              className="mx-auto w-32 sm:w-auto"
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/sealed_fresh.png"
+              alt=""
+            />
           </div>
         </div>
       </div>
@@ -66,7 +71,11 @@ export function HowItWorks() {
       <div className="card-section container mx-auto mt-0 sm:mt-8">
         <div className="grid grid-cols-2 sm:grid-cols-2">
           <div className="mt-12">
-            <img className="mx-auto w-32 sm:w-auto" src={heatItUp} alt="" />
+            <img
+              className="mx-auto w-32 sm:w-auto"
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/heat_it_up.png"
+              alt=""
+            />
           </div>
           <div className="w-auto max-h-0 md:ml-5 lg:ml-0">
             <h2 className="md:text-5xl lg:text-8xl sm:mt-24 mt-12 text-start font-bold text-xl sm:text-8xl">
@@ -97,12 +106,12 @@ export function HowItWorks() {
           <div className="mt-12 sm:mr-1">
             <img
               className="sm:mt-[-300px] lg:ml-[300px] md:ml-3 invisible sm:visible lg:visible"
-              src={backImageCircle}
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/circles.png"
               alt=""
             />
             <img
               className="mx-auto w-32 sm:w-auto mt-[-180px] sm:mt-[-300px]"
-              src={feast}
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/feast.png"
               alt=""
             />
           </div>
@@ -111,4 +120,3 @@ export function HowItWorks() {
     </section>
   );
 }
-
