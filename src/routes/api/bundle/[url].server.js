@@ -16,6 +16,7 @@ export const bundleBuilder = async (
   method = 'GET',
   headers = initialHeaders,
 ) => {
+  // try {
   const res = await fetch(
     `${baseURL}${url}${
       params && method === 'GET'
@@ -33,9 +34,9 @@ export const bundleBuilder = async (
     },
   );
 
-  const data = await res.json();
+  if (res.status !== 200) throw new Error('!!!');
 
-  if (res.status !== 200) throw data.errors;
+  const data = await res.json();
 
   return data;
 };
@@ -57,22 +58,24 @@ export async function api(request, {session}) {
       data = {...data, ...newData};
     }
 
-    if (typeof token === 'undefined') {
-      try {
+    try {
+      if (typeof token === 'undefined') {
         const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).data
           .token;
         token = `Bearer ${newToken}`;
         await session.set('bundleBuilderToken', token);
-      } catch (error) {
-        return new Response('Really Error');
       }
+      headers.authorization = token;
+
+      return {url, data, method, headers};
+
+      // const res = await bundleBuilder(url, data, method, headers);
+
+      // return res.data;
+    } catch (error) {
+      console.log('error===', error);
+      return new Response('Really Error');
     }
-
-    headers.authorization = token;
-
-    const res = await bundleBuilder(url, data, method, headers);
-
-    return res.data;
   }
 
   return new Response('Error');
