@@ -358,8 +358,7 @@ const data = [
       'Our meals are packaged as individual servings. We have a variety of portion sizes to meet you individual nutritional needs.',
   },
   {
-    question:
-      'Where can I leave feedback on the meals that I have received?',
+    question: 'Where can I leave feedback on the meals that I have received?',
     answer:
       'You can speak with Customer Service at support@quickfresh.com or (435)-659-2345.',
   },
@@ -510,6 +509,11 @@ export function Faq({...props}) {
         </div> */}
         <div className="w-full md:w-[60%] lg:w-[60%] m-auto">
           <FaqQuestionAndAnswer questionData={data} />
+        </div>
+        <div className="text-center">
+          <button className="px-6 py-2 bg-[#A60D1E] text-white font-bold px-4 px-5">
+            Get Eating Order Now
+          </button>
         </div>
       </div>
     </>
