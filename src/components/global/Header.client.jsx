@@ -216,7 +216,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
           />
         </Link>
       </div>
-      <div className="flex gap-2 ml-auto font-light">
+      <div className="flex gap-2 ml-auto font-light dark:text-white">
         <nav className="flex items-right gap-8">
           {/* Top level menu items */}
           {(menu?.items || []).map((item) => (
