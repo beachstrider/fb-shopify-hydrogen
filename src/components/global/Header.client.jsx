@@ -38,8 +38,8 @@ export function Header({title, token}) {
       {
         id: 'gid://shopify/MenuItem/430541078584',
         target: '_self',
-        title: 'Influencers',
-        to: '/influencers',
+        title: 'About Us',
+        to: '/about-us',
       },
     ],
   };
