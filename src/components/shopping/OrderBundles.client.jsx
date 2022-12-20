@@ -51,6 +51,12 @@ export function OrderBundles() {
     setDeliveryDates(data);
   }
 
+  async function fetchBundles() {
+    const res = (await axios.get('/api/bundle/')).data;
+
+    console.log('bundle:', res);
+  }
+
   function handleWeekChange(e) {
     setSelectedWeekIndex(e.target.value);
     setDeliveryDate('');
@@ -61,6 +67,8 @@ export function OrderBundles() {
       (deliveryDate) => week.findIndex((el) => deliveryDate.date === el) !== -1,
     );
     setAvailableSlots(slots);
+
+    fetchBundles();
   }
 
   console.log(availableSlots);

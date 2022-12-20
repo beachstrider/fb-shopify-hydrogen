@@ -35,6 +35,7 @@ const bundleBuilder = async (
   );
 
   if (res.status !== 200) {
+    console.log('!!!', res);
     throw new Error('!!!');
   }
 
@@ -44,37 +45,10 @@ const bundleBuilder = async (
 };
 
 export async function api(request, {session}) {
-  const url = new URL(request.normalizedUrl).pathname.substring(12);
+  const res = await bundleBuilder(`auth`, {shop}, 'POST');
+  console.log('==', res);
 
-  const method = request.method;
-  const headers = initialHeaders;
+  const value = await res.token;
 
-  let params = {shop};
-  let token;
-
-  if (session) {
-    token = (await session.get()).bundleBuilderToken;
-
-    if (request.method !== 'GET') {
-      const newData = await request.json();
-      params = {...params, ...newData};
-    }
-
-    try {
-      if (typeof token === 'undefined') {
-        const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).token;
-        token = `Bearer ${newToken}`;
-        await session.set('bundleBuilderToken', token);
-      }
-      headers.authorization = token;
-
-      const {data} = await bundleBuilder(url, params, method, headers);
-
-      return data;
-    } catch (error) {
-      return new Response('Catch Error');
-    }
-  }
-
-  return new Response('Error');
+  return value;
 }
