@@ -1,20 +1,14 @@
-import {Link, Image, useUrl, useCart} from '@shopify/hydrogen';
-import {useWindowScroll} from 'react-use';
-import {Fragment, useEffect, useState} from 'react';
 import {Menu, Transition} from '@headlessui/react';
+import {Image, Link, useCart, useUrl} from '@shopify/hydrogen';
+import React, {Fragment} from 'react';
+import {useWindowScroll} from 'react-use';
 import {LogoutButton} from '~/components';
-import React from 'react';
 
-import {
-  Heading,
-  IconAccount,
-  IconBag,
-  IconMenu,
-} from '~/components';
+import {Heading, IconAccount, IconBag, IconMenu} from '~/components';
 
 import {CartDrawer} from './CartDrawer.client';
-import {MenuDrawer} from './MenuDrawer.client';
 import {useDrawer} from './Drawer.client';
+import {MenuDrawer} from './MenuDrawer.client';
 
 /**
  * A client component that specifies the content of the header on the website
@@ -34,6 +28,12 @@ export function Header({title, token}) {
         target: '_self',
         title: 'How It Works',
         to: '/how-it-works',
+      },
+      {
+        id: 'gid://shopify/MenuItem/413612507192',
+        target: '_self',
+        title: 'Catering',
+        to: '/catering',
       },
       {
         id: 'gid://shopify/MenuItem/430541078584',

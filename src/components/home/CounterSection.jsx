@@ -1,41 +1,38 @@
-import Carousel1 from '../../assets/carousel_1.png';
-import Carousel2 from '../../assets/carousel_2.png';
-import Carousel3 from '../../assets/carousel_3.png';
 export function CounterSection() {
   return (
-    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pt-10 pb-20 bg-image bg-[url('../assets/join_bg.png')]">
+    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pt-10 pb-20 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/join_bg.png')]">
       <div className="container max-w-screen-xl m-auto px-2">
         <h1 className="md:text-center text-left text-[20px] md:text-[60px] text-white uppercase font-extrabold md:leading-[80px] pt-4 md:pt-[70px]">
           Every order Feeds another
         </h1>
         <div className="bg-white max-w-3xl px-5 py-4 m-auto mt-[25px]">
           <div className="flex items-center justify-center">
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 1
               </div>
