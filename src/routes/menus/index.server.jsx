@@ -23,16 +23,9 @@ const Index = () => {
           id="version_mark"
           className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
         >
-          BETA, Dec 14 - WHITEBEAR
+          BETA, Dec 20 - Web Developer
         </div>
-        {/* <MenuFilter /> */}
-        {/* <Tab /> */}
       </Section>
-      {/* <Section>
-        <Suspense>
-          <MenuGrid />
-        </Suspense>
-      </Section> */}
     </Layout>
   );
 };
