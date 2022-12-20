@@ -25,7 +25,7 @@ export function Layout({children}) {
         <Suspense fallback={<Header title={SHOP_NAME_FALLBACK} />}>
           <HeaderWithMenuAndToken />
         </Suspense>
-        <main role="main" id="mainContent" className="flex-grow">
+        <main role="main" id="mainContent" className="flex-grow overflow-x-hidden">
           {children}
         </main>
       </div>

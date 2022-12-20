@@ -20,7 +20,7 @@ export function Header({title, token}) {
       {
         id: 'gid://shopify/MenuItem/413612474424',
         target: '_self',
-        title: 'Our Menu',
+        title: 'Menu',
         to: '/menus',
       },
       {
