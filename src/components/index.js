@@ -12,6 +12,7 @@ export * from './home/index';
 export * from './howitworks/index';
 export * from  './aboutus/index';
 export * from './heatingInstructions/index';
+export * from './influencers/index';
 
 export {CountrySelector} from './CountrySelector.client';
 export {CustomFont} from './CustomFont.client';
