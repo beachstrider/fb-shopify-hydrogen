@@ -54,7 +54,7 @@ export function Footer({menu}) {
                 <li className="mb-1.5">
                   <Link
                     className="font-medium leading-relaxed text-white"
-                    to="/inflencers"
+                    to="/influencers"
                   >
                     Influencers
                   </Link>
