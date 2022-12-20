@@ -24,7 +24,7 @@ export function HowItWorks() {
         <div className="grid grid-cols-2 sm:grid-cols-2">
           <div className="mt-12">
             <img
-              className="mx-auto w-32 sm:w-auto"
+              className="mx-auto w-32 sm:w-auto lg:h-5/6"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/chef_made.png"
               alt=""
             />
@@ -38,7 +38,7 @@ export function HowItWorks() {
               every box is made by hand with care and love but mostly epicness.
             </p>
             <img
-              className="lg:mt-52 invisible sm:visible md:mt-12 md:w-28 lg:w-52"
+              className="lg:mt-52 invisible sm:visible md:mt-12 md:w-28 lg:w-52 "
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/down_arrows.png"
               alt=""
             />
@@ -60,7 +60,7 @@ export function HowItWorks() {
           </div>
           <div className="mt-12">
             <img
-              className="mx-auto w-32 sm:w-auto"
+              className="mx-auto w-32 sm:w-auto lg:h-5/6"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/sealed_fresh.png"
               alt=""
             />
@@ -72,7 +72,7 @@ export function HowItWorks() {
         <div className="grid grid-cols-2 sm:grid-cols-2">
           <div className="mt-12">
             <img
-              className="mx-auto w-32 sm:w-auto"
+              className="mx-auto w-32 sm:w-auto lg:h-5/6"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/heat_it_up.png"
               alt=""
             />
@@ -89,7 +89,7 @@ export function HowItWorks() {
         </div>
       </div>
 
-      <div className="card-section container mx-auto mt-0 sm:mt-8 mb-12 sm:mb-44">
+      <div className="card-section container mx-auto mt-0 sm:mt-8 mb-12 sm:mb-44 ">
         <div className="grid grid-cols-2 sm:grid-cols-2">
           <div className="w-auto text-right">
             <h2 className="font-bungee md:text-5xl lg:text-8xl mt-24 md:mt-24 lg:mt-80 mr-4 font-bold text-xl sm:text-8xl">
@@ -105,12 +105,12 @@ export function HowItWorks() {
           </div>
           <div className="mt-12 sm:mr-1">
             <img
-              className="sm:mt-[-300px] lg:ml-[300px] md:ml-3 invisible sm:visible lg:visible"
+              className="sm:mt-[-300px] lg:ml-[300px] md:ml-3 invisible sm:visible lg:visible "
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/circles.png"
               alt=""
             />
             <img
-              className="mx-auto w-32 sm:w-auto mt-[-180px] sm:mt-[-300px]"
+              className="mx-auto w-32 sm:w-auto mt-[-180px] sm:mt-[-300px] lg:h-5/6"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/feast.png"
               alt=""
             />
