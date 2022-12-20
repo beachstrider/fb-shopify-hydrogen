@@ -12,6 +12,7 @@ import {ProductGrid, Section, Text} from '~/components';
 import {NoResultRecommendations, SearchPage} from '~/components/index.server';
 import {PAGINATION_SIZE} from '~/lib/const';
 import {Suspense} from 'react';
+import {NotFound} from '~/components/index.server';
 
 export default function Search({pageBy = PAGINATION_SIZE, params}) {
   const {
@@ -49,7 +50,8 @@ export default function Search({pageBy = PAGINATION_SIZE, params}) {
 
   if (!searchTerm || noResults) {
     return (
-      <SearchPage searchTerm={searchTerm ? decodeURI(searchTerm) : null}>
+      <NotFound />
+      /*<SearchPage searchTerm={searchTerm ? decodeURI(searchTerm) : null}>
         {noResults && (
           <Section padding="x">
             <Text className="opacity-50">No results, try something else.</Text>
@@ -61,12 +63,13 @@ export default function Search({pageBy = PAGINATION_SIZE, params}) {
             language={languageCode}
           />
         </Suspense>
-      </SearchPage>
+      </SearchPage>*/
     );
   }
 
   return (
-    <SearchPage searchTerm={decodeURI(searchTerm)}>
+    <NotFound />
+    /*<SearchPage searchTerm={decodeURI(searchTerm)}>
       <Section>
         <ProductGrid
           key="search"
@@ -74,7 +77,7 @@ export default function Search({pageBy = PAGINATION_SIZE, params}) {
           collection={{products}}
         />
       </Section>
-    </SearchPage>
+    </SearchPage>*/
   );
 }
 
