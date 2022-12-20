@@ -8,6 +8,8 @@ import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
+import weekday from 'dayjs/plugin/weekday';
+import isoWeek from 'dayjs/plugin/isoWeek';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -16,6 +18,8 @@ dayjs.extend(isBetween);
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(weekOfYear);
+dayjs.extend(weekday);
+dayjs.extend(isoWeek);
 
 const DEFAULT_TIME_ZONE = 'America/Denver';
 
@@ -114,6 +118,8 @@ export const getDayUsa = (date) => {
   const getDate = dayjs(date);
   return getDate.day();
 };
+
+export const getISO = (date) => dayjs(date).format('YYYY-MM-DD');
 
 export const getUsaStandard = (date) => {
   return dayjs(date).format('MMM DD, YYYY');
