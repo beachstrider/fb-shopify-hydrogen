@@ -1,14 +1,14 @@
 export function Catering() {
   return (
     <section className="text-white">
-      <div className="bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/hero_bg.png')] bg-no-repeat">
-        <div className="px-12 font-bungee ml-8 py-12 w-[60%]">
-          <p className="text-[120px]">A BOX</p>
-          <p className="text-[120px] mt-[-80px]">NEVER</p>
-          <p className="text-[120px] mt-[-80px]">PARTIED</p>
-          <p className="text-[120px] mt-[-80px]">SO GOOD</p>
+      <div className="bg-image object-cover bg-cover bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/hero_bg_mobile.png')] md:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/hero_bg.png')] bg-no-repeat">
+        <div className="px-12 font-bungee ml-8 py-12 w-[60%] text-[50px] leading-[50px] md:text-[80px] md:leading-[80px] relative">
+          A BOX<br/>
+          NEVER<br/>
+          PARTIED<br/>
+          SO GOOD<br/>
           <img
-            className="absolute mt-[-115px] ml-[38%]"
+            className="w-0 md:w-[120px] bottom-[-120px] right-[calc(50%-220px)] absolute"
             src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/down_arrows.png"
             alt=""
           />
@@ -16,8 +16,8 @@ export function Catering() {
       </div>
 
       <div className="bg-[#DB9707] py-[35px]">
-        <div className="grid grid-cols-2">
-          <div>
+        <div className="md:flex">
+          <div className="w-full md:w-1/2">
             <img
               className="mx-auto w-[90%] pb-8"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/host_most.png"
@@ -25,7 +25,7 @@ export function Catering() {
             />
           </div>
 
-          <div className="ml-8 mt-3">
+          <div className="w-full md:w-1/2 ml-8 mt-3">
             <p className="font-[700] text-[30px]">Feed up to 20 people</p>
             <p className="font-[700] text-[60px]">Be the Host</p>
             <p className="font-[700] text-[60px] mt-[-30px]">
@@ -40,7 +40,7 @@ export function Catering() {
               Or at least our food does… (an invite would be cool too).
             </p>
 
-            <div className="mt-8 flex gap-12">
+            <div className="text-center md:text-left mt-8 md:flex gap-12">
               <button className="bg-[#A60D1E] px-12 py-2 text-[25px]">
                 Get Eating!
               </button>
