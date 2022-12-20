@@ -36,6 +36,12 @@ export function Header({title, token}) {
         to: '/how-it-works',
       },
       {
+        id: 'gid://shopify/MenuItem/413612507192',
+        target: '_self',
+        title: 'Catering',
+        to: '/catering',
+      },
+      {
         id: 'gid://shopify/MenuItem/430541078584',
         target: '_self',
         title: 'Influencers',

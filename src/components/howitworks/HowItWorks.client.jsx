@@ -12,9 +12,11 @@ export function HowItWorks() {
       <div className="top-banner">
         <div className="banner-section">
           <img src={heroBg} alt="" />
-          <h1 className="text-[26px] md:text-6xl lg:text-8xl text-center font-extrabold lg:mt-[-62px]
+          <h1
+            className="text-[26px] md:text-6xl lg:text-8xl text-center font-extrabold lg:mt-[-62px]
           md:mt-[-30px] mt-[-22px]
-          ">
+          "
+          >
             THE NITTY GRITTY
           </h1>
           <p className="text-center mb-0 sm:mt-12 md:mt-5 font-bold sm:text-3xl">
@@ -111,4 +113,3 @@ export function HowItWorks() {
     </section>
   );
 }
-
