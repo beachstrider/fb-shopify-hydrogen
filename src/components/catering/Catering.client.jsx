@@ -2,11 +2,11 @@ export function Catering() {
   return (
     <section className="text-white">
       <div className="bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/hero_bg.png')] bg-no-repeat">
-        <div className="px-12 ml-8 py-12 w-[60%]">
-          <p className="text-[120px] font-extrabold">A BOX</p>
-          <p className="text-[120px] font-extrabold mt-[-80px]">NEVER</p>
-          <p className="text-[120px] font-extrabold mt-[-80px]">PARTIED</p>
-          <p className="text-[120px] font-extrabold mt-[-80px]">SO GOOD</p>
+        <div className="px-12 font-bungee ml-8 py-12 w-[60%]">
+          <p className="text-[120px]">A BOX</p>
+          <p className="text-[120px] mt-[-80px]">NEVER</p>
+          <p className="text-[120px] mt-[-80px]">PARTIED</p>
+          <p className="text-[120px] mt-[-80px]">SO GOOD</p>
           <img
             className="absolute mt-[-115px] ml-[38%]"
             src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/down_arrows.png"
