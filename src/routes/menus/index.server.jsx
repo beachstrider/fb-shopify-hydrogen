@@ -1,7 +1,7 @@
 import {Suspense} from 'react';
 import {useLocalization, Seo} from '@shopify/hydrogen';
 
-import {MenuBanner, Section, MenuFilter, Tab, MenuGrid} from '~/components';
+import {MenuBanner, Section, MenuBbq, MenuItalian,MenuFusion, MenuMexican, MenuChef} from '~/components';
 import {Layout} from '~/components/index.server';
 
 const Index = () => {
@@ -13,6 +13,11 @@ const Index = () => {
     <Layout>
       <Seo type="page" data={{title: 'Menus'}} />
       <MenuBanner />
+      <MenuBbq />
+      <MenuItalian />
+      <MenuMexican />
+      <MenuFusion />
+      <MenuChef />
       <Section>
         <div
           id="version_mark"
@@ -20,14 +25,14 @@ const Index = () => {
         >
           BETA, Dec 14 - WHITEBEAR
         </div>
-        <MenuFilter />
-        <Tab />
+        {/* <MenuFilter /> */}
+        {/* <Tab /> */}
       </Section>
-      <Section>
+      {/* <Section>
         <Suspense>
           <MenuGrid />
         </Suspense>
-      </Section>
+      </Section> */}
     </Layout>
   );
 };

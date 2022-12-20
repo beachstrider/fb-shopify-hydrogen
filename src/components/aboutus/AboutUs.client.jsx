@@ -24,7 +24,7 @@ export function AboutUs() {
             </div>
             <div className="lg:w-5/12 md:w-full sm-max:w-full">
               <h2
-                className="custom-font lg:text-center sm-max:mt-16 mt-12 text-start font-bold bg-[#DB9707] lg:ml-[-50px] lg:text-[60px] md:text-[40px] sm-max:text-[35px] -tracking-[3.5px] px-[30px] "
+                className="custom-font lg:text-center lg:mt-12 md:mt-0 sm-max:mt-0 text-start font-bold bg-[#DB9707] lg:ml-[-50px] lg:text-[60px] md:text-[40px] sm-max:text-[35px] -tracking-[3.5px] px-[30px] "
                 style={{fontFamily: 'Open Sans'}}
               >
                 WHO EVEN ARE WE?
