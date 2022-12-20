@@ -63,9 +63,9 @@ export async function api(request, {session}) {
 
     try {
       if (typeof token === 'undefined') {
-        return 'here';
         const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).data
           .token;
+        return 'here';
         token = `Bearer ${newToken}`;
         await session.set('bundleBuilderToken', token);
       }
