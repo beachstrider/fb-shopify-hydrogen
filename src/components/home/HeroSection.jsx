@@ -6,7 +6,7 @@ export function HeroSection() {
           <div className="container max-w-screen-xl mx-auto">
             <div className="flex items-center justify-start h-full">
               <div className="text-white text-lg pl-2 pt-[200px] md:pl-[4rem] md:pt-[65px]">
-                <span className="text-[80px] md:text-[100px] font-extrabold leading-[60px] md:leading-[80px] mb-[-0.5rem]">
+                <span className="font-bungee text-[80px] md:text-[100px] leading-[60px] md:leading-[80px] mb-[-0.5rem]">
                   {' '}
                   A BOX <br />
                   NEVER <br />

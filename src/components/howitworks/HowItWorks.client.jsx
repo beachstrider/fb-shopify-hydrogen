@@ -30,7 +30,7 @@ export function HowItWorks() {
             />
           </div>
           <div className="w-auto max-h-0 md:ml-5 lg:ml-0">
-            <h2 className="sm:mt-24 mt-12 text-start font-bold lg:text-8xl sm:text-8xl md:text-5xl">
+            <h2 className="font-bungee sm:mt-24 mt-12 text-start lg:text-8xl sm:text-8xl md:text-5xl">
               CHEF-MADE
             </h2>
             <p className="mt-1 font-bold text-sm md:text-3xl lg:text-5xl sm:text-5xl card-para text-start mr-5">
@@ -49,7 +49,7 @@ export function HowItWorks() {
       <div className="card-section container mx-auto mt-0 sm:mt-8">
         <div className="grid grid-cols-2 sm:grid-cols-2">
           <div className="w-auto text-right">
-            <h2 className="sm:mt-48 md:text-5xl lg:text-8xl mt-12 mr-4 font-bold text-xl sm:text-8xl">
+            <h2 className="font-bungee sm:mt-48 md:text-5xl lg:text-8xl mt-12 mr-4 text-xl sm:text-8xl">
               SEALED FRESH
             </h2>
             <p className="mt-1 font-bold text-sm sm:text-5xl md:text-3xl lg:text-5xl card-para mr-5">
@@ -78,7 +78,7 @@ export function HowItWorks() {
             />
           </div>
           <div className="w-auto max-h-0 md:ml-5 lg:ml-0">
-            <h2 className="md:text-5xl lg:text-8xl sm:mt-24 mt-12 text-start font-bold text-xl sm:text-8xl">
+            <h2 className="font-bungee md:text-5xl lg:text-8xl sm:mt-24 mt-12 text-start text-xl sm:text-8xl">
               HEAT IT UP
             </h2>
             <p className="mt-1 font-bold text-sm sm:text-5xl md:text-3xl lg:text-5xl card-para text-start mr-5">
@@ -92,7 +92,7 @@ export function HowItWorks() {
       <div className="card-section container mx-auto mt-0 sm:mt-8 mb-12 sm:mb-44">
         <div className="grid grid-cols-2 sm:grid-cols-2">
           <div className="w-auto text-right">
-            <h2 className="md:text-5xl lg:text-8xl mt-24 md:mt-24 lg:mt-80 mr-4 font-bold text-xl sm:text-8xl">
+            <h2 className="font-bungee md:text-5xl lg:text-8xl mt-24 md:mt-24 lg:mt-80 mr-4 text-xl sm:text-8xl">
               FEAST!
             </h2>
             <p className="mt-1 font-bold text-sm sm:text-5xl md:text-3xl lg:text-5xl card-para mr-5">
