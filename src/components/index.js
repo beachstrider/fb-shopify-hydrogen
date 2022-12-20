@@ -12,6 +12,7 @@ export * from './home/index';
 export * from './howitworks/index';
 export * from  './aboutus/index';
 export * from './heatingInstructions/index';
+export * from './influencers/index';
 export * from './catering/index';
 
 export {CountrySelector} from './CountrySelector.client';
