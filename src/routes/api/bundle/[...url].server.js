@@ -17,22 +17,15 @@ const bundleBuilder = async (
   method = 'GET',
   headers = initialHeaders,
 ) => {
-  const res = await fetch(
-    `${baseURL}${url}${
-      params && method === 'GET'
-        ? '?' + new URLSearchParams(params).toString()
-        : ''
-    }`,
-    {
-      headers,
-      method,
-      ...(method !== 'GET' &&
-      typeof params === 'object' &&
-      Object.keys(params).length > 0
-        ? {body: JSON.stringify(params)}
-        : {}),
-    },
-  );
+  const res = await fetch(`${baseURL}${url}`, {
+    headers,
+    method,
+    ...(method !== 'GET' &&
+    typeof params === 'object' &&
+    Object.keys(params).length > 0
+      ? {body: JSON.stringify(params)}
+      : {}),
+  });
 
   if (res.status !== 200) {
     throw new Error('!!!');
@@ -44,10 +37,11 @@ const bundleBuilder = async (
 };
 
 export async function api(request, {session}) {
-  const url = new URL(request.normalizedUrl).pathname.substring(12);
-
-  const method = request.method;
   const headers = initialHeaders;
+  const method = request.method;
+
+  const urlObj = new URL(request.normalizedUrl);
+  let url = urlObj.pathname.substring(12);
 
   let params = {shop};
   let token;
@@ -55,10 +49,15 @@ export async function api(request, {session}) {
   if (session) {
     token = (await session.get()).bundleBuilderToken;
 
-    if (request.method !== 'GET') {
+    if (request.method === 'GET') {
+      const query = urlObj.search;
+      url = url + query;
+    } else {
       const newData = await request.json();
       params = {...params, ...newData};
     }
+
+    console.log('URL:', url);
 
     try {
       if (typeof token === 'undefined') {
