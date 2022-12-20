@@ -42,35 +42,38 @@ export const bundleBuilder = async (
 
 export async function api(request, {session}) {
   const url = new URL(request.normalizedUrl).pathname.substring(12);
-  const method = request.method;
-  const headers = initialHeaders;
 
-  let data = {shop};
-  let token;
+  return url;
 
-  if (session) {
-    token = (await session.get()).bundleBuilderToken;
+  // const method = request.method;
+  // const headers = initialHeaders;
 
-    if (request.method !== 'GET') {
-      const newData = await request.json();
-      data = {...data, ...newData};
-    }
+  // let data = {shop};
+  // let token;
 
-    if (typeof token === 'undefined') {
-      const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).data.token;
-      token = `Bearer ${newToken}`;
+  // if (session) {
+  //   token = (await session.get()).bundleBuilderToken;
 
-      console.log('Token', token);
+  //   if (request.method !== 'GET') {
+  //     const newData = await request.json();
+  //     data = {...data, ...newData};
+  //   }
 
-      await session.set('bundleBuilderToken', token);
-    }
+  //   if (typeof token === 'undefined') {
+  //     const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).data.token;
+  //     token = `Bearer ${newToken}`;
 
-    headers.authorization = token;
+  //     console.log('Token', token);
 
-    const res = await bundleBuilder(url, data, method, headers);
+  //     await session.set('bundleBuilderToken', token);
+  //   }
 
-    return res.data;
-  }
+  //   headers.authorization = token;
 
-  return new Response('Error');
+  //   const res = await bundleBuilder(url, data, method, headers);
+
+  //   return res.data;
+  // }
+
+  // return new Response('Error');
 }
