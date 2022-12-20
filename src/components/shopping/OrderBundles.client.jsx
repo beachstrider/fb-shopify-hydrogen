@@ -13,14 +13,24 @@ import {
   getDayUsa,
 } from '~/utils/dates';
 
+const platform_product_id = 8022523347235;
+
 export function OrderBundles() {
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [deliveryDate, setDeliveryDate] = useState('');
+  const [bundleContents, setBundleContents] = useState([]);
+
+  const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
 
   useEffect(() => {
-    fetchDeliveryDates();
+    async function fetchAll() {
+      await fetchDeliveryDates();
+      await fetchBundle();
+    }
+
+    fetchAll();
   }, []);
 
   const weeks = [...new Array(6)]
@@ -51,16 +61,41 @@ export function OrderBundles() {
     setDeliveryDates(data);
   }
 
-  function handleWeekChange(e) {
-    setSelectedWeekIndex(e.target.value);
-    setDeliveryDate('');
+  async function fetchBundle() {
+    const bundle = (
+      await axios.get(
+        `/api/bundle/bundles?platform_product_id=${platform_product_id}`,
+      )
+    ).data[0];
 
+    const config = (
+      await axios.get(
+        `/api/bundle/bundles/${bundle.id}/configurations/${bundle.configurations[0].id}`,
+      )
+    ).data;
+
+    setBundleContents(config.contents);
+
+    console.log('bundle:', bundle);
+    console.log('config:', config);
+  }
+
+  function handleWeekChange(e) {
     const week = weeks[e.target.value];
 
     const slots = deliveryDates.filter(
       (deliveryDate) => week.findIndex((el) => deliveryDate.date === el) !== -1,
     );
+
+    // const contents = bundleContents.filter((content, index) => {
+
+    // });
+
+    setSelectedWeekIndex(e.target.value);
     setAvailableSlots(slots);
+    setDeliveryDate(slots[0].date);
+
+    setIsDeliveryDateEditing(false);
   }
 
   console.log(availableSlots);
@@ -164,16 +199,25 @@ export function OrderBundles() {
                   >
                     <p className="mb-2 text-md text-gray-500" />
                     <div className="text-sm">
-                      Delivery Day: <strong>Wednesday, January 4.</strong>
+                      Delivery Day:{' '}
+                      <strong>
+                        {deliveryDate
+                          ? getUsaStandard(deliveryDate)
+                          : '---- -- --'}
+                      </strong>
                     </div>
                     <div className="text-sm" style={{color: '#DB9707'}}>
-                      <button href="#">
+                      <button
+                        onClick={() =>
+                          setIsDeliveryDateEditing(!isDeliveryDateEditing)
+                        }
+                      >
                         <u>Change Delivery Day</u>
                       </button>
                     </div>
                     <p />
                   </div>
-                  {availableSlots.length > 0 && (
+                  {isDeliveryDateEditing && availableSlots.length > 0 && (
                     <div className="flex flex-wrap lg:flex-nowrap justify-around gap-4 -mx-4 -mb-4 md:mb-0 bg-white px-[26px] py-[20px]">
                       {availableSlots.map((slot, key) => (
                         <button
@@ -183,7 +227,10 @@ export function OrderBundles() {
                               ? 'text-white bg-[#DB9707]'
                               : 'text-[#DB9707]'
                           }  border-[#DB9707]`}
-                          onClick={() => setDeliveryDate(slot.date)}
+                          onClick={() => {
+                            setDeliveryDate(slot.date);
+                            setIsDeliveryDateEditing(false);
+                          }}
                         >
                           {dayjs(slot.date).format('dddd')}
                           <br />
