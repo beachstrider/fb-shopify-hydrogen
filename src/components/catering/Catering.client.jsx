@@ -21,9 +21,9 @@ export function Catering() {
           </div>
           <div className="text-start ml-[-100px]">
             <p className="font-[700] text-[30px]">Feed up to 20 people</p>
-            <p className='font-[700] text-[60px]'>Be the Host</p>
-            <p className='font-[700] text-[60px] mt-[-30px]'>With the Most!</p>
-            <p className='font-[600] text-[30px] w-[75%]'>
+            <p className="font-[700] text-[60px]">Be the Host</p>
+            <p className="font-[700] text-[60px] mt-[-30px]">With the Most!</p>
+            <p className="font-[600] text-[30px] w-[75%]">
               Everybody loves a good party! Whether it’s for the Super Bowl, a
               birthday, holiday, banquet, bachelor party, we want to be there!
               Or at least our food does… (an invite would be cool too).
