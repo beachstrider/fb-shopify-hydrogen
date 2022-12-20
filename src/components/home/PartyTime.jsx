@@ -1,4 +1,3 @@
-import PartyTimeImg from '../../assets/party_time.png';
 export function PartyTime() {
   return (
     <section className="">
@@ -34,7 +33,7 @@ export function PartyTime() {
               </div>
               <div className="w-full md:w-1/2">
                 <img
-                  src={PartyTimeImg}
+                  src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/partytime_food.png"
                   className="w-full h-auto mx-auto"
                   alt=""
                 />
@@ -42,7 +41,7 @@ export function PartyTime() {
             </div>
           </div>
         </div>
-        <div className="h-[100px] bg-[#FFFFFF] bg-right bg-center bg-no-repeat bg-cover pb-6 bg-image bg-[url('../assets/triangles_top.png')]"></div>
+        <div className="h-[100px] bg-[#FFFFFF] bg-right bg-center bg-no-repeat bg-cover pb-6 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/triangles_all_mobile.png')] md:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/triangles_top.png')]"></div>
       </div>
     </section>
   );

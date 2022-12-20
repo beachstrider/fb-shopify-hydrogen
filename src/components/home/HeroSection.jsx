@@ -1,10 +1,8 @@
-import plateImage from '../../assets/plate.png';
-import DownArrow from '../../assets/down_arrows.png';
 export function HeroSection() {
   return (
     <section className="">
       <div className="">
-        <div className=" h-[500px] bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-image bg-[url('../assets/hero_bg.png')]">
+        <div className=" h-[500px] bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/hero_bg.png')]">
           <div className="container max-w-screen-xl mx-auto">
             <div className="flex items-center justify-start h-full">
               <div className="text-white text-lg pl-2 pt-[200px] md:pl-[4rem] md:pt-[65px]">
@@ -19,17 +17,17 @@ export function HeroSection() {
             </div>
           </div>
         </div>
-        <div className="bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-image bg-[url('../assets/join_bg.png')]">
+        <div className="bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/join_bg.png')]">
           <div className="container max-w-screen-xl mx-auto">
             <div className="md:flex block items-start justify-between h-full">
               <div className="w-full md:w-1/2 relative">
                 <img
-                  src={plateImage}
+                  src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/plate.png"
                   className=" object-cover mx-auto md:max-w-md max-w-[350px] h-auto md:mt-[-60px] mt-0"
                   alt=""
                 />
                 <img
-                  src={DownArrow}
+                  src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/down_arrows.png"
                   className="absolute object-cover w-[100px] max-w-md h-auto md:top-[-85px] right-0 top-[40px]"
                   alt=""
                 />
