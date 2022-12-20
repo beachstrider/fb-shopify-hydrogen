@@ -34,7 +34,10 @@ export const bundleBuilder = async (
     },
   );
 
-  if (res.status !== 200) throw new Error('!!!');
+  if (res.status !== 200) {
+    console.log('!!!', res);
+    throw new Error('!!!');
+  }
 
   const data = await res.json();
 
@@ -60,11 +63,10 @@ export async function api(request, {session}) {
 
     try {
       if (typeof token === 'undefined') {
-        return 'Ok';
-        // const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).data
-        //   .token;
-        // token = `Bearer ${newToken}`;
-        // await session.set('bundleBuilderToken', token);
+        const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).data
+          .token;
+        token = `Bearer ${newToken}`;
+        await session.set('bundleBuilderToken', token);
       }
       headers.authorization = token;
 
