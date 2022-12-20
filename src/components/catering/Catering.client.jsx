@@ -53,26 +53,45 @@ export function Catering() {
       </div>
 
       <div>
-        <img
-          src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good.png"
-          alt=""
-        />
-      </div>
-
-      <div className="bg-[#DB9707]">
-        <div className="flex">
-          <p className="pl-48 pt-[90px] pb-[90px] text-[35px] w-[65%]">
-            FEASTbox has partnered with Full of Hope to reach our goal of
-            feeding 100,000 families in 2023. Learn more about Full of Hope, a
-            charity all about giving back and helping to feed families. For
-            every box purchased, FEASTbox will donate a meal to a local family
-            in need.
-          </p>
+        <div className="w-0 md:w-full">
           <img
-            className="pt-0 pb-20 ml-20"
-            src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/full_of_hope.png"
+            src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good.png"
             alt=""
           />
+        </div>
+        <div className="w-full md:w-0">
+          <div className="w-full">
+            <img
+              className="w-full"
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/mom_daughter_mobile.png"
+            />
+          </div>
+          <div className="w-full bg-[#231f20] py-10 px-6 md:py-0 md:px-0">
+            <img
+              className="w-full"
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good_mobile.png"
+            />
+          </div>
+        </div>
+        <div className="bg-[#231f20] md:bg-[#DB9707]">
+          <div className="md:flex">
+            <div className="w-full md:w-[calc(100%-300px)] pl-6 pr-6 py-10 md:pl-[100px] md:py-[50px] pr-[70px]">
+              <p>
+                FEASTbox has partnered with Full of Hope to reach our goal of
+                feeding 100,000 families in 2023. Learn more about Full of Hope,
+                a charity all about giving back and helping to feed families.
+                For every box purchased, FEASTbox will donate a meal to a local
+                family in need.
+              </p>
+            </div>
+            <div className="w-full md:w-[300px] relative pb-[20px]">
+              <img
+                className="w-0 md:absolute md:top-0 md:right-10 md:w-[200px]"
+                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/full_of_hope.png"
+                alt=""
+              />
+            </div>
+          </div>
         </div>
       </div>
     </section>
