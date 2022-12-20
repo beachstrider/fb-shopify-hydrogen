@@ -96,6 +96,54 @@ export function Influencers() {
               </button>
             </div>
     </div>
+    <div>
+        <div className="w-0 md:w-full">
+          <img
+            src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good.png"
+            alt=""
+          />
+        </div>
+        <div className="w-full md:w-0">
+          <div className="w-full">
+            <img
+              className="w-full"
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/mom_daughter_mobile.png"
+            />
+          </div>
+          <div className="w-full bg-[#231f20] py-10 px-6 md:py-0 md:px-0">
+            <img
+              className="w-full"
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good_mobile.png"
+            />
+          </div>
+        </div>
+        <div className="bg-[#231f20] md:bg-[#DB9707]">
+          <div className="md:flex">
+            <div className="w-full md:w-[calc(100%-300px)] pl-6 pr-6 py-10 md:pl-[100px] md:py-[50px] pr-[70px]">
+              <p className='text-white text-3xl'>
+                FEASTbox has partnered with Full of Hope to reach our goal of
+                feeding 100,000 families in 2023. Learn more about Full of Hope,
+                a charity all about giving back and helping to feed families.
+                For every box purchased, FEASTbox will donate a meal to a local
+                family in need.
+              </p>
+                  <div className="text-center md:text-left py-5">
+                  <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
+                    How It Works
+                  </button>
+                </div>
+            </div>
+            <div className="w-full md:w-[300px] relative pb-[20px]">
+              <img
+                className="w-0 md:absolute md:top-0 md:right-10 md:w-[200px]"
+                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/full_of_hope.png"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    
     <div className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pt-10 pb-20 bg-[#231F20]">
       <div className="container max-w-screen-xl m-auto px-2">
         <h1 className="font-bungee md:text-center text-left text-[20px] md:text-[60px] text-white uppercase font-normal md:leading-[80px] pt-4 md:pt-[70px]">
