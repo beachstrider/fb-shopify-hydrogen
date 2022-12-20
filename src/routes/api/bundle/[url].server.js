@@ -57,21 +57,24 @@ export async function api(request, {session}) {
       data = {...data, ...newData};
     }
 
-    return {token};
-    // if (typeof token === 'undefined') {
-    //   const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).data.token;
-    //   token = `Bearer ${newToken}`;
+    if (typeof token === 'undefined') {
+      try {
+        const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).data
+          .token;
+        token = `Bearer ${newToken}`;
+        await session.set('bundleBuilderToken', token);
+      } catch (error) {
+        return new Response(JSON.stringify(error), {
+          status: 400,
+        });
+      }
+    }
 
-    //   console.log('Token', token);
+    headers.authorization = token;
 
-    //   await session.set('bundleBuilderToken', token);
-    // }
+    const res = await bundleBuilder(url, data, method, headers);
 
-    // headers.authorization = token;
-
-    // const res = await bundleBuilder(url, data, method, headers);
-
-    // return res.data;
+    return res.data;
   }
 
   return new Response('Error');
