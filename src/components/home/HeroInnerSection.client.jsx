@@ -1,10 +1,7 @@
-import Carousel1 from '../../assets/carousel_1.png';
-import Carousel2 from '../../assets/carousel_2.png';
-import Carousel3 from '../../assets/carousel_3.png';
 import Marquee from 'react-fast-marquee';
 export function HeroInnerSection() {
   return (
-    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-image bg-[url('../assets/join_bg.png')]">
+    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/join_bg.png')]">
       <div className="container max-w-screen-xl m-auto">
         <h1 className="text-center text-6xl text-white uppercase font-extrabold leading-[80px]">
           Welcome to the robot-free zone
@@ -22,16 +19,16 @@ export function HeroInnerSection() {
               pauseOnClick={true}
           >
               <div className="w-1/4 ml-[10px]">
-                <img src={Carousel1} className="w-[350px] h-full" alt="" />
+                <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/carousel_1.png" className="w-[350px] h-full" alt="" />
               </div>
               <div className="w-1/4 ml-[10px]">
-                <img src={Carousel2} className="w-[350px] h-full" alt="" />
+                <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/carousel_2.png" className="w-[350px] h-full" alt="" />
               </div>
               <div className="w-1/4 ml-[10px]">
-                <img src={Carousel3} className="w-[350px] h-full" alt="" />
+                <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/carousel_3.png" className="w-[350px] h-full" alt="" />
               </div>
               <div className="w-1/4 ml-[10px]">
-                <img src={Carousel1} className="w-[350px] h-full" alt="" />
+                <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/carousel_1.png" className="w-[350px] h-full" alt="" />
               </div>
           </Marquee>
         </div>

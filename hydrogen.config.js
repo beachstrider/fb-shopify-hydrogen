@@ -1,5 +1,7 @@
 import {defineConfig, CookieSessionStorage} from '@shopify/hydrogen/config';
 
+// console.log(Oxygen?.env?.PUBLIC_STOREFRONT_API_TOKEN); // eslint-disable-line no-undef
+
 export default defineConfig({
   shopify: {
     defaultCountryCode: 'US',
@@ -9,6 +11,7 @@ export default defineConfig({
     privateStorefrontToken: Oxygen?.env?.PRIVATE_STOREFRONT_API_TOKEN, // eslint-disable-line no-undef
     storefrontApiVersion: '2022-07',
     storefrontId: Oxygen?.env?.PUBLIC_STOREFRONT_ID, // eslint-disable-line no-undef
+    rechargeToken: Oxygen?.env?.PUBLIC_RECHARGE_API_TOKEN, // eslint-disable-line no-undef
   },
   session: CookieSessionStorage('__session', {
     path: '/',

@@ -48,7 +48,10 @@ export default function Account({response}) {
 
   const external_customer_id = customer.id.slice(23);
 
-  const subscriptions = getSubscriptions({external_customer_id});
+  const subscriptions = getSubscriptions({
+    external_customer_id,
+    status: 'active',
+  });
 
   return (
     <Layout>

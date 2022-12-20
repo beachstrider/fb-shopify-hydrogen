@@ -1,20 +1,14 @@
-import {Link, Image, useUrl, useCart} from '@shopify/hydrogen';
-import {useWindowScroll} from 'react-use';
-import {Fragment, useEffect, useState} from 'react';
 import {Menu, Transition} from '@headlessui/react';
+import {Image, Link, useCart, useUrl} from '@shopify/hydrogen';
+import React, {Fragment} from 'react';
+import {useWindowScroll} from 'react-use';
 import {LogoutButton} from '~/components';
-import React from 'react';
 
-import {
-  Heading,
-  IconAccount,
-  IconBag,
-  IconMenu,
-} from '~/components';
+import {Heading, IconAccount, IconBag, IconMenu} from '~/components';
 
 import {CartDrawer} from './CartDrawer.client';
-import {MenuDrawer} from './MenuDrawer.client';
 import {useDrawer} from './Drawer.client';
+import {MenuDrawer} from './MenuDrawer.client';
 
 /**
  * A client component that specifies the content of the header on the website
@@ -34,6 +28,12 @@ export function Header({title, token}) {
         target: '_self',
         title: 'How It Works',
         to: '/how-it-works',
+      },
+      {
+        id: 'gid://shopify/MenuItem/413612507192',
+        target: '_self',
+        title: 'Catering',
+        to: '/catering',
       },
       {
         id: 'gid://shopify/MenuItem/430541078584',
@@ -94,8 +94,8 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
     button: 'relative flex items-center justify-center w-8 h-8',
     container: `${
       isHome
-        ? 'bg-[#121111]  text-contrast dark:text-primary shadow-darkHeader'
-        : 'bg-[#121111]  text-contrast dark:text-primary shadow-darkHeader'
+        ? 'bg-[#121111] text-contrast text-primary shadow-darkHeader'
+        : 'bg-[#121111] text-contrast text-primary shadow-darkHeader'
     } ${
       y > 50 && !isHome ? 'shadow-lightHeader ' : ''
     }flex lg:hidden items-center h-nav sticky backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-4 px-4 md:px-8`,
@@ -195,8 +195,8 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
       'relative flex items-center justify-center w-8 h-8 focus:ring-primary/5',
     container: `${
       isHome
-        ? 'bg-[#121111]  text-contrast dark:text-primary shadow-darkHeader'
-        : 'bg-[#121111]  text-contrast dark:text-primary shadow-darkHeader'
+        ? 'bg-[#121111] text-contrast text-primary shadow-darkHeader'
+        : 'bg-[#121111] text-contrast text-primary shadow-darkHeader'
     } ${
       y > 50 && !isHome ? 'shadow-lightHeader ' : 'shadow-lightHeader '
     }hidden lg:flex items-center sticky transition duration-300 backdrop-blur-lg z-40 top-0 justify-between w-full leading-none gap-8 px-12 py-3`,
@@ -216,7 +216,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
           />
         </Link>
       </div>
-      <div className="flex gap-2 ml-auto font-light">
+      <div className="flex gap-2 ml-auto font-light text-white">
         <nav className="flex items-right gap-8">
           {/* Top level menu items */}
           {(menu?.items || []).map((item) => (
@@ -308,7 +308,7 @@ function CartBadge({dark}) {
     <div
       className={`${
         dark
-          ? 'text-primary bg-contrast dark:text-contrast dark:bg-[#121111]'
+          ? 'text-primary bg-contrast text-contrast bg-[#121111]'
           : 'text-contrast bg-[#121111]'
       } absolute bottom-1 right-1 text-[0.625rem] font-medium subpixel-antialiased h-3 min-w-[0.75rem] flex items-center justify-center leading-none text-center rounded-full w-auto px-[0.125rem] pb-px`}
     >

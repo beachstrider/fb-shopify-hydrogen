@@ -57,7 +57,7 @@ export const rechargeFetchSync = (
   method = 'GET',
   headers = headers1,
 ) => {
-  const res = fetchSync(
+  const data = fetchSync(
     `${baseURL}${url}${
       params && method === 'GET' ? '?' + convertUrlParams(params) : ''
     }`,
@@ -72,14 +72,17 @@ export const rechargeFetchSync = (
     },
   ).json();
 
-  return res;
+  return data;
 };
 
 export const getSubscriptions = (params) => {
-  let {subscriptions} = rechargeFetchSync('subscriptions', params);
+  const res = rechargeFetchSync('subscriptions', params);
+
+  if (typeof res.errors?.external_customer_id !== 'undefined') return [];
+
   const {products} = rechargeFetchSync('products', {}, 'GET', headers2);
 
-  subscriptions = subscriptions.map((subscription) => {
+  const subscriptions = res.subscriptions.map((subscription) => {
     const {address} = rechargeFetchSync(`addresses/${subscription.address_id}`);
     const product = products.find(
       (el) =>
@@ -87,6 +90,7 @@ export const getSubscriptions = (params) => {
     );
     return {...subscription, address, product};
   });
+
   return subscriptions;
 };
 
@@ -218,9 +222,12 @@ export const updateSubscription = async ({id, data}) => {
 };
 
 export const getBillingInfo = (params) => {
-  const {subscriptions} = rechargeFetchSync('subscriptions', params);
+  const res = rechargeFetchSync('subscriptions', params);
 
-  const shippingAddresses = subscriptions.map((subscription) => {
+  if (typeof res.errors?.external_customer_id !== 'undefined')
+    return {customer_id: null, shippingAddresses: [], paymentMethods: []};
+
+  const shippingAddresses = res.subscriptions.map((subscription) => {
     const {address} = rechargeFetchSync(
       `addresses/${subscription.address_id}`,
       {include: 'payment_methods'},
@@ -295,7 +302,11 @@ export const sendPaymentMethodUpdateEmail = async ({
 };
 
 export const getOrderHistory = (params) => {
-  const customer_id = rechargeFetchSync('customers', params).customers[0].id;
+  const {customers} = rechargeFetchSync('customers', params);
+
+  if (!customers.length) return [];
+
+  const customer_id = customers[0].id;
 
   const {charges} = rechargeFetchSync('charges', {
     customer_id,

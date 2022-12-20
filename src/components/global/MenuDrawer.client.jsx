@@ -30,7 +30,7 @@ function MenuMobileNav({menu, onClose}) {
         </Link>
       ))}
       <Link
-        to={'/shop'}
+        to={'/shop/bundle'}
         className="text-sm inline-block bg-black text-white px-2 py-2 uppercase"
       >
         SHOP NOW
