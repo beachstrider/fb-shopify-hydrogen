@@ -64,9 +64,7 @@ export async function api(request, {session}) {
         token = `Bearer ${newToken}`;
         await session.set('bundleBuilderToken', token);
       } catch (error) {
-        return new Response(JSON.stringify(error), {
-          status: 400,
-        });
+        return new Response('Really Error');
       }
     }
 
