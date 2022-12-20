@@ -58,24 +58,23 @@ export async function api(request, {session}) {
       data = {...data, ...newData};
     }
 
-    return {url, data, method, headers};
-    // try {
-    //   if (typeof token === 'undefined') {
+    try {
+      if (typeof token === 'undefined') {
+        return 'Ok';
+        // const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).data
+        //   .token;
+        // token = `Bearer ${newToken}`;
+        // await session.set('bundleBuilderToken', token);
+      }
+      headers.authorization = token;
 
-    //     const newToken = (await bundleBuilder(`auth`, {shop}, 'POST')).data
-    //       .token;
-    //     token = `Bearer ${newToken}`;
-    //     await session.set('bundleBuilderToken', token);
-    //   }
-    //   headers.authorization = token;
+      const res = await bundleBuilder(url, data, method, headers);
 
-    //   // const res = await bundleBuilder(url, data, method, headers);
-
-    //   // return res.data;
-    // } catch (error) {
-    //   console.log('error===', error);
-    //   return new Response('Really Error');
-    // }
+      return res.data;
+    } catch (error) {
+      console.log('error===', error);
+      return new Response('Really Error');
+    }
   }
 
   return new Response('Error');
