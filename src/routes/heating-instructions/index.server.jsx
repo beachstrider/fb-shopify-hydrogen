@@ -12,9 +12,9 @@ const Index = () => {
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'FeastBox How it works page'}} />
+        <Seo type="noindex" data={{title: 'FeastBox Heating instruction page'}} />
       </Suspense>
-      <HeatingIns/>
+      <HeatingIns />
     </Layout>
   );
 };
