@@ -2,7 +2,7 @@ import {Suspense} from 'react';
 import '../../assets/CSS/style.css'
 import {Seo, useLocalization} from '@shopify/hydrogen';
 import {Layout} from '~/components/index.server';
-import {AboutUs} from '~/components';
+import {Influencers} from '~/components';
 
 const Index = () => {
   const {
@@ -12,9 +12,9 @@ const Index = () => {
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'FeastBox About Us page'}} />
+        <Seo type="noindex" data={{title: 'FeastBox How it works page'}} />
       </Suspense>
-      <AboutUs />
+      <Influencers/>
     </Layout>
   );
 };

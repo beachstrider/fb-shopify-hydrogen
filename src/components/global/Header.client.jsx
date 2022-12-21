@@ -20,7 +20,7 @@ export function Header({title, token}) {
       {
         id: 'gid://shopify/MenuItem/413612474424',
         target: '_self',
-        title: 'Our Menu',
+        title: 'Menu',
         to: '/menus',
       },
       {
@@ -30,7 +30,7 @@ export function Header({title, token}) {
         to: '/how-it-works',
       },
       {
-        id: 'gid://shopify/MenuItem/413612507192',
+        id: 'gid://shopify/MenuItem/413612507455',
         target: '_self',
         title: 'Catering',
         to: '/catering',

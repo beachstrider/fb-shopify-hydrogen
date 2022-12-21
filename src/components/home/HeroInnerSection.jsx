@@ -1,6 +1,6 @@
 export function HeroInnerSection() {
   return (
-    <section className="h-[420px]  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/join_bg.png')]">
+    <section className="h-[420px]  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-[#231f20]">
       <div className="container max-w-screen-xl m-auto">
         <h1 className="text-center text-[38px] text-white uppercase font-extrabold leading-[40px] md:leading-[80px]">
           Welcome to the robot-free zone
