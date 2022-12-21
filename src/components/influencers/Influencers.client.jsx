@@ -144,9 +144,18 @@ export function Influencers() {
         </div>
       </div>
     
-    <div className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pt-10 pb-20 bg-[#231F20]">
+    <div className="min-h-fit  relative pt-10 pb-20 bg-[#231F20]">
+      <span>
+        <img className="invisible md:visible bg-left top-0  absolute overflow-hidden bg-no-repeat bg-cover" src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/triangles_all.png" alt="" />
+      </span>
+      <div className='visible md:invisible'>
+        <img className=" w-96 h-24 text-center m-auto" src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/triangles_left.png" alt="" />
+      </div>
+      {/* <span>
+       <img className='text-right bg-right absolute overflow-hidden bg-no-repeat bg-cover' src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/triangles_right.png" alt="" />
+      </span>  */}
       <div className="container max-w-screen-xl m-auto px-2">
-        <h1 className="font-bungee md:text-center text-left text-[20px] md:text-[60px] text-white uppercase font-normal md:leading-[80px] pt-4 md:pt-[70px]">
+        <h1 className="font-bungee md:text-center text-left text-[28px] md:text-[35px] lg:text-[46px] text-white uppercase font-normal md:leading-[80px] mt-0 md:mt-[-66px]">
           Every order Feeds another
         </h1>
         <div className="bg-white max-w-3xl px-5 py-4 m-auto mt-[25px]">

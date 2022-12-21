@@ -1,17 +1,17 @@
 export function HeatingIns() {
   return (
-    <section className="text-white  bg-[url('../assets/join_bg.png')]">
+    <section className=" text-white bg-[#121111]">
       <div className="w-auto bg-[#DB9707] py-5 pb-8">
-        <h1 className="mx-auto text-center lg:text-9xl text-3xl md:text-6xl font-bold text-[#171717]">
+        <h1 className="font-bungee mx-auto text-center lg:text-8xl text-3xl md:text-6xl font-bold text-[#171717]">
           HEATING INSTRUCTIONS
         </h1>
       </div>
 
-      <div className="container mx-auto px-5">
+      <div className="font-opensans container mx-auto px-5">
         <p className="lg:mt-12 md:mt-8 mt-5 text-[#DB9707] lg:text-5xl md:text-3xl text-2xl font-semibold">
           Oven Instructions:
         </p>
-        <p className="mt-5 text-xl lg:text-4xl md:text-2xl">
+        <p className="mt-5 text-xl lg:text-2xl md:text-2xl">
           1. Preheat oven to 325 degrees.
           <br />
           2. Remove outer cardboard sleeve from dish and peel off plastic film.
@@ -38,14 +38,14 @@ export function HeatingIns() {
           Microwave Instructions:
         </p>
 
-        <p className="mt-3 text-xl lg:text-4xl md:text-2xl">
+        <p className="mt-3 text-xl lg:text-2xl md:text-2xl">
           Follow the instructions on each individual package.
         </p>
 
         <p className="lg:mt-12 md:mt-8 mt-5 text-[#DB9707] lg:text-5xl md:text-3xl text-2xl font-semibold">
           Helpful Hints:
         </p>
-        <p className="mt-3 text-xl lg:text-4xl md:text-2xl">
+        <p className="mt-3 text-xl lg:text-2xl md:text-2xl">
           Some items, such as potato salad or fortune cookies, don't need to be
           heated up. (Unless you really want to... Note: we ARE NOT responsible
           for exploding microwaved fortune cookies, but do send pics if you do
@@ -62,7 +62,7 @@ export function HeatingIns() {
           Macaroni and Cheese - Thin sauce with milk if desired (about 1/8 cup)
         </p>
 
-        <h1 className="text-start lg:text-9xl text-3xl md:text-6xl font-bold text-[#DB9707] ml-[-8px] mb-12 mt-12">
+        <h1 className="text-start lg:text-7xl text-3xl md:text-6xl font-bold text-[#DB9707] ml-[-8px] mb-12 mt-12">
           ENJOY!
         </h1>
       </div>
