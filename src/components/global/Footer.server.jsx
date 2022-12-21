@@ -108,7 +108,7 @@ export function Footer({menu}) {
                 </li>
               </ul>
             </div>
-            <div className="w-full sm:w-1/2 lg:w-2/12 p-6">
+            <div className="w-full sm:w-1/2 lg:w-3/12 p-6">
               <h3 className="mb-6 font-semibold leading-normal text-white text-md">
                 Contact Us
               </h3>
@@ -116,7 +116,7 @@ export function Footer({menu}) {
                 <li className="mb-1.5">
                   <Link className="font-medium text-white" to="tel:5555555555">
                     Phone: <br />
-                    1-555-555-5555
+                    1-888-503-6539
                   </Link>
                 </li>
                 <li className="mb-1.5">
@@ -126,6 +126,13 @@ export function Footer({menu}) {
                   >
                     Email:  support@feastbox.com
                   </Link>
+                </li>
+                <li className="mb-1.5 font-medium text-white">
+                  Address: <br />
+                  676 W 1200 N Springville, UT 84663
+                  <br /><br/>
+                  <p className='font-medium text-white'>© 2022 FEASTbox, All Rights Reserved</p>
+                  <br /> <br/>
                 </li>
               </ul>
               <div className="w-auto p-2">
@@ -196,6 +203,7 @@ export function Footer({menu}) {
                   </div>
                 </div>
               </div>
+              
             </div>
             <div className="w-full sm:w-1/2 lg:w-2/12 p-6"> </div>
           </div>
