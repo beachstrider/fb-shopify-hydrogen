@@ -10,15 +10,16 @@ import {NotFound} from '~/components/index.server';
 export default function AllProducts() {
   return (
     <NotFound />
-    /*<Layout>
-      <Seo type="page" data={{title: 'All Products'}} />
-      <PageHeader heading="All Products" variant="allCollections" />
-      <Section>
-        <Suspense>
-          <AllProductsGrid />
-        </Suspense>
-      </Section>
-    </Layout>*/
+
+    // <Layout>
+    //   <Seo type="page" data={{title: 'All Products'}} />
+    //   <PageHeader heading="All Products" variant="allCollections" />
+    //   <Section>
+    //     <Suspense>
+    //       <AllProductsGrid />
+    //     </Suspense>
+    //   </Section>
+    // </Layout>
   );
 }
 

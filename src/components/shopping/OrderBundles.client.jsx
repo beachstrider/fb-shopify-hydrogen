@@ -20,7 +20,9 @@ export function OrderBundles() {
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [deliveryDate, setDeliveryDate] = useState('');
+  const [bundle, setBundle] = useState();
   const [bundleContents, setBundleContents] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
 
@@ -31,7 +33,20 @@ export function OrderBundles() {
     }
 
     fetchAll();
+
+    console.log('products: ', products);
   }, []);
+
+  useEffect(() => {
+    const contents = bundleContents.filter((content) => {
+      return dayjs(deliveryDate).isBetween(
+        content.deliver_after,
+        content.delivery_before,
+      );
+    });
+
+    fetchContents(contents);
+  }, [deliveryDate]);
 
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
@@ -68,6 +83,8 @@ export function OrderBundles() {
       )
     ).data[0];
 
+    setBundle(bundle);
+
     const config = (
       await axios.get(
         `/api/bundle/bundles/${bundle.id}/configurations/${bundle.configurations[0].id}`,
@@ -75,9 +92,35 @@ export function OrderBundles() {
     ).data;
 
     setBundleContents(config.contents);
+  }
 
-    console.log('bundle:', bundle);
-    console.log('config:', config);
+  async function fetchContents(contents) {
+    const product_ids = [];
+
+    for await (const content of contents) {
+      const res = (
+        await axios.get(
+          `/api/bundle/bundles/${bundle.id}/configurations/${bundle.configurations[0].id}/contents/${content.id}/products`,
+        )
+      ).data;
+
+      res.every((el) => product_ids.push(el.platform_product_id));
+    }
+
+    const query = product_ids
+      .map((product_id) => `id:${product_id}`)
+      .join(' OR ');
+
+    if (product_ids.length) {
+      const {data: shopifyProducts} = await axios.post(
+        `/api/products/multiple`,
+        {query},
+      );
+
+      setProducts(shopifyProducts);
+    } else {
+      setProducts([]);
+    }
   }
 
   function handleWeekChange(e) {
@@ -87,10 +130,6 @@ export function OrderBundles() {
       (deliveryDate) => week.findIndex((el) => deliveryDate.date === el) !== -1,
     );
 
-    // const contents = bundleContents.filter((content, index) => {
-
-    // });
-
     setSelectedWeekIndex(e.target.value);
     setAvailableSlots(slots);
     setDeliveryDate(slots[0].date);
@@ -98,7 +137,6 @@ export function OrderBundles() {
     setIsDeliveryDateEditing(false);
   }
 
-  console.log(availableSlots);
   return (
     <section className="py-20 bg-[#EFEFEF]">
       <div className="container mx-auto px-4">
@@ -248,315 +286,54 @@ export function OrderBundles() {
                   2. Choose your Meals
                 </div>
                 <div className="flex flex-wrap -mx-2 -mb-2">
-                  {/*--1----*/}
-                  <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2">
-                    <div className="text-center">
-                      <button
-                        className="block text-center font-bold font-heading"
-                        href="#"
-                      >
-                        <img
-                          className="mx-auto object-contain"
-                          src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                          alt="img"
-                        />
-                        <h3 className="font-bold font-heading text-sm text-center">
-                          BBQ FEASTbox
-                        </h3>
-                        <div className="text-center text-sm mb-2 ">
-                          Serves: 5
-                        </div>
-                      </button>
-                      <div
-                        className="inline-flex items-center font-semibold font-heading text-gray-500 border border-gray-200 bg-white"
-                        style={{
-                          backgroundColor: '#DB9707',
-                          color: '#FFFFFF',
-                        }}
-                      >
-                        <button className="hover:text-gray-700 text-center">
-                          <svg
-                            width={24}
-                            height={2}
-                            viewBox="0 0 12 2"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                  {products.map((product, key) => (
+                    <div
+                      key={key}
+                      className="flex w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center"
+                    >
+                      <div className="flex flex-col justify-between text-center">
+                        <button
+                          className="block text-center font-bold font-heading"
+                          href="#"
+                        >
+                          <img
+                            className="mx-auto object-contain"
+                            src={
+                              product.variants.nodes[0].image
+                                ? product.variants.nodes[0].image?.url
+                                : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                            }
+                            alt="img"
+                          />
+                          <h3 className="font-bold font-heading text-sm text-center">
+                            {product.title}
+                          </h3>
+                          <div className="text-center text-sm mb-2 ">
+                            Serves: 5
+                          </div>
+                        </button>
+                        <div className="px-4 mb-4 xl:mb-0 text-center">
+                          <button
+                            className="text-center text-white font-bold font-heading uppercase transition"
+                            href="#"
+                            style={{
+                              backgroundColor: '#DB9707',
+                              color: '#FFFFFF',
+                              width: 80,
+                              padding: '3px 21px',
+                            }}
                           >
-                            <g opacity="0.35">
-                              <rect
-                                x={12}
-                                width={2}
-                                height={12}
-                                transform="rotate(90 12 0)"
-                                fill="currentColor"
-                              />
-                            </g>
-                          </svg>
-                        </button>
-                        <input
-                          className="w-8 m-0 px-2 text-center border-0 focus:ring-transparent focus:outline-none"
-                          type="number"
-                          placeholder={1}
-                          style={{padding: '0 !important'}}
-                        />
-                        <button className="hover:text-gray-700 text-center">
-                          <svg
-                            width={24}
-                            height={12}
-                            viewBox="0 0 12 12"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g opacity="0.35">
-                              <rect
-                                x={5}
-                                width={2}
-                                height={12}
-                                fill="currentColor"
-                              />
-                              <rect
-                                x={12}
-                                y={5}
-                                width={2}
-                                height={12}
-                                transform="rotate(90 12 5)"
-                                fill="currentColor"
-                              />
-                            </g>
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  {/*--2----*/}
-                  <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                    <div className="text-center">
-                      <button
-                        className="block text-center font-bold font-heading"
-                        href="#"
-                      >
-                        <img
-                          className="mx-auto object-contain"
-                          src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                          alt="img"
-                        />
-                        <h3 className="font-bold font-heading text-sm text-center">
-                          BBQ FEASTbox
-                        </h3>
-                        <div className="text-center text-sm mb-2 ">
-                          Serves: 5
+                            Add+
+                          </button>
                         </div>
-                      </button>
-                      <div className="px-4 mb-4 xl:mb-0 text-center">
-                        <button
-                          className="text-center text-white font-bold font-heading uppercase transition"
-                          href="#"
-                          style={{
-                            backgroundColor: '#DB9707',
-                            color: '#FFFFFF',
-                            width: 80,
-                            padding: '3px 21px',
-                          }}
-                        >
-                          Add+
-                        </button>
                       </div>
                     </div>
-                  </div>
-                  {/*--3----*/}
-                  <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                    <div className="text-center">
-                      <button
-                        className="block text-center font-bold font-heading"
-                        href="#"
-                      >
-                        <img
-                          className="mx-auto object-contain"
-                          src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                          alt="img"
-                        />
-                        <h3 className="font-bold font-heading text-sm text-center">
-                          BBQ FEASTbox
-                        </h3>
-                        <div className="text-center text-sm mb-2 ">
-                          Serves: 5
-                        </div>
-                      </button>
-                      <div className="px-4 mb-4 xl:mb-0 text-center">
-                        <button
-                          className=" text-center text-white font-bold font-heading uppercase transition "
-                          href="#"
-                          style={{
-                            backgroundColor: '#DB9707',
-                            color: '#FFFFFF',
-                            width: 80,
-                            padding: '3px 21px',
-                          }}
-                        >
-                          Add+
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  {/*--4----*/}
-                  <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                    <div className="text-center">
-                      <button
-                        className="block text-center font-bold font-heading"
-                        href="#"
-                      >
-                        <img
-                          className="mx-auto object-contain"
-                          src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                          alt="img"
-                        />
-                        <h3 className="font-bold font-heading text-sm text-center">
-                          BBQ FEASTbox
-                        </h3>
-                        <div className="text-center text-sm mb-2 ">
-                          Serves: 5
-                        </div>
-                      </button>
-                      <div className="px-4 mb-4 xl:mb-0 text-center">
-                        <button
-                          className=" text-center text-white font-bold font-heading uppercase transition "
-                          href="#"
-                          style={{
-                            backgroundColor: '#DB9707',
-                            color: '#FFFFFF',
-                            width: 80,
-                            padding: '3px 21px',
-                          }}
-                        >
-                          Add+
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  {/*--5----*/}
-                  <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                    <div className="text-center">
-                      <button
-                        className="block text-center font-bold font-heading"
-                        href="#"
-                      >
-                        <img
-                          className="mx-auto object-contain"
-                          src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                          alt="img"
-                        />
-                        <h3 className="font-bold font-heading text-sm text-center">
-                          BBQ FEASTbox
-                        </h3>
-                        <div className="text-center text-sm mb-2 ">
-                          Serves: 5
-                        </div>
-                      </button>
-                      <div className="px-4 mb-4 xl:mb-0 text-center">
-                        <button
-                          className=" text-center text-white font-bold font-heading uppercase transition "
-                          href="#"
-                          style={{
-                            backgroundColor: '#DB9707',
-                            color: '#FFFFFF',
-                            width: 80,
-                            padding: '3px 21px',
-                          }}
-                        >
-                          Add+
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-                <div
-                  className="block text-gray-800 text-lg font-bold mb-2"
-                  style={{fontSize: 24, marginTop: 20}}
-                >
-                  Breakfast Meals
-                </div>
-                <div className="flex flex-wrap -mx-2 -mb-2">
-                  {/*--1----*/}
-                  <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                    <div className="text-center">
-                      <button
-                        className="block text-center font-bold font-heading"
-                        href="#"
-                      >
-                        <img
-                          className="mx-auto object-contain"
-                          src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                          alt="img"
-                        />
-                        <h3 className="font-bold font-heading text-sm text-center">
-                          BBQ FEASTbox
-                        </h3>
-                        <div className="text-center text-sm mb-2 ">
-                          Serves: 5
-                        </div>
-                      </button>
-                      <div className="px-4 mb-4 xl:mb-0 text-center">
-                        <button
-                          className="text-center text-white font-bold font-heading uppercase transition"
-                          href="#"
-                          style={{
-                            backgroundColor: '#DB9707',
-                            color: '#FFFFFF',
-                            width: 80,
-                            padding: '3px 21px',
-                          }}
-                        >
-                          Add+
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  {/*--2----*/}
-                  <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                    <div className="text-center">
-                      <button
-                        className="block text-center font-bold font-heading"
-                        href="#"
-                      >
-                        <img
-                          className="mx-auto object-contain"
-                          src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                          alt="img"
-                        />
-                        <h3 className="font-bold font-heading text-sm text-center">
-                          BBQ FEASTbox
-                        </h3>
-                        <div className="text-center text-sm mb-2 ">
-                          Serves: 5
-                        </div>
-                      </button>
-                      <div className="px-4 mb-4 xl:mb-0 text-center">
-                        <button
-                          className="text-center text-white font-bold font-heading uppercase transition"
-                          href="#"
-                          style={{
-                            backgroundColor: '#DB9707',
-                            color: '#FFFFFF',
-                            width: 80,
-                            padding: '3px 21px',
-                          }}
-                        >
-                          Add+
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <style
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      '\n                  #subscribe_save, #one-time {\n                    accent-color: #DB9707;\n                  }\n                ',
-                  }}
-                />
                 <div className="container mx-auto px-4">
                   <div className="max-w-4xl mx-auto">
                     <div
-                      className="block text-gray-800 text-lg font-bold mb-2"
+                      className="block text-gray-800 text-lg font-bold mb-2 -ml-4"
                       style={{fontSize: 24, marginTop: 60}}
                     >
                       3. Choose your Price
