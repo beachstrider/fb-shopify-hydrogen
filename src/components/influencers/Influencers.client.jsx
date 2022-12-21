@@ -6,7 +6,7 @@ export function Influencers() {
         <div className=" h-[500px] bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/hero_bg.png')]">
           <div className="container max-w-screen-xl mx-auto">
             <div className="flex items-center justify-start h-full">
-              <div className="text-white text-lg pl-2 pt-[200px] md:pl-[4rem] md:pt-[65px]">
+              <div className="text-white text-lg pl-2 pt-[200px] md:pl-[4rem] md:pt-[65px] mx-6 md:mx-0">
                 <span className="font-bungee text-[80px] md:text-[100px] font-bold leading-[60px] md:leading-[80px] mb-[-0.5rem]">
                   {' '}
                   A BOX <br />
@@ -33,7 +33,7 @@ export function Influencers() {
                   alt=""
                 />
               </div>
-              <div className="text-white text-lg mt-5 w-full sm:w-[50%-100px] md:w-1/2 md:pl-[100px]">
+              <div className="text-white text-lg mt-5 w-full sm:w-[50%-100px] md:w-1/2 md:pl-[100px] px-6 md:px-0">
                 <div className="px-2">
                   <h5 className="font-bold pt-[30px]">3 Meals Feeding 5 People Each</h5>
                   <h2 className="font-bold text-5xl my-1">
@@ -117,7 +117,7 @@ export function Influencers() {
             />
           </div>
         </div>
-        <div className="bg-[#231f20] md:bg-[#DB9707]">
+        <div className="bg-[#DB9707]">
           <div className="md:flex">
             <div className="w-full md:w-[calc(100%-300px)] pl-6 pr-6 py-10 md:pl-[100px] md:py-[50px] pr-[70px]">
               <p className='text-white text-3xl'>
@@ -154,8 +154,8 @@ export function Influencers() {
       {/* <span>
        <img className='text-right bg-right absolute overflow-hidden bg-no-repeat bg-cover' src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/triangles_right.png" alt="" />
       </span>  */}
-      <div className="container max-w-screen-xl m-auto px-2">
-        <h1 className="font-bungee md:text-center text-left text-[28px] md:text-[35px] lg:text-[46px] text-white uppercase font-normal md:leading-[80px] mt-0 md:mt-[-66px]">
+      <div className="container max-w-screen-xl m-auto px-6 md:px-2">
+        <h1 className="font-bungee md:text-center text-left text-[30px] md:text-[35px] lg:text-[46px] text-white uppercase font-normal md:leading-[80px] mt-0 md:mt-[-66px]">
           Every order Feeds another
         </h1>
         <div className="bg-white max-w-3xl px-5 py-4 m-auto mt-[25px]">
