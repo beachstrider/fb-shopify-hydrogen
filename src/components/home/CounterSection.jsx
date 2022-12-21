@@ -1,58 +1,62 @@
+import Carousel1 from '../../assets/carousel_1.png';
+import Carousel2 from '../../assets/carousel_2.png';
+import Carousel3 from '../../assets/carousel_3.png';
 export function CounterSection() {
   return (
-    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pt-10 pb-20 bg-[#231F20]">
-      <div className="container max-w-screen-xl m-auto px-2">
-        <h1 className="font-bungee md:text-center text-left text-[20px] md:text-[60px] text-white uppercase font-extrabold md:leading-[80px] pt-4 md:pt-[70px]">
+    <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pt-10 pb-20 bg-image bg-[url('../assets/join_bg.png')]">
+      <div className="container max-w-screen-xl m-auto">
+        <h1 className="text-center text-[60px] text-white uppercase font-extrabold leading-[80px] pt-[70px]">
           Every order Feeds another
         </h1>
         <div className="bg-white max-w-3xl px-5 py-4 m-auto mt-[25px]">
           <div className="flex items-center justify-center">
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('../assets/counter_number_bg.png')]">
               <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
                 1
               </div>
             </div>
           </div>
         </div>
-        <h2 className="font-opensans text-right md:text-center text-[40px] text-[#DB9707] uppercase font-bold leading-[60px]">
+        <h2 className="text-center text-[40px] text-[#DB9707] uppercase font-bold leading-[60px]">
           Meals Served
         </h2>
-        <h3 className="font-opensans text-left md:text-center text-[25px] text-white capitalize font-light leading-[40px]">
-          1 Box Purchase = 1 meal donated
+        <h3 className="text-center text-[25px] text-white capitalize font-light leading-[40px]">
+          1 Box purchase = 1 meal donated
         </h3>
-        <h3 className="font-opensans text-left md:text-center text-[25px] text-white capitalize font-light leading-[40px]">
+        <h3 className="text-center text-[25px] text-white capitalize font-light leading-[40px]">
           Because we all deserve to drool over dinner.
         </h3>
-        <h3 className="font-opensans text-left md:text-center md:text-center text-[25px] text-white capitalize font-normal leading-[40px]">
+        <h3 className="text-center text-[25px] text-white capitalize font-normal leading-[40px]">
+          Visit{' '}
           <a href="" className="underline text-[#DB9707]">
-            Learn More
+            Full of Hope
           </a>{' '}
-          About Full of Hope
+          to learn more
         </h3>
       </div>
     </section>
