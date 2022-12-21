@@ -44,6 +44,7 @@ export function Header({title, token}) {
     ],
   };
 
+
   const {pathname} = useUrl();
 
   const localeMatch = /^\/([a-z]{2})(\/|$)/i.exec(pathname);
