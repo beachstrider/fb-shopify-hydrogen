@@ -148,6 +148,9 @@ export function Influencers() {
       <span>
         <img className="invisible md:visible bg-left top-0  absolute overflow-hidden bg-no-repeat bg-cover" src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/triangles_all.png" alt="" />
       </span>
+      <div className='visible md:invisible'>
+        <img className=" w-96 h-24 text-center m-auto" src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/triangles_left.png" alt="" />
+      </div>
       {/* <span>
        <img className='text-right bg-right absolute overflow-hidden bg-no-repeat bg-cover' src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/triangles_right.png" alt="" />
       </span>  */}
