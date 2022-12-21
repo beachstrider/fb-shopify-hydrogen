@@ -15,7 +15,7 @@ const bundleBuilder = async (
   url,
   params,
   method = 'GET',
-  headers = initialHeaders,
+  headers = {...initialHeaders},
 ) => {
   const res = await fetch(`${baseURL}${url}`, {
     headers,
@@ -37,7 +37,7 @@ const bundleBuilder = async (
 };
 
 export async function api(request, {session}) {
-  const headers = initialHeaders;
+  const headers = {...initialHeaders};
   const method = request.method;
 
   const urlObj = new URL(request.normalizedUrl);
@@ -56,8 +56,6 @@ export async function api(request, {session}) {
       const newData = await request.json();
       params = {...params, ...newData};
     }
-
-    console.log('URL:', url);
 
     try {
       if (typeof token === 'undefined') {
