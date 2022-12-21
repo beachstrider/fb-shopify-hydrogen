@@ -1,6 +1,6 @@
 export function HowItWorks() {
   return (
-    <section>
+    <section className="flow-x-hidden flow-y-hidden">
       <div className="text-white pb-12 md:pb-20 bg-[#231F20]">
         <div className="top-banner">
           <div className="banner-section">
