@@ -19,7 +19,7 @@ export async function api(request, {queryShop}) {
 
 const PRODUCTS_BY_IDS_QUERY = gql`
   ${PRODUCT_CARD_FRAGMENT}
-  query topProducts(
+  query productsByIds(
     $count: Int
     $countryCode: CountryCode
     $languageCode: LanguageCode
