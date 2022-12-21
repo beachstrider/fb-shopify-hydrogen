@@ -11,6 +11,8 @@ export function AccountLoginForm({shopName}) {
   const [emailError, setEmailError] = useState(null);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(null);
+  const [failedCounts, setFailedCounts] = useState(0);
+  const [passwordIncorrect, setPasswordIncorrect] = useState(false);
 
   function onSubmit(event) {
     event.preventDefault();
@@ -43,8 +45,9 @@ export function AccountLoginForm({shopName}) {
       });
 
       if (response.error) {
-        setHasSubmitError(true);
-        resetForm();
+        setFailedCounts(failedCounts + 1);
+        setPasswordIncorrect(true);
+        if (failedCounts == 2) resetForm();
       } else {
         navigate('/account/subscriptions');
       }
@@ -63,13 +66,33 @@ export function AccountLoginForm({shopName}) {
     setEmailError(null);
     setPassword('');
     setPasswordError(null);
+    setFailedCounts(0);
+    setHasSubmitError(true);
+    setPasswordIncorrect(false);
   }
 
   return (
     <div className="flex justify-center my-24 px-4">
       <div className="max-w-md w-full">
-        <h1 className="text-4xl">Sign in.</h1>
+        <div className="flex items-end justify-end">
+          <div className="w-full">
+            <h2
+              className="font-bold font-heading text-3xl mb-2 mb-8 uppercase"
+              style={{marginTop: '20px'}}
+            >
+              Login To Your Account
+            </h2>
+          </div>
+        </div>
         <form noValidate className="pt-6 pb-8 mt-4 mb-4" onSubmit={onSubmit}>
+          {passwordIncorrect && (
+            <div className="flex items-center justify-center mb-6 bg-zinc-500">
+              <p className="m-4 text-s text-contrast">
+                You entered password incorrectly {`(${failedCounts})`}. please
+                type correct one.
+              </p>
+            </div>
+          )}
           {hasSubmitError && (
             <div className="flex items-center justify-center mb-6 bg-zinc-500">
               <p className="m-4 text-s text-contrast">
@@ -96,6 +119,51 @@ export function AccountLoginForm({shopName}) {
               passwordError={passwordError}
             />
           )}
+          <button
+            type="button"
+            className="block py-2 text-lg text-center mt-8 font-bold w-full"
+            href="#"
+            style={{
+              backgroundColor: '#4285F4',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Google
+          </button>
+          <button
+            type="button"
+            className="block py-2 text-lg text-center  font-bold w-full"
+            style={{
+              backgroundColor: '#4267B2',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Facebook
+          </button>
+          <button
+            type="button"
+            className="block py-2 text-lg text-center  font-bold w-full "
+            style={{
+              backgroundColor: '#35465C',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Amazon
+          </button>
+          <div className="mb-10">
+            <p className="text-sm py-4">
+              Don&apos;t have an account?{' '}
+              <span
+                className="font-bold underline"
+                style={{color: '#DB9707', marginTop: '20px'}}
+              >
+                <Link to={`/account/register`}>Register</Link>
+              </span>
+            </p>
+          </div>
         </form>
       </div>
     </div>
@@ -130,7 +198,7 @@ function EmailField({email, setEmail, emailError, shopName}) {
     <>
       <div className="mb-3">
         <input
-          className={`mb-1 ${getInputStyleClasses(emailError)}`}
+          className={`w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs`}
           id="email"
           name="email"
           type="email"
@@ -153,19 +221,16 @@ function EmailField({email, setEmail, emailError, shopName}) {
       </div>
       <div className="flex items-center justify-between">
         <button
-          className="bg-primary rounded text-contrast py-2 px-4 focus:shadow-outline block w-full"
+          className="block py-2 text-lg text-center uppercase font-bold w-full "
+          style={{
+            backgroundColor: '#DB9707',
+            color: '#FFFFFF',
+            marginBottom: '15px',
+          }}
           type="submit"
         >
           Next
         </button>
-      </div>
-      <div className="flex items-center mt-8 border-t  border-gray-300">
-        <p className="align-baseline text-sm mt-6">
-          New to {shopName}? &nbsp;
-          <Link className="inline underline" to="/account/register">
-            Create an account
-          </Link>
-        </p>
       </div>
     </>
   );
@@ -202,7 +267,7 @@ function PasswordField({password, setPassword, passwordError}) {
     <>
       <div className="mb-3">
         <input
-          className={`mb-1 ${getInputStyleClasses(passwordError)}`}
+          className={`w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs`}
           id="password"
           name="password"
           type="password"
@@ -210,7 +275,7 @@ function PasswordField({password, setPassword, passwordError}) {
           placeholder="Password"
           aria-label="Password"
           value={password}
-          minLength={8}
+          minLength={6}
           required
           // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus
@@ -226,7 +291,12 @@ function PasswordField({password, setPassword, passwordError}) {
       </div>
       <div className="flex items-center justify-between">
         <button
-          className="bg-primary text-contrast rounded py-2 px-4 focus:shadow-outline block w-full"
+          className="block py-2 text-lg text-center uppercase font-bold w-full "
+          style={{
+            backgroundColor: '#DB9707',
+            color: '#FFFFFF',
+            marginBottom: '15px',
+          }}
           type="submit"
         >
           Sign in
@@ -234,12 +304,11 @@ function PasswordField({password, setPassword, passwordError}) {
       </div>
       <div className="flex items-center justify-between mt-4">
         <div className="flex-1"></div>
-        <Link
-          className="inline-block align-baseline text-sm text-primary/50"
-          to="/account/recover"
-        >
-          Forgot password
-        </Link>
+        <p className="text-sm" style={{marginBottom: '20px'}}>
+          <span className="font-bold underline" style={{color: '#DB9707'}}>
+            <Link to={`/account/recover`}>Forgot Password? </Link>
+          </span>
+        </p>
       </div>
     </>
   );

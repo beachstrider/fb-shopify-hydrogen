@@ -1,12 +1,10 @@
 export function MenuBanner() {
   return (
-    <div className="text-center p-5 h-[400px] bg-center relative overflow-hidden bg-no-repeat bg-cover p-5 text-center bg-image bg-[url('../assets/images/menu-header.avif')]">
+    <div className="text-center p-[100px] md:py-[100px] md:px-0 sm-max:py-[100px] sm-max:px-0 bg-center relative overflow-hidden text-center bg-[#DB9707]">
       <div className="flex items-center justify-center h-full">
         <div className="text-black">
-          <h1 className="text-[4rem] mb-[-0.5rem]"> Our Menu </h1>
-          <h4 className="mb-4">
-            Choose From 22+ Healthy, Chef-Curated Meals Each Week!
-          </h4>
+          <h1 className="lg:text-[6rem] md:text-[4rem] lg:leading-[6rem] md:leading-[4rem] sm-max:leading-[4rem] sm-max:text-[4rem]  mb-[-0.5rem] font-bold" style={{fontFamily:'Bungee'}}> IT’S CHOW TIME </h1>
+          <p className="text-black text-[30px] md:text-[25px] sm-max:text-[20px] sm-max:px-[15%]" style={{fontFamily:'Open Sans'}}>We can see the future and in your future is a feast (or ten).</p>
         </div>
       </div>
     </div>

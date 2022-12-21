@@ -1,19 +1,29 @@
 import React from 'react';
+import {useLocation} from 'react-router-dom';
+import dayjs from 'dayjs';
 import minMax from 'dayjs/plugin/minMax';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import isBetween from 'dayjs/plugin/isBetween';
-import dayjs from 'dayjs';
-import {useLocation} from 'react-router-dom';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+import weekday from 'dayjs/plugin/weekday';
+import isoWeek from 'dayjs/plugin/isoWeek';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(minMax);
 dayjs.extend(isBetween);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(weekOfYear);
+dayjs.extend(weekday);
+dayjs.extend(isoWeek);
 
 const DEFAULT_TIME_ZONE = 'America/Denver';
 
-const findWeekDayBetween = (
+export const findWeekDayBetween = (
   weekDay,
   startDate,
   endDate,
@@ -31,7 +41,7 @@ const findWeekDayBetween = (
   return date;
 };
 
-const getCutOffDate = (
+export const getCutOffDate = (
   deliveryDate,
   timezone = DEFAULT_TIME_ZONE,
   format = 'YYYY-MM-DDT23:59:00.000Z',
@@ -41,10 +51,10 @@ const getCutOffDate = (
   return dayjs.tz(newDate, timezone).format(format);
 };
 
-const getNextWeekDay = (weekDay, todayDate = dayjs()) =>
+export const getNextWeekDay = (weekDay, todayDate = dayjs()) =>
   dayjs(todayDate).weekday(weekDay).add(1, 'week');
 
-const getTodayDate = () => {
+export const getTodayDate = () => {
   const useQuery = () => {
     const {search} = useLocation();
     return React.useMemo(() => new URLSearchParams(search), [search]);
@@ -62,7 +72,7 @@ const getTodayDate = () => {
   return todayDate;
 };
 
-const sortDatesArray = (dates, sort = 'asc') =>
+export const sortDatesArray = (dates, sort = 'asc') =>
   dates.sort((a, b) => {
     const dateA = dayjs(a).unix();
     const dateB = dayjs(b).unix();
@@ -70,7 +80,7 @@ const sortDatesArray = (dates, sort = 'asc') =>
     return sort === 'asc' ? dateA - dateB : dateA + dateB;
   });
 
-const sortByDateProperty = (items, property, sort = 'asc') =>
+export const sortByDateProperty = (items, property, sort = 'asc') =>
   items.sort((a, b) => {
     const dateA = dayjs(a[property]).unix();
     const dateB = dayjs(b[property]).unix();
@@ -78,7 +88,7 @@ const sortByDateProperty = (items, property, sort = 'asc') =>
     return sort === 'asc' ? dateA - dateB : dateA + dateB;
   });
 
-const getShortDate = (date, config = {withYear: false}) => {
+export const getShortDate = (date, config = {withYear: false}) => {
   const errorMessage = "date param isn't a correct date format";
   try {
     if (!dayjs(date).isValid()) {
@@ -96,37 +106,29 @@ const getShortDate = (date, config = {withYear: false}) => {
   }
 };
 
-const formatUTCDate = (date, format = 'YYYY-MM-DDTHH:mm:ssZ[Z]') => {
+export const formatUTCDate = (date, format = 'YYYY-MM-DDTHH:mm:ssZ[Z]') => {
   return dayjs.utc(date).format(format);
 };
 
-const formatUTDateToISO = (date) => dayjs.utc(date).toISOString();
+export const formatUTDateToISO = (date) => dayjs.utc(date).toISOString();
 
-const addDays = (date, days = 1) => dayjs(date).add(days, 'day');
+export const addDays = (date, days = 1) => dayjs(date).add(days, 'day');
 
-const getDayUsa = (date) => {
+export const getDayUsa = (date) => {
   const getDate = dayjs(date);
   return getDate.day();
 };
 
-const getUsaStandard = (date) => {
+export const getISO = (date) => dayjs(date).format('YYYY-MM-DD');
+
+export const getUsaStandard = (date) => {
   return dayjs(date).format('MMM DD, YYYY');
 };
 
-const now = () => dayjs().format('YYYY-MM-DD');
+export const now = () => dayjs().format('YYYY-MM-DD');
 
-export {
-  findWeekDayBetween,
-  getCutOffDate,
-  getNextWeekDay,
-  getTodayDate,
-  sortDatesArray,
-  getShortDate,
-  sortByDateProperty,
-  formatUTCDate,
-  formatUTDateToISO,
-  addDays,
-  getDayUsa,
-  getUsaStandard,
-  now,
+export const isFuture = (date) => {
+  return dayjs(date).isSameOrAfter(now());
 };
+
+export {dayjs};

@@ -1,4 +1,4 @@
-import CardQuantities from './components/CardQuantities';
+import CardQuantities from './components/CardQuantities.client';
 const CardData = [
   {
     image:

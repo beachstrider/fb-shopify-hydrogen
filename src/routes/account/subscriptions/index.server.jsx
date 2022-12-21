@@ -48,21 +48,24 @@ export default function Account({response}) {
 
   const external_customer_id = customer.id.slice(23);
 
-  const subscriptions = getSubscriptions({external_customer_id});
+  const subscriptions = getSubscriptions({
+    external_customer_id,
+    status: 'active',
+  });
 
   return (
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'Account Subscriptions'}} />
       </Suspense>
-      <AccountPageLayout user={customer}>
+      <AccountPageLayout user={customer} currentPath="subscriptions">
         <SubscriptionList subscriptions={subscriptions} />
       </AccountPageLayout>
       <div
         id="version_mark"
         className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
       >
-        ALPHA, Dec 8 - Jason
+        BETA, Dec 8 - Jason
       </div>
     </Layout>
   );

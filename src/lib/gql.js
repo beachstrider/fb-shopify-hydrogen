@@ -105,3 +105,19 @@ export const CUSTOMER_UPDATE_MUTATION = gql`
     }
   }
 `;
+
+export const LOGIN_MUTATION = gql`
+  mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
+    customerAccessTokenCreate(input: $input) {
+      customerUserErrors {
+        code
+        field
+        message
+      }
+      customerAccessToken {
+        accessToken
+        expiresAt
+      }
+    }
+  }
+`;

@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "Bungee";   /*Can be any text*/
+    font-display: swap;
+    src: local("Bungee"), url("./../fonts/Bunge-Regular.ttf") format("truetype");
+  }
+
+  .custom-font {
+    font-size: 40px !important;
+  }
