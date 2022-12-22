@@ -4,14 +4,11 @@ export default defineConfig({
   shopify: {
     defaultCountryCode: 'US',
     defaultLanguageCode: 'EN',
-    storeDomain:
-      Oxygen?.env?.PUBLIC_STORE_DOMAIN || 'hydrogen-preview.myshopify.com', // eslint-disable-line no-undef
-    storefrontToken:
-      Oxygen?.env?.PUBLIC_STOREFRONT_API_TOKEN || // eslint-disable-line no-undef
-      '3b580e70970c4528da70c98e097c2fa0',
-    privateStorefrontToken: Oxygen?.env?.PRIVATE_STOREFRONT_API_TOKEN, // eslint-disable-line no-undef
+    storeDomain: Oxygen.env.PUBLIC_STORE_DOMAIN,
+    storefrontToken: Oxygen.env.PUBLIC_STOREFRONT_API_TOKEN,
+    privateStorefrontToken: Oxygen.env.PRIVATE_STOREFRONT_API_TOKEN,
     storefrontApiVersion: '2022-07',
-    storefrontId: Oxygen?.env?.PUBLIC_STOREFRONT_ID, // eslint-disable-line no-undef
+    storefrontId: Oxygen.env.PUBLIC_STOREFRONT_ID,
   },
   session: CookieSessionStorage('__session', {
     path: '/',
