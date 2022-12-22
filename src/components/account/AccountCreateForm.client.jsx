@@ -103,7 +103,7 @@ export function AccountCreateForm() {
               placeholder="Password"
               aria-label="Password"
               value={password}
-              minLength={8}
+              minLength={6}
               required
               onChange={(event) => {
                 setPassword(event.target.value);
@@ -163,7 +163,7 @@ export function AccountCreateForm() {
           >
             Sign in with Amazon
           </button>
-          
+
           <div className="flex items-center mt-4">
             <p className="align-baseline text-sm">
               Already have an account? &nbsp;
