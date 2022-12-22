@@ -1,20 +1,20 @@
 import {useState, useEffect} from 'react';
-import {useUrl, Link} from '@shopify/hydrogen';
+import {Link} from '@shopify/hydrogen';
+import {useCart} from '@shopify/hydrogen/client';
 import axios from 'axios';
 
 import {
   isFuture,
-  now,
   sortByDateProperty,
   dayjs,
-  getCutOffDate,
   getUsaStandard,
   getISO,
-  getDayUsa,
 } from '~/utils/dates';
 
 import Loading from '~/components/Loading/index.client';
 
+const caching_server =
+  'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
 const platform_product_id = 8022523347235;
 
 export function OrderBundles() {
@@ -25,10 +25,23 @@ export function OrderBundles() {
   const [bundle, setBundle] = useState();
   const [bundleContents, setBundleContents] = useState([]);
   const [products, setProducts] = useState([]);
+  const [productsInCart, setProductsInCart] = useState([]);
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
+
+  const {
+    id,
+    cartCreate,
+    lines,
+    linesAdd,
+    linesUpdate,
+    linesRemove,
+    cartAttributesUpdate,
+    cost,
+    checkoutUrl,
+  } = useCart();
 
   useEffect(() => {
     async function fetchAll() {
@@ -52,6 +65,15 @@ export function OrderBundles() {
     fetchContents(contents);
   }, [deliveryDate]);
 
+  useEffect(() => {
+    const lines = productsInCart.map((product) => ({
+      merchandiseId: product.variants.nodes[0].id,
+      quantity: product.quantity,
+    }));
+
+    cartCreate({lines});
+  }, [productsInCart]);
+
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
       [...new Array(7)].map((_, dayIndex) =>
@@ -70,7 +92,8 @@ export function OrderBundles() {
     );
 
   async function fetchDeliveryDates() {
-    const res = (await axios.get('/api/bundle/delivery-dates')).data;
+    const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
+      .data;
 
     const data = sortByDateProperty(
       res.filter((el) => isFuture(el.date)),
@@ -82,10 +105,8 @@ export function OrderBundles() {
 
   async function fetchBundle() {
     const bundle = (
-      await axios.get(
-        `/api/bundle/bundles?platform_product_id=${platform_product_id}`,
-      )
-    ).data[0];
+      await axios.get(`${caching_server}/bundles_dev.json`)
+    ).data.find((el) => el.platform_product_id === platform_product_id);
 
     setBundle(bundle);
 
@@ -122,6 +143,7 @@ export function OrderBundles() {
       setProducts([]);
     }
 
+    setProductsInCart([]);
     setIsProductsLoading(false);
   }
 
@@ -137,6 +159,29 @@ export function OrderBundles() {
     setDeliveryDate(slots[0].date);
 
     setIsDeliveryDateEditing(false);
+  }
+
+  async function handleUpdateCart(product, diff) {
+    let newProductsInCart = [...productsInCart];
+
+    const productIndex = newProductsInCart.findIndex(
+      (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
+    );
+
+    if (typeof diff === 'undefined') {
+      // if the selected product doesn't exist in cart
+      newProductsInCart.push({...product, quantity: 1});
+    } else {
+      // if the selected product exists in cart
+      const quantity = (newProductsInCart[productIndex].quantity += diff);
+      if (quantity === 0) {
+        newProductsInCart = newProductsInCart.filter(
+          (el, index) => index !== productIndex,
+        );
+      }
+    }
+
+    setProductsInCart(newProductsInCart);
   }
 
   return (
@@ -280,7 +325,6 @@ export function OrderBundles() {
                       </div>
                     )}
                   </div>
-                  {/*--------------Step 2--------------------------------------*/}
                   <div
                     className="block text-gray-800 text-lg font-bold mb-2"
                     style={{fontSize: 24, marginTop: 20}}
@@ -316,20 +360,92 @@ export function OrderBundles() {
                                   Serves: 5
                                 </div>
                               </button>
-                              <div className="px-4 mb-4 xl:mb-0 text-center">
-                                <button
-                                  className="text-center text-white font-bold font-heading uppercase transition"
-                                  href="#"
-                                  style={{
-                                    backgroundColor: '#DB9707',
-                                    color: '#FFFFFF',
-                                    width: 80,
-                                    padding: '3px 21px',
-                                  }}
-                                >
-                                  Add+
-                                </button>
-                              </div>
+                              {productsInCart.findIndex(
+                                (el) =>
+                                  el.variants.nodes[0].id ===
+                                  product.variants.nodes[0].id,
+                              ) === -1 ? (
+                                <div className="px-4 text-center">
+                                  <button
+                                    className="text-center text-white font-bold font-heading uppercase transition"
+                                    href="#"
+                                    style={{
+                                      backgroundColor: '#DB9707',
+                                      color: '#FFFFFF',
+                                      width: 80,
+                                      padding: '3px 21px',
+                                    }}
+                                    onClick={() => handleUpdateCart(product)}
+                                  >
+                                    Add+
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="flex justify-center font-semibold font-heading">
+                                  <button
+                                    className="hover:text-gray-700 text-center bg-[#DB9707] text-white"
+                                    onClick={() =>
+                                      handleUpdateCart(product, -1)
+                                    }
+                                  >
+                                    <svg
+                                      width={24}
+                                      height={2}
+                                      viewBox="0 0 12 2"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <g opacity="0.35">
+                                        <rect
+                                          x={12}
+                                          width={2}
+                                          height={12}
+                                          transform="rotate(90 12 0)"
+                                          fill="currentColor"
+                                        />
+                                      </g>
+                                    </svg>
+                                  </button>
+                                  <div className="w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
+                                    {
+                                      productsInCart.find(
+                                        (el) =>
+                                          el.variants.nodes[0].id ===
+                                          product.variants.nodes[0].id,
+                                      ).quantity
+                                    }
+                                  </div>
+                                  <button
+                                    className="hover:text-gray-700 text-center bg-[#DB9707] text-white"
+                                    onClick={() => handleUpdateCart(product, 1)}
+                                  >
+                                    <svg
+                                      width={24}
+                                      height={12}
+                                      viewBox="0 0 12 12"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <g opacity="0.35">
+                                        <rect
+                                          x={5}
+                                          width={2}
+                                          height={12}
+                                          fill="currentColor"
+                                        />
+                                        <rect
+                                          x={12}
+                                          y={5}
+                                          width={2}
+                                          height={12}
+                                          transform="rotate(90 12 5)"
+                                          fill="currentColor"
+                                        />
+                                      </g>
+                                    </svg>
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </div>
                         ))
@@ -522,21 +638,23 @@ export function OrderBundles() {
                         You&apos;re Saving $20!
                       </span>
                       <span className="font-bold" style={{float: 'right'}}>
-                        Total: $169.95
+                        Total: $1050
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
-                      <button
-                        className="block w-full py-5 text-lg text-center uppercase font-bold "
-                        href="#"
-                        style={{
-                          backgroundColor: '#DB9707',
-                          color: '#FFFFFF',
-                          marginTop: 10,
-                        }}
-                      >
-                        CHECKOUT
-                      </button>
+                      <Link to={checkoutUrl} prefetch={false} target="_blank">
+                        <button
+                          className="block w-full py-5 text-lg text-center uppercase font-bold "
+                          href="#"
+                          style={{
+                            backgroundColor: '#DB9707',
+                            color: '#FFFFFF',
+                            marginTop: 10,
+                          }}
+                        >
+                          CHECKOUT
+                        </button>
+                      </Link>
                     </div>
                     <div>
                       <div
