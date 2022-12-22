@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import {Link} from '@shopify/hydrogen';
 import {useCart} from '@shopify/hydrogen/client';
 import axios from 'axios';
+import getSymbolFromCurrency from 'currency-symbol-map';
 
 import {
   isFuture,
@@ -25,7 +26,8 @@ export function OrderBundles() {
   const [bundle, setBundle] = useState();
   const [bundleContents, setBundleContents] = useState([]);
   const [products, setProducts] = useState([]);
-  const [productsInCart, setProductsInCart] = useState([]);
+  const [priceType, setPriceType] = useState();
+  const [frequencyValue, setFrequencyValue] = useState('7 Day(s)');
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
@@ -33,14 +35,17 @@ export function OrderBundles() {
 
   const {
     id,
-    cartCreate,
     lines,
+    cost,
+    checkoutUrl,
+    attributes,
+    status,
+
+    cartCreate,
     linesAdd,
     linesUpdate,
     linesRemove,
     cartAttributesUpdate,
-    cost,
-    checkoutUrl,
   } = useCart();
 
   useEffect(() => {
@@ -66,13 +71,8 @@ export function OrderBundles() {
   }, [deliveryDate]);
 
   useEffect(() => {
-    const lines = productsInCart.map((product) => ({
-      merchandiseId: product.variants.nodes[0].id,
-      quantity: product.quantity,
-    }));
-
-    cartCreate({lines});
-  }, [productsInCart]);
+    handleUpdateCart();
+  }, [priceType, frequencyValue]);
 
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
@@ -143,8 +143,20 @@ export function OrderBundles() {
       setProducts([]);
     }
 
-    setProductsInCart([]);
+    cartCreate({lines: []});
     setIsProductsLoading(false);
+  }
+
+  function getSellingPlanId(product) {
+    return priceType === 'recuring'
+      ? product.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+          (el) => el.options[0].value === frequencyValue,
+        )?.id
+      : undefined;
+  }
+
+  function getProductByMerchandiseId(id) {
+    return products.find((product) => product.variants.nodes[0].id === id);
   }
 
   function handleWeekChange(e) {
@@ -162,26 +174,54 @@ export function OrderBundles() {
   }
 
   async function handleUpdateCart(product, diff) {
-    let newProductsInCart = [...productsInCart];
+    let newLines = lines.map((line) => ({
+      merchandiseId: line.merchandise.id,
+      quantity: line.quantity,
+      sellingPlanId: getSellingPlanId(
+        getProductByMerchandiseId(line.merchandise.id),
+      ),
+    }));
 
-    const productIndex = newProductsInCart.findIndex(
-      (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
-    );
+    if (typeof product !== 'undefined') {
+      const merchandiseId = product.variants.nodes[0].id;
+      const sellingPlanId = getSellingPlanId(product);
 
-    if (typeof diff === 'undefined') {
-      // if the selected product doesn't exist in cart
-      newProductsInCart.push({...product, quantity: 1});
-    } else {
-      // if the selected product exists in cart
-      const quantity = (newProductsInCart[productIndex].quantity += diff);
-      if (quantity === 0) {
-        newProductsInCart = newProductsInCart.filter(
-          (el, index) => index !== productIndex,
-        );
+      const lineIndex = newLines.findIndex(
+        (el) => el.merchandiseId === merchandiseId,
+      );
+
+      if (typeof diff === 'undefined') {
+        // if the selected product doesn't exist in cart
+        newLines.push({merchandiseId, quantity: 1, sellingPlanId});
+      } else {
+        // if the selected product exists in cart
+        const quantity = (newLines[lineIndex].quantity += diff);
+
+        if (quantity === 0) {
+          newLines = newLines.filter((_, index) => index !== lineIndex);
+        }
       }
     }
 
-    setProductsInCart(newProductsInCart);
+    cartCreate({lines: newLines});
+  }
+
+  function handleCheckout() {
+    if (!lines.length) {
+      alert('Please select at least one meal.');
+      return;
+    }
+
+    if (typeof priceType === 'undefined') {
+      alert('Please choose a price type.');
+      return;
+    }
+
+    window.open(checkoutUrl, '_blank');
+  }
+
+  function handleToggleFrequency() {
+    setFrequencyValue(frequencyValue === '7 Day(s)' ? '15 Day(s)' : '7 Day(s)');
   }
 
   return (
@@ -360,9 +400,9 @@ export function OrderBundles() {
                                   Serves: 5
                                 </div>
                               </button>
-                              {productsInCart.findIndex(
+                              {lines.findIndex(
                                 (el) =>
-                                  el.variants.nodes[0].id ===
+                                  el.merchandise.id ===
                                   product.variants.nodes[0].id,
                               ) === -1 ? (
                                 <div className="px-4 text-center">
@@ -408,9 +448,9 @@ export function OrderBundles() {
                                   </button>
                                   <div className="w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
                                     {
-                                      productsInCart.find(
+                                      lines.find(
                                         (el) =>
-                                          el.variants.nodes[0].id ===
+                                          el.merchandise.id ===
                                           product.variants.nodes[0].id,
                                       ).quantity
                                     }
@@ -500,8 +540,12 @@ export function OrderBundles() {
                                         <input
                                           id="subscribe_save"
                                           type="radio"
-                                          name="radio-name"
-                                          defaultValue="option 1"
+                                          name="price_type"
+                                          value="recuring"
+                                          checked={priceType === 'recuring'}
+                                          onClick={(e) =>
+                                            setPriceType(e.target.value)
+                                          }
                                         />
                                         <span
                                           className="ml-3 font-bold"
@@ -555,10 +599,18 @@ export function OrderBundles() {
                                   <br />
                                   <p>
                                     Delivery Every:{' '}
-                                    <span style={{color: '#DB9725'}}>
-                                      <u> Weekly</u> &gt;{' '}
-                                    </span>
-                                    <span>Biweekly </span>
+                                    <button
+                                      className={`text-[#DB9725]`}
+                                      onClick={handleToggleFrequency}
+                                    >
+                                      <u>
+                                        {' '}
+                                        {frequencyValue === '7 Day(s)'
+                                          ? 'Weekly'
+                                          : 'Biweekly'}
+                                      </u>{' '}
+                                      &gt;{' '}
+                                    </button>
                                   </p>
                                   <p>Save $20</p>
                                   <p>No Commitments, Cancel Anytime</p>
@@ -590,8 +642,12 @@ export function OrderBundles() {
                                         <input
                                           id="one-time"
                                           type="radio"
-                                          name="radio-name"
-                                          defaultValue="option 1"
+                                          name="price_type"
+                                          value="onetime"
+                                          checked={priceType === 'onetime'}
+                                          onClick={(e) =>
+                                            setPriceType(e.target.value)
+                                          }
                                         />
                                         <span
                                           className="ml-3 font-bold"
@@ -638,23 +694,31 @@ export function OrderBundles() {
                         You&apos;re Saving $20!
                       </span>
                       <span className="font-bold" style={{float: 'right'}}>
-                        Total: $1050
+                        Total:{' '}
+                        {getSymbolFromCurrency(
+                          cost?.totalAmount?.currencyCode,
+                        ) + cost?.totalAmount?.amount}
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
-                      <Link to={checkoutUrl} prefetch={false} target="_blank">
-                        <button
-                          className="block w-full py-5 text-lg text-center uppercase font-bold "
-                          href="#"
-                          style={{
-                            backgroundColor: '#DB9707',
-                            color: '#FFFFFF',
-                            marginTop: 10,
-                          }}
-                        >
-                          CHECKOUT
-                        </button>
-                      </Link>
+                      {/* <Link
+                        to={priceType ? checkoutUrl : '/shop/bundle#'}
+                        prefetch={false}
+                        target="_self"
+                      > */}
+                      <button
+                        className="block w-full py-5 text-lg text-center uppercase font-bold "
+                        href="#"
+                        style={{
+                          backgroundColor: '#DB9707',
+                          color: '#FFFFFF',
+                          marginTop: 10,
+                        }}
+                        onClick={handleCheckout}
+                      >
+                        CHECKOUT
+                      </button>
+                      {/* </Link> */}
                     </div>
                     <div>
                       <div
