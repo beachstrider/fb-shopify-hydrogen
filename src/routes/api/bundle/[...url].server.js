@@ -27,7 +27,8 @@ const bundleBuilder = async (
       : {}),
   });
 
-  if (res.status !== 200) {
+  //because some api end point return 201, 204 eg. 201 is success response which create data in db
+  if (res.status >= 205) {
     throw new Error('!!!');
   }
 

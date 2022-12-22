@@ -70,7 +70,7 @@ export function OrderBundles() {
       merchandiseId: product.variants.nodes[0].id,
       quantity: product.quantity,
     }));
-
+console.log(lines);
     cartCreate({lines});
   }, [productsInCart]);
 
@@ -182,6 +182,58 @@ export function OrderBundles() {
     }
 
     setProductsInCart(newProductsInCart);
+  }
+
+  async function handleCartSave() {
+    let newProductsInCart = [...productsInCart];
+
+    let items = [{
+      bundle_configuration_content_id: 590,
+      platform_product_variant_id: 43793484874019,
+      quantity: 1
+    }];
+
+    let cartData = {
+      platform_customer_id: null,
+      platform_cart_token: Math.random(10),
+      platform_product_id: 8008921186595,
+      platform_variant_id: 43793484874019,
+      subscription_type: 'Family',
+      subscription_sub_type: 'Regular (serves 5)',
+      bundle_id: 56,
+      delivery_day: 4,
+      contents: [...items]
+    };
+    await cartSave(cartData);
+    console.log('success');
+    // const productIndex = newProductsInCart.findIndex(
+    //   (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
+    // );
+    //
+    // if (typeof diff === 'undefined') {
+    //   // if the selected product doesn't exist in cart
+    //   newProductsInCart.push({...product, quantity: 1});
+    // } else {
+    //   // if the selected product exists in cart
+    //   const quantity = (newProductsInCart[productIndex].quantity += diff);
+    //   if (quantity === 0) {
+    //     newProductsInCart = newProductsInCart.filter(
+    //       (el, index) => index !== productIndex,
+    //     );
+    //   }
+    // }
+    //
+    // setProductsInCart(newProductsInCart);
+  }
+
+  async function cartSave(data) {
+    const saved = (
+      await axios.post(
+        `/api/bundle/carts`,
+        data
+      )
+    ).data;
+    return 0;
   }
 
   return (
@@ -642,7 +694,7 @@ export function OrderBundles() {
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
-                      <Link to={checkoutUrl} prefetch={false} target="_blank">
+                      <a href="#" onClick={handleCartSave} >  {/*checkoutUrl*/}
                         <button
                           className="block w-full py-5 text-lg text-center uppercase font-bold "
                           href="#"
@@ -654,7 +706,22 @@ export function OrderBundles() {
                         >
                           CHECKOUT
                         </button>
-                      </Link>
+                      </a>
+
+                      <a href={checkoutUrl} target="_blank" >
+                        <button
+                          className="block w-full py-5 text-lg text-center uppercase font-bold "
+                          href="#"
+                          style={{
+                            backgroundColor: '#DB9707',
+                            color: '#FFFFFF',
+                            marginTop: 10,
+                          }}
+                        >
+                          CHECKOUT page
+                        </button>
+                      </a>
+
                     </div>
                     <div>
                       <div
