@@ -164,26 +164,51 @@ export function OrderBundles() {
   }
 
   async function handleUpdateCart(product, diff) {
-    let newProductsInCart = [...productsInCart];
+    // let newProductsInCart = [...productsInCart];
 
-    const productIndex = newProductsInCart.findIndex(
-      (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
+    // const productIndex = newProductsInCart.findIndex(
+    //   (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
+    // );
+
+    // if (typeof diff === 'undefined') {
+    //   // if the selected product doesn't exist in cart
+    //   newProductsInCart.push({...product, quantity: 1});
+    // } else {
+    //   // if the selected product exists in cart
+    //   const quantity = (newProductsInCart[productIndex].quantity += diff);
+    //   if (quantity === 0) {
+    //     newProductsInCart = newProductsInCart.filter(
+    //       (el, index) => index !== productIndex,
+    //     );
+    //   }
+    // }
+
+    // setProductsInCart(newProductsInCart);
+
+    const merchandiseId = product.variants.nodes[0].id;
+
+    let newLines = lines.map((line) => ({
+      merchandiseId: line.merchandise.id,
+      quantity: line.quantity,
+    }));
+
+    const lineIndex = newLines.findIndex(
+      (el) => el.merchandiseId === merchandiseId,
     );
 
     if (typeof diff === 'undefined') {
       // if the selected product doesn't exist in cart
-      newProductsInCart.push({...product, quantity: 1});
+      newLines.push({merchandiseId, quantity: 1});
     } else {
       // if the selected product exists in cart
-      const quantity = (newProductsInCart[productIndex].quantity += diff);
+      const quantity = (newLines[lineIndex].quantity += diff);
+
       if (quantity === 0) {
-        newProductsInCart = newProductsInCart.filter(
-          (el, index) => index !== productIndex,
-        );
+        newLines = newLines.filter((_, index) => index !== lineIndex);
       }
     }
 
-    setProductsInCart(newProductsInCart);
+    cartCreate({lines: newLines});
   }
 
   return (
@@ -362,9 +387,9 @@ export function OrderBundles() {
                                   Serves: 5
                                 </div>
                               </button>
-                              {productsInCart.findIndex(
+                              {lines.findIndex(
                                 (el) =>
-                                  el.variants.nodes[0].id ===
+                                  el.merchandise.id ===
                                   product.variants.nodes[0].id,
                               ) === -1 ? (
                                 <div className="px-4 text-center">
@@ -410,9 +435,9 @@ export function OrderBundles() {
                                   </button>
                                   <div className="w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
                                     {
-                                      productsInCart.find(
+                                      lines.find(
                                         (el) =>
-                                          el.variants.nodes[0].id ===
+                                          el.merchandise.id ===
                                           product.variants.nodes[0].id,
                                       ).quantity
                                     }
