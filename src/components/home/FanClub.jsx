@@ -14,16 +14,7 @@ export function FanClub() {
         </p>
         <div>
             <div className="w-1/2 mx-auto px-2 flex items-center justify-center mt-[35px] pb-10 flex-col md:flex-row">
-            <input
-                type="email"
-                name=""
-                id=""
-                className="focus:outline-none text-center mx-4 w-full md-w-1/2 font-bold "
-                placeholder="email@gmail.com"
-            />
-            <button className="font-opensans bg-[#A60D1E] text-white capitalize font-bold px-4 py-2 mt-2 md:mt-0 mx-4 w-full md-w-1/2">
-                Sign Me Up, Baby!
-            </button>
+            <div class="klaviyo-form-TBWJmJ"></div>
             </div>
         </div>
       </div>
