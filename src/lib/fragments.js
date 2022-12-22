@@ -62,5 +62,47 @@ export const PRODUCT_CARD_FRAGMENT = gql`
         }
       }
     }
+    sellingPlanGroups(first: 10) {
+      nodes {
+        sellingPlans(first: 10) {
+          nodes {
+            id
+            description
+            name
+            options {
+              name
+              value
+            }
+            priceAdjustments {
+              orderCount
+              adjustmentValue {
+                ... on SellingPlanFixedAmountPriceAdjustment {
+                  adjustmentAmount {
+                    currencyCode
+                    amount
+                  }
+                }
+                ... on SellingPlanFixedPriceAdjustment {
+                  price {
+                    currencyCode
+                    amount
+                  }
+                }
+                ... on SellingPlanPercentagePriceAdjustment {
+                  adjustmentPercentage
+                }
+              }
+            }
+            recurringDeliveries
+          }
+        }
+        appName
+        name
+        options {
+          name
+          values
+        }
+      }
+    }
   }
 `;
