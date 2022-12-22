@@ -27,12 +27,11 @@ export function OrderBundles() {
   const [bundleContents, setBundleContents] = useState([]);
   const [products, setProducts] = useState([]);
   const [priceType, setPriceType] = useState();
+  const [frequencyValue, setFrequencyValue] = useState('7 Day(s)');
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
-
-  console.log('priceType', priceType);
 
   const {
     id,
@@ -70,6 +69,10 @@ export function OrderBundles() {
 
     fetchContents(contents);
   }, [deliveryDate]);
+
+  useEffect(() => {
+    handleUpdateCart();
+  }, [priceType, frequencyValue]);
 
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
@@ -144,6 +147,18 @@ export function OrderBundles() {
     setIsProductsLoading(false);
   }
 
+  function getSellingPlanId(product) {
+    return priceType === 'recuring'
+      ? product.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+          (el) => el.options[0].value === frequencyValue,
+        )?.id
+      : undefined;
+  }
+
+  function getProductByMerchandiseId(id) {
+    return products.find((product) => product.variants.nodes[0].id === id);
+  }
+
   function handleWeekChange(e) {
     const week = weeks[e.target.value];
 
@@ -159,26 +174,32 @@ export function OrderBundles() {
   }
 
   async function handleUpdateCart(product, diff) {
-    const merchandiseId = product.variants.nodes[0].id;
-
     let newLines = lines.map((line) => ({
       merchandiseId: line.merchandise.id,
       quantity: line.quantity,
+      sellingPlanId: getSellingPlanId(
+        getProductByMerchandiseId(line.merchandise.id),
+      ),
     }));
 
-    const lineIndex = newLines.findIndex(
-      (el) => el.merchandiseId === merchandiseId,
-    );
+    if (typeof product !== 'undefined') {
+      const merchandiseId = product.variants.nodes[0].id;
+      const sellingPlanId = getSellingPlanId(product);
 
-    if (typeof diff === 'undefined') {
-      // if the selected product doesn't exist in cart
-      newLines.push({merchandiseId, quantity: 1});
-    } else {
-      // if the selected product exists in cart
-      const quantity = (newLines[lineIndex].quantity += diff);
+      const lineIndex = newLines.findIndex(
+        (el) => el.merchandiseId === merchandiseId,
+      );
 
-      if (quantity === 0) {
-        newLines = newLines.filter((_, index) => index !== lineIndex);
+      if (typeof diff === 'undefined') {
+        // if the selected product doesn't exist in cart
+        newLines.push({merchandiseId, quantity: 1, sellingPlanId});
+      } else {
+        // if the selected product exists in cart
+        const quantity = (newLines[lineIndex].quantity += diff);
+
+        if (quantity === 0) {
+          newLines = newLines.filter((_, index) => index !== lineIndex);
+        }
       }
     }
 
@@ -196,7 +217,11 @@ export function OrderBundles() {
       return;
     }
 
-    location.href = checkoutUrl;
+    window.open(checkoutUrl, '_blank');
+  }
+
+  function handleToggleFrequency() {
+    setFrequencyValue(frequencyValue === '7 Day(s)' ? '15 Day(s)' : '7 Day(s)');
   }
 
   return (
@@ -574,10 +599,18 @@ export function OrderBundles() {
                                   <br />
                                   <p>
                                     Delivery Every:{' '}
-                                    <span style={{color: '#DB9725'}}>
-                                      <u> Weekly</u> &gt;{' '}
-                                    </span>
-                                    <span>Biweekly </span>
+                                    <button
+                                      className={`text-[#DB9725]`}
+                                      onClick={handleToggleFrequency}
+                                    >
+                                      <u>
+                                        {' '}
+                                        {frequencyValue === '7 Day(s)'
+                                          ? 'Weekly'
+                                          : 'Biweekly'}
+                                      </u>{' '}
+                                      &gt;{' '}
+                                    </button>
                                   </p>
                                   <p>Save $20</p>
                                   <p>No Commitments, Cancel Anytime</p>
