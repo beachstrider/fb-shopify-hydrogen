@@ -26,10 +26,13 @@ export function OrderBundles() {
   const [bundle, setBundle] = useState();
   const [bundleContents, setBundleContents] = useState([]);
   const [products, setProducts] = useState([]);
+  const [priceType, setPriceType] = useState();
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
+
+  console.log('priceType', priceType);
 
   const {
     id,
@@ -45,8 +48,6 @@ export function OrderBundles() {
     linesRemove,
     cartAttributesUpdate,
   } = useCart();
-
-  console.log('==', attributes, status);
 
   useEffect(() => {
     async function fetchAll() {
@@ -184,7 +185,19 @@ export function OrderBundles() {
     cartCreate({lines: newLines});
   }
 
-  console.log('cost:', cost);
+  function handleCheckout() {
+    if (!lines.length) {
+      alert('Please select at least one meal.');
+      return;
+    }
+
+    if (typeof priceType === 'undefined') {
+      alert('Please choose a price type.');
+      return;
+    }
+
+    location.href = checkoutUrl;
+  }
 
   return (
     <section className="py-20 bg-[#EFEFEF]">
@@ -502,8 +515,12 @@ export function OrderBundles() {
                                         <input
                                           id="subscribe_save"
                                           type="radio"
-                                          name="radio-name"
-                                          defaultValue="option 1"
+                                          name="price_type"
+                                          value="recuring"
+                                          checked={priceType === 'recuring'}
+                                          onClick={(e) =>
+                                            setPriceType(e.target.value)
+                                          }
                                         />
                                         <span
                                           className="ml-3 font-bold"
@@ -592,8 +609,12 @@ export function OrderBundles() {
                                         <input
                                           id="one-time"
                                           type="radio"
-                                          name="radio-name"
-                                          defaultValue="option 1"
+                                          name="price_type"
+                                          value="onetime"
+                                          checked={priceType === 'onetime'}
+                                          onClick={(e) =>
+                                            setPriceType(e.target.value)
+                                          }
                                         />
                                         <span
                                           className="ml-3 font-bold"
@@ -647,19 +668,24 @@ export function OrderBundles() {
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
-                      <Link to={checkoutUrl} prefetch={false} target="_self">
-                        <button
-                          className="block w-full py-5 text-lg text-center uppercase font-bold "
-                          href="#"
-                          style={{
-                            backgroundColor: '#DB9707',
-                            color: '#FFFFFF',
-                            marginTop: 10,
-                          }}
-                        >
-                          CHECKOUT
-                        </button>
-                      </Link>
+                      {/* <Link
+                        to={priceType ? checkoutUrl : '/shop/bundle#'}
+                        prefetch={false}
+                        target="_self"
+                      > */}
+                      <button
+                        className="block w-full py-5 text-lg text-center uppercase font-bold "
+                        href="#"
+                        style={{
+                          backgroundColor: '#DB9707',
+                          color: '#FFFFFF',
+                          marginTop: 10,
+                        }}
+                        onClick={handleCheckout}
+                      >
+                        CHECKOUT
+                      </button>
+                      {/* </Link> */}
                     </div>
                     <div>
                       <div
