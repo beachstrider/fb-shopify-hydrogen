@@ -43,6 +43,8 @@ export function OrderBundles() {
     checkoutUrl,
   } = useCart();
 
+  console.log('lines:', lines);
+
   useEffect(() => {
     async function fetchAll() {
       await fetchDeliveryDates();
@@ -642,7 +644,7 @@ export function OrderBundles() {
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
-                      <Link to={checkoutUrl} prefetch={false} target="_blank">
+                      <Link to={checkoutUrl} prefetch={false} target="_self">
                         <button
                           className="block w-full py-5 text-lg text-center uppercase font-bold "
                           href="#"
