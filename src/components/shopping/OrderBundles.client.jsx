@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import {Link} from '@shopify/hydrogen';
 import {useCart} from '@shopify/hydrogen/client';
 import axios from 'axios';
+import getSymbolFromCurrency from 'currency-symbol-map';
 
 import {
   isFuture,
@@ -25,7 +26,6 @@ export function OrderBundles() {
   const [bundle, setBundle] = useState();
   const [bundleContents, setBundleContents] = useState([]);
   const [products, setProducts] = useState([]);
-  const [productsInCart, setProductsInCart] = useState([]);
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
@@ -33,17 +33,20 @@ export function OrderBundles() {
 
   const {
     id,
-    cartCreate,
     lines,
+    cost,
+    checkoutUrl,
+    attributes,
+    status,
+
+    cartCreate,
     linesAdd,
     linesUpdate,
     linesRemove,
     cartAttributesUpdate,
-    cost,
-    checkoutUrl,
   } = useCart();
 
-  console.log('lines:', lines);
+  console.log('==', attributes, status);
 
   useEffect(() => {
     async function fetchAll() {
@@ -66,15 +69,6 @@ export function OrderBundles() {
 
     fetchContents(contents);
   }, [deliveryDate]);
-
-  useEffect(() => {
-    const lines = productsInCart.map((product) => ({
-      merchandiseId: product.variants.nodes[0].id,
-      quantity: product.quantity,
-    }));
-
-    cartCreate({lines});
-  }, [productsInCart]);
 
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
@@ -145,7 +139,7 @@ export function OrderBundles() {
       setProducts([]);
     }
 
-    setProductsInCart([]);
+    cartCreate({lines: []});
     setIsProductsLoading(false);
   }
 
@@ -164,27 +158,6 @@ export function OrderBundles() {
   }
 
   async function handleUpdateCart(product, diff) {
-    // let newProductsInCart = [...productsInCart];
-
-    // const productIndex = newProductsInCart.findIndex(
-    //   (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
-    // );
-
-    // if (typeof diff === 'undefined') {
-    //   // if the selected product doesn't exist in cart
-    //   newProductsInCart.push({...product, quantity: 1});
-    // } else {
-    //   // if the selected product exists in cart
-    //   const quantity = (newProductsInCart[productIndex].quantity += diff);
-    //   if (quantity === 0) {
-    //     newProductsInCart = newProductsInCart.filter(
-    //       (el, index) => index !== productIndex,
-    //     );
-    //   }
-    // }
-
-    // setProductsInCart(newProductsInCart);
-
     const merchandiseId = product.variants.nodes[0].id;
 
     let newLines = lines.map((line) => ({
@@ -210,6 +183,8 @@ export function OrderBundles() {
 
     cartCreate({lines: newLines});
   }
+
+  console.log('cost:', cost);
 
   return (
     <section className="py-20 bg-[#EFEFEF]">
@@ -665,7 +640,10 @@ export function OrderBundles() {
                         You&apos;re Saving $20!
                       </span>
                       <span className="font-bold" style={{float: 'right'}}>
-                        Total: $1050
+                        Total:{' '}
+                        {getSymbolFromCurrency(
+                          cost?.totalAmount?.currencyCode,
+                        ) + cost?.totalAmount?.amount}
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
