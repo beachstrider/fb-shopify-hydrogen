@@ -18,7 +18,7 @@ export function Footer({menu}) {
 
   return (
     <div>
-      <section className="relative pt-24 pb-28 bg-black overflow-hidden pl-6">
+      <section className="relative pt-24 pb-12 bg-black overflow-hidden pl-6">
         {/* <img className="absolute right-0 top-0" src="assets/gradient2.svg" alt=""/> */}
         <div className="relative z-10 container px-4 mx-auto">
           <div className="flex flex-wrap justify-between -m-8">
@@ -131,8 +131,6 @@ export function Footer({menu}) {
                   Address: <br />
                   676 W 1200 N Springville, UT 84663
                   <br /><br/>
-                  <p className='font-medium text-white'>© 2022 FEASTbox, All Rights Reserved</p>
-                  <br /> <br/>
                 </li>
               </ul>
               <div className="w-auto p-2">
@@ -209,6 +207,10 @@ export function Footer({menu}) {
           </div>
         </div>
       </section>
+      <hr className='bg-[#C1C1C1]'/>
+      <div className='bg-black text-center py-8'>
+        <p className='text-white'>© 2022 FEASTbox, All Rights Reserved</p>
+      </div>
     </div>
   );
 }
