@@ -48,6 +48,7 @@ export async function api(request, {session}) {
   let token;
 
   if (session) {
+    //this token preserve for long time but in our api end expire that token which cause api error
     token = (await session.get()).bundleBuilderToken;
 
     if (request.method === 'GET') {

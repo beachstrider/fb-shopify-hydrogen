@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {Link} from '@shopify/hydrogen';
-import {useCart} from '@shopify/hydrogen/client';
+import {useCart, useNavigate} from '@shopify/hydrogen/client';
 import axios from 'axios';
 
 import {
@@ -9,12 +9,14 @@ import {
   dayjs,
   getUsaStandard,
   getISO,
+  getDayUsa,
 } from '~/utils/dates';
 
 import Loading from '~/components/Loading/index.client';
 
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
+// This platform product ID is the bundle product ID.
 const platform_product_id = 8022523347235;
 
 export function OrderBundles() {
@@ -43,6 +45,8 @@ export function OrderBundles() {
     checkoutUrl,
   } = useCart();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     async function fetchAll() {
       await fetchDeliveryDates();
@@ -70,7 +74,7 @@ export function OrderBundles() {
       merchandiseId: product.variants.nodes[0].id,
       quantity: product.quantity,
     }));
-console.log(lines);
+
     cartCreate({lines});
   }, [productsInCart]);
 
@@ -184,9 +188,11 @@ console.log(lines);
     setProductsInCart(newProductsInCart);
   }
 
+  //car save function which has bundle product and meals product save in database
   async function handleCartSave() {
-    let newProductsInCart = [...productsInCart];
-
+    setIsInitialDataLoading(true)
+    let cartToken = id.split("Cart/"); //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
+    //this is the meals product array which has only one meal Item but there can be multiple meals item selected
     let items = [{
       bundle_configuration_content_id: 590,
       platform_product_variant_id: 43793484874019,
@@ -194,36 +200,22 @@ console.log(lines);
     }];
 
     let cartData = {
-      platform_customer_id: null,
-      platform_cart_token: Math.random(10),
-      platform_product_id: 8008921186595,
+      platform_customer_id: null, //if customer logged in then save shopify customer id
+      platform_cart_token: cartToken[1],
+      platform_product_id: bundle.platform_product_id,
       platform_variant_id: 43793484874019,
       subscription_type: 'Family',
       subscription_sub_type: 'Regular (serves 5)',
-      bundle_id: 56,
-      delivery_day: 4,
+      bundle_id: bundle.id,
+      delivery_day: getDayUsa(deliveryDate),
       contents: [...items]
     };
     await cartSave(cartData);
+    setIsInitialDataLoading(false)
     console.log('success');
-    // const productIndex = newProductsInCart.findIndex(
-    //   (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
-    // );
-    //
-    // if (typeof diff === 'undefined') {
-    //   // if the selected product doesn't exist in cart
-    //   newProductsInCart.push({...product, quantity: 1});
-    // } else {
-    //   // if the selected product exists in cart
-    //   const quantity = (newProductsInCart[productIndex].quantity += diff);
-    //   if (quantity === 0) {
-    //     newProductsInCart = newProductsInCart.filter(
-    //       (el, index) => index !== productIndex,
-    //     );
-    //   }
-    // }
-    //
-    // setProductsInCart(newProductsInCart);
+    //redirect to the checkout page
+    navigate(checkoutUrl);
+
   }
 
   async function cartSave(data) {
@@ -694,7 +686,7 @@ console.log(lines);
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
-                      <a href="#" onClick={handleCartSave} >  {/*checkoutUrl*/}
+                      <a href="#"  onClick={handleCartSave} >
                         <button
                           className="block w-full py-5 text-lg text-center uppercase font-bold "
                           href="#"
@@ -705,20 +697,6 @@ console.log(lines);
                           }}
                         >
                           CHECKOUT
-                        </button>
-                      </a>
-
-                      <a href={checkoutUrl} target="_blank" >
-                        <button
-                          className="block w-full py-5 text-lg text-center uppercase font-bold "
-                          href="#"
-                          style={{
-                            backgroundColor: '#DB9707',
-                            color: '#FFFFFF',
-                            marginTop: 10,
-                          }}
-                        >
-                          CHECKOUT page
                         </button>
                       </a>
 
