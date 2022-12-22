@@ -128,6 +128,42 @@ export function AccountCreateForm() {
               Create Account
             </button>
           </div>
+
+          <button
+            type="button"
+            className="block py-2 text-lg text-center mt-8 font-bold w-full"
+            href="#"
+            style={{
+              backgroundColor: '#4285F4',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Google
+          </button>
+          <button
+            type="button"
+            className="block py-2 text-lg text-center  font-bold w-full"
+            style={{
+              backgroundColor: '#4267B2',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Facebook
+          </button>
+          <button
+            type="button"
+            className="block py-2 text-lg text-center  font-bold w-full "
+            style={{
+              backgroundColor: '#35465C',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Amazon
+          </button>
+          
           <div className="flex items-center mt-4">
             <p className="align-baseline text-sm">
               Already have an account? &nbsp;
@@ -136,6 +172,7 @@ export function AccountCreateForm() {
               </Link>
             </p>
           </div>
+          
         </form>
       </div>
     </div>

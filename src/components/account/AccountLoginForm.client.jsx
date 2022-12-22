@@ -119,7 +119,7 @@ export function AccountLoginForm({shopName}) {
               passwordError={passwordError}
             />
           )}
-          <button
+          {/* <button
             type="button"
             className="block py-2 text-lg text-center mt-8 font-bold w-full"
             href="#"
@@ -152,7 +152,7 @@ export function AccountLoginForm({shopName}) {
             }}
           >
             Sign in with Amazon
-          </button>
+          </button> */}
           <div className="mb-10">
             <p className="text-sm py-4">
               Don&apos;t have an account?{' '}
