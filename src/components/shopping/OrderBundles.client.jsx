@@ -20,7 +20,6 @@ const caching_server =
 const platform_product_id = 8022523347235;
 
 export function OrderBundles({discountCodes}) {
-  console.log('discountCodes', discountCodes);
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -41,6 +40,8 @@ export function OrderBundles({discountCodes}) {
   const [isProductsLoading, setIsProductsLoading] = useState(false);
   const [checkoutButtonStatus, setCheckoutButtonStatus] = useState('');
 
+  console.log('productsIncart:', productsInCart);
+
   const {
     id,
     cartCreate,
@@ -55,6 +56,12 @@ export function OrderBundles({discountCodes}) {
   } = useCart();
 
   const navigate = useNavigate();
+
+  const isQuantityLimit = (() => {
+    let currentQuantity = 0;
+    productsInCart.forEach((el) => (currentQuantity += el.quantity));
+    return currentQuantity === mealQuantity;
+  })();
 
   useEffect(() => {
     async function fetchAll() {
@@ -109,7 +116,6 @@ export function OrderBundles({discountCodes}) {
       let newTotalPrice = bundle.variants.nodes[0].priceV2.amount;
 
       if (priceType === 'recuring') {
-        console.log('recuring!!');
         sellingPlanId =
           bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
             (el) => el.options[0].value === frequencyValue,
@@ -161,12 +167,16 @@ export function OrderBundles({discountCodes}) {
 
     setBundleData(bundleDataRes);
 
-    const config = (
-      await axios.get(
-        `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
-      )
-    ).data;
+    const {data: config} = await axios.get(
+      `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
+    );
 
+    const bundle_id = `gid://shopify/Product/${bundleDataRes.platform_product_id}`;
+    const {data: bundleProduct} = await axios.post(`/api/products/bundle`, {
+      id: bundle_id,
+    });
+
+    setBundle(bundleProduct);
     setBundleContents(config.contents);
     setMealQuantity(config.quantity);
   }
@@ -190,15 +200,10 @@ export function OrderBundles({discountCodes}) {
     }
 
     if (product_ids.length) {
-      const bundle_id = `gid://shopify/Product/${bundleData.platform_product_id}`;
-      const {
-        data: {bundle, products},
-      } = await axios.post(`/api/products/bundle-products`, {
-        bundle_id,
+      const {data: products} = await axios.post(`/api/products/multiple`, {
         product_ids,
       });
 
-      setBundle(bundle);
       setProducts(
         products.map((product) => ({
           ...product,
@@ -256,7 +261,7 @@ export function OrderBundles({discountCodes}) {
   }
 
   async function handleCheckout() {
-    if (!productsInCart.length) {
+    if (!productsInCart.length || productsInCart.length < mealQuantity) {
       alert(`Please select ${mealQuantity} meal(s).`);
       return;
     }
@@ -289,64 +294,60 @@ export function OrderBundles({discountCodes}) {
 
     await axios.post(`/api/bundle/carts`, cartData);
 
-    console.log('success');
-
     setCheckoutButtonStatus('');
     window.open(checkoutUrl, '_blank');
   }
 
-  console.log(bundleData);
-
   return (
-    <section className="py-20 bg-[#EFEFEF]">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-wrap -mx-4 mb-24">
-          <div className="w-full px-4 mb-8 md:mb-0 md:w-1/1 xl:w-1/3 lg:w-1/3">
-            <div className="relative mb-10" style={{height: 564}}>
-              <button
-                className="absolute top-1/2 left-0 ml-8 transform translate-1/2"
-                href="#"
-              >
-                <svg
-                  width={10}
-                  height={18}
-                  viewBox="0 0 10 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+    <Loading className="py-20" isLoading={isInitialDataLoading}>
+      <section className="py-20 bg-[#EFEFEF]">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap -mx-4 mb-24">
+            <div className="w-full px-4 mb-8 md:mb-0 md:w-1/1 xl:w-1/3 lg:w-1/3">
+              <div className="relative mb-10" style={{height: 564}}>
+                <button
+                  className="absolute top-1/2 left-0 ml-8 transform translate-1/2"
+                  href="#"
                 >
-                  <path
-                    d="M9 16.0185C9.268 16.2905 9.268 16.7275 9 16.9975C8.732 17.2675 8.299 17.2685 8.031 16.9975L0.201 9.0895C-0.067 8.8195 -0.067 8.3825 0.201 8.1105L8.031 0.2025C8.299 -0.0675 8.732 -0.0675 9 0.2025C9.268 0.4735 9.268 0.9115 9 1.1815L1.859 8.6005L9 16.0185Z"
-                    fill="#1F40FF"
-                  />
-                </svg>
-              </button>
-              <img
-                className="object-cover w-full h-full"
-                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/shop/shop_hero.png"
-                alt="img"
-              />
-              <button
-                className="absolute top-1/2 right-0 mr-8 transform translate-1/2"
-                href="#"
-              >
-                <svg
-                  width={10}
-                  height={18}
-                  viewBox="0 0 10 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                  <svg
+                    width={10}
+                    height={18}
+                    viewBox="0 0 10 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 16.0185C9.268 16.2905 9.268 16.7275 9 16.9975C8.732 17.2675 8.299 17.2685 8.031 16.9975L0.201 9.0895C-0.067 8.8195 -0.067 8.3825 0.201 8.1105L8.031 0.2025C8.299 -0.0675 8.732 -0.0675 9 0.2025C9.268 0.4735 9.268 0.9115 9 1.1815L1.859 8.6005L9 16.0185Z"
+                      fill="#1F40FF"
+                    />
+                  </svg>
+                </button>
+                <img
+                  className="object-cover w-full h-full"
+                  src={bundle?.variants?.nodes[0]?.image?.url}
+                  alt="img"
+                />
+                <button
+                  className="absolute top-1/2 right-0 mr-8 transform translate-1/2"
+                  href="#"
                 >
-                  <path
-                    d="M0.19922 1.1817C-0.0687795 0.909696 -0.0687794 0.472695 0.19922 0.202695C0.46722 -0.0673054 0.90022 -0.0683048 1.16822 0.202695L8.99822 8.11069C9.26622 8.3807 9.26622 8.81769 8.99822 9.08969L1.16822 16.9977C0.900219 17.2677 0.467218 17.2677 0.199219 16.9977C-0.0687809 16.7267 -0.0687808 16.2887 0.199219 16.0187L7.34022 8.5997L0.19922 1.1817Z"
-                    fill="#1F40FF"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    width={10}
+                    height={18}
+                    viewBox="0 0 10 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M0.19922 1.1817C-0.0687795 0.909696 -0.0687794 0.472695 0.19922 0.202695C0.46722 -0.0673054 0.90022 -0.0683048 1.16822 0.202695L8.99822 8.11069C9.26622 8.3807 9.26622 8.81769 8.99822 9.08969L1.16822 16.9977C0.900219 17.2677 0.467218 17.2677 0.199219 16.9977C-0.0687809 16.7267 -0.0687808 16.2887 0.199219 16.0187L7.34022 8.5997L0.19922 1.1817Z"
+                      fill="#1F40FF"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="w-full px-4 md:w-1/1 xl:w-2/3 lg:w-2/3">
-            <div className="xl:pl-10">
-              <Loading isLoading={isInitialDataLoading}>
+            <div className="w-full px-4 md:w-1/1 xl:w-2/3 lg:w-2/3">
+              <div className="xl:pl-10">
                 <div className="mb-10 pb-10">
                   <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
                     <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
@@ -480,15 +481,9 @@ export function OrderBundles({discountCodes}) {
                               ) === -1 ? (
                                 <div className="px-4 text-center">
                                   <button
-                                    className="text-center text-white font-bold font-heading uppercase transition"
-                                    href="#"
-                                    style={{
-                                      backgroundColor: '#DB9707',
-                                      color: '#FFFFFF',
-                                      width: 80,
-                                      padding: '3px 21px',
-                                    }}
+                                    className="text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
                                     onClick={() => handleUpdateCart(product)}
+                                    disabled={isQuantityLimit}
                                   >
                                     Add+
                                   </button>
@@ -531,6 +526,7 @@ export function OrderBundles({discountCodes}) {
                                   <button
                                     className="hover:text-gray-700 text-center bg-[#DB9707] text-white"
                                     onClick={() => handleUpdateCart(product, 1)}
+                                    disabled={isQuantityLimit}
                                   >
                                     <svg
                                       width={24}
@@ -920,11 +916,11 @@ export function OrderBundles({discountCodes}) {
                     </div>
                   </div>
                 </div>
-              </Loading>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </Loading>
   );
 }
