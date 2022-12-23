@@ -27,7 +27,8 @@ const bundleBuilder = async (
       : {}),
   });
 
-  if (res.status !== 200) {
+  //because some api end point return 201, 204 eg. 201 is success response which create data in db
+  if (res.status >= 205) {
     throw new Error('!!!');
   }
 
@@ -47,6 +48,7 @@ export async function api(request, {session}) {
   let token;
 
   if (session) {
+    //this token preserve for long time but in our api end expire that token which cause api error
     token = (await session.get()).bundleBuilderToken;
 
     if (request.method === 'GET') {

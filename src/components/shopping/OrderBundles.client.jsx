@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {Link} from '@shopify/hydrogen';
-import {useCart} from '@shopify/hydrogen/client';
+import {useCart, useNavigate} from '@shopify/hydrogen/client';
 import axios from 'axios';
 import getSymbolFromCurrency from 'currency-symbol-map';
 
@@ -10,12 +10,14 @@ import {
   dayjs,
   getUsaStandard,
   getISO,
+  getDayUsa,
 } from '~/utils/dates';
 
 import Loading from '~/components/Loading/index.client';
 
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
+// This platform product ID is the bundle product ID.
 const platform_product_id = 8022523347235;
 
 export function OrderBundles({discountCodes}) {
@@ -49,6 +51,8 @@ export function OrderBundles({discountCodes}) {
     cost,
     checkoutUrl,
   } = useCart();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchAll() {
@@ -106,9 +110,9 @@ export function OrderBundles({discountCodes}) {
               (el) => el.options[0].value === frequencyValue,
             )?.id
           : undefined;
-
-      await discountCodesUpdate(discountCodes);
-      await cartCreate({
+      console.log('sellingPlanId:', sellingPlanId);
+      discountCodesUpdate(discountCodes);
+      cartCreate({
         lines: [
           {
             merchandiseId: bundle.variants.nodes[0].id,
@@ -149,6 +153,7 @@ export function OrderBundles({discountCodes}) {
 
   async function fetchContents(contents) {
     const product_ids = [];
+    const config_ids = {};
 
     for await (const content of contents) {
       const res = (
@@ -157,7 +162,11 @@ export function OrderBundles({discountCodes}) {
         )
       ).data;
 
-      res.every((el) => product_ids.push(el.platform_product_id));
+      res.map((el) => {
+        product_ids.push(el.platform_product_id);
+        config_ids[`gid://shopify/Product/${el.platform_product_id}`] =
+          el.contents.bundle_configuration_id;
+      });
     }
 
     if (product_ids.length) {
@@ -170,7 +179,12 @@ export function OrderBundles({discountCodes}) {
       });
 
       setBundle(bundle);
-      setProducts(products);
+      setProducts(
+        products.map((product) => ({
+          ...product,
+          bundleConfigurationId: config_ids[product.id],
+        })),
+      );
     } else {
       setBundle(null);
       setProducts([]);
@@ -230,6 +244,31 @@ export function OrderBundles({discountCodes}) {
       alert('Please choose a price type.');
       return;
     }
+
+    //car save function which has bundle product and meals product save in database
+    const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
+    //this is the meals product array which has only one meal Item but there can be multiple meals item selected
+    const items = productsInCart.map((el) => ({
+      bundle_configuration_content_id: el.bundleConfigurationId,
+      platform_product_variant_id: el.variants.nodes[0].id,
+      quantity: el.quantity,
+    }));
+
+    const cartData = {
+      platform_customer_id: null, //if customer logged in then save shopify customer id
+      platform_cart_token,
+      platform_product_id: bundle.platform_product_id,
+      platform_variant_id: bundle.variants.nodes[0].id,
+      subscription_type: 'Family',
+      subscription_sub_type: 'Regular (serves 5)',
+      bundle_id: bundle.id,
+      delivery_day: getDayUsa(deliveryDate),
+      contents: [...items],
+    };
+
+    await axios.post(`/api/bundle/carts`, cartData);
+
+    console.log('success');
 
     window.open(checkoutUrl, '_blank');
   }
