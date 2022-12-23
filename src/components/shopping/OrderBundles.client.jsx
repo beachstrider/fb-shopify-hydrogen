@@ -124,7 +124,6 @@ export function OrderBundles({discountCodes}) {
 
       setTimeout(async () => {
         await discountCodesUpdate(discountCodes);
-        alert();
         setIsCartUpdating(false);
       }, 2000);
     }
