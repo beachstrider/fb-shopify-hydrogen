@@ -40,7 +40,7 @@ export function HowItWorks() {
                 />
               </div>
               <div className="w-auto px-[45px] md:px-0 lg:px-0 max-h-0 md:ml-5 lg:ml-[-120px] lg:mt-12">
-                <h2 className="font-bungee sm:mt-24 mt-5 text-start font-bold lg:text-[125px] mb-5 text-[65px] leading-[70px] md:text-5xl">
+                <h2 className="font-bungee sm:mt-24 mt-5 text-start font-bold lg:text-[110px] mb-5 text-[65px] leading-[70px] md:text-5xl">
                   CHEF-MADE
                 </h2>
                 <p className="font-opensans mt-[-20px] md:mt-1 lg:mt-1 text-[16px] md:text-3xl lg:text-5xl sm:text-5xl card-para text-start mr-5">
@@ -65,7 +65,7 @@ export function HowItWorks() {
                 alt=""
               />
               <div className="w-auto text-left md:text-right lg:text-right lg:mr-[-130px] px-[45px] md:px-0 lg:px-0">
-                <h2 className="font-bungee sm:mt-48 md:text-5xl mb-5 lg:ml-[-150px] lg:text-[120px] mt-5 mr-4 font-bold text-[65px] leading-[70px] sm:text-8xl">
+                <h2 className="font-bungee sm:mt-48 md:text-5xl mb-5 lg:ml-[-150px] lg:text-[110px] mt-5 mr-4 font-bold text-[65px] leading-[70px] sm:text-8xl">
                   SEALED FRESH
                 </h2>
                 <p className="font-opensans lg:ml-16 mt-[-20px] md:mt-1 lg:mt-1 text-[16px] sm:text-5xl lg:w-[90%] md:text-3xl lg:text-5xl card-para mr-5">
@@ -94,7 +94,7 @@ export function HowItWorks() {
                 />
               </div>
               <div className="w-auto lg:ml-[-100px] max-h-0 md:ml-5 px-[45px] md:px-0 lg:px-0">
-                <h2 className="font-bungee mb-5 md:text-5xl lg:text-[124px] sm:mt-24 mt-5 text-start font-bold text-[65px] leading-[70px] sm:text-8xl">
+                <h2 className="font-bungee mb-5 md:text-5xl lg:text-[110px]  sm:mt-24 mt-5 text-start font-bold text-[65px] leading-[70px] sm:text-8xl">
                   HEAT IT UP
                 </h2>
                 <p className="font-opensans mt-[-20px] md:mt-1 lg:mt-1 w-[90%] text-[16px] sm:text-5xl md:text-3xl lg:text-5xl card-para text-start mr-5">
@@ -120,7 +120,7 @@ export function HowItWorks() {
               />
 
               <div className="w-auto text-left md:text-right lg:text-right mr-0 lg:mr-12 md:mr-0 lg:mt-[-90px]">
-                <h2 className="font-bungee md:text-5xl lg:text-[135px] mt-4 md:mt-16 lg:mt-80 mb-5 ml-[68px] md:mr-4 lg:mr-4 font-bold text-[65px] sm:text-8xl">
+                <h2 className="font-bungee md:text-5xl lg:text-[110px]  mt-4 md:mt-16 lg:mt-80 mb-5 ml-[68px] md:mr-4 lg:mr-4 font-bold text-[65px] sm:text-8xl">
                   FEAST!
                 </h2>
                 <p className="font-opensans mt-[-20px] md:mt-1 lg:mt-1 w-[90%] ml-7 md:ml-3 lg:ml-10 text-[16px] sm:text-5xl md:text-3xl lg:text-5xl card-para mr-5 px-[45px] md:px-0 lg:px-0">
