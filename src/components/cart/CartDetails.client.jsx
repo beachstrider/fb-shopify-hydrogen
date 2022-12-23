@@ -67,7 +67,6 @@ export function CartDetails({layout, onClose}) {
 
 function CartCheckoutActions() {
   const {checkoutUrl} = useCart();
-  console.log('checkoutUrl in 000:', checkoutUrl);
   return (
     <>
       <div className="grid gap-4">

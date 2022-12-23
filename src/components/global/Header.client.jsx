@@ -289,10 +289,11 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
             </Menu.Items>
           </Transition>
         </Menu>
-        <button onClick={openCart} className={styles.button}>
+
+        {/* <button onClick={openCart} className={styles.button}>
           <IconBag />
           <CartBadge dark={isHome} />
-        </button>
+        </button> */}
       </div>
     </header>
   );

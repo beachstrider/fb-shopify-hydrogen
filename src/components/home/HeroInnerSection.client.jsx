@@ -1,4 +1,5 @@
 import Marquee from 'react-fast-marquee';
+import {Link} from '@shopify/hydrogen';
 export function HeroInnerSection() {
   return (
     <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-[#231F20]">
@@ -33,9 +34,11 @@ export function HeroInnerSection() {
           </Marquee>
         </div>
         <div className="text-center py-5">
-          <button className="font-opensans bg-[#A60D1E] text-white font-bold px-8 py-2">
-            How It Works
-          </button>
+          <Link to="/how-it-works">
+              <button className="font-opensans bg-[#A60D1E] text-white font-bold px-8 py-2">
+                How It Works
+              </button>
+          </Link>
         </div>
       
     </section>

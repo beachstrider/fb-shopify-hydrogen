@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react';
 import {Link} from '@shopify/hydrogen';
 import {useCart} from '@shopify/hydrogen/client';
 import axios from 'axios';
+import getSymbolFromCurrency from 'currency-symbol-map';
 
 import {
   isFuture,
@@ -17,14 +18,19 @@ const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
 const platform_product_id = 8022523347235;
 
-export function OrderBundles() {
+export function OrderBundles({discountCodes}) {
+  console.log('discountCodes', discountCodes);
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [deliveryDate, setDeliveryDate] = useState('');
-  const [bundle, setBundle] = useState();
+  const [bundleData, setBundleData] = useState();
   const [bundleContents, setBundleContents] = useState([]);
+
+  const [bundle, setBundle] = useState(null);
   const [products, setProducts] = useState([]);
+  const [priceType, setPriceType] = useState();
+  const [frequencyValue, setFrequencyValue] = useState('7 Day(s)');
   const [productsInCart, setProductsInCart] = useState([]);
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
@@ -39,6 +45,7 @@ export function OrderBundles() {
     linesUpdate,
     linesRemove,
     cartAttributesUpdate,
+    discountCodesUpdate,
     cost,
     checkoutUrl,
   } = useCart();
@@ -55,10 +62,11 @@ export function OrderBundles() {
 
   useEffect(() => {
     setIsProductsLoading(true);
-    const contents = bundleContents.filter((content) => {
+    console.log('bundleContents: ', bundleContents);
+    const contents = [...bundleContents].filter((content) => {
       return dayjs(deliveryDate).isBetween(
         content.deliver_after,
-        content.delivery_before,
+        content.deliver_before,
       );
     });
 
@@ -66,13 +74,12 @@ export function OrderBundles() {
   }, [deliveryDate]);
 
   useEffect(() => {
-    const lines = productsInCart.map((product) => ({
-      merchandiseId: product.variants.nodes[0].id,
-      quantity: product.quantity,
-    }));
+    initCart();
+  }, [bundle]);
 
-    cartCreate({lines});
-  }, [productsInCart]);
+  useEffect(() => {
+    initCart();
+  }, [priceType, frequencyValue]);
 
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
@@ -91,6 +98,27 @@ export function OrderBundles() {
         ),
     );
 
+  async function initCart() {
+    if (bundle) {
+      const sellingPlanId =
+        priceType === 'recuring'
+          ? bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+              (el) => el.options[0].value === frequencyValue,
+            )?.id
+          : undefined;
+
+      await discountCodesUpdate(discountCodes);
+      await cartCreate({
+        lines: [
+          {
+            merchandiseId: bundle.variants.nodes[0].id,
+            sellingPlanId,
+          },
+        ],
+      });
+    }
+  }
+
   async function fetchDeliveryDates() {
     const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
       .data;
@@ -104,15 +132,15 @@ export function OrderBundles() {
   }
 
   async function fetchBundle() {
-    const bundle = (
+    const bundleDataRes = (
       await axios.get(`${caching_server}/bundles_dev.json`)
     ).data.find((el) => el.platform_product_id === platform_product_id);
 
-    setBundle(bundle);
+    setBundleData(bundleDataRes);
 
     const config = (
       await axios.get(
-        `/api/bundle/bundles/${bundle.id}/configurations/${bundle.configurations[0].id}`,
+        `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
       )
     ).data;
 
@@ -125,7 +153,7 @@ export function OrderBundles() {
     for await (const content of contents) {
       const res = (
         await axios.get(
-          `/api/bundle/bundles/${bundle.id}/configurations/${bundle.configurations[0].id}/contents/${content.id}/products`,
+          `/api/bundle/bundles/${bundleData.id}/configurations/${bundleData.configurations[0].id}/contents/${content.id}/products`,
         )
       ).data;
 
@@ -133,13 +161,18 @@ export function OrderBundles() {
     }
 
     if (product_ids.length) {
-      const {data: shopifyProducts} = await axios.post(
-        `/api/products/multiple`,
-        {product_ids},
-      );
+      const bundle_id = `gid://shopify/Product/${bundleData.platform_product_id}`;
+      const {
+        data: {bundle, products},
+      } = await axios.post(`/api/products/bundle-products`, {
+        bundle_id,
+        product_ids,
+      });
 
-      setProducts(shopifyProducts);
+      setBundle(bundle);
+      setProducts(products);
     } else {
+      setBundle(null);
       setProducts([]);
     }
 
@@ -182,6 +215,23 @@ export function OrderBundles() {
     }
 
     setProductsInCart(newProductsInCart);
+  }
+
+  function handleToggleFrequency() {
+    setFrequencyValue(frequencyValue === '7 Day(s)' ? '14 Day(s)' : '7 Day(s)');
+  }
+
+  async function handleCheckout() {
+    if (!productsInCart.length) {
+      alert('Please select at least one meal.');
+      return;
+    }
+    if (typeof priceType === 'undefined') {
+      alert('Please choose a price type.');
+      return;
+    }
+
+    window.open(checkoutUrl, '_blank');
   }
 
   return (
@@ -500,8 +550,12 @@ export function OrderBundles() {
                                         <input
                                           id="subscribe_save"
                                           type="radio"
-                                          name="radio-name"
-                                          defaultValue="option 1"
+                                          name="price_type"
+                                          value="recuring"
+                                          checked={priceType === 'recuring'}
+                                          onClick={(e) =>
+                                            setPriceType(e.target.value)
+                                          }
                                         />
                                         <span
                                           className="ml-3 font-bold"
@@ -555,16 +609,23 @@ export function OrderBundles() {
                                   <br />
                                   <p>
                                     Delivery Every:{' '}
-                                    <span style={{color: '#DB9725'}}>
-                                      <u> Weekly</u> &gt;{' '}
-                                    </span>
-                                    <span>Biweekly </span>
+                                    <button
+                                      className={`text-[#DB9725]`}
+                                      onClick={handleToggleFrequency}
+                                    >
+                                      <u>
+                                        {' '}
+                                        {frequencyValue === '7 Day(s)'
+                                          ? 'Weekly'
+                                          : 'Biweekly'}
+                                      </u>{' '}
+                                      &gt;{' '}
+                                    </button>
                                   </p>
                                   <p>Save $20</p>
                                   <p>No Commitments, Cancel Anytime</p>
                                 </div>
                               </div>
-                              {/*---end radio---*/}
                             </div>
                           </div>
                         </div>
@@ -577,7 +638,6 @@ export function OrderBundles() {
                                 border: 'solid #DB9707 4px',
                               }}
                             >
-                              {/*---radio---*/}
                               <div className="mb-1">
                                 <div
                                   className="mb-1"
@@ -590,8 +650,12 @@ export function OrderBundles() {
                                         <input
                                           id="one-time"
                                           type="radio"
-                                          name="radio-name"
-                                          defaultValue="option 1"
+                                          name="price_type"
+                                          value="onetime"
+                                          checked={priceType === 'onetime'}
+                                          onClick={(e) =>
+                                            setPriceType(e.target.value)
+                                          }
                                         />
                                         <span
                                           className="ml-3 font-bold"
@@ -627,7 +691,6 @@ export function OrderBundles() {
                                   <hr />
                                 </div>
                               </div>
-                              {/*---end radio---*/}
                             </div>
                           </div>
                         </div>
@@ -638,23 +701,25 @@ export function OrderBundles() {
                         You&apos;re Saving $20!
                       </span>
                       <span className="font-bold" style={{float: 'right'}}>
-                        Total: $1050
+                        Total:{' '}
+                        {getSymbolFromCurrency(
+                          cost?.totalAmount?.currencyCode,
+                        ) + cost?.totalAmount?.amount}
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
-                      <Link to={checkoutUrl} prefetch={false} target="_blank">
-                        <button
-                          className="block w-full py-5 text-lg text-center uppercase font-bold "
-                          href="#"
-                          style={{
-                            backgroundColor: '#DB9707',
-                            color: '#FFFFFF',
-                            marginTop: 10,
-                          }}
-                        >
-                          CHECKOUT
-                        </button>
-                      </Link>
+                      <button
+                        className="block w-full py-5 text-lg text-center uppercase font-bold "
+                        href="#"
+                        style={{
+                          backgroundColor: '#DB9707',
+                          color: '#FFFFFF',
+                          marginTop: 10,
+                        }}
+                        onClick={handleCheckout}
+                      >
+                        CHECKOUT
+                      </button>
                     </div>
                     <div>
                       <div
@@ -691,12 +756,9 @@ export function OrderBundles() {
                           our food. Eating good shouldn’t be stressful, so we
                           want to make it as easy as possible.{' '}
                         </p>
-                        <div></div>
-                        {/*end money back gueanentee-*/}
                       </div>
                     </div>
                   </div>
-                  {/*-------------------------end step 3 -----------------*/}
                 </div>
               </Loading>
             </div>
