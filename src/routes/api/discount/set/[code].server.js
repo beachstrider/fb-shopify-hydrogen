@@ -10,8 +10,9 @@ export async function api(request, {params: {code}, session}) {
   }
   await session.set('discountCodes', newDiscountCodes);
 
-  return await new Response(null, {
-    status: 301,
-    headers: {Location: '/'},
-  });
+  return 'OK';
+  // return await new Response(null, {
+  //   status: 301,
+  //   headers: {Location: '/'},
+  // });
 }

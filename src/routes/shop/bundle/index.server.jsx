@@ -6,7 +6,6 @@ import {OrderBundles} from '~/components/shopping/OrderBundles.client';
 const Index = () => {
   let {discountCodes} = useSession();
   discountCodes = typeof discountCodes === 'undefined' ? [] : discountCodes;
-  console.log('discountcodes:::', discountCodes);
 
   return (
     <Layout>
@@ -14,7 +13,7 @@ const Index = () => {
         <Seo type="noindex" data={{title: 'FeastBox Bundle'}} />
       </Suspense>
       <Suspense>
-        <OrderBundles />
+        <OrderBundles discountCodes={discountCodes} />
       </Suspense>
     </Layout>
   );

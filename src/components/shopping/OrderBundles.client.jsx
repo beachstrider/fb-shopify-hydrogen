@@ -18,7 +18,8 @@ const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
 const platform_product_id = 8022523347235;
 
-export function OrderBundles() {
+export function OrderBundles({discountCodes}) {
+  console.log('discountCodes', discountCodes);
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -44,6 +45,7 @@ export function OrderBundles() {
     linesUpdate,
     linesRemove,
     cartAttributesUpdate,
+    discountCodesUpdate,
     cost,
     checkoutUrl,
   } = useCart();
@@ -96,7 +98,7 @@ export function OrderBundles() {
         ),
     );
 
-  function initCart() {
+  async function initCart() {
     if (bundle) {
       const sellingPlanId =
         priceType === 'recuring'
@@ -105,7 +107,8 @@ export function OrderBundles() {
             )?.id
           : undefined;
 
-      cartCreate({
+      await discountCodesUpdate(discountCodes);
+      await cartCreate({
         lines: [
           {
             merchandiseId: bundle.variants.nodes[0].id,

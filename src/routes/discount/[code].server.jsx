@@ -1,7 +1,8 @@
 import {useRouteParams} from '@shopify/hydrogen';
+import DiscountInput from '~/components/discount/index.client';
 
-export default function Index({response}) {
+export default function Index() {
   const {code} = useRouteParams();
 
-  return response.redirect(`/api/discount/set/${code}`);
+  return <DiscountInput code={code} />;
 }
