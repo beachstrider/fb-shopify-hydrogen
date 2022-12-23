@@ -1,4 +1,5 @@
 import Marquee from 'react-fast-marquee';
+import {Link} from '@shopify/hydrogen';
 export function Influencers() {
   return (
     <section className="">
@@ -48,9 +49,11 @@ export function Influencers() {
                     mouthful ! just like our food.{' '}
                   </p>
                   <div className="flex items-center mt-9  pb-6">
-                    <button className="px-6 bg-[#A60D1E] text-white font-bold py-2 w-[190px]">
-                      Get Eating
-                    </button>
+                    <Link to="/shop/bundle">
+                        <button className="px-6 bg-[#A60D1E] text-white font-bold py-2 w-[190px]">
+                            Get Eating
+                        </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -91,9 +94,11 @@ export function Influencers() {
               </Marquee>
             </div>
             <div className="text-center py-5">
-              <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
-                How It Works
-              </button>
+              <Link to="/how-it-works">
+                  <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
+                      How It Works
+                  </button>
+              </Link>
             </div>
     </div>
     <div>
@@ -128,9 +133,11 @@ export function Influencers() {
                 family in need.
               </p>
                   <div className="text-center md:text-left py-5">
-                  <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
-                    How It Works
-                  </button>
+                    <Link to="/how-it-works">
+                        <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
+                          How It Works
+                      </button>
+                    </Link>
                 </div>
             </div>
             <div className="w-full md:w-[300px] relative pb-[20px]">

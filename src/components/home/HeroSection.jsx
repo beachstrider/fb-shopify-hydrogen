@@ -1,3 +1,4 @@
+import {Link} from '@shopify/hydrogen';
 export function HeroSection() {
   return (
     <section className="">
@@ -47,9 +48,11 @@ export function HeroSection() {
                     mouthful! Just like our food.{' '}
                   </p>
                   <div className="flex items-center mt-9">
-                    <button className="font-opensans font-bold px-6 py-2 bg-[#A60D1E] text-white font-bold px-4 px-5 w-[190px]">
-                      Get Eating
-                    </button>
+                    <Link to="/shop/bundle">
+                        <button className="font-opensans font-bold px-6 py-2 bg-[#A60D1E] text-white font-bold px-4 px-5 w-[190px]">
+                          Get Eating
+                        </button>
+                    </Link>
                     <div className="ml-[20]">
                       <h2 className="font-opensans font-extrabold ml-5 text-2xl">
                         Subscribe now for free <br />
