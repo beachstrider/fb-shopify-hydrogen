@@ -38,6 +38,7 @@ export function OrderBundles({discountCodes}) {
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
+  const [isCartUpdating, setIsCartUpdating] = useState(false);
 
   const {
     id,
@@ -66,7 +67,6 @@ export function OrderBundles({discountCodes}) {
 
   useEffect(() => {
     setIsProductsLoading(true);
-    console.log('bundleContents: ', bundleContents);
     const contents = [...bundleContents].filter((content) => {
       return dayjs(deliveryDate).isBetween(
         content.deliver_after,
@@ -111,7 +111,8 @@ export function OrderBundles({discountCodes}) {
             )?.id
           : undefined;
       console.log('sellingPlanId:', sellingPlanId);
-      discountCodesUpdate(discountCodes);
+
+      setIsCartUpdating(true);
       cartCreate({
         lines: [
           {
@@ -120,6 +121,12 @@ export function OrderBundles({discountCodes}) {
           },
         ],
       });
+
+      setTimeout(async () => {
+        await discountCodesUpdate(discountCodes);
+        alert();
+        setIsCartUpdating(false);
+      }, 2000);
     }
   }
 
@@ -748,8 +755,8 @@ export function OrderBundles({discountCodes}) {
                     </div>
                     <div className="w-full mb-4 md:mb-0">
                       <button
+                        disabled={isCartUpdating}
                         className="block w-full py-5 text-lg text-center uppercase font-bold "
-                        href="#"
                         style={{
                           backgroundColor: '#DB9707',
                           color: '#FFFFFF',
@@ -758,6 +765,7 @@ export function OrderBundles({discountCodes}) {
                         onClick={handleCheckout}
                       >
                         CHECKOUT
+                        {isCartUpdating ? 'CART UPDATING...' : 'CHECKOUT'}
                       </button>
                     </div>
                     <div>
