@@ -53,12 +53,17 @@ const Index = ({subscriptions}) => {
                       <div className="absolute flex justify-center items-center z-10 -top-3 -right-3 rounded-full w-6 h-6 bg-[#bca79c] text-white font-bold">
                         {subscription.quantity}
                       </div>
-                      <Image
+                      <img
                         style={{position: 'relative', zIndex: 1}}
                         className="rounded-lg mb-0"
                         width={100}
                         height={100}
-                        src={subscription.product.images.small}
+                        src={
+                          typeof subscription?.product?.images?.small !==
+                          'undefined'
+                            ? subscription?.product?.images?.small
+                            : ''
+                        }
                         alt="img"
                       />
                     </div>

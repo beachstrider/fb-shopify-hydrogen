@@ -110,9 +110,9 @@ export function OrderBundles({discountCodes}) {
               (el) => el.options[0].value === frequencyValue,
             )?.id
           : undefined;
-
-      await discountCodesUpdate(discountCodes);
-      await cartCreate({
+      console.log('sellingPlanId:', sellingPlanId);
+      discountCodesUpdate(discountCodes);
+      cartCreate({
         lines: [
           {
             merchandiseId: bundle.variants.nodes[0].id,
@@ -162,7 +162,7 @@ export function OrderBundles({discountCodes}) {
         )
       ).data;
 
-      res.every((el) => {
+      res.map((el) => {
         product_ids.push(el.platform_product_id);
         config_ids[`gid://shopify/Product/${el.platform_product_id}`] =
           el.contents.bundle_configuration_id;
@@ -178,7 +178,6 @@ export function OrderBundles({discountCodes}) {
         product_ids,
       });
 
-      console.log('config_ids:', config_ids);
       setBundle(bundle);
       setProducts(
         products.map((product) => ({
@@ -236,12 +235,6 @@ export function OrderBundles({discountCodes}) {
     setFrequencyValue(frequencyValue === '7 Day(s)' ? '14 Day(s)' : '7 Day(s)');
   }
 
-  console.log('products:', products);
-  console.log('productsInCart:', productsInCart);
-  console.log('bundleData:', bundleData);
-  console.log('bundleContents:', bundleContents);
-  console.log('bundle:', bundle);
-
   async function handleCheckout() {
     if (!productsInCart.length) {
       alert('Please select at least one meal.');
@@ -272,7 +265,8 @@ export function OrderBundles({discountCodes}) {
       delivery_day: getDayUsa(deliveryDate),
       contents: [...items],
     };
-    const saved = (await axios.post(`/api/bundle/carts`, cartData)).data;
+
+    await axios.post(`/api/bundle/carts`, cartData);
 
     console.log('success');
 
