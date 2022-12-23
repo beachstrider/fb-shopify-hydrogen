@@ -763,7 +763,6 @@ export function OrderBundles({discountCodes}) {
                         }}
                         onClick={handleCheckout}
                       >
-                        CHECKOUT
                         {isCartUpdating ? 'CART UPDATING...' : 'CHECKOUT'}
                       </button>
                     </div>
