@@ -2,7 +2,6 @@ import {useState, useEffect} from 'react';
 import {Link} from '@shopify/hydrogen';
 import {useCart, useNavigate} from '@shopify/hydrogen/client';
 import axios from 'axios';
-import getSymbolFromCurrency from 'currency-symbol-map';
 
 import {
   isFuture,
@@ -12,7 +11,7 @@ import {
   getISO,
   getDayUsa,
 } from '~/utils/dates';
-
+import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
 
 const caching_server =
@@ -33,7 +32,9 @@ export function OrderBundles({discountCodes}) {
   const [products, setProducts] = useState([]);
   const [priceType, setPriceType] = useState();
   const [frequencyValue, setFrequencyValue] = useState('7 Day(s)');
+  const [totalPrice, setTotalPrice] = useState();
   const [productsInCart, setProductsInCart] = useState([]);
+  const [mealQuantity, setMealQuantity] = useState(0);
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
@@ -104,14 +105,26 @@ export function OrderBundles({discountCodes}) {
 
   async function initCart() {
     if (bundle) {
-      const sellingPlanId =
-        priceType === 'recuring'
-          ? bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
-              (el) => el.options[0].value === frequencyValue,
-            )?.id
-          : undefined;
-      console.log('sellingPlanId:', sellingPlanId);
+      let sellingPlanId = undefined;
+      let newTotalPrice = bundle.variants.nodes[0].priceV2.amount;
 
+      if (priceType === 'recuring') {
+        console.log('recuring!!');
+        sellingPlanId =
+          bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+            (el) => el.options[0].value === frequencyValue,
+          )?.id;
+
+        newTotalPrice =
+          newTotalPrice -
+          (newTotalPrice *
+            bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+              (el) => el.options[0].value === frequencyValue,
+            )?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage) /
+            100;
+      }
+
+      setTotalPrice(newTotalPrice);
       setCheckoutButtonStatus('CART UPDATING...');
       cartCreate({
         lines: [
@@ -155,6 +168,7 @@ export function OrderBundles({discountCodes}) {
     ).data;
 
     setBundleContents(config.contents);
+    setMealQuantity(config.quantity);
   }
 
   async function fetchContents(contents) {
@@ -243,7 +257,7 @@ export function OrderBundles({discountCodes}) {
 
   async function handleCheckout() {
     if (!productsInCart.length) {
-      alert('Please select at least one meal.');
+      alert(`Please select ${mealQuantity} meal(s).`);
       return;
     }
     if (typeof priceType === 'undefined') {
@@ -280,6 +294,8 @@ export function OrderBundles({discountCodes}) {
     setCheckoutButtonStatus('');
     window.open(checkoutUrl, '_blank');
   }
+
+  console.log(bundleData);
 
   return (
     <section className="py-20 bg-[#EFEFEF]">
@@ -612,17 +628,54 @@ export function OrderBundles({discountCodes}) {
                                         </span>
                                         <br />
                                         <div style={{paddingBottom: 14}}>
-                                          <span>
-                                            <strike>$189.95</strike>
+                                          <span className="mr-2">
+                                            <strike>
+                                              {getFullCost(
+                                                typeof bundle?.variants
+                                                  ?.nodes[0]?.priceV2
+                                                  ?.amount !== 'undefined'
+                                                  ? bundle?.variants?.nodes[0]
+                                                      ?.priceV2?.amount
+                                                  : undefined,
+                                                bundle?.variants?.nodes[0]
+                                                  ?.priceV2?.currencyCode,
+                                              )}
+                                            </strike>
                                           </span>
                                           <span
                                             className="font-bold"
                                             style={{fontSize: 18}}
                                           >
-                                            {' '}
-                                            $169.95 /{' '}
+                                            {(() => {
+                                              const price =
+                                                bundle?.variants?.nodes[0]
+                                                  ?.priceV2?.amount;
+                                              const adjustmentPercentage =
+                                                bundle?.sellingPlanGroups
+                                                  ?.nodes[0]?.sellingPlans
+                                                  ?.nodes[0]
+                                                  ?.priceAdjustments[0]
+                                                  ?.adjustmentValue
+                                                  ?.adjustmentPercentage;
+
+                                              if (
+                                                typeof adjustmentPercentage !==
+                                                'undefined'
+                                              )
+                                                return getFullCost(
+                                                  price -
+                                                    (price *
+                                                      adjustmentPercentage) /
+                                                      100,
+                                                  bundle?.variants?.nodes[0]
+                                                    ?.priceV2?.currencyCode,
+                                                );
+
+                                              return '';
+                                            })()}
+                                            /{' '}
                                           </span>
-                                          <span>4 meals</span>
+                                          <span>{mealQuantity + ' meals'}</span>
                                         </div>
                                       </label>
                                     </div>
@@ -669,7 +722,36 @@ export function OrderBundles({discountCodes}) {
                                       &gt;{' '}
                                     </button>
                                   </p>
-                                  <p>Save $20</p>
+                                  <p>
+                                    {(() => {
+                                      const price =
+                                        bundle?.variants?.nodes[0]?.priceV2
+                                          ?.amount;
+                                      const adjustmentPercentage =
+                                        bundle?.sellingPlanGroups?.nodes[0]
+                                          ?.sellingPlans?.nodes[0]
+                                          ?.priceAdjustments[0]?.adjustmentValue
+                                          ?.adjustmentPercentage;
+
+                                      if (
+                                        typeof adjustmentPercentage !==
+                                        'undefined'
+                                      ) {
+                                        const diff =
+                                          (price * adjustmentPercentage) / 100;
+
+                                        return (
+                                          'Save ' +
+                                          getFullCost(
+                                            diff,
+                                            bundle?.variants?.nodes[0]?.priceV2
+                                              ?.currencyCode,
+                                          )
+                                        );
+                                      }
+                                      return '';
+                                    })()}
+                                  </p>
                                   <p>No Commitments, Cancel Anytime</p>
                                 </div>
                               </div>
@@ -715,7 +797,13 @@ export function OrderBundles({discountCodes}) {
                                           className="font-bold"
                                           style={{fontSize: 18}}
                                         >
-                                          $189.95 /{' '}
+                                          {getFullCost(
+                                            bundle?.variants?.nodes[0]?.priceV2
+                                              ?.amount,
+                                            bundle?.variants?.nodes[0]?.priceV2
+                                              ?.currencyCode,
+                                          )}{' '}
+                                          /{' '}
                                         </span>
                                         <span>3 meals</span>
                                       </label>
@@ -745,13 +833,36 @@ export function OrderBundles({discountCodes}) {
                     </div>
                     <div className="w-full mb-4 md:mb-0">
                       <span className="font-bold" style={{fontSize: 18}}>
-                        You&apos;re Saving $20!
+                        {(() => {
+                          const price =
+                            bundle?.variants?.nodes[0]?.priceV2?.amount;
+                          const adjustmentPercentage =
+                            bundle?.sellingPlanGroups?.nodes[0]?.sellingPlans
+                              ?.nodes[0]?.priceAdjustments[0]?.adjustmentValue
+                              ?.adjustmentPercentage;
+
+                          if (typeof adjustmentPercentage !== 'undefined') {
+                            const diff = (price * adjustmentPercentage) / 100;
+
+                            return (
+                              "You're Saving " +
+                              getFullCost(
+                                diff,
+                                bundle?.variants?.nodes[0]?.priceV2
+                                  ?.currencyCode,
+                              ) +
+                              '!'
+                            );
+                          }
+                          return '';
+                        })()}
                       </span>
                       <span className="font-bold" style={{float: 'right'}}>
                         Total:{' '}
-                        {getSymbolFromCurrency(
-                          cost?.totalAmount?.currencyCode,
-                        ) + cost?.totalAmount?.amount}
+                        {getFullCost(
+                          totalPrice,
+                          bundle?.variants?.nodes[0]?.priceV2?.currencyCode,
+                        )}
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
