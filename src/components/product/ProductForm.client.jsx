@@ -26,6 +26,7 @@ export function ProductForm() {
     setSelectedSellingPlan,
   } = useProductOptions();
 
+  console.log('selectedVariant id', selectedVariant.id);
   const isOutOfStock = !selectedVariant?.availableForSale || false;
   const isOnSale =
     selectedVariant?.priceV2?.amount <

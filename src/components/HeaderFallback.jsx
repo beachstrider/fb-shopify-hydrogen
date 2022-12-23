@@ -1,6 +1,6 @@
 export function HeaderFallback({isHome}) {
   const styles = isHome
-    ? 'bg-primary/80 dark:bg-contrast/60 text-contrast dark:text-primary shadow-darkHeader'
+    ? 'bg-primary/80 bg-contrast/60 text-contrast text-primary shadow-darkHeader'
     : 'bg-contrast/80 text-primary';
   return (
     <header
