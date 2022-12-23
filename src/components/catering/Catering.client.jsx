@@ -1,3 +1,5 @@
+import {Link} from '@shopify/hydrogen';
+
 export function Catering() {
   return (
     <section className="text-white">
@@ -46,9 +48,11 @@ export function Catering() {
               </p>
 
               <div className="text-center md:text-left mt-8 md:flex gap-12">
+              <Link to={'/shop/bundle'}>
                 <button className="bg-[#A60D1E] px-12 py-2 text-[25px]">
                   Get Eating!
                 </button>
+                </Link>
                 <p className="text-[30px] font-bold mt-1">
                   100% Money-Back Guarantee!
                 </p>

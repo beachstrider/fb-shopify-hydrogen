@@ -1,3 +1,4 @@
+import {Link} from '@shopify/hydrogen';
 export function HowItWorks() {
   return (
     <section>
@@ -131,9 +132,11 @@ export function HowItWorks() {
                   </span>{' '}
                   spread!
                 </p>
+                <Link to={'/shop/bundle'}>
                 <button className="font-opensans ml-[72px] md:ml-0 lg:ml-0 text-[25px] md:text-[25px] md:mr-6 lg:text-[25px] font-semibold btn bg-[#A60D1E] sm:px-6 sm:py-2 px-4 py-1 sm:mr-8 mr-5 mt-8 sm:mt-8 ">
                   Hungry? Order now
                 </button>
+                </Link>
               </div>
               <div className="mt-12 sm:mr-1">
                 <img
