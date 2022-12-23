@@ -44,7 +44,6 @@ export function Header({title, token}) {
     ],
   };
 
-
   const {pathname} = useUrl();
 
   const localeMatch = /^\/([a-z]{2})(\/|$)/i.exec(pathname);
@@ -290,10 +289,10 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
           </Transition>
         </Menu>
 
-        {/* <button onClick={openCart} className={styles.button}>
+        <button onClick={openCart} className={styles.button}>
           <IconBag />
           <CartBadge dark={isHome} />
-        </button> */}
+        </button>
       </div>
     </header>
   );
