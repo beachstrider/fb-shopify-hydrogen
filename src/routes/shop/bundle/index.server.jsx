@@ -1,9 +1,13 @@
 import {Suspense} from 'react';
-import {Seo} from '@shopify/hydrogen';
+import {Seo, useSession} from '@shopify/hydrogen';
 import {Layout} from '~/components/index.server';
 import {OrderBundles} from '~/components/shopping/OrderBundles.client';
 
 const Index = () => {
+  let {discountCodes} = useSession();
+  discountCodes = typeof discountCodes === 'undefined' ? [] : discountCodes;
+  console.log('discountcodes:::', discountCodes);
+
   return (
     <Layout>
       <Suspense>

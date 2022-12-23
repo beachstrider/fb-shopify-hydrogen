@@ -23,11 +23,14 @@ export function OrderBundles() {
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [deliveryDate, setDeliveryDate] = useState('');
-  const [bundle, setBundle] = useState();
+  const [bundleData, setBundleData] = useState();
   const [bundleContents, setBundleContents] = useState([]);
+
+  const [bundle, setBundle] = useState(null);
   const [products, setProducts] = useState([]);
   const [priceType, setPriceType] = useState();
   const [frequencyValue, setFrequencyValue] = useState('7 Day(s)');
+  const [productsInCart, setProductsInCart] = useState([]);
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
@@ -35,17 +38,14 @@ export function OrderBundles() {
 
   const {
     id,
-    lines,
-    cost,
-    checkoutUrl,
-    attributes,
-    status,
-
     cartCreate,
+    lines,
     linesAdd,
     linesUpdate,
     linesRemove,
     cartAttributesUpdate,
+    cost,
+    checkoutUrl,
   } = useCart();
 
   useEffect(() => {
@@ -60,10 +60,11 @@ export function OrderBundles() {
 
   useEffect(() => {
     setIsProductsLoading(true);
-    const contents = bundleContents.filter((content) => {
+    console.log('bundleContents: ', bundleContents);
+    const contents = [...bundleContents].filter((content) => {
       return dayjs(deliveryDate).isBetween(
         content.deliver_after,
-        content.delivery_before,
+        content.deliver_before,
       );
     });
 
@@ -71,7 +72,11 @@ export function OrderBundles() {
   }, [deliveryDate]);
 
   useEffect(() => {
-    handleUpdateCart();
+    initCart();
+  }, [bundle]);
+
+  useEffect(() => {
+    initCart();
   }, [priceType, frequencyValue]);
 
   const weeks = [...new Array(6)]
@@ -91,6 +96,26 @@ export function OrderBundles() {
         ),
     );
 
+  function initCart() {
+    if (bundle) {
+      const sellingPlanId =
+        priceType === 'recuring'
+          ? bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+              (el) => el.options[0].value === frequencyValue,
+            )?.id
+          : undefined;
+
+      cartCreate({
+        lines: [
+          {
+            merchandiseId: bundle.variants.nodes[0].id,
+            sellingPlanId,
+          },
+        ],
+      });
+    }
+  }
+
   async function fetchDeliveryDates() {
     const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
       .data;
@@ -104,15 +129,15 @@ export function OrderBundles() {
   }
 
   async function fetchBundle() {
-    const bundle = (
+    const bundleDataRes = (
       await axios.get(`${caching_server}/bundles_dev.json`)
     ).data.find((el) => el.platform_product_id === platform_product_id);
 
-    setBundle(bundle);
+    setBundleData(bundleDataRes);
 
     const config = (
       await axios.get(
-        `/api/bundle/bundles/${bundle.id}/configurations/${bundle.configurations[0].id}`,
+        `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
       )
     ).data;
 
@@ -125,7 +150,7 @@ export function OrderBundles() {
     for await (const content of contents) {
       const res = (
         await axios.get(
-          `/api/bundle/bundles/${bundle.id}/configurations/${bundle.configurations[0].id}/contents/${content.id}/products`,
+          `/api/bundle/bundles/${bundleData.id}/configurations/${bundleData.configurations[0].id}/contents/${content.id}/products`,
         )
       ).data;
 
@@ -133,30 +158,23 @@ export function OrderBundles() {
     }
 
     if (product_ids.length) {
-      const {data: shopifyProducts} = await axios.post(
-        `/api/products/multiple`,
-        {product_ids},
-      );
+      const bundle_id = `gid://shopify/Product/${bundleData.platform_product_id}`;
+      const {
+        data: {bundle, products},
+      } = await axios.post(`/api/products/bundle-products`, {
+        bundle_id,
+        product_ids,
+      });
 
-      setProducts(shopifyProducts);
+      setBundle(bundle);
+      setProducts(products);
     } else {
+      setBundle(null);
       setProducts([]);
     }
 
-    cartCreate({lines: []});
+    setProductsInCart([]);
     setIsProductsLoading(false);
-  }
-
-  function getSellingPlanId(product) {
-    return priceType === 'recuring'
-      ? product.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
-          (el) => el.options[0].value === frequencyValue,
-        )?.id
-      : undefined;
-  }
-
-  function getProductByMerchandiseId(id) {
-    return products.find((product) => product.variants.nodes[0].id === id);
   }
 
   function handleWeekChange(e) {
@@ -174,54 +192,43 @@ export function OrderBundles() {
   }
 
   async function handleUpdateCart(product, diff) {
-    let newLines = lines.map((line) => ({
-      merchandiseId: line.merchandise.id,
-      quantity: line.quantity,
-      sellingPlanId: getSellingPlanId(
-        getProductByMerchandiseId(line.merchandise.id),
-      ),
-    }));
+    let newProductsInCart = [...productsInCart];
 
-    if (typeof product !== 'undefined') {
-      const merchandiseId = product.variants.nodes[0].id;
-      const sellingPlanId = getSellingPlanId(product);
+    const productIndex = newProductsInCart.findIndex(
+      (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
+    );
 
-      const lineIndex = newLines.findIndex(
-        (el) => el.merchandiseId === merchandiseId,
-      );
-
-      if (typeof diff === 'undefined') {
-        // if the selected product doesn't exist in cart
-        newLines.push({merchandiseId, quantity: 1, sellingPlanId});
-      } else {
-        // if the selected product exists in cart
-        const quantity = (newLines[lineIndex].quantity += diff);
-
-        if (quantity === 0) {
-          newLines = newLines.filter((_, index) => index !== lineIndex);
-        }
+    if (typeof diff === 'undefined') {
+      // if the selected product doesn't exist in cart
+      newProductsInCart.push({...product, quantity: 1});
+    } else {
+      // if the selected product exists in cart
+      const quantity = (newProductsInCart[productIndex].quantity += diff);
+      if (quantity === 0) {
+        newProductsInCart = newProductsInCart.filter(
+          (el, index) => index !== productIndex,
+        );
       }
     }
 
-    cartCreate({lines: newLines});
+    setProductsInCart(newProductsInCart);
   }
 
-  function handleCheckout() {
-    if (!lines.length) {
+  function handleToggleFrequency() {
+    setFrequencyValue(frequencyValue === '7 Day(s)' ? '14 Day(s)' : '7 Day(s)');
+  }
+
+  async function handleCheckout() {
+    if (!productsInCart.length) {
       alert('Please select at least one meal.');
       return;
     }
-
     if (typeof priceType === 'undefined') {
       alert('Please choose a price type.');
       return;
     }
 
     window.open(checkoutUrl, '_blank');
-  }
-
-  function handleToggleFrequency() {
-    setFrequencyValue(frequencyValue === '7 Day(s)' ? '15 Day(s)' : '7 Day(s)');
   }
 
   return (
@@ -400,9 +407,9 @@ export function OrderBundles() {
                                   Serves: 5
                                 </div>
                               </button>
-                              {lines.findIndex(
+                              {productsInCart.findIndex(
                                 (el) =>
-                                  el.merchandise.id ===
+                                  el.variants.nodes[0].id ===
                                   product.variants.nodes[0].id,
                               ) === -1 ? (
                                 <div className="px-4 text-center">
@@ -448,9 +455,9 @@ export function OrderBundles() {
                                   </button>
                                   <div className="w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
                                     {
-                                      lines.find(
+                                      productsInCart.find(
                                         (el) =>
-                                          el.merchandise.id ===
+                                          el.variants.nodes[0].id ===
                                           product.variants.nodes[0].id,
                                       ).quantity
                                     }
@@ -616,7 +623,6 @@ export function OrderBundles() {
                                   <p>No Commitments, Cancel Anytime</p>
                                 </div>
                               </div>
-                              {/*---end radio---*/}
                             </div>
                           </div>
                         </div>
@@ -629,7 +635,6 @@ export function OrderBundles() {
                                 border: 'solid #DB9707 4px',
                               }}
                             >
-                              {/*---radio---*/}
                               <div className="mb-1">
                                 <div
                                   className="mb-1"
@@ -683,7 +688,6 @@ export function OrderBundles() {
                                   <hr />
                                 </div>
                               </div>
-                              {/*---end radio---*/}
                             </div>
                           </div>
                         </div>
@@ -701,11 +705,6 @@ export function OrderBundles() {
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
-                      {/* <Link
-                        to={priceType ? checkoutUrl : '/shop/bundle#'}
-                        prefetch={false}
-                        target="_self"
-                      > */}
                       <button
                         className="block w-full py-5 text-lg text-center uppercase font-bold "
                         href="#"
@@ -718,7 +717,6 @@ export function OrderBundles() {
                       >
                         CHECKOUT
                       </button>
-                      {/* </Link> */}
                     </div>
                     <div>
                       <div
@@ -755,12 +753,9 @@ export function OrderBundles() {
                           our food. Eating good shouldn’t be stressful, so we
                           want to make it as easy as possible.{' '}
                         </p>
-                        <div></div>
-                        {/*end money back gueanentee-*/}
                       </div>
                     </div>
                   </div>
-                  {/*-------------------------end step 3 -----------------*/}
                 </div>
               </Loading>
             </div>
