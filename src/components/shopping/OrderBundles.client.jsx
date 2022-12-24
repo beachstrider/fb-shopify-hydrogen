@@ -1,6 +1,7 @@
-import {useState, useEffect} from 'react';
 import {Link} from '@shopify/hydrogen';
 import {useCart, useNavigate} from '@shopify/hydrogen/client';
+import {useState, useEffect} from 'react';
+import {useCookies} from 'react-cookie';
 import axios from 'axios';
 
 import {
@@ -20,13 +21,15 @@ const caching_server =
 const platform_product_id = 8022523347235;
 
 export function OrderBundles({discountCodes}) {
+  const [cookies, setCookies, removeCookie] = useCookies();
+
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
   const [availableSlots, setAvailableSlots] = useState([]);
-  const [deliveryDate, setDeliveryDate] = useState('');
   const [bundleData, setBundleData] = useState();
   const [bundleContents, setBundleContents] = useState([]);
 
+  const [deliveryDate, setDeliveryDate] = useState('');
   const [bundle, setBundle] = useState(null);
   const [products, setProducts] = useState([]);
   const [priceType, setPriceType] = useState();
@@ -40,7 +43,7 @@ export function OrderBundles({discountCodes}) {
   const [isProductsLoading, setIsProductsLoading] = useState(false);
   const [checkoutButtonStatus, setCheckoutButtonStatus] = useState('');
 
-  console.log('productsIncart:', productsInCart);
+  // console.log('productsIncart:', productsInCart);
 
   const {
     id,
@@ -86,11 +89,11 @@ export function OrderBundles({discountCodes}) {
   }, [deliveryDate]);
 
   useEffect(() => {
-    initCart();
+    updateCart();
   }, [bundle]);
 
   useEffect(() => {
-    initCart();
+    updateCart();
   }, [priceType, frequencyValue]);
 
   const weeks = [...new Array(6)]
@@ -112,14 +115,27 @@ export function OrderBundles({discountCodes}) {
 
   async function initCart() {
     if (bundle) {
-      let sellingPlanId = undefined;
+      // if()
+    }
+  }
+
+  async function updateCart() {
+    if (bundle) {
       let newTotalPrice = bundle.variants.nodes[0].priceV2.amount;
 
+      const line = {
+        merchandiseId: bundle.variants.nodes[0].id,
+        sellingPlanId: undefined,
+        quantity: 1,
+      };
+
       if (priceType === 'recuring') {
-        sellingPlanId =
+        const sellingPlanId =
           bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
             (el) => el.options[0].value === frequencyValue,
           )?.id;
+
+        line.sellingPlanId = sellingPlanId;
 
         newTotalPrice =
           newTotalPrice -
@@ -132,21 +148,36 @@ export function OrderBundles({discountCodes}) {
 
       setTotalPrice(newTotalPrice);
       setCheckoutButtonStatus('CART UPDATING...');
-      cartCreate({
-        lines: [
-          {
-            merchandiseId: bundle.variants.nodes[0].id,
-            sellingPlanId,
-          },
-        ],
-      });
+      if (typeof id === 'undefined') {
+        console.log('id undefined so cart creating');
+        cartCreate({
+          lines: [line],
+        });
 
-      setTimeout(async () => {
-        await discountCodesUpdate(discountCodes);
-        setCheckoutButtonStatus('');
-      }, 2000);
+        setTimeout(() => {
+          discountCodesUpdate(discountCodes);
+          setTimeout(() => {
+            setCheckoutButtonStatus('');
+          }, [2000]);
+        }, 2000);
+      } else {
+        console.log('cart refreshing so line:', line);
+        if (lines.length) {
+          linesRemove(lines.map((line) => line.id));
+          setTimeout(() => {
+            linesAdd([line]);
+            setTimeout(() => {
+              setCheckoutButtonStatus('');
+            }, [2000]);
+          }, 2000);
+        } else {
+          setCheckoutButtonStatus('');
+        }
+      }
     }
   }
+
+  console.log('lines:', lines);
 
   async function fetchDeliveryDates() {
     const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
@@ -261,10 +292,10 @@ export function OrderBundles({discountCodes}) {
   }
 
   async function handleCheckout() {
-    if (!productsInCart.length || !isQuantityLimit) {
-      alert(`Please select ${mealQuantity} meal(s).`);
-      return;
-    }
+    // if (!productsInCart.length || !isQuantityLimit) {
+    //   alert(`Please select ${mealQuantity} meal(s).`);
+    //   return;
+    // }
     if (typeof priceType === 'undefined') {
       alert('Please choose a price type.');
       return;
@@ -524,7 +555,7 @@ export function OrderBundles({discountCodes}) {
                                     }
                                   </div>
                                   <button
-                                    className="hover:text-gray-700 text-center bg-[#DB9707] text-white"
+                                    className="hover:text-gray-700 text-center bg-[#DB9707] text-white disabled:bg-[#bdac89]"
                                     onClick={() => handleUpdateCart(product, 1)}
                                     disabled={isQuantityLimit}
                                   >
