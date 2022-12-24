@@ -6,6 +6,7 @@ export async function api(request, {queryShop}) {
 
   const query = product_ids
     .map((product_id) => `id:${product_id}`)
+    // .map((product_id) => `id:8022523347235`)
     .join(' OR ');
 
   const {data} = await queryShop({

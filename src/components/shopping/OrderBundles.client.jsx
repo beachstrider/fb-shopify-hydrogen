@@ -261,7 +261,7 @@ export function OrderBundles({discountCodes}) {
   }
 
   async function handleCheckout() {
-    if (!productsInCart.length || productsInCart.length < mealQuantity) {
+    if (!productsInCart.length || !isQuantityLimit) {
       alert(`Please select ${mealQuantity} meal(s).`);
       return;
     }
