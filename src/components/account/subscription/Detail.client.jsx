@@ -480,7 +480,7 @@ const Index = ({subscription}) => {
                         2. Choose your Meals
                       </div>
                       <div className="text-xl font-medium mt-[19px]">
-                        <Link to="/edit-order">
+                        <Link to={`/account/subscriptions/${subscription.id}/edit-order`}>
                         <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
                           Edit Order
                         </button>
