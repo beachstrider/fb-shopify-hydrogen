@@ -1,14 +1,15 @@
-import {Image, useNavigate, Link, fetchSync} from '@shopify/hydrogen';
+import {Image, useNavigate, Link, fetchSync,useCart} from '@shopify/hydrogen';
 import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';
 import {getUsaStandard} from '~/utils/dates';
 import {
   isFuture,
-  now,
   sortByDateProperty,
   dayjs,
-  getCutOffDate,
+  now,
+  getISO,
+  getDayUsa,
 } from '~/utils/dates';
 
 const Index = ({subscription}) => {
@@ -18,7 +19,23 @@ const Index = ({subscription}) => {
   const [processSkip, setProcessSkip] = useState(false);
   const [processCancel, setProcessCancel] = useState(false);
   const [processReactivate, setProcessReactivate] = useState(false);
+  const [deliveryDates, setDeliveryDates] = useState([]);
+  const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [deliveryDate, setDeliveryDate] = useState('');
+  const [bundleData, setBundleData] = useState();
+  const [bundleContents, setBundleContents] = useState([]);
 
+  const [bundle, setBundle] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [priceType, setPriceType] = useState();
+  const [frequencyValue, setFrequencyValue] = useState('7 Day(s)');
+  const [productsInCart, setProductsInCart] = useState([]);
+
+  const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
+  const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
+  const [isProductsLoading, setIsProductsLoading] = useState(false);
+  const [isCartUpdating, setIsCartUpdating] = useState(false);
   const {
     register,
     handleSubmit,
@@ -31,33 +48,172 @@ const Index = ({subscription}) => {
       order_interval_unit: subscription.order_interval_unit,
     },
   });
-
+  const {
+    id,
+    cartCreate,
+    lines,
+    linesAdd,
+    linesUpdate,
+    linesRemove,
+    cartAttributesUpdate,
+    discountCodesUpdate,
+    cost,
+    checkoutUrl,
+  } = useCart();
+  
   useEffect(() => {
     fetch();
   }, []);
 
+  useEffect(() => {
+    async function fetchAll() {
+      await fetchDeliveryDates();
+      await fetchBundle();
+      setIsInitialDataLoading(false);
+    }
+
+    fetchAll();
+  }, []);
+
+  useEffect(() => {
+    setIsProductsLoading(true);
+    const contents = [...bundleContents].filter((content) => {
+      return dayjs(deliveryDate).isBetween(
+        content.deliver_after,
+        content.deliver_before,
+      );
+    });
+
+    fetchContents(contents);
+  }, [deliveryDate]);
+
+  useEffect(() => {
+    initCart();
+  }, [bundle]);
+
+  useEffect(() => {
+    initCart();
+  }, [priceType, frequencyValue]);
+
+  const weeks = [...new Array(6)]
+    .map((_, weekIndex) =>
+      [...new Array(7)].map((_, dayIndex) =>
+        getISO(dayjs().weekday(7 * weekIndex + dayIndex)),
+      ),
+    )
+    .filter(
+      (week) =>
+        !week.every((weekDate) =>
+          deliveryDates.findIndex(
+            (deliveryDate) => weekDate === deliveryDate.date,
+          ) !== -1
+            ? false
+            : true,
+        ),
+    );
+
+  async function initCart() {
+    if (bundle) {
+      const sellingPlanId =
+        priceType === 'recuring'
+          ? bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+              (el) => el.options[0].value === frequencyValue,
+            )?.id
+          : undefined;
+      console.log('sellingPlanId:', sellingPlanId);
+
+      setIsCartUpdating(true);
+      cartCreate({
+        lines: [
+          {
+            merchandiseId: bundle.variants.nodes[0].id,
+            sellingPlanId,
+          },
+        ],
+      });
+
+      setTimeout(async () => {
+        await discountCodesUpdate(discountCodes);
+        alert();
+        setIsCartUpdating(false);
+      }, 2000);
+    }
+  }
+
+  async function fetchDeliveryDates() {
+    const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
+      .data;
+
+    const data = sortByDateProperty(
+      res.filter((el) => isFuture(el.date)),
+      'date',
+    );
+
+    setDeliveryDates(data);
+  }
+
+  async function fetchBundle() {
+    const bundleDataRes = (
+      await axios.get(`${caching_server}/bundles_dev.json`)
+    ).data.find((el) => el.platform_product_id === platform_product_id);
+
+    setBundleData(bundleDataRes);
+
+    const config = (
+      await axios.get(
+        `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
+      )
+    ).data;
+
+    setBundleContents(config.contents);
+  }
+
+  async function fetchContents(contents) {
+    const product_ids = [];
+    const config_ids = {};
+
+    for await (const content of contents) {
+      const res = (
+        await axios.get(
+          `/api/bundle/bundles/${bundleData.id}/configurations/${bundleData.configurations[0].id}/contents/${content.id}/products`,
+        )
+      ).data;
+
+      res.map((el) => {
+        product_ids.push(el.platform_product_id);
+        config_ids[`gid://shopify/Product/${el.platform_product_id}`] =
+          el.contents.bundle_configuration_id;
+      });
+    }
+
+    if (product_ids.length) {
+      const bundle_id = `gid://shopify/Product/${bundleData.platform_product_id}`;
+      const {
+        data: {bundle, products},
+      } = await axios.post(`/api/products/bundle-products`, {
+        bundle_id,
+        product_ids,
+      });
+
+      setBundle(bundle);
+      setProducts(
+        products.map((product) => ({
+          ...product,
+          bundleConfigurationId: config_ids[product.id],
+        })),
+      );
+    } else {
+      setBundle(null);
+      setProducts([]);
+    }
+
+    setProductsInCart([]);
+    setIsProductsLoading(false);
+  }
   async function fetch() {
     // const res = (await axios.get('/api/bundle-api/delivery-dates')).data;
     // console.log('===', res);
   }
-
-  // const deliveryDates = sortByDateProperty(
-  //   allDeliveryDates.filter((el) => isFuture(el.date)),
-  //   'date',
-  // );
-
-  // const weeks = [...new Array(6)].map(() => {
-  //   var curr = new Date(); // get current date
-  //   var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
-  //   var last = first + 6; // last day is the first day + 6
-
-  //   var firstDate = new Date(curr.setDate(first)).toUTCString();
-  //   var lastDate = new Date(curr.setDate(last)).toUTCString();
-
-  //   return {firstDate, lastDate};
-  // });
-
-  // console.log('weeks===', getCutOffDate(dayjs()));
 
   const onSubmit = async (data) => {
     await axios.post(`/api/account/subscriptions/update`, {
@@ -105,6 +261,20 @@ const Index = ({subscription}) => {
     setChangedDeliveryDate(false);
   };
 
+  function handleWeekChange(e) {
+    const week = weeks[e.target.value];
+
+    const slots = deliveryDates.filter(
+      (deliveryDate) => week.findIndex((el) => deliveryDate.date === el) !== -1,
+    );
+
+    setSelectedWeekIndex(e.target.value);
+    setAvailableSlots(slots);
+    setDeliveryDate(slots[0].date);
+
+    setIsDeliveryDateEditing(false);
+  }
+
   return (
     <div className="flex flex-wrap -m-4">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -140,27 +310,22 @@ const Index = ({subscription}) => {
                           style={{boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)'}}
                         >
                           <select
-                            className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
-                            name="field-name"
-                            style={{borderWidth: 0, backgroundImage: 'none'}}
-                          >
-                            <option value="Jan 3-5, 2023">Jan 3-5, 2023</option>
-                            <option value="Jan 10-13, 2023">
-                              Jan 10-13, 2023
+                          className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
+                          name="week"
+                          onChange={handleWeekChange}
+                          value={selectedWeekIndex}
+                          style={{borderWidth: 0, backgroundImage: 'none'}}
+                        >
+                          <option disabled value={-1}>
+                            --Choose an option--
+                          </option>
+                          {weeks.map((week, key) => (
+                            <option key={key} value={key}>
+                              {getUsaStandard(week[0])} -{' '}
+                              {getUsaStandard(week[6])}
                             </option>
-                            <option value="Jan 17-20, 2023">
-                              Jan 17-20, 2023
-                            </option>
-                            <option value="Jan 24-27, 2023">
-                              Jan 24-27, 2023
-                            </option>
-                            <option value="Jan 31 - Feb 3, 2023">
-                              Jan 31 - Feb 3, 2023
-                            </option>
-                            <option value="Feb 7-10, 2023">
-                              Feb 7-10, 2023
-                            </option>
-                          </select>
+                          ))}
+                        </select>
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg
                               className="fill-current h-4 w-4"
@@ -199,7 +364,7 @@ const Index = ({subscription}) => {
                         </div>
                         <p />
                       </div>
-                      <div
+                      {/* <div
                         className="flex flex-wrap -mx-4 -mb-4 md:mb-0"
                         style={{
                           maxWidth: 600,
@@ -304,7 +469,7 @@ const Index = ({subscription}) => {
                             Jan 6, 2023
                           </button>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                     {/*--------------Step 2--------------------------------------*/}
                     <div className="flex justify-between">
@@ -315,12 +480,14 @@ const Index = ({subscription}) => {
                         2. Choose your Meals
                       </div>
                       <div className="text-xl font-medium mt-[19px]">
-                        0 Meals Left{' '}
+                        <Link to="/edit-order">
                         <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
-                          Clear Selections
+                          Edit Order
                         </button>
+                        </Link>
                       </div>
-                    </div>
+                    </div> 
+
                     <div className="flex flex-wrap -mx-2 -mb-2">
                       {/*--1----*/}
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2">
@@ -782,14 +949,6 @@ const Index = ({subscription}) => {
               </div>
             </div>
           </div>
-        </div>
-        <div className="fixed bottom-[0px] bg-white py-6 px-12 w-[100%] md:w-[100%] lg:w-[48.5%] shadow-2xl flex justify-between">
-          <button className="border-2 border-red-500 px-7 py-4 rounded-full hover:bg-red-500 font-semibold text-xl hover:text-white">
-            Cancel
-          </button>
-          <button className="border-2 border-[#DB9707] px-7 py-4 rounded-full hover:bg-[#DB9707] font-semibold text-xl hover:text-white">
-            Save
-          </button>
         </div>
       </form>
     </div>
