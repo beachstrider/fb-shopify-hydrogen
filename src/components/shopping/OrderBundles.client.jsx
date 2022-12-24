@@ -1,7 +1,5 @@
-import {Link} from '@shopify/hydrogen';
-import {useCart, useNavigate} from '@shopify/hydrogen/client';
+import {useCart} from '@shopify/hydrogen/client';
 import {useState, useEffect} from 'react';
-import {useCookies} from 'react-cookie';
 import axios from 'axios';
 
 import {
@@ -20,37 +18,43 @@ const caching_server =
 // This platform product ID is the bundle product ID.
 const platform_product_id = 8022523347235;
 
+function getCartInfo() {
+  if (
+    typeof window !== 'undefined' &&
+    localStorage.getItem('cartInfo') !== null
+  ) {
+    return JSON.parse(localStorage?.getItem('cartInfo'));
+  }
+  return {
+    bundleContents: [],
+    bundleData: undefined,
+    deliveryDate: '',
+    bundle: null,
+    priceType: undefined,
+    frequencyValue: '7 Day(s)',
+    totalPrice: 0,
+    productsInCart: [],
+    mealQuantity: 0,
+  };
+}
+
 export function OrderBundles({discountCodes}) {
-  const [cookies, setCookies, removeCookie] = useCookies();
-
   const [deliveryDates, setDeliveryDates] = useState([]);
-  const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
   const [availableSlots, setAvailableSlots] = useState([]);
-  const [bundleData, setBundleData] = useState();
-  const [bundleContents, setBundleContents] = useState([]);
-
-  const [deliveryDate, setDeliveryDate] = useState('');
-  const [bundle, setBundle] = useState(null);
   const [products, setProducts] = useState([]);
-  const [priceType, setPriceType] = useState();
-  const [frequencyValue, setFrequencyValue] = useState('7 Day(s)');
-  const [totalPrice, setTotalPrice] = useState();
-  const [productsInCart, setProductsInCart] = useState([]);
-  const [mealQuantity, setMealQuantity] = useState(0);
+
+  const [cartInfo, setCartInfo] = useState(getCartInfo());
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
   const [checkoutButtonStatus, setCheckoutButtonStatus] = useState('');
 
-  // console.log('productsIncart:', productsInCart);
-
   const {
     id,
     cartCreate,
     lines,
     linesAdd,
-    linesUpdate,
     linesRemove,
     cartAttributesUpdate,
     discountCodesUpdate,
@@ -58,15 +62,17 @@ export function OrderBundles({discountCodes}) {
     checkoutUrl,
   } = useCart();
 
-  const navigate = useNavigate();
-
   const isQuantityLimit = (() => {
     let currentQuantity = 0;
-    productsInCart.forEach((el) => (currentQuantity += el.quantity));
-    return currentQuantity === mealQuantity;
+    cartInfo.productsInCart.forEach((el) => (currentQuantity += el.quantity));
+    return currentQuantity === cartInfo.mealQuantity;
   })();
 
   useEffect(() => {
+    // if (localStorage.getItem('cartInfo') !== null) {
+    //   setCartInfo(JSON.parse(localStorage.getItem('cartInfo')));
+    // }
+
     async function fetchAll() {
       await fetchDeliveryDates();
       await fetchBundle();
@@ -78,23 +84,27 @@ export function OrderBundles({discountCodes}) {
 
   useEffect(() => {
     setIsProductsLoading(true);
-    const contents = [...bundleContents].filter((content) => {
-      return dayjs(deliveryDate).isBetween(
+    const contents = [...cartInfo.bundleContents].filter((content) => {
+      return dayjs(cartInfo.deliveryDate).isBetween(
         content.deliver_after,
         content.deliver_before,
       );
     });
 
     fetchContents(contents);
-  }, [deliveryDate]);
+  }, [cartInfo.deliveryDate]);
 
   useEffect(() => {
     updateCart();
-  }, [bundle]);
+  }, [cartInfo.bundle]);
 
   useEffect(() => {
     updateCart();
-  }, [priceType, frequencyValue]);
+  }, [cartInfo.priceType, cartInfo.frequencyValue]);
+
+  useEffect(() => {
+    localStorage?.setItem('cartInfo', JSON.stringify(cartInfo));
+  }, [cartInfo]);
 
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
@@ -105,34 +115,30 @@ export function OrderBundles({discountCodes}) {
     .filter(
       (week) =>
         !week.every((weekDate) =>
-          deliveryDates.findIndex(
-            (deliveryDate) => weekDate === deliveryDate.date,
-          ) !== -1
+          deliveryDates.findIndex((el) => weekDate === el.date) !== -1
             ? false
             : true,
         ),
     );
 
-  async function initCart() {
-    if (bundle) {
-      // if()
-    }
-  }
+  const selectedWeekIndex = weeks.findIndex(
+    (week) => week.findIndex((el) => el === cartInfo.deliveryDate) !== -1,
+  );
 
   async function updateCart() {
-    if (bundle) {
-      let newTotalPrice = bundle.variants.nodes[0].priceV2.amount;
+    if (cartInfo.bundle) {
+      let newTotalPrice = cartInfo.bundle.variants.nodes[0].priceV2.amount;
 
       const line = {
-        merchandiseId: bundle.variants.nodes[0].id,
+        merchandiseId: cartInfo.bundle.variants.nodes[0].id,
         sellingPlanId: undefined,
         quantity: 1,
       };
 
-      if (priceType === 'recuring') {
+      if (cartInfo.priceType === 'recuring') {
         const sellingPlanId =
-          bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
-            (el) => el.options[0].value === frequencyValue,
+          cartInfo.bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+            (el) => el.options[0].value === cartInfo.frequencyValue,
           )?.id;
 
         line.sellingPlanId = sellingPlanId;
@@ -140,16 +146,15 @@ export function OrderBundles({discountCodes}) {
         newTotalPrice =
           newTotalPrice -
           (newTotalPrice *
-            bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
-              (el) => el.options[0].value === frequencyValue,
+            cartInfo.bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+              (el) => el.options[0].value === cartInfo.frequencyValue,
             )?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage) /
             100;
       }
 
-      setTotalPrice(newTotalPrice);
+      setCartInfo({...cartInfo, totalPrice: newTotalPrice});
       setCheckoutButtonStatus('CART UPDATING...');
       if (typeof id === 'undefined') {
-        console.log('id undefined so cart creating');
         cartCreate({
           lines: [line],
         });
@@ -161,7 +166,6 @@ export function OrderBundles({discountCodes}) {
           }, [2000]);
         }, 2000);
       } else {
-        console.log('cart refreshing so line:', line);
         if (lines.length) {
           linesRemove(lines.map((line) => line.id));
           setTimeout(() => {
@@ -171,13 +175,14 @@ export function OrderBundles({discountCodes}) {
             }, [2000]);
           }, 2000);
         } else {
-          setCheckoutButtonStatus('');
+          linesAdd([line]);
+          setTimeout(() => {
+            setCheckoutButtonStatus('');
+          }, [2000]);
         }
       }
     }
   }
-
-  console.log('lines:', lines);
 
   async function fetchDeliveryDates() {
     const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
@@ -196,8 +201,6 @@ export function OrderBundles({discountCodes}) {
       await axios.get(`${caching_server}/bundles_dev.json`)
     ).data.find((el) => el.platform_product_id === platform_product_id);
 
-    setBundleData(bundleDataRes);
-
     const {data: config} = await axios.get(
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
@@ -207,9 +210,13 @@ export function OrderBundles({discountCodes}) {
       id: bundle_id,
     });
 
-    setBundle(bundleProduct);
-    setBundleContents(config.contents);
-    setMealQuantity(config.quantity);
+    setCartInfo({
+      ...cartInfo,
+      bundleData: bundleDataRes,
+      bundle: bundleProduct,
+      bundleContents: config.contents,
+      mealQuantity: config.quantity,
+    });
   }
 
   async function fetchContents(contents) {
@@ -219,7 +226,7 @@ export function OrderBundles({discountCodes}) {
     for await (const content of contents) {
       const res = (
         await axios.get(
-          `/api/bundle/bundles/${bundleData.id}/configurations/${bundleData.configurations[0].id}/contents/${content.id}/products`,
+          `/api/bundle/bundles/${cartInfo.bundleData.id}/configurations/${cartInfo.bundleData.configurations[0].id}/contents/${content.id}/products`,
         )
       ).data;
 
@@ -242,11 +249,11 @@ export function OrderBundles({discountCodes}) {
         })),
       );
     } else {
-      setBundle(null);
+      setCartInfo({...cartInfo, bundle: null});
       setProducts([]);
     }
 
-    setProductsInCart([]);
+    setCartInfo({...cartInfo, productsInCart: []});
     setIsProductsLoading(false);
   }
 
@@ -257,15 +264,15 @@ export function OrderBundles({discountCodes}) {
       (deliveryDate) => week.findIndex((el) => deliveryDate.date === el) !== -1,
     );
 
-    setSelectedWeekIndex(e.target.value);
+    // setSelectedWeekIndex(e.target.value);
     setAvailableSlots(slots);
-    setDeliveryDate(slots[0].date);
+    setCartInfo({...cartInfo, deliveryDate: slots[0].date});
 
     setIsDeliveryDateEditing(false);
   }
 
   async function handleUpdateCart(product, diff) {
-    let newProductsInCart = [...productsInCart];
+    let newProductsInCart = [...cartInfo.productsInCart];
 
     const productIndex = newProductsInCart.findIndex(
       (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
@@ -284,19 +291,23 @@ export function OrderBundles({discountCodes}) {
       }
     }
 
-    setProductsInCart(newProductsInCart);
+    setCartInfo({...cartInfo, productsInCart: newProductsInCart});
   }
 
   function handleToggleFrequency() {
-    setFrequencyValue(frequencyValue === '7 Day(s)' ? '14 Day(s)' : '7 Day(s)');
+    setCartInfo({
+      ...cartInfo,
+      frequencyValue:
+        cartInfo.frequencyValue === '7 Day(s)' ? '14 Day(s)' : '7 Day(s)',
+    });
   }
 
   async function handleCheckout() {
-    // if (!productsInCart.length || !isQuantityLimit) {
-    //   alert(`Please select ${mealQuantity} meal(s).`);
-    //   return;
-    // }
-    if (typeof priceType === 'undefined') {
+    if (!cartInfo.productsInCart.length || !isQuantityLimit) {
+      alert(`Please select ${cartInfo.mealQuantity} meal(s).`);
+      return;
+    }
+    if (typeof cartInfo.priceType === 'undefined') {
       alert('Please choose a price type.');
       return;
     }
@@ -305,7 +316,7 @@ export function OrderBundles({discountCodes}) {
     //car save function which has bundle product and meals product save in database
     const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
     //this is the meals product array which has only one meal Item but there can be multiple meals item selected
-    const items = productsInCart.map((el) => ({
+    const items = cartInfo.productsInCart.map((el) => ({
       bundle_configuration_content_id: el.bundleConfigurationId,
       platform_product_variant_id: el.variants.nodes[0].id,
       quantity: el.quantity,
@@ -314,12 +325,12 @@ export function OrderBundles({discountCodes}) {
     const cartData = {
       platform_customer_id: null, //if customer logged in then save shopify customer id
       platform_cart_token,
-      platform_product_id: bundle.platform_product_id,
-      platform_variant_id: bundle.variants.nodes[0].id,
+      platform_product_id: cartInfo.bundle.platform_product_id,
+      platform_variant_id: cartInfo.bundle.variants.nodes[0].id,
       subscription_type: 'Family',
       subscription_sub_type: 'Regular (serves 5)',
-      bundle_id: bundle.id,
-      delivery_day: getDayUsa(deliveryDate),
+      bundle_id: cartInfo.bundle.id,
+      delivery_day: getDayUsa(cartInfo.deliveryDate),
       contents: [...items],
     };
 
@@ -355,7 +366,7 @@ export function OrderBundles({discountCodes}) {
                 </button>
                 <img
                   className="object-cover w-full h-full"
-                  src={bundle?.variants?.nodes[0]?.image?.url}
+                  src={cartInfo.bundle?.variants?.nodes[0]?.image?.url}
                   alt="img"
                 />
                 <button
@@ -431,8 +442,8 @@ export function OrderBundles({discountCodes}) {
                       <div className="text-sm">
                         Delivery Day:{' '}
                         <strong>
-                          {deliveryDate
-                            ? getUsaStandard(deliveryDate)
+                          {cartInfo.deliveryDate
+                            ? getUsaStandard(cartInfo.deliveryDate)
                             : '---- -- --'}
                         </strong>
                       </div>
@@ -453,12 +464,15 @@ export function OrderBundles({discountCodes}) {
                           <button
                             key={key}
                             className={`block w-full py-5 text-sm text-center uppercase font-bold leading-normal border-2 ${
-                              deliveryDate === slot.date
+                              cartInfo.deliveryDate === slot.date
                                 ? 'text-white bg-[#DB9707]'
                                 : 'text-[#DB9707]'
                             }  border-[#DB9707]`}
                             onClick={() => {
-                              setDeliveryDate(slot.date);
+                              setCartInfo({
+                                ...cartInfo,
+                                deliveryDate: slot.date,
+                              });
                               setIsDeliveryDateEditing(false);
                             }}
                           >
@@ -505,7 +519,7 @@ export function OrderBundles({discountCodes}) {
                                   Serves: 5
                                 </div>
                               </button>
-                              {productsInCart.findIndex(
+                              {cartInfo.productsInCart.findIndex(
                                 (el) =>
                                   el.variants.nodes[0].id ===
                                   product.variants.nodes[0].id,
@@ -547,7 +561,7 @@ export function OrderBundles({discountCodes}) {
                                   </button>
                                   <div className="w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
                                     {
-                                      productsInCart.find(
+                                      cartInfo.productsInCart.find(
                                         (el) =>
                                           el.variants.nodes[0].id ===
                                           product.variants.nodes[0].id,
@@ -642,9 +656,14 @@ export function OrderBundles({discountCodes}) {
                                           type="radio"
                                           name="price_type"
                                           value="recuring"
-                                          checked={priceType === 'recuring'}
+                                          defaultChecked={
+                                            cartInfo.priceType === 'recuring'
+                                          }
                                           onClick={(e) =>
-                                            setPriceType(e.target.value)
+                                            setCartInfo({
+                                              ...cartInfo,
+                                              priceType: e.target.value,
+                                            })
                                           }
                                         />
                                         <span
@@ -658,14 +677,16 @@ export function OrderBundles({discountCodes}) {
                                           <span className="mr-2">
                                             <strike>
                                               {getFullCost(
-                                                typeof bundle?.variants
+                                                typeof cartInfo.bundle?.variants
                                                   ?.nodes[0]?.priceV2
                                                   ?.amount !== 'undefined'
-                                                  ? bundle?.variants?.nodes[0]
-                                                      ?.priceV2?.amount
+                                                  ? cartInfo.bundle?.variants
+                                                      ?.nodes[0]?.priceV2
+                                                      ?.amount
                                                   : undefined,
-                                                bundle?.variants?.nodes[0]
-                                                  ?.priceV2?.currencyCode,
+                                                cartInfo.bundle?.variants
+                                                  ?.nodes[0]?.priceV2
+                                                  ?.currencyCode,
                                               )}
                                             </strike>
                                           </span>
@@ -675,12 +696,12 @@ export function OrderBundles({discountCodes}) {
                                           >
                                             {(() => {
                                               const price =
-                                                bundle?.variants?.nodes[0]
-                                                  ?.priceV2?.amount;
+                                                cartInfo.bundle?.variants
+                                                  ?.nodes[0]?.priceV2?.amount;
                                               const adjustmentPercentage =
-                                                bundle?.sellingPlanGroups
-                                                  ?.nodes[0]?.sellingPlans
-                                                  ?.nodes[0]
+                                                cartInfo.bundle
+                                                  ?.sellingPlanGroups?.nodes[0]
+                                                  ?.sellingPlans?.nodes[0]
                                                   ?.priceAdjustments[0]
                                                   ?.adjustmentValue
                                                   ?.adjustmentPercentage;
@@ -690,19 +711,24 @@ export function OrderBundles({discountCodes}) {
                                                 'undefined'
                                               )
                                                 return getFullCost(
-                                                  price -
+                                                  (
+                                                    price -
                                                     (price *
                                                       adjustmentPercentage) /
-                                                      100,
-                                                  bundle?.variants?.nodes[0]
-                                                    ?.priceV2?.currencyCode,
+                                                      100
+                                                  ).toFixed(2),
+                                                  cartInfo.bundle?.variants
+                                                    ?.nodes[0]?.priceV2
+                                                    ?.currencyCode,
                                                 );
 
                                               return '';
                                             })()}
                                             /{' '}
                                           </span>
-                                          <span>{mealQuantity + ' meals'}</span>
+                                          <span>
+                                            {cartInfo.mealQuantity + ' meals'}
+                                          </span>
                                         </div>
                                       </label>
                                     </div>
@@ -742,7 +768,7 @@ export function OrderBundles({discountCodes}) {
                                     >
                                       <u>
                                         {' '}
-                                        {frequencyValue === '7 Day(s)'
+                                        {cartInfo.frequencyValue === '7 Day(s)'
                                           ? 'Weekly'
                                           : 'Biweekly'}
                                       </u>{' '}
@@ -752,11 +778,11 @@ export function OrderBundles({discountCodes}) {
                                   <p>
                                     {(() => {
                                       const price =
-                                        bundle?.variants?.nodes[0]?.priceV2
-                                          ?.amount;
+                                        cartInfo.bundle?.variants?.nodes[0]
+                                          ?.priceV2?.amount;
                                       const adjustmentPercentage =
-                                        bundle?.sellingPlanGroups?.nodes[0]
-                                          ?.sellingPlans?.nodes[0]
+                                        cartInfo.bundle?.sellingPlanGroups
+                                          ?.nodes[0]?.sellingPlans?.nodes[0]
                                           ?.priceAdjustments[0]?.adjustmentValue
                                           ?.adjustmentPercentage;
 
@@ -771,8 +797,8 @@ export function OrderBundles({discountCodes}) {
                                           'Save ' +
                                           getFullCost(
                                             diff,
-                                            bundle?.variants?.nodes[0]?.priceV2
-                                              ?.currencyCode,
+                                            cartInfo.bundle?.variants?.nodes[0]
+                                              ?.priceV2?.currencyCode,
                                           )
                                         );
                                       }
@@ -808,9 +834,14 @@ export function OrderBundles({discountCodes}) {
                                           type="radio"
                                           name="price_type"
                                           value="onetime"
-                                          checked={priceType === 'onetime'}
+                                          defaultChecked={
+                                            cartInfo.priceType === 'onetime'
+                                          }
                                           onClick={(e) =>
-                                            setPriceType(e.target.value)
+                                            setCartInfo({
+                                              ...cartInfo,
+                                              priceType: e.target.value,
+                                            })
                                           }
                                         />
                                         <span
@@ -825,10 +856,10 @@ export function OrderBundles({discountCodes}) {
                                           style={{fontSize: 18}}
                                         >
                                           {getFullCost(
-                                            bundle?.variants?.nodes[0]?.priceV2
-                                              ?.amount,
-                                            bundle?.variants?.nodes[0]?.priceV2
-                                              ?.currencyCode,
+                                            cartInfo.bundle?.variants?.nodes[0]
+                                              ?.priceV2?.amount,
+                                            cartInfo.bundle?.variants?.nodes[0]
+                                              ?.priceV2?.currencyCode,
                                           )}{' '}
                                           /{' '}
                                         </span>
@@ -862,20 +893,21 @@ export function OrderBundles({discountCodes}) {
                       <span className="font-bold" style={{fontSize: 18}}>
                         {(() => {
                           const price =
-                            bundle?.variants?.nodes[0]?.priceV2?.amount;
+                            cartInfo.bundle?.variants?.nodes[0]?.priceV2
+                              ?.amount;
                           const adjustmentPercentage =
-                            bundle?.sellingPlanGroups?.nodes[0]?.sellingPlans
-                              ?.nodes[0]?.priceAdjustments[0]?.adjustmentValue
-                              ?.adjustmentPercentage;
+                            cartInfo.bundle?.sellingPlanGroups?.nodes[0]
+                              ?.sellingPlans?.nodes[0]?.priceAdjustments[0]
+                              ?.adjustmentValue?.adjustmentPercentage;
 
                           if (typeof adjustmentPercentage !== 'undefined') {
                             const diff = (price * adjustmentPercentage) / 100;
-                            if (priceType === 'recuring')
+                            if (cartInfo.priceType === 'recuring')
                               return (
                                 "You're Saving " +
                                 getFullCost(
                                   diff,
-                                  bundle?.variants?.nodes[0]?.priceV2
+                                  cartInfo.bundle?.variants?.nodes[0]?.priceV2
                                     ?.currencyCode,
                                 ) +
                                 '!'
@@ -887,8 +919,9 @@ export function OrderBundles({discountCodes}) {
                       <span className="font-bold" style={{float: 'right'}}>
                         Total:{' '}
                         {getFullCost(
-                          totalPrice,
-                          bundle?.variants?.nodes[0]?.priceV2?.currencyCode,
+                          cartInfo.totalPrice,
+                          cartInfo.bundle?.variants?.nodes[0]?.priceV2
+                            ?.currencyCode,
                         )}
                       </span>
                     </div>
