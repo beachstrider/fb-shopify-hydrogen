@@ -50,7 +50,7 @@ const Index = ({response}) => {
       <Suspense>
         <Seo type="noindex" data={{title: 'FeastBox How it works page'}} />
       </Suspense>
-      <AccountPageLayout user={customer} currentPath="subscription">
+      <AccountPageLayout user={customer} currentPath="subscriptions">
         <EditOrder />
       </AccountPageLayout>
     </Layout>
