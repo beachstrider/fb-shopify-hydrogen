@@ -38,7 +38,7 @@ export function OrderBundles({discountCodes}) {
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
-  const [isCartUpdating, setIsCartUpdating] = useState(false);
+  const [checkoutButtonStatus, setCheckoutButtonStatus] = useState('');
 
   const {
     id,
@@ -112,7 +112,7 @@ export function OrderBundles({discountCodes}) {
           : undefined;
       console.log('sellingPlanId:', sellingPlanId);
 
-      setIsCartUpdating(true);
+      setCheckoutButtonStatus('CART UPDATING...');
       cartCreate({
         lines: [
           {
@@ -124,8 +124,7 @@ export function OrderBundles({discountCodes}) {
 
       setTimeout(async () => {
         await discountCodesUpdate(discountCodes);
-        alert();
-        setIsCartUpdating(false);
+        setCheckoutButtonStatus('');
       }, 2000);
     }
   }
@@ -252,6 +251,7 @@ export function OrderBundles({discountCodes}) {
       return;
     }
 
+    setCheckoutButtonStatus('CHECKOUT...');
     //car save function which has bundle product and meals product save in database
     const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
     //this is the meals product array which has only one meal Item but there can be multiple meals item selected
@@ -277,6 +277,7 @@ export function OrderBundles({discountCodes}) {
 
     console.log('success');
 
+    setCheckoutButtonStatus('');
     window.open(checkoutUrl, '_blank');
   }
 
@@ -755,7 +756,7 @@ export function OrderBundles({discountCodes}) {
                     </div>
                     <div className="w-full mb-4 md:mb-0">
                       <button
-                        disabled={isCartUpdating}
+                        disabled={checkoutButtonStatus !== ''}
                         className="block w-full py-5 text-lg text-center uppercase font-bold "
                         style={{
                           backgroundColor: '#DB9707',
@@ -764,8 +765,9 @@ export function OrderBundles({discountCodes}) {
                         }}
                         onClick={handleCheckout}
                       >
-                        CHECKOUT
-                        {isCartUpdating ? 'CART UPDATING...' : 'CHECKOUT'}
+                        {checkoutButtonStatus !== ''
+                          ? checkoutButtonStatus
+                          : 'CHECKOUT'}
                       </button>
                     </div>
                     <div>
