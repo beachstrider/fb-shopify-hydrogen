@@ -839,16 +839,16 @@ export function OrderBundles({discountCodes}) {
 
                           if (typeof adjustmentPercentage !== 'undefined') {
                             const diff = (price * adjustmentPercentage) / 100;
-
-                            return (
-                              "You're Saving " +
-                              getFullCost(
-                                diff,
-                                bundle?.variants?.nodes[0]?.priceV2
-                                  ?.currencyCode,
-                              ) +
-                              '!'
-                            );
+                            if (priceType === 'recuring')
+                              return (
+                                "You're Saving " +
+                                getFullCost(
+                                  diff,
+                                  bundle?.variants?.nodes[0]?.priceV2
+                                    ?.currencyCode,
+                                ) +
+                                '!'
+                              );
                           }
                           return '';
                         })()}
