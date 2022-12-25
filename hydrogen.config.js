@@ -4,19 +4,10 @@ export default defineConfig({
   shopify: {
     defaultCountryCode: 'US',
     defaultLanguageCode: 'EN',
-    storeDomain:
-    // @ts-ignore
-      Oxygen?.env?.PUBLIC_STORE_DOMAIN || 'hydrogen-preview.myshopify.com',
-    storefrontToken:
-    // @ts-ignore
-      Oxygen?.env?.PUBLIC_STOREFRONT_API_TOKEN ||
-      '3b580e70970c4528da70c98e097c2fa0',
-    privateStorefrontToken:
-    // @ts-ignore
-    Oxygen?.env?.PRIVATE_STOREFRONT_API_TOKEN,
+    storeDomain: 'feast-box-sandbox.myshopify.com',
+    storefrontToken: '68d7b1f1d3c2d81bc3cbee699d6d76ea',
+    storefrontApiVersion: '2022-07',
     storefrontApiVersion: '2022-10',
-    // @ts-ignore
-    storefrontId: Oxygen?.env?.PUBLIC_STOREFRONT_ID,
   },
   session: CookieSessionStorage('__session', {
     path: '/',
@@ -26,3 +17,4 @@ export default defineConfig({
     maxAge: 60 * 60 * 24 * 30,
   }),
 });
+
