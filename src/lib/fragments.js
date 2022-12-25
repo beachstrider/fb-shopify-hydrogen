@@ -43,9 +43,10 @@ export const PRODUCT_CARD_FRAGMENT = gql`
     title
     publishedAt
     handle
-    variants(first: 1) {
+    variants(first: 10) {
       nodes {
         id
+        title
         image {
           url
           altText
