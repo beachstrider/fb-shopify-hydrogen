@@ -1,8 +1,6 @@
-import {useState, useEffect} from 'react';
-import {Link} from '@shopify/hydrogen';
 import {useCart} from '@shopify/hydrogen/client';
+import {useState, useEffect} from 'react';
 import axios from 'axios';
-import getSymbolFromCurrency from 'currency-symbol-map';
 
 import {
   isFuture,
@@ -10,45 +8,70 @@ import {
   dayjs,
   getUsaStandard,
   getISO,
+  getDayUsa,
 } from '~/utils/dates';
-
+import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
 
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
+// This platform product ID is the bundle product ID.
 const platform_product_id = 8022523347235;
 
-export function OrderBundles({discountCodes}) {
-  console.log('discountCodes', discountCodes);
-  const [deliveryDates, setDeliveryDates] = useState([]);
-  const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
-  const [availableSlots, setAvailableSlots] = useState([]);
-  const [deliveryDate, setDeliveryDate] = useState('');
-  const [bundleData, setBundleData] = useState();
-  const [bundleContents, setBundleContents] = useState([]);
+function getCartInfo() {
+  if (
+    typeof window !== 'undefined' &&
+    localStorage.getItem('cartInfo') !== null
+  ) {
+    const {deliveryDate} = JSON.parse(localStorage.getItem('cartInfo'));
 
-  const [bundle, setBundle] = useState(null);
+    if (dayjs().isBefore(deliveryDate)) {
+      return JSON.parse(localStorage?.getItem('cartInfo'));
+    }
+  }
+
+  return {
+    bundleContents: [],
+    bundleData: undefined,
+    deliveryDate: '',
+    bundle: null,
+    priceType: undefined,
+    frequencyValue: '7 Day(s)',
+    totalPrice: 0,
+    productsInCart: [],
+    mealQuantity: 0,
+  };
+}
+
+export function OrderBundles({discountCodes, customerAccessToken}) {
+  const [deliveryDates, setDeliveryDates] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([]);
   const [products, setProducts] = useState([]);
-  const [priceType, setPriceType] = useState();
-  const [frequencyValue, setFrequencyValue] = useState('7 Day(s)');
-  const [productsInCart, setProductsInCart] = useState([]);
+
+  const [cartInfo, setCartInfo] = useState(getCartInfo());
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
+  const [checkoutButtonStatus, setCheckoutButtonStatus] = useState('');
 
   const {
     id,
     cartCreate,
     lines,
     linesAdd,
-    linesUpdate,
     linesRemove,
-    cartAttributesUpdate,
+    linesUpdate,
+    buyerIdentityUpdate,
     discountCodesUpdate,
-    cost,
     checkoutUrl,
   } = useCart();
+
+  const isQuantityLimit = (() => {
+    let currentQuantity = 0;
+    cartInfo.productsInCart.forEach((el) => (currentQuantity += el.quantity));
+    return currentQuantity === cartInfo.mealQuantity;
+  })();
 
   useEffect(() => {
     async function fetchAll() {
@@ -62,24 +85,28 @@ export function OrderBundles({discountCodes}) {
 
   useEffect(() => {
     setIsProductsLoading(true);
-    console.log('bundleContents: ', bundleContents);
-    const contents = [...bundleContents].filter((content) => {
-      return dayjs(deliveryDate).isBetween(
+    const contents = [...cartInfo.bundleContents].filter((content) => {
+      return dayjs(cartInfo.deliveryDate).isBetween(
         content.deliver_after,
         content.deliver_before,
       );
     });
 
     fetchContents(contents);
-  }, [deliveryDate]);
+    updateCartAttributes();
+  }, [cartInfo.deliveryDate]);
 
   useEffect(() => {
-    initCart();
-  }, [bundle]);
+    if (typeof id !== 'undefined') updateCart();
+  }, [cartInfo.bundle]);
 
   useEffect(() => {
-    initCart();
-  }, [priceType, frequencyValue]);
+    if (typeof id !== 'undefined') updateCart();
+  }, [cartInfo.priceType, cartInfo.frequencyValue]);
+
+  useEffect(() => {
+    localStorage?.setItem('cartInfo', JSON.stringify(cartInfo));
+  }, [cartInfo]);
 
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
@@ -90,32 +117,123 @@ export function OrderBundles({discountCodes}) {
     .filter(
       (week) =>
         !week.every((weekDate) =>
-          deliveryDates.findIndex(
-            (deliveryDate) => weekDate === deliveryDate.date,
-          ) !== -1
+          deliveryDates.findIndex((el) => weekDate === el.date) !== -1
             ? false
             : true,
         ),
     );
 
-  async function initCart() {
-    if (bundle) {
-      const sellingPlanId =
-        priceType === 'recuring'
-          ? bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
-              (el) => el.options[0].value === frequencyValue,
-            )?.id
-          : undefined;
+  const selectedWeekIndex = weeks.findIndex(
+    (week) => week.findIndex((el) => el === cartInfo.deliveryDate) !== -1,
+  );
 
-      await discountCodesUpdate(discountCodes);
-      await cartCreate({
-        lines: [
+  async function initCart(merchandiseId) {
+    const line = {
+      merchandiseId,
+      sellingPlanId: undefined,
+      quantity: 1,
+    };
+
+    if (typeof id === 'undefined') {
+      cartCreate({
+        lines: [line],
+      });
+    }
+
+    setTimeout(() => {
+      discountCodesUpdate(discountCodes);
+      setTimeout(() => {
+        buyerIdentityUpdate({
+          customerAccessToken,
+        });
+        setTimeout(() => {
+          setCheckoutButtonStatus('');
+        }, [1500]);
+      }, [1500]);
+    }, [1500]);
+  }
+
+  async function updateCart() {
+    if (cartInfo.bundle) {
+      let newTotalPrice = cartInfo.bundle.variants.nodes[0].priceV2.amount;
+
+      const line = {
+        merchandiseId: cartInfo.bundle.variants.nodes[0].id,
+        sellingPlanId: undefined,
+        quantity: 1,
+        attributes: [
           {
-            merchandiseId: bundle.variants.nodes[0].id,
-            sellingPlanId,
+            key: 'Customer ID',
+            value: 'XXX',
+          },
+          {
+            key: 'Delivery Date',
+            value: getUsaStandard(cartInfo.deliveryDate),
+          },
+          {
+            key: 'Cart Token',
+            value: id.substring(19),
           },
         ],
-      });
+      };
+
+      if (cartInfo.priceType === 'recuring') {
+        const sellingPlanId =
+          cartInfo.bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+            (el) => el.options[0].value === cartInfo.frequencyValue,
+          )?.id;
+
+        line.sellingPlanId = sellingPlanId;
+
+        newTotalPrice =
+          newTotalPrice -
+          (newTotalPrice *
+            cartInfo.bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+              (el) => el.options[0].value === cartInfo.frequencyValue,
+            )?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage) /
+            100;
+      }
+
+      setCartInfo({...cartInfo, totalPrice: newTotalPrice});
+      setCheckoutButtonStatus('CART UPDATING...');
+      if (lines.length) {
+        linesRemove(lines.map((line) => line.id));
+        setTimeout(() => {
+          linesAdd([line]);
+          setTimeout(() => {
+            setCheckoutButtonStatus('');
+          }, [1500]);
+        }, 1500);
+      } else {
+        linesAdd([line]);
+        setTimeout(() => {
+          setCheckoutButtonStatus('');
+        }, [1500]);
+      }
+    }
+  }
+
+  function updateCartAttributes() {
+    if (lines.length && typeof id !== 'undefined') {
+      linesUpdate([
+        {
+          id: lines[0].id,
+          attributes: [
+            {
+              key: 'Customer ID',
+              value: 'XXX',
+            },
+            {
+              key: 'Delivery Date',
+              value: getUsaStandard(cartInfo.deliveryDate),
+            },
+            {
+              key: 'Cart Token',
+              value: id.substring(19),
+            },
+          ],
+        },
+      ]);
     }
   }
 
@@ -136,47 +254,61 @@ export function OrderBundles({discountCodes}) {
       await axios.get(`${caching_server}/bundles_dev.json`)
     ).data.find((el) => el.platform_product_id === platform_product_id);
 
-    setBundleData(bundleDataRes);
+    const {data: config} = await axios.get(
+      `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
+    );
 
-    const config = (
-      await axios.get(
-        `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
-      )
-    ).data;
+    const bundle_id = `gid://shopify/Product/${bundleDataRes.platform_product_id}`;
+    const {data: bundleProduct} = await axios.post(`/api/products/bundle`, {
+      id: bundle_id,
+    });
 
-    setBundleContents(config.contents);
+    await initCart(bundleProduct.variants.nodes[0].id);
+
+    setCartInfo({
+      ...cartInfo,
+      bundleData: bundleDataRes,
+      bundle: bundleProduct,
+      bundleContents: config.contents,
+      mealQuantity: config.quantity,
+    });
   }
 
   async function fetchContents(contents) {
     const product_ids = [];
+    const config_ids = {};
 
     for await (const content of contents) {
       const res = (
         await axios.get(
-          `/api/bundle/bundles/${bundleData.id}/configurations/${bundleData.configurations[0].id}/contents/${content.id}/products`,
+          `/api/bundle/bundles/${cartInfo.bundleData.id}/configurations/${cartInfo.bundleData.configurations[0].id}/contents/${content.id}/products`,
         )
       ).data;
 
-      res.every((el) => product_ids.push(el.platform_product_id));
+      res.map((el) => {
+        product_ids.push(el.platform_product_id);
+        config_ids[`gid://shopify/Product/${el.platform_product_id}`] =
+          el.contents.bundle_configuration_id;
+      });
     }
 
     if (product_ids.length) {
-      const bundle_id = `gid://shopify/Product/${bundleData.platform_product_id}`;
-      const {
-        data: {bundle, products},
-      } = await axios.post(`/api/products/bundle-products`, {
-        bundle_id,
+      const {data: products} = await axios.post(`/api/products/multiple`, {
         product_ids,
       });
 
-      setBundle(bundle);
-      setProducts(products);
+      setProducts(
+        products.map((product) => ({
+          ...product,
+          bundleConfigurationId: config_ids[product.id],
+        })),
+      );
     } else {
-      setBundle(null);
+      setCartInfo({...cartInfo, bundle: null});
       setProducts([]);
     }
 
-    setProductsInCart([]);
+    setCartInfo({...cartInfo, productsInCart: []});
     setIsProductsLoading(false);
   }
 
@@ -187,25 +319,22 @@ export function OrderBundles({discountCodes}) {
       (deliveryDate) => week.findIndex((el) => deliveryDate.date === el) !== -1,
     );
 
-    setSelectedWeekIndex(e.target.value);
     setAvailableSlots(slots);
-    setDeliveryDate(slots[0].date);
+    setCartInfo({...cartInfo, deliveryDate: slots[0].date});
 
     setIsDeliveryDateEditing(false);
   }
 
   async function handleUpdateCart(product, diff) {
-    let newProductsInCart = [...productsInCart];
+    let newProductsInCart = [...cartInfo.productsInCart];
 
     const productIndex = newProductsInCart.findIndex(
       (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
     );
 
     if (typeof diff === 'undefined') {
-      // if the selected product doesn't exist in cart
       newProductsInCart.push({...product, quantity: 1});
     } else {
-      // if the selected product exists in cart
       const quantity = (newProductsInCart[productIndex].quantity += diff);
       if (quantity === 0) {
         newProductsInCart = newProductsInCart.filter(
@@ -214,76 +343,105 @@ export function OrderBundles({discountCodes}) {
       }
     }
 
-    setProductsInCart(newProductsInCart);
+    setCartInfo({...cartInfo, productsInCart: newProductsInCart});
   }
 
   function handleToggleFrequency() {
-    setFrequencyValue(frequencyValue === '7 Day(s)' ? '14 Day(s)' : '7 Day(s)');
+    setCartInfo({
+      ...cartInfo,
+      frequencyValue:
+        cartInfo.frequencyValue === '7 Day(s)' ? '14 Day(s)' : '7 Day(s)',
+    });
   }
 
   async function handleCheckout() {
-    if (!productsInCart.length) {
-      alert('Please select at least one meal.');
+    if (!cartInfo.productsInCart.length || !isQuantityLimit) {
+      alert(`Please select ${cartInfo.mealQuantity} meal(s).`);
       return;
     }
-    if (typeof priceType === 'undefined') {
+    if (typeof cartInfo.priceType === 'undefined') {
       alert('Please choose a price type.');
       return;
     }
 
+    setCheckoutButtonStatus('CHECKOUT...');
+    //car save function which has bundle product and meals product save in database
+    const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
+    //this is the meals product array which has only one meal Item but there can be multiple meals item selected
+    const items = cartInfo.productsInCart.map((el) => ({
+      bundle_configuration_content_id: el.bundleConfigurationId,
+      platform_product_variant_id: el.variants.nodes[0].id,
+      quantity: el.quantity,
+    }));
+
+    const cartData = {
+      platform_customer_id: null, //if customer logged in then save shopify customer id
+      platform_cart_token,
+      platform_product_id: cartInfo.bundle.platform_product_id,
+      platform_variant_id: cartInfo.bundle.variants.nodes[0].id,
+      subscription_type: 'Family',
+      subscription_sub_type: 'Regular (serves 5)',
+      bundle_id: cartInfo.bundle.id,
+      delivery_day: getDayUsa(cartInfo.deliveryDate),
+      contents: [...items],
+    };
+
+    await axios.post(`/api/bundle/carts`, cartData);
+
+    setCheckoutButtonStatus('');
     window.open(checkoutUrl, '_blank');
   }
 
   return (
-    <section className="py-20 bg-[#EFEFEF]">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-wrap -mx-4 mb-24">
-          <div className="w-full px-4 mb-8 md:mb-0 md:w-1/1 xl:w-1/3 lg:w-1/3">
-            <div className="relative mb-10" style={{height: 564}}>
-              <button
-                className="absolute top-1/2 left-0 ml-8 transform translate-1/2"
-                href="#"
-              >
-                <svg
-                  width={10}
-                  height={18}
-                  viewBox="0 0 10 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+    <Loading className="py-20" isLoading={isInitialDataLoading}>
+      <section className="py-20 bg-[#EFEFEF]">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap -mx-4 mb-24">
+            <div className="w-full px-4 mb-8 md:mb-0 md:w-1/1 xl:w-1/3 lg:w-1/3">
+              <div className="relative mb-10" style={{height: 564}}>
+                <button
+                  className="absolute top-1/2 left-0 ml-8 transform translate-1/2"
+                  href="#"
                 >
-                  <path
-                    d="M9 16.0185C9.268 16.2905 9.268 16.7275 9 16.9975C8.732 17.2675 8.299 17.2685 8.031 16.9975L0.201 9.0895C-0.067 8.8195 -0.067 8.3825 0.201 8.1105L8.031 0.2025C8.299 -0.0675 8.732 -0.0675 9 0.2025C9.268 0.4735 9.268 0.9115 9 1.1815L1.859 8.6005L9 16.0185Z"
-                    fill="#1F40FF"
-                  />
-                </svg>
-              </button>
-              <img
-                className="object-cover w-full h-full"
-                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/shop/shop_hero.png"
-                alt="img"
-              />
-              <button
-                className="absolute top-1/2 right-0 mr-8 transform translate-1/2"
-                href="#"
-              >
-                <svg
-                  width={10}
-                  height={18}
-                  viewBox="0 0 10 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                  <svg
+                    width={10}
+                    height={18}
+                    viewBox="0 0 10 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 16.0185C9.268 16.2905 9.268 16.7275 9 16.9975C8.732 17.2675 8.299 17.2685 8.031 16.9975L0.201 9.0895C-0.067 8.8195 -0.067 8.3825 0.201 8.1105L8.031 0.2025C8.299 -0.0675 8.732 -0.0675 9 0.2025C9.268 0.4735 9.268 0.9115 9 1.1815L1.859 8.6005L9 16.0185Z"
+                      fill="#1F40FF"
+                    />
+                  </svg>
+                </button>
+                <img
+                  className="object-cover w-full h-full"
+                  src={cartInfo.bundle?.variants?.nodes[0]?.image?.url}
+                  alt="img"
+                />
+                <button
+                  className="absolute top-1/2 right-0 mr-8 transform translate-1/2"
+                  href="#"
                 >
-                  <path
-                    d="M0.19922 1.1817C-0.0687795 0.909696 -0.0687794 0.472695 0.19922 0.202695C0.46722 -0.0673054 0.90022 -0.0683048 1.16822 0.202695L8.99822 8.11069C9.26622 8.3807 9.26622 8.81769 8.99822 9.08969L1.16822 16.9977C0.900219 17.2677 0.467218 17.2677 0.199219 16.9977C-0.0687809 16.7267 -0.0687808 16.2887 0.199219 16.0187L7.34022 8.5997L0.19922 1.1817Z"
-                    fill="#1F40FF"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    width={10}
+                    height={18}
+                    viewBox="0 0 10 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M0.19922 1.1817C-0.0687795 0.909696 -0.0687794 0.472695 0.19922 0.202695C0.46722 -0.0673054 0.90022 -0.0683048 1.16822 0.202695L8.99822 8.11069C9.26622 8.3807 9.26622 8.81769 8.99822 9.08969L1.16822 16.9977C0.900219 17.2677 0.467218 17.2677 0.199219 16.9977C-0.0687809 16.7267 -0.0687808 16.2887 0.199219 16.0187L7.34022 8.5997L0.19922 1.1817Z"
+                      fill="#1F40FF"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="w-full px-4 md:w-1/1 xl:w-2/3 lg:w-2/3">
-            <div className="xl:pl-10">
-              <Loading isLoading={isInitialDataLoading}>
+            <div className="w-full px-4 md:w-1/1 xl:w-2/3 lg:w-2/3">
+              <div className="xl:pl-10">
                 <div className="mb-10 pb-10">
                   <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
                     <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
@@ -336,8 +494,8 @@ export function OrderBundles({discountCodes}) {
                       <div className="text-sm">
                         Delivery Day:{' '}
                         <strong>
-                          {deliveryDate
-                            ? getUsaStandard(deliveryDate)
+                          {cartInfo.deliveryDate
+                            ? getUsaStandard(cartInfo.deliveryDate)
                             : '---- -- --'}
                         </strong>
                       </div>
@@ -358,12 +516,15 @@ export function OrderBundles({discountCodes}) {
                           <button
                             key={key}
                             className={`block w-full py-5 text-sm text-center uppercase font-bold leading-normal border-2 ${
-                              deliveryDate === slot.date
+                              cartInfo.deliveryDate === slot.date
                                 ? 'text-white bg-[#DB9707]'
                                 : 'text-[#DB9707]'
                             }  border-[#DB9707]`}
                             onClick={() => {
-                              setDeliveryDate(slot.date);
+                              setCartInfo({
+                                ...cartInfo,
+                                deliveryDate: slot.date,
+                              });
                               setIsDeliveryDateEditing(false);
                             }}
                           >
@@ -410,22 +571,16 @@ export function OrderBundles({discountCodes}) {
                                   Serves: 5
                                 </div>
                               </button>
-                              {productsInCart.findIndex(
+                              {cartInfo.productsInCart.findIndex(
                                 (el) =>
                                   el.variants.nodes[0].id ===
                                   product.variants.nodes[0].id,
                               ) === -1 ? (
                                 <div className="px-4 text-center">
                                   <button
-                                    className="text-center text-white font-bold font-heading uppercase transition"
-                                    href="#"
-                                    style={{
-                                      backgroundColor: '#DB9707',
-                                      color: '#FFFFFF',
-                                      width: 80,
-                                      padding: '3px 21px',
-                                    }}
+                                    className="text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
                                     onClick={() => handleUpdateCart(product)}
+                                    disabled={isQuantityLimit}
                                   >
                                     Add+
                                   </button>
@@ -458,7 +613,7 @@ export function OrderBundles({discountCodes}) {
                                   </button>
                                   <div className="w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
                                     {
-                                      productsInCart.find(
+                                      cartInfo.productsInCart.find(
                                         (el) =>
                                           el.variants.nodes[0].id ===
                                           product.variants.nodes[0].id,
@@ -466,8 +621,9 @@ export function OrderBundles({discountCodes}) {
                                     }
                                   </div>
                                   <button
-                                    className="hover:text-gray-700 text-center bg-[#DB9707] text-white"
+                                    className="hover:text-gray-700 text-center bg-[#DB9707] text-white disabled:bg-[#bdac89]"
                                     onClick={() => handleUpdateCart(product, 1)}
+                                    disabled={isQuantityLimit}
                                   >
                                     <svg
                                       width={24}
@@ -552,9 +708,14 @@ export function OrderBundles({discountCodes}) {
                                           type="radio"
                                           name="price_type"
                                           value="recuring"
-                                          checked={priceType === 'recuring'}
+                                          defaultChecked={
+                                            cartInfo.priceType === 'recuring'
+                                          }
                                           onClick={(e) =>
-                                            setPriceType(e.target.value)
+                                            setCartInfo({
+                                              ...cartInfo,
+                                              priceType: e.target.value,
+                                            })
                                           }
                                         />
                                         <span
@@ -565,17 +726,61 @@ export function OrderBundles({discountCodes}) {
                                         </span>
                                         <br />
                                         <div style={{paddingBottom: 14}}>
-                                          <span>
-                                            <strike>$189.95</strike>
+                                          <span className="mr-2">
+                                            <strike>
+                                              {getFullCost(
+                                                typeof cartInfo.bundle?.variants
+                                                  ?.nodes[0]?.priceV2
+                                                  ?.amount !== 'undefined'
+                                                  ? cartInfo.bundle?.variants
+                                                      ?.nodes[0]?.priceV2
+                                                      ?.amount
+                                                  : undefined,
+                                                cartInfo.bundle?.variants
+                                                  ?.nodes[0]?.priceV2
+                                                  ?.currencyCode,
+                                              )}
+                                            </strike>
                                           </span>
                                           <span
                                             className="font-bold"
                                             style={{fontSize: 18}}
                                           >
-                                            {' '}
-                                            $169.95 /{' '}
+                                            {(() => {
+                                              const price =
+                                                cartInfo.bundle?.variants
+                                                  ?.nodes[0]?.priceV2?.amount;
+                                              const adjustmentPercentage =
+                                                cartInfo.bundle
+                                                  ?.sellingPlanGroups?.nodes[0]
+                                                  ?.sellingPlans?.nodes[0]
+                                                  ?.priceAdjustments[0]
+                                                  ?.adjustmentValue
+                                                  ?.adjustmentPercentage;
+
+                                              if (
+                                                typeof adjustmentPercentage !==
+                                                'undefined'
+                                              )
+                                                return getFullCost(
+                                                  (
+                                                    price -
+                                                    (price *
+                                                      adjustmentPercentage) /
+                                                      100
+                                                  ).toFixed(2),
+                                                  cartInfo.bundle?.variants
+                                                    ?.nodes[0]?.priceV2
+                                                    ?.currencyCode,
+                                                );
+
+                                              return '';
+                                            })()}
+                                            /{' '}
                                           </span>
-                                          <span>4 meals</span>
+                                          <span>
+                                            {cartInfo.mealQuantity + ' meals'}
+                                          </span>
                                         </div>
                                       </label>
                                     </div>
@@ -615,14 +820,43 @@ export function OrderBundles({discountCodes}) {
                                     >
                                       <u>
                                         {' '}
-                                        {frequencyValue === '7 Day(s)'
+                                        {cartInfo.frequencyValue === '7 Day(s)'
                                           ? 'Weekly'
                                           : 'Biweekly'}
                                       </u>{' '}
                                       &gt;{' '}
                                     </button>
                                   </p>
-                                  <p>Save $20</p>
+                                  <p>
+                                    {(() => {
+                                      const price =
+                                        cartInfo.bundle?.variants?.nodes[0]
+                                          ?.priceV2?.amount;
+                                      const adjustmentPercentage =
+                                        cartInfo.bundle?.sellingPlanGroups
+                                          ?.nodes[0]?.sellingPlans?.nodes[0]
+                                          ?.priceAdjustments[0]?.adjustmentValue
+                                          ?.adjustmentPercentage;
+
+                                      if (
+                                        typeof adjustmentPercentage !==
+                                        'undefined'
+                                      ) {
+                                        const diff =
+                                          (price * adjustmentPercentage) / 100;
+
+                                        return (
+                                          'Save ' +
+                                          getFullCost(
+                                            diff,
+                                            cartInfo.bundle?.variants?.nodes[0]
+                                              ?.priceV2?.currencyCode,
+                                          )
+                                        );
+                                      }
+                                      return '';
+                                    })()}
+                                  </p>
                                   <p>No Commitments, Cancel Anytime</p>
                                 </div>
                               </div>
@@ -652,9 +886,14 @@ export function OrderBundles({discountCodes}) {
                                           type="radio"
                                           name="price_type"
                                           value="onetime"
-                                          checked={priceType === 'onetime'}
+                                          defaultChecked={
+                                            cartInfo.priceType === 'onetime'
+                                          }
                                           onClick={(e) =>
-                                            setPriceType(e.target.value)
+                                            setCartInfo({
+                                              ...cartInfo,
+                                              priceType: e.target.value,
+                                            })
                                           }
                                         />
                                         <span
@@ -668,7 +907,13 @@ export function OrderBundles({discountCodes}) {
                                           className="font-bold"
                                           style={{fontSize: 18}}
                                         >
-                                          $189.95 /{' '}
+                                          {getFullCost(
+                                            cartInfo.bundle?.variants?.nodes[0]
+                                              ?.priceV2?.amount,
+                                            cartInfo.bundle?.variants?.nodes[0]
+                                              ?.priceV2?.currencyCode,
+                                          )}{' '}
+                                          /{' '}
                                         </span>
                                         <span>3 meals</span>
                                       </label>
@@ -698,19 +943,44 @@ export function OrderBundles({discountCodes}) {
                     </div>
                     <div className="w-full mb-4 md:mb-0">
                       <span className="font-bold" style={{fontSize: 18}}>
-                        You&apos;re Saving $20!
+                        {(() => {
+                          const price =
+                            cartInfo.bundle?.variants?.nodes[0]?.priceV2
+                              ?.amount;
+                          const adjustmentPercentage =
+                            cartInfo.bundle?.sellingPlanGroups?.nodes[0]
+                              ?.sellingPlans?.nodes[0]?.priceAdjustments[0]
+                              ?.adjustmentValue?.adjustmentPercentage;
+
+                          if (typeof adjustmentPercentage !== 'undefined') {
+                            const diff = (price * adjustmentPercentage) / 100;
+                            if (cartInfo.priceType === 'recuring')
+                              return (
+                                "You're Saving " +
+                                getFullCost(
+                                  diff,
+                                  cartInfo.bundle?.variants?.nodes[0]?.priceV2
+                                    ?.currencyCode,
+                                ) +
+                                '!'
+                              );
+                          }
+                          return '';
+                        })()}
                       </span>
                       <span className="font-bold" style={{float: 'right'}}>
                         Total:{' '}
-                        {getSymbolFromCurrency(
-                          cost?.totalAmount?.currencyCode,
-                        ) + cost?.totalAmount?.amount}
+                        {getFullCost(
+                          cartInfo.totalPrice,
+                          cartInfo.bundle?.variants?.nodes[0]?.priceV2
+                            ?.currencyCode,
+                        )}
                       </span>
                     </div>
                     <div className="w-full mb-4 md:mb-0">
                       <button
+                        disabled={checkoutButtonStatus !== ''}
                         className="block w-full py-5 text-lg text-center uppercase font-bold "
-                        href="#"
                         style={{
                           backgroundColor: '#DB9707',
                           color: '#FFFFFF',
@@ -718,7 +988,9 @@ export function OrderBundles({discountCodes}) {
                         }}
                         onClick={handleCheckout}
                       >
-                        CHECKOUT
+                        {checkoutButtonStatus !== ''
+                          ? checkoutButtonStatus
+                          : 'CHECKOUT'}
                       </button>
                     </div>
                     <div>
@@ -760,11 +1032,11 @@ export function OrderBundles({discountCodes}) {
                     </div>
                   </div>
                 </div>
-              </Loading>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </Loading>
   );
 }
