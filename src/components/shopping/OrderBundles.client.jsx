@@ -163,12 +163,12 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
         quantity: 1,
         attributes: [
           {
-            key: 'Customer ID',
+            key: 'Customer ID', //when customer logged in then get from there (this will be shopify customer ID)
             value: 'XXX',
           },
           {
-            key: 'Delivery Date',
-            value: getUsaStandard(cartInfo.deliveryDate),
+            key: 'Delivery_Date',
+            value: cartInfo.deliveryDate, //delivery date format will be 2022-12-26
           },
           {
             key: 'Cart Token',
@@ -220,12 +220,12 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
           id: lines[0].id,
           attributes: [
             {
-              key: 'Customer ID',
-              value: 'XXX',
+              key: 'Customer Id',
+              value: 'XXX', //when customer logged in then get from there (this will be shopify customer ID)
             },
             {
-              key: 'Delivery Date',
-              value: getUsaStandard(cartInfo.deliveryDate),
+              key: 'Delivery_Date',
+              value: cartInfo.deliveryDate, //delivery date format will be 2022-12-26
             },
             {
               key: 'Cart Token',
