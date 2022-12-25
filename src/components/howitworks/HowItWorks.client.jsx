@@ -20,8 +20,8 @@ export function HowItWorks() {
 
               <h1
                 className="font-opensans text-[65px] leading-[70px] md:text-7xl lg:text-[130px] text-center font-extrabold lg:mt-[-90px]
-          md:mt-[-40px] mt-[-46px]
-          "
+               md:mt-[-40px] mt-[-46px]
+                  "
               >
                 THE NITTY GRITTY
               </h1>
