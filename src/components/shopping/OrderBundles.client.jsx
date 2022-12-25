@@ -370,22 +370,22 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
     //this is the meals product array which has only one meal Item but there can be multiple meals item selected
     const items = cartInfo.productsInCart.map((el) => ({
       bundle_configuration_content_id: el.bundleConfigurationId,
-      platform_product_variant_id: el.variants.nodes[0].id,
+      platform_product_variant_id: parseInt(el.variants.nodes[0]?.id.split('ProductVariant/')[1]),
       quantity: el.quantity,
     }));
 
     const cartData = {
-      platform_customer_id: null, //if customer logged in then save shopify customer id
+      platform_customer_id: null, //if customer logged in then save shopify customer idp
       platform_cart_token,
-      platform_product_id: cartInfo.bundle.platform_product_id,
-      platform_variant_id: cartInfo.bundle.variants.nodes[0].id,
+      platform_product_id: cartInfo.bundleData.platform_product_id,
+      platform_variant_id: parseInt(cartInfo.bundle.variants.nodes[0]?.id.split('ProductVariant/')[1]), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
       subscription_type: 'Family',
       subscription_sub_type: 'Regular (serves 5)',
-      bundle_id: cartInfo.bundle.id,
+      bundle_id: cartInfo.bundleData.id,
       delivery_day: getDayUsa(cartInfo.deliveryDate),
       contents: [...items],
     };
-
+    //save data in customer_cart table
     await axios.post(`/api/bundle/carts`, cartData);
 
     setCheckoutButtonStatus('');
