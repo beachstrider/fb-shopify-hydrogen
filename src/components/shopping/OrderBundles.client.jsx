@@ -162,10 +162,10 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
         sellingPlanId: undefined,
         quantity: 1,
         attributes: [
-          {
-            key: 'Customer ID', //when customer logged in then get from there (this will be shopify customer ID)
-            value: 'XXX',
-          },
+          // {
+          //   key: 'Customer Id', //when customer logged in then get from there (this will be shopify customer ID)
+          //   value: '6732587368739',
+          // },
           {
             key: 'Delivery_Date',
             value: cartInfo.deliveryDate, //delivery date format will be 2022-12-26
@@ -219,10 +219,10 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
         {
           id: lines[0].id,
           attributes: [
-            {
-              key: 'Customer Id',
-              value: 'XXX', //when customer logged in then get from there (this will be shopify customer ID)
-            },
+            // {
+            //   key: 'Customer Id',
+            //   value: '6732587368739', //when customer logged in then get from there (this will be shopify customer ID)
+            // },
             {
               key: 'Delivery_Date',
               value: cartInfo.deliveryDate, //delivery date format will be 2022-12-26
@@ -379,8 +379,8 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
       platform_cart_token,
       platform_product_id: cartInfo.bundleData.platform_product_id,
       platform_variant_id: parseInt(cartInfo.bundle.variants.nodes[0]?.id.split('ProductVariant/')[1]), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
-      subscription_type: 'Family',
-      subscription_sub_type: 'Regular (serves 5)',
+      subscription_type: cartInfo.bundle.variants.nodes[0]?.title.split(' /')[0],
+      subscription_sub_type:  cartInfo.bundle.variants.nodes[0]?.title.split('/ ')[1],
       bundle_id: cartInfo.bundleData.id,
       delivery_day: getDayUsa(cartInfo.deliveryDate),
       contents: [...items],
