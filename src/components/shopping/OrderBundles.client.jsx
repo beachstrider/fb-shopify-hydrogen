@@ -16,7 +16,13 @@ import Loading from '~/components/Loading/index.client';
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
 // This platform product ID is the bundle product ID.
-const platform_product_id = 8022523347235;
+
+ // first of all we need get all the bundle products from shpify where the product_type is Custom Bundle
+ // what is the url (family which is default url or event or Infunencer )
+ //then based on taf of bundle product we will get our bundle product
+ // if tag in 'Family Feastbox' then it will get the product id of Family Feastbox bundle product
+ // if tag in 'Event Feastbox' then it will get the product id of Family Feastbox bundle product
+const platform_product_id = 8022523347235; //family feastbox
 
 function getCartInfo() {
   if (
