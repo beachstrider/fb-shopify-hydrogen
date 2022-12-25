@@ -43,9 +43,10 @@ export const PRODUCT_CARD_FRAGMENT = gql`
     title
     publishedAt
     handle
-    variants(first: 1) {
+    variants(first: 10) {
       nodes {
         id
+        title
         image {
           url
           altText
@@ -59,6 +60,48 @@ export const PRODUCT_CARD_FRAGMENT = gql`
         compareAtPriceV2 {
           amount
           currencyCode
+        }
+      }
+    }
+    sellingPlanGroups(first: 10) {
+      nodes {
+        sellingPlans(first: 10) {
+          nodes {
+            id
+            description
+            name
+            options {
+              name
+              value
+            }
+            priceAdjustments {
+              orderCount
+              adjustmentValue {
+                ... on SellingPlanFixedAmountPriceAdjustment {
+                  adjustmentAmount {
+                    currencyCode
+                    amount
+                  }
+                }
+                ... on SellingPlanFixedPriceAdjustment {
+                  price {
+                    currencyCode
+                    amount
+                  }
+                }
+                ... on SellingPlanPercentagePriceAdjustment {
+                  adjustmentPercentage
+                }
+              }
+            }
+            recurringDeliveries
+          }
+        }
+        appName
+        name
+        options {
+          name
+          values
         }
       }
     }

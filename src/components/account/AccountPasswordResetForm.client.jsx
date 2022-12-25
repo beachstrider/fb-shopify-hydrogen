@@ -87,7 +87,7 @@ export function AccountPasswordResetForm({id, resetToken}) {
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
               value={password}
-              minLength={8}
+              minLength={6}
               required
               onChange={(event) => {
                 setPassword(event.target.value);
@@ -112,7 +112,7 @@ export function AccountPasswordResetForm({id, resetToken}) {
               aria-label="Re-enter password"
               value={passwordConfirm}
               required
-              minLength={8}
+              minLength={6}
               onChange={(event) => {
                 setPasswordConfirm(event.target.value);
               }}

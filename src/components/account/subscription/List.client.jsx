@@ -2,10 +2,6 @@ import {Link, Image} from '@shopify/hydrogen';
 import {getUsaStandard} from '~/utils/dates';
 
 const Index = ({subscriptions}) => {
-  const activateSubscriptions = subscriptions.filter(
-    (el) => el.status === 'active',
-  );
-
   return (
     <div className="flex flex-wrap -m-4">
       <div className="w-full max-w-2xl mb-4 text-3xl uppercase font-bold">
@@ -14,13 +10,13 @@ const Index = ({subscriptions}) => {
       <div className="w-full max-w-2xl mb-4 text-lg">
         Edit &amp; active subscription.
       </div>
-      {!activateSubscriptions.length ? (
-        <div className="flex justify-center items-center py-8 text-lg">
-          No Item
+      {!subscriptions.length ? (
+        <div className="flex w-full  max-w-2xl justify-center items-center py-8 text-lg">
+          •••
         </div>
       ) : (
         <>
-          {activateSubscriptions.map((subscription, key) => (
+          {subscriptions.map((subscription, key) => (
             <div key={key} className="w-full  p-4">
               {/*-------Subscription box--------------------------*/}
               <div className="container px-4 mx-auto subscription_box">
@@ -57,12 +53,17 @@ const Index = ({subscriptions}) => {
                       <div className="absolute flex justify-center items-center z-10 -top-3 -right-3 rounded-full w-6 h-6 bg-[#bca79c] text-white font-bold">
                         {subscription.quantity}
                       </div>
-                      <Image
+                      <img
                         style={{position: 'relative', zIndex: 1}}
                         className="rounded-lg mb-0"
                         width={100}
                         height={100}
-                        src={subscription.product.images.small}
+                        src={
+                          typeof subscription?.product?.images?.small !==
+                          'undefined'
+                            ? subscription?.product?.images?.small
+                            : ''
+                        }
                         alt="img"
                       />
                     </div>

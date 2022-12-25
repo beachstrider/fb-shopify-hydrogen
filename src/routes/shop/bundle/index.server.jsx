@@ -1,41 +1,27 @@
 import {Suspense} from 'react';
-import {CacheNone, Seo, useLocalization} from '@shopify/hydrogen';
+import {Seo, useSession, useShopQuery} from '@shopify/hydrogen';
 import {Layout} from '~/components/index.server';
-import {Section} from '~/components';
-import {DeliveryDateStep} from '~/components/shopping/DeliveryDateStep.client';
-import {ChooseMealStep} from '~/components/shopping/ChooseMealStep.client';
-import {OrderTypeStep} from '~/components/shopping/OrderTypeStep.client';
-import {ShoppingBanner} from '~/components/shopping/ShoppingBanner';
-import {getGuestToken, getDeliveryDates} from '~/lib/bundleApi';
-import {BundleFallback} from '~/components';
+import {OrderBundles} from '~/components/shopping/OrderBundles.client';
 
-const Index = ({response}) => {
-  response.cache(CacheNone());
-  const {
-    language: {isoCode: languageCode},
-    country: {isoCode: countryCode},
-  } = useLocalization();
+import {CUSTOMER_QUERY} from '~/lib/gql';
+
+const Index = () => {
+  let {discountCodes} = useSession();
+  discountCodes = typeof discountCodes === 'undefined' ? [] : discountCodes;
+
+  const {customerAccessToken} = useSession();
 
   return (
     <Layout>
       <Suspense>
         <Seo type="noindex" data={{title: 'FeastBox Bundle'}} />
       </Suspense>
-
-      <section className="py-20" style={{backgroundColor: '#EFEFEF'}}>
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap -mx-4 mb-24">
-            <ShoppingBanner />
-            <div className="w-full px-4 md:w-2/3">
-              <Suspense fallback={<BundleFallback />}>
-                <DeliveryDateStep />
-                <ChooseMealStep />
-                <OrderTypeStep />
-              </Suspense>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Suspense>
+        <OrderBundles
+          discountCodes={discountCodes}
+          customerAccessToken={customerAccessToken}
+        />
+      </Suspense>
     </Layout>
   );
 };

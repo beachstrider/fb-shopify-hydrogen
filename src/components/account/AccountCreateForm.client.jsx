@@ -58,7 +58,12 @@ export function AccountCreateForm() {
   return (
     <div className="flex justify-center my-24 px-4">
       <div className="max-w-md w-full">
-        <h1 className="text-4xl">Create an Account.</h1>
+        <h2
+              className="font-bold font-heading text-3xl mb-2 mb-8 uppercase"
+              style={{marginTop: '20px'}}
+            >
+              Create an Account.
+            </h2>
         <form noValidate className="pt-6 pb-8 mt-4 mb-4" onSubmit={onSubmit}>
           {submitError && (
             <div className="flex items-center justify-center mb-6 bg-zinc-500">
@@ -67,7 +72,7 @@ export function AccountCreateForm() {
           )}
           <div className="mb-3">
             <input
-              className={`mb-1 ${getInputStyleClasses(emailError)}`}
+              className={`mb-1 ${getInputStyleClasses(emailError)} w-full  py-3 px-4 text-coolGray-500 leading-tight placeholder-coolGray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-coolGray-200 shadow-xs`}
               id="email"
               name="email"
               type="email"
@@ -90,7 +95,7 @@ export function AccountCreateForm() {
           </div>
           <div className="mb-3">
             <input
-              className={`mb-1 ${getInputStyleClasses(passwordError)}`}
+              className={`mb-1 ${getInputStyleClasses(passwordError)} `}
               id="password"
               name="password"
               type="password"
@@ -98,7 +103,7 @@ export function AccountCreateForm() {
               placeholder="Password"
               aria-label="Password"
               value={password}
-              minLength={8}
+              minLength={6}
               required
               onChange={(event) => {
                 setPassword(event.target.value);
@@ -112,12 +117,53 @@ export function AccountCreateForm() {
           </div>
           <div className="flex items-center justify-between">
             <button
-              className="bg-primary text-contrast rounded py-2 px-4 focus:shadow-outline block w-full"
+              className="block py-2 text-lg text-center uppercase font-bold w-full "
+              style={{
+                backgroundColor: '#DB9707',
+                color: '#FFFFFF',
+                marginBottom: '15px',
+              }}
               type="submit"
             >
               Create Account
             </button>
           </div>
+
+          <button
+            type="button"
+            className="block py-2 text-lg text-center mt-8 font-bold w-full"
+            href="#"
+            style={{
+              backgroundColor: '#4285F4',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Google
+          </button>
+          <button
+            type="button"
+            className="block py-2 text-lg text-center  font-bold w-full"
+            style={{
+              backgroundColor: '#4267B2',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Facebook
+          </button>
+          <button
+            type="button"
+            className="block py-2 text-lg text-center  font-bold w-full "
+            style={{
+              backgroundColor: '#35465C',
+              color: '#FFFFFF',
+              marginBottom: '15px',
+            }}
+          >
+            Sign in with Amazon
+          </button>
+
           <div className="flex items-center mt-4">
             <p className="align-baseline text-sm">
               Already have an account? &nbsp;
@@ -126,6 +172,7 @@ export function AccountCreateForm() {
               </Link>
             </p>
           </div>
+          
         </form>
       </div>
     </div>

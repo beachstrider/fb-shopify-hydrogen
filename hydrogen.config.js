@@ -18,3 +18,4 @@ export default defineConfig({
     maxAge: 60 * 60 * 24 * 30,
   }),
 });
+

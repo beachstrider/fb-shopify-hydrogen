@@ -5,7 +5,7 @@ export async function api(request, {session}) {
 
   if (session) {
     if (request.method === 'PUT') {
-      return updateShippingAddress(params);
+      return await updateShippingAddress(params);
     }
   }
 

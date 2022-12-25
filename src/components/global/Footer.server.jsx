@@ -1,5 +1,4 @@
-import {useUrl, Link} from '@shopify/hydrogen';
-import {Section, Heading, FooterMenu, CountrySelector} from '~/components';
+import {Link, useUrl} from '@shopify/hydrogen';
 
 /**
  * A server component that specifies the content of the footer on the website
@@ -19,7 +18,7 @@ export function Footer({menu}) {
 
   return (
     <div>
-      <section className="relative pt-24 pb-28 bg-black overflow-hidden pl-6">
+      <section className="relative pt-24 pb-12 bg-black overflow-hidden pl-6">
         {/* <img className="absolute right-0 top-0" src="assets/gradient2.svg" alt=""/> */}
         <div className="relative z-10 container px-4 mx-auto">
           <div className="flex flex-wrap justify-between -m-8">
@@ -55,7 +54,7 @@ export function Footer({menu}) {
                 <li className="mb-1.5">
                   <Link
                     className="font-medium leading-relaxed text-white"
-                    to="/inflencers"
+                    to="/influencers"
                   >
                     Influencers
                   </Link>
@@ -78,7 +77,7 @@ export function Footer({menu}) {
                 <li className="mb-1.5">
                   <Link
                     className="font-medium leading-relaxed text-white"
-                    to="/heating"
+                    to="/heating-instructions"
                   >
                     Heating Instructions
                   </Link>
@@ -109,7 +108,7 @@ export function Footer({menu}) {
                 </li>
               </ul>
             </div>
-            <div className="w-full sm:w-1/2 lg:w-2/12 p-6">
+            <div className="w-full sm:w-1/2 lg:w-3/12 p-6">
               <h3 className="mb-6 font-semibold leading-normal text-white text-md">
                 Contact Us
               </h3>
@@ -117,7 +116,7 @@ export function Footer({menu}) {
                 <li className="mb-1.5">
                   <Link className="font-medium text-white" to="tel:5555555555">
                     Phone: <br />
-                    1-555-555-5555
+                    1-888-503-6539
                   </Link>
                 </li>
                 <li className="mb-1.5">
@@ -128,11 +127,16 @@ export function Footer({menu}) {
                     Email:  support@feastbox.com
                   </Link>
                 </li>
+                <li className="mb-1.5 font-medium text-white">
+                  Address: <br />
+                  676 W 1200 N Springville, UT 84663
+                  <br /><br/>
+                </li>
               </ul>
               <div className="w-auto p-2">
                 <div className="flex flex-wrap -m-1.5">
                   <div className="w-auto p-1">
-                    <Link to="#">
+                    <Link to="https://www.facebook.com/quickfreshlife/" target={'blank'}>
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="bi bi-facebook text-white"
@@ -148,7 +152,7 @@ export function Footer({menu}) {
                     </Link>
                   </div>
                   <div className="w-auto p-1">
-                    <Link to="#">
+                    <Link to="https://www.youtube.com/channel/UCr8y_tjQTdGOV4_esdwX0-w" target={'blank'}>
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="bi bi-youtube bi-twitter text-white"
@@ -164,7 +168,7 @@ export function Footer({menu}) {
                     </Link>
                   </div>
                   <div className="w-auto p-1">
-                    <Link to="#">
+                    <Link to="https://www.instagram.com/quickfreshlife/" target={'blank'}>
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="text-white"
@@ -180,7 +184,7 @@ export function Footer({menu}) {
                     </Link>
                   </div>
                   <div className="w-auto p-1">
-                    <Link to="#">
+                    <Link to="https://www.tiktok.com/@quickfresh?is_from_webapp=1&sender_device=pc" target={'blank'}>
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="bi bi-tiktok text-white"
@@ -197,11 +201,16 @@ export function Footer({menu}) {
                   </div>
                 </div>
               </div>
+              
             </div>
             <div className="w-full sm:w-1/2 lg:w-2/12 p-6"> </div>
           </div>
         </div>
       </section>
+      <hr className='bg-[#C1C1C1]'/>
+      <div className='bg-black text-center py-8'>
+        <p className='text-white'>© 2022 FEASTbox, All Rights Reserved</p>
+      </div>
     </div>
   );
 }
