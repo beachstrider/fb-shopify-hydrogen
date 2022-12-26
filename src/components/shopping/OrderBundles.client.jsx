@@ -13,7 +13,7 @@ import {
 } from '~/utils/dates';
 import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
-import {MealModal} from "../global/index";
+import {MealModal} from '../global/index';
 
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
@@ -70,7 +70,7 @@ export function OrderBundles({
   );
 
   const [newDiscountCodes, setNewDiscountCodes] = useState([]);
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState(false);
 
   const {
     id,
@@ -628,9 +628,12 @@ export function OrderBundles({
                               )}
                             </div>
 
-                            <MealModal open={openModal} close={() => setOpenModal(false)}>
+                            <MealModal
+                              open={openModal}
+                              close={() => setOpenModal(false)}
+                            >
                               <div className="border-0 shadow-lg relative flex flex-col w-80 sm:w-full bg-white outline-none focus:outline-none">
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 px-5 py-5" >
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 px-5 py-5">
                                   <div>
                                     <img
                                       alt="Laptop"
@@ -647,32 +650,55 @@ export function OrderBundles({
                                       {product.title}
                                     </h1>
                                     {/*<Tabs/>*/}
-                                    <div className='px-12 text-black'>
-                                      <h3 className='font-bold text-lg'>What's in the box</h3>
+                                    <div className="px-12 text-black">
+                                      <h3 className="font-bold text-lg">
+                                        What's in the box
+                                      </h3>
                                       <div>
-                                        <p className='font-bold text-sm'>Main courses</p>
-                                        <span className='text-sm'>15oz Briker,</span><br/>
-                                        <span className='text-sm'>Pulled fork</span>
+                                        <p className="font-bold text-sm">
+                                          Main courses
+                                        </p>
+                                        <span className="text-sm">
+                                          15oz Briker,
+                                        </span>
+                                        <br />
+                                        <span className="text-sm">
+                                          Pulled fork
+                                        </span>
                                       </div>
-                                      <div className='py-2'>
-                                        <p className='font-bold text-sm'>Side Dishes</p>
-                                        <span className='text-sm'>20oz Mac & Cheese</span><br/>
-                                        <span className='text-sm'>20oz Green Beans</span>
+                                      <div className="py-2">
+                                        <p className="font-bold text-sm">
+                                          Side Dishes
+                                        </p>
+                                        <span className="text-sm">
+                                          20oz Mac & Cheese
+                                        </span>
+                                        <br />
+                                        <span className="text-sm">
+                                          20oz Green Beans
+                                        </span>
                                       </div>
                                       <div>
-                                        <p className='font-bold text-sm'>Sauce</p>
-                                        <span className='text-sm'>30oz BBQ sauce</span>
+                                        <p className="font-bold text-sm">
+                                          Sauce
+                                        </p>
+                                        <span className="text-sm">
+                                          30oz BBQ sauce
+                                        </span>
                                       </div>
                                     </div>
-                                    <div className='px-12 pt-2 pb-6 text-black'>
-                                      <h3 className='font-bold text-lg'>Allergens</h3>
-                                      <span className='text-sm'>Wheat,milk</span>
+                                    <div className="px-12 pt-2 pb-6 text-black">
+                                      <h3 className="font-bold text-lg">
+                                        Allergens
+                                      </h3>
+                                      <span className="text-sm">
+                                        Wheat,milk
+                                      </span>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </MealModal>
-
                           </div>
                         ))
                       ) : (
@@ -720,7 +746,7 @@ export function OrderBundles({
                                   style={{color: '#000000'}}
                                 >
                                   <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-                                    <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0">
+                                    <div className="w-full px-4 mb-4 md:mb-0">
                                       {' '}
                                       <label>
                                         <input
@@ -808,20 +834,6 @@ export function OrderBundles({
                                           </span>
                                         </div>
                                       </label>
-                                    </div>
-                                    <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-                                      <span
-                                        className="font-bold"
-                                        style={{
-                                          float: 'right',
-                                          backgroundColor: '#DB9725',
-                                          color: '#FFFFFF',
-                                          padding: '10px 6px',
-                                          marginTop: '-8px',
-                                        }}
-                                      >
-                                        $8.50/Serving
-                                      </span>
                                     </div>
                                   </div>
                                   <hr />
@@ -947,20 +959,6 @@ export function OrderBundles({
                                         </span>
                                         <span>3 meals</span>
                                       </label>
-                                    </div>
-                                    <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-                                      <span
-                                        className="font-bold"
-                                        style={{
-                                          float: 'right',
-                                          backgroundColor: '#DB9725',
-                                          color: '#FFFFFF',
-                                          padding: '10px 6px',
-                                          marginTop: '-8px',
-                                        }}
-                                      >
-                                        $12.66/Serving
-                                      </span>
                                     </div>
                                   </div>
                                   <hr />
