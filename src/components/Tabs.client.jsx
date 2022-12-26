@@ -1,9 +1,10 @@
 import React,{useState} from 'react'
-const Tabs = (setOpenModal) => {
+const Tabs = ({metafields}) => {
   const [selectedTag,setSelectedTag]=useState(1);
   const handleSelect=(index)=>{
     setSelectedTag(index)
   }
+
   return (
     <>
     <div className="max-w-2xl mx-auto px-8 sm:px-0">
@@ -45,28 +46,24 @@ const Tabs = (setOpenModal) => {
             className={selectedTag ===1 ? "tab-panel text-center":"absolute top-0 invisible opacity-0 text-left"}
           >
                  <div className="text-left text-black">
-                  <p>BBQ marinated pulled pork served with roasted sweet potatoes, coleslaw, black beans, peppers, onion, and corn.</p>
+                  <p>{ metafields.find(x => x.key === "description").value }</p>
               <h3 className="font-bold text-lg">What's in the box</h3>
               <div>
                 <p className="font-bold text-sm">Main courses</p>
-                <span className="text-sm">15oz Briker,</span>
-                <br />
-                <span className="text-sm">Pulled fork</span>
+                <span className="text-sm">{ metafields.find(x => x.key === "main_course").value }</span>
               </div>
               <div className="py-2">
                 <p className="font-bold text-sm">Side Dishes</p>
-                <span className="text-sm">20oz Mac & Cheese</span>
-                <br />
-                <span className="text-sm">20oz Green Beans</span>
+                <span className="text-sm">{ metafields.find(x => x.key === "side_dishes").value }</span>
               </div>
               <div>
                 <p className="font-bold text-sm">Sauce</p>
-                <span className="text-sm">30oz BBQ sauce</span>
+                <span className="text-sm">{ metafields.find(x => x.key === "sauce").value }</span>
               </div>
             </div>
             <div className="text-left text-black">
               <h3 className="font-bold text-lg">Allergens</h3>
-              <span className="text-sm">Wheat,milk</span>
+              <span className="text-sm">{ metafields.find(x => x.key === "allergens").value }</span>
             </div>
           </div>
           <div
