@@ -728,11 +728,7 @@ const handleChangeCupon = () =>{
                         3. Choose your Price
                       </div>
                       <div className="flex flex-wrap -mx-4 mb-24">
-<<<<<<< HEAD
                         <div className="lg:w-[50%] md:w-full sm-max:w-full px-2">
-=======
-                        <div className="w-full lg:w-1/2 px-2">
->>>>>>> 6c6042b1234169b9992b9e0fee165e96c2941f43
                           <div className="relative  bg-gray-50">
                             <div
                               className="px-6 py-4 mt-8"
@@ -929,11 +925,7 @@ const handleChangeCupon = () =>{
                             </div>
                           </div>
                         </div>
-<<<<<<< HEAD
                         <div className="lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2">
-=======
-                        <div className="w-full lg:w-1/2 mb-20 px-2">
->>>>>>> 6c6042b1234169b9992b9e0fee165e96c2941f43
                           <div className="relative  bg-gray-50">
                             <div
                               className="px-6 py-4 mt-8"
