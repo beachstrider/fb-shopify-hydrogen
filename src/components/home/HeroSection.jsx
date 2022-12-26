@@ -23,8 +23,8 @@ export function HeroSection() {
             <div className="md:flex block items-start justify-between h-full">
               <div className="w-full md:w-1/2 relative">
                 <img
-                  src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/plate.png"
-                  className=" object-cover mx-auto md:max-w-md max-w-[350px] h-auto md:mt-[-60px] mt-0"
+                  src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/food_slider_3.png"
+                  className=" object-cover mx-auto w-full h-auto  mt-0"
                   alt=""
                 />
                 <img
