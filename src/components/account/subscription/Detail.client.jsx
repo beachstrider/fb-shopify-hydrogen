@@ -1,4 +1,4 @@
-import {Image, useNavigate, Link, fetchSync,useCart} from '@shopify/hydrogen';
+import {Image, useNavigate, Link, fetchSync, useCart} from '@shopify/hydrogen';
 import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';
@@ -7,12 +7,12 @@ import {
   isFuture,
   sortByDateProperty,
   dayjs,
-  now,
+  today,
   getISO,
   getDayUsa,
   formatUTCDate,
 } from '~/utils/dates';
-import {formatTodayDate} from "../../../utils/dates";
+import {formatTodayDate} from '../../../utils/dates';
 
 const Index = ({subscription, subscription_id, user}) => {
   // console.log('subscription===', subscription);
@@ -92,7 +92,7 @@ const Index = ({subscription, subscription_id, user}) => {
       //     });
       //     alert('The subscription info is updated.');
       //   };
-    }
+    };
     getData(subscription_id);
   }, []);
 
@@ -125,14 +125,14 @@ const Index = ({subscription, subscription_id, user}) => {
           `/api/bundleAuth/subscriptions/${sub.id}/orders`,
         );
         const subscriptionOrders = subscriptionOrdersResponse.data;
-        console.log('----sub----', sub)
-        console.log('----subscriptionOrders----', subscriptionOrders)
+        console.log('----sub----', sub);
+        console.log('----subscriptionOrders----', subscriptionOrders);
 
         const configDataResponse = await axios.get(
           `/api/bundleAuth/bundles/${sub.bundle_id}/configurations`,
         );
         const configData = configDataResponse.data;
-        console.log('----configData----', configData)
+        console.log('----configData----', configData);
 
         if (configData.length > 0) {
           /*for (const config of configData) {
@@ -277,7 +277,7 @@ const Index = ({subscription, subscription_id, user}) => {
       }
     }
 
-   /* const itemsToDisplay = mapWeeksToDisplay(
+    /* const itemsToDisplay = mapWeeksToDisplay(
       sortObjectKeys(subscriptionArray),
       query.get('date')
     )
@@ -301,8 +301,7 @@ const Index = ({subscription, subscription_id, user}) => {
     // console.log('----activeWeeksLimit----', activeWeeksLimit)
     setLimit(activeWeeksLimit)
     setLoading(false)*/
-
-  }
+  };
 
   return (
     <div className="flex flex-wrap -m-4">
@@ -339,14 +338,14 @@ const Index = ({subscription, subscription_id, user}) => {
                           style={{boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)'}}
                         >
                           <select
-                          className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
-                          name="week"
-                          style={{borderWidth: 0, backgroundImage: 'none'}}
-                        >
-                          <option disabled value={-1}>
-                            --Choose an option--
-                          </option>
-                        </select>
+                            className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
+                            name="week"
+                            style={{borderWidth: 0, backgroundImage: 'none'}}
+                          >
+                            <option disabled value={-1}>
+                              --Choose an option--
+                            </option>
+                          </select>
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg
                               className="fill-current h-4 w-4"
@@ -368,13 +367,15 @@ const Index = ({subscription, subscription_id, user}) => {
                         2. Choose your Meals
                       </div>
                       <div className="text-xl font-medium mt-[19px]">
-                        <Link to={`/account/subscriptions/${subscription.id}/edit-order`}>
-                        <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
-                          Edit Order
-                        </button>
+                        <Link
+                          to={`/account/subscriptions/${subscription.id}/edit-order`}
+                        >
+                          <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
+                            Edit Order
+                          </button>
                         </Link>
                       </div>
-                    </div> 
+                    </div>
 
                     <div className="flex flex-wrap -mx-2 -mb-2">
                       {/*--1----*/}

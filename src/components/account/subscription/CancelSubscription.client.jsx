@@ -3,7 +3,7 @@ import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';
 import {getUsaStandard} from '~/utils/dates';
-import {now} from '~/utils/dates';
+import {today} from '~/utils/dates';
 
 const Index = ({subscription}) => {
   const navigate = useNavigate();

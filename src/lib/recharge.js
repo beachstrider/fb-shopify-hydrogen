@@ -1,5 +1,5 @@
 import {fetchSync} from '@shopify/hydrogen';
-import {now} from '~/utils/dates';
+import {today} from '~/utils/dates';
 
 export const headers1 = {
   Accept: 'application/json',
@@ -115,7 +115,7 @@ export const getUpcomingOrders = async (params) => {
       customer_id,
       status: ['queued'],
       sort_by: 'scheduled_at-asc',
-      scheduled_at_min: now(),
+      scheduled_at_min: today(),
     });
 
     return new Response(JSON.stringify(charges));

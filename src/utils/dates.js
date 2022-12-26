@@ -129,10 +129,10 @@ export const getUsaStandard = (date) => {
   return dayjs(date).format('MMM DD, YYYY');
 };
 
-export const now = () => dayjs().format('YYYY-MM-DD');
+export const today = () => dayjs().format('YYYY-MM-DD');
 
 export const isFuture = (date) => {
-  return dayjs(date).isSameOrAfter(now());
+  return dayjs(date).isSameOrAfter(today());
 };
 
 export {dayjs};

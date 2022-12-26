@@ -1,8 +1,9 @@
 import {useCart} from '@shopify/hydrogen/client';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 
 import {
+  today,
   isFuture,
   sortByDateProperty,
   dayjs,
@@ -17,11 +18,11 @@ const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
 // This platform product ID is the bundle product ID.
 
- // first of all we need get all the bundle products from shpify where the product_type is Custom Bundle
- // what is the url (family which is default url or event or Infunencer )
- //then based on taf of bundle product we will get our bundle product
- // if tag in 'Family Feastbox' then it will get the product id of Family Feastbox bundle product
- // if tag in 'Event Feastbox' then it will get the product id of Family Feastbox bundle product
+// first of all we need get all the bundle products from shpify where the product_type is Custom Bundle
+// what is the url (family which is default url or event or Infunencer )
+//then based on taf of bundle product we will get our bundle product
+// if tag in 'Family Feastbox' then it will get the product id of Family Feastbox bundle product
+// if tag in 'Event Feastbox' then it will get the product id of Family Feastbox bundle product
 const platform_product_id = 8022523347235; //family feastbox
 
 function getCartInfo() {
@@ -49,9 +50,13 @@ function getCartInfo() {
   };
 }
 
-export function OrderBundles({discountCodes, customerAccessToken}) {
+export function OrderBundles({
+  discountCodes,
+  customerAccessToken,
+  customerId = '',
+}) {
   const [deliveryDates, setDeliveryDates] = useState([]);
-  const [availableSlots, setAvailableSlots] = useState([]);
+  // const [availableSlots, setAvailableSlots] = useState([]);
   const [products, setProducts] = useState([]);
 
   const [cartInfo, setCartInfo] = useState(getCartInfo());
@@ -59,12 +64,17 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
-  const [checkoutButtonStatus, setCheckoutButtonStatus] = useState('');
+  const [checkoutButtonStatus, setCheckoutButtonStatus] = useState(
+    'CART INITIALIZING...',
+  );
+
+  const [newDiscountCodes, setNewDiscountCodes] = useState([]);
 
   const {
     id,
-    cartCreate,
     lines,
+
+    cartCreate,
     linesAdd,
     linesRemove,
     linesUpdate,
@@ -72,6 +82,10 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
     discountCodesUpdate,
     checkoutUrl,
   } = useCart();
+
+  const discountCodeInputRef = useRef(null);
+
+  console.log('lines', lines);
 
   const isQuantityLimit = (() => {
     let currentQuantity = 0;
@@ -107,13 +121,18 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
   }, [cartInfo.bundle]);
 
   useEffect(() => {
-    if (typeof id !== 'undefined') updateCart();
+    if (typeof id !== 'undefined') {
+      setCheckoutButtonStatus('CART UPDATING...');
+      updateCart();
+      setTimeout(() => {
+        setCheckoutButtonStatus('');
+      }, [3000]);
+    }
   }, [cartInfo.priceType, cartInfo.frequencyValue]);
 
   useEffect(() => {
     localStorage?.setItem('cartInfo', JSON.stringify(cartInfo));
   }, [cartInfo]);
-
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
       [...new Array(7)].map((_, dayIndex) =>
@@ -133,13 +152,54 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
     (week) => week.findIndex((el) => el === cartInfo.deliveryDate) !== -1,
   );
 
+  const availableSlots = (() => {
+    if (selectedWeekIndex !== -1) {
+      const week = weeks[selectedWeekIndex];
+
+      const slots = deliveryDates.filter(
+        (deliveryDate) =>
+          week.findIndex((el) => deliveryDate.date === el) !== -1,
+      );
+      return slots;
+    }
+    return [];
+  })();
+
+  function getAttributes(cartToken, customerId, deliveryDate) {
+    deliveryDate = cartInfo.deliveryDate !== '' ? deliveryDate : today();
+    cartToken = cartToken !== '' ? cartToken.substring(19) : 'xxx';
+    customerId =
+      customerId !== '' ? customerId.substring(23) : 'unauthenticated customer';
+
+    return [
+      {
+        key: 'Customer Id', //when customer logged in then get from there (this will be shopify customer ID)
+        value: customerId,
+      },
+      {
+        key: 'Delivery_Date',
+        value: deliveryDate, //delivery date format will be 2022-12-26
+      },
+      {
+        key: 'Cart Token',
+        value: cartToken, // issue on checkout without updating cart
+      },
+    ];
+  }
+
   async function initCart(merchandiseId) {
     const line = {
       merchandiseId,
       sellingPlanId: undefined,
       quantity: 1,
+      attributes: getAttributes(
+        typeof id !== 'undefined' ? id : '',
+        customerId,
+        cartInfo.deliveryDate,
+      ),
     };
 
+    console.log('init id', id, line);
     if (typeof id === 'undefined') {
       cartCreate({
         lines: [line],
@@ -167,20 +227,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
         merchandiseId: cartInfo.bundle.variants.nodes[0].id,
         sellingPlanId: undefined,
         quantity: 1,
-        attributes: [
-          // {
-          //   key: 'Customer Id', //when customer logged in then get from there (this will be shopify customer ID)
-          //   value: '6732587368739',
-          // },
-          {
-            key: 'Delivery_Date',
-            value: cartInfo.deliveryDate, //delivery date format will be 2022-12-26
-          },
-          {
-            key: 'Cart Token',
-            value: id.substring(19),
-          },
-        ],
+        attributes: getAttributes(id, customerId, cartInfo.deliveryDate),
       };
 
       if (cartInfo.priceType === 'recuring') {
@@ -200,8 +247,8 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
             100;
       }
 
+      console.log('update id', id, line);
       setCartInfo({...cartInfo, totalPrice: newTotalPrice});
-      setCheckoutButtonStatus('CART UPDATING...');
       if (lines.length) {
         linesRemove(lines.map((line) => line.id));
         setTimeout(() => {
@@ -226,20 +273,7 @@ const handleChangeCupon = () =>{
       linesUpdate([
         {
           id: lines[0].id,
-          attributes: [
-            // {
-            //   key: 'Customer Id',
-            //   value: '6732587368739', //when customer logged in then get from there (this will be shopify customer ID)
-            // },
-            {
-              key: 'Delivery_Date',
-              value: cartInfo.deliveryDate, //delivery date format will be 2022-12-26
-            },
-            {
-              key: 'Cart Token',
-              value: id.substring(19),
-            },
-          ],
+          attributes: getAttributes(id, customerId, cartInfo.deliveryDate),
         },
       ]);
     }
@@ -321,14 +355,14 @@ const handleChangeCupon = () =>{
   }
 
   function handleWeekChange(e) {
-    const week = weeks[e.target.value];
+    const newWeek = weeks[e.target.value];
 
-    const slots = deliveryDates.filter(
-      (deliveryDate) => week.findIndex((el) => deliveryDate.date === el) !== -1,
+    const newSlots = deliveryDates.filter(
+      (deliveryDate) =>
+        newWeek.findIndex((el) => deliveryDate.date === el) !== -1,
     );
 
-    setAvailableSlots(slots);
-    setCartInfo({...cartInfo, deliveryDate: slots[0].date});
+    setCartInfo({...cartInfo, deliveryDate: newSlots[0].date});
 
     setIsDeliveryDateEditing(false);
   }
@@ -373,12 +407,15 @@ const handleChangeCupon = () =>{
     }
 
     setCheckoutButtonStatus('CHECKOUT...');
+
     //car save function which has bundle product and meals product save in database
     const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
     //this is the meals product array which has only one meal Item but there can be multiple meals item selected
     const items = cartInfo.productsInCart.map((el) => ({
       bundle_configuration_content_id: el.bundleConfigurationId,
-      platform_product_variant_id: parseInt(el.variants.nodes[0]?.id.split('ProductVariant/')[1]),
+      platform_product_variant_id: parseInt(
+        el.variants.nodes[0]?.id.split('ProductVariant/')[1],
+      ),
       quantity: el.quantity,
     }));
 
@@ -386,9 +423,13 @@ const handleChangeCupon = () =>{
       platform_customer_id: null, //if customer logged in then save shopify customer idp
       platform_cart_token,
       platform_product_id: cartInfo.bundleData.platform_product_id,
-      platform_variant_id: parseInt(cartInfo.bundle.variants.nodes[0]?.id.split('ProductVariant/')[1]), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
-      subscription_type: cartInfo.bundle.variants.nodes[0]?.title.split(' /')[0],
-      subscription_sub_type:  cartInfo.bundle.variants.nodes[0]?.title.split('/ ')[1],
+      platform_variant_id: parseInt(
+        cartInfo.bundle.variants.nodes[0]?.id.split('ProductVariant/')[1],
+      ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
+      subscription_type:
+        cartInfo.bundle.variants.nodes[0]?.title.split(' /')[0],
+      subscription_sub_type:
+        cartInfo.bundle.variants.nodes[0]?.title.split('/ ')[1],
       bundle_id: cartInfo.bundleData.id,
       delivery_day: getDayUsa(cartInfo.deliveryDate),
       contents: [...items],
@@ -397,7 +438,15 @@ const handleChangeCupon = () =>{
     await axios.post(`/api/bundle/carts`, cartData);
 
     setCheckoutButtonStatus('');
-    window.open(checkoutUrl, '_blank');
+    location.href = checkoutUrl;
+  }
+
+  async function handleSubmitDiscountCode() {
+    await axios.get(`/api/discount/set/${discountCodeInputRef.current.value}`);
+    discountCodesUpdate([discountCodeInputRef.current.value]);
+    setTimeout(() => {
+      setNewDiscountCodes([discountCodeInputRef.current.value]);
+    }, 1500);
   }
 
   return (
@@ -679,7 +728,11 @@ const handleChangeCupon = () =>{
                         3. Choose your Price
                       </div>
                       <div className="flex flex-wrap -mx-4 mb-24">
+<<<<<<< HEAD
                         <div className="lg:w-[50%] md:w-full sm-max:w-full px-2">
+=======
+                        <div className="w-full lg:w-1/2 px-2">
+>>>>>>> 6c6042b1234169b9992b9e0fee165e96c2941f43
                           <div className="relative  bg-gray-50">
                             <div
                               className="px-6 py-4 mt-8"
@@ -719,6 +772,7 @@ const handleChangeCupon = () =>{
                                           defaultChecked={
                                             cartInfo.priceType === 'recuring'
                                           }
+                                          disabled={checkoutButtonStatus !== ''}
                                           onClick={(e) =>
                                             setCartInfo({
                                               ...cartInfo,
@@ -727,7 +781,11 @@ const handleChangeCupon = () =>{
                                           }
                                         />
                                         <span
-                                          className="ml-3 font-bold"
+                                          className={`ml-3 font-bold ${
+                                            checkoutButtonStatus !== ''
+                                              ? 'text-gray-400'
+                                              : ''
+                                          }`}
                                           style={{fontSize: 18}}
                                         >
                                           SUBSCRIBE &amp; SAVE
@@ -871,7 +929,11 @@ const handleChangeCupon = () =>{
                             </div>
                           </div>
                         </div>
+<<<<<<< HEAD
                         <div className="lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2">
+=======
+                        <div className="w-full lg:w-1/2 mb-20 px-2">
+>>>>>>> 6c6042b1234169b9992b9e0fee165e96c2941f43
                           <div className="relative  bg-gray-50">
                             <div
                               className="px-6 py-4 mt-8"
@@ -894,6 +956,7 @@ const handleChangeCupon = () =>{
                                           type="radio"
                                           name="price_type"
                                           value="onetime"
+                                          disabled={checkoutButtonStatus !== ''}
                                           defaultChecked={
                                             cartInfo.priceType === 'onetime'
                                           }
@@ -905,7 +968,11 @@ const handleChangeCupon = () =>{
                                           }
                                         />
                                         <span
-                                          className="ml-3 font-bold"
+                                          className={`ml-3 font-bold ${
+                                            checkoutButtonStatus !== ''
+                                              ? 'text-gray-400'
+                                              : ''
+                                          }`}
                                           style={{fontSize: 18}}
                                         >
                                           ONE-TIME
@@ -946,6 +1013,33 @@ const handleChangeCupon = () =>{
                                     </div>
                                   </div>
                                   <hr />
+                                  <div className="flex flex-wrap -mx-2">
+                                    <div className="w-2/3 py-4 px-2 mb-4 md:mb-0">
+                                      <input
+                                        ref={discountCodeInputRef}
+                                        className="block w-full py-3 px-4 mb-2 md:mb-0 leading-tight border-[#707070] focus:bg-white border focus:outline-none"
+                                        defaultValue={newDiscountCodes.join(
+                                          ' ',
+                                        )}
+                                        disabled={newDiscountCodes.length > 0}
+                                      />
+                                    </div>
+                                    <div className="flex items-center w-1/3 py-4  mb-4 md:mb-0">
+                                      {newDiscountCodes.length === 0 && (
+                                        <button
+                                          className="inline-block py-3 px-6 leading-none text-white shadow bg-[#DB9707] p-[30px]"
+                                          onClick={handleSubmitDiscountCode}
+                                        >
+                                          Apply
+                                        </button>
+                                      )}
+                                      {newDiscountCodes.length > 0 && (
+                                        <div className="text-lg font-bold text-[#DB9707]">
+                                          Code Applied
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -1014,7 +1108,9 @@ const handleChangeCupon = () =>{
                           textAlign: 'center',
                         }}
                       >
-                        <u>100% Money-Back Guarantee</u>
+                        <u>
+                          <a href={checkoutUrl}>100% Money-Back Guarantee</a>
+                        </u>
                       </div>
                       <div
                         name="money_hidden"
