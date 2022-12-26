@@ -265,9 +265,9 @@ export function OrderBundles({
       }
     }
   }
-const handleChangeCupon = () =>{
-  console.log("ad")
-}
+  const handleChangeCupon = () => {
+    console.log('ad');
+  };
   function updateCartAttributes() {
     if (lines.length && typeof id !== 'undefined') {
       linesUpdate([
@@ -453,12 +453,13 @@ const handleChangeCupon = () =>{
     <Loading className="py-20" isLoading={isInitialDataLoading}>
       <section className="bg-[#EFEFEF]">
         <div className="2xl-only container lg:container mx-auto">
-          <div className="flex flex-wrap mb-8">
+          <div className="flex flex-wrap">
             <div className="absolutew w-full md:w-1/1 xl:w-1/2 lg:w-1/2 xl:w-1/2">
               <div className="relative left-0 top-0 ">
-                <img className="object-cover w-full md:h-1/2"
-                     src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/shop/hero.png"
-                     alt="FeastBox bundle Image"
+                <img
+                  className="object-cover w-full md:h-1/2"
+                  src={cartInfo.bundle?.variants?.nodes[0]?.image?.url}
+                  alt="FeastBox bundle"
                 />
               </div>
             </div>
@@ -1003,6 +1004,9 @@ const handleChangeCupon = () =>{
                               : 'CHECKOUT'}
                           </button>
                         </div>
+                        <div className="block text-gray-700 text-sm font-bold mb-4 md:mb-0 underline mt-8">
+                          100% Money-Back Guarantee
+                        </div>
                       </div>
                       <div className="w-full lg:w-1/2">
                         <div>
@@ -1088,18 +1092,6 @@ const handleChangeCupon = () =>{
                       </div>
                     </div>
                     <div>
-                      <div
-                        className="block text-gray-800 text-lg font-bold mb-2"
-                        style={{
-                          fontSize: 24,
-                          marginTop: 60,
-                          textAlign: 'center',
-                        }}
-                      >
-                        <u>
-                          <a href={checkoutUrl}>100% Money-Back Guarantee</a>
-                        </u>
-                      </div>
                       <div
                         name="money_hidden"
                         className="w-full  text-center"
