@@ -538,58 +538,6 @@ export function OrderBundles({
                         </div>
                       </div>
                     </div>
-                    <div
-                      style={{
-                        backgroundColor: '#EFEFEF',
-                        paddingBottom: 20,
-                        textAlign: 'center',
-                      }}
-                    >
-                      <p className="mb-2 text-md text-gray-500" />
-                      <div className="text-sm">
-                        Delivery Day:{' '}
-                        <strong>
-                          {cartInfo.deliveryDate
-                            ? getUsaStandard(cartInfo.deliveryDate)
-                            : '---- -- --'}
-                        </strong>
-                      </div>
-                      <div className="text-sm" style={{color: '#DB9707'}}>
-                        <button
-                          onClick={() =>
-                            setIsDeliveryDateEditing(!isDeliveryDateEditing)
-                          }
-                        >
-                          <u>Change Delivery Day</u>
-                        </button>
-                      </div>
-                      <p />
-                    </div>
-                    {isDeliveryDateEditing && availableSlots.length > 0 && (
-                      <div className="flex flex-wrap lg:flex-nowrap justify-around gap-4 -mx-4 -mb-4 md:mb-0 bg-white px-[26px] py-[20px]">
-                        {availableSlots.map((slot, key) => (
-                          <button
-                            key={key}
-                            className={`block w-full py-5 text-sm text-center uppercase font-bold leading-normal border-2 ${
-                              cartInfo.deliveryDate === slot.date
-                                ? 'text-white bg-[#DB9707]'
-                                : 'text-[#DB9707]'
-                            }  border-[#DB9707]`}
-                            onClick={() => {
-                              setCartInfo({
-                                ...cartInfo,
-                                deliveryDate: slot.date,
-                              });
-                              setIsDeliveryDateEditing(false);
-                            }}
-                          >
-                            {dayjs(slot.date).format('dddd')}
-                            <br />
-                            {getUsaStandard(slot.date)}
-                          </button>
-                        ))}
-                      </div>
-                    )}
                   </div>
                   <div
                     className="block text-gray-800 text-lg font-bold mb-2"
@@ -1033,57 +981,144 @@ export function OrderBundles({
                         </div>
                       </div>
                     </div>
-                    <div className="w-full mb-4 md:mb-0">
-                      <span className="font-bold" style={{fontSize: 18}}>
-                        {(() => {
-                          const price =
-                            cartInfo.bundle?.variants?.nodes[0]?.priceV2
-                              ?.amount;
-                          const adjustmentPercentage =
-                            cartInfo.bundle?.sellingPlanGroups?.nodes[0]
-                              ?.sellingPlans?.nodes[0]?.priceAdjustments[0]
-                              ?.adjustmentValue?.adjustmentPercentage;
+                    <div className="w-full flex gap-4">
+                      <div className="w-full lg:w-1/2">
+                        <div className="mb-4 md:mb-0">
+                          <span className="font-bold" style={{fontSize: 18}}>
+                            {/* {(() => {
+                              const price =
+                                cartInfo.bundle?.variants?.nodes[0]?.priceV2
+                                  ?.amount;
+                              const adjustmentPercentage =
+                                cartInfo.bundle?.sellingPlanGroups?.nodes[0]
+                                  ?.sellingPlans?.nodes[0]?.priceAdjustments[0]
+                                  ?.adjustmentValue?.adjustmentPercentage;
 
-                          if (typeof adjustmentPercentage !== 'undefined') {
-                            const diff = (price * adjustmentPercentage) / 100;
-                            if (cartInfo.priceType === 'recuring')
-                              return (
-                                "You're Saving " +
-                                getFullCost(
-                                  diff,
-                                  cartInfo.bundle?.variants?.nodes[0]?.priceV2
-                                    ?.currencyCode,
-                                ) +
-                                '!'
-                              );
-                          }
-                          return '';
-                        })()}
-                      </span>
-                      <span className="font-bold" style={{float: 'right'}}>
-                        Total:{' '}
-                        {getFullCost(
-                          cartInfo.totalPrice,
-                          cartInfo.bundle?.variants?.nodes[0]?.priceV2
-                            ?.currencyCode,
-                        )}
-                      </span>
-                    </div>
-                    <div className="w-full mb-4 md:mb-0">
-                      <button
-                        disabled={checkoutButtonStatus !== ''}
-                        className="block w-full py-5 text-lg text-center uppercase font-bold "
-                        style={{
-                          backgroundColor: '#DB9707',
-                          color: '#FFFFFF',
-                          marginTop: 10,
-                        }}
-                        onClick={handleCheckout}
-                      >
-                        {checkoutButtonStatus !== ''
-                          ? checkoutButtonStatus
-                          : 'CHECKOUT'}
-                      </button>
+                              if (typeof adjustmentPercentage !== 'undefined') {
+                                const diff =
+                                  (price * adjustmentPercentage) / 100;
+                                if (cartInfo.priceType === 'recuring')
+                                  return (
+                                    "You're Saving " +
+                                    getFullCost(
+                                      diff,
+                                      cartInfo.bundle?.variants?.nodes[0]
+                                        ?.priceV2?.currencyCode,
+                                    ) +
+                                    '!'
+                                  );
+                              }
+                              return '';
+                            })()} */}
+                          </span>
+                          <span className="font-bold text-[28px]">
+                            Total:{' '}
+                            {getFullCost(
+                              cartInfo.totalPrice,
+                              cartInfo.bundle?.variants?.nodes[0]?.priceV2
+                                ?.currencyCode,
+                            )}
+                          </span>
+                        </div>
+                        <div className="mb-4 md:mb-0">
+                          <button
+                            disabled={checkoutButtonStatus !== ''}
+                            className="block w-full py-5 text-lg text-center uppercase font-bold "
+                            style={{
+                              backgroundColor: '#DB9707',
+                              color: '#FFFFFF',
+                              marginTop: 10,
+                            }}
+                            onClick={handleCheckout}
+                          >
+                            {checkoutButtonStatus !== ''
+                              ? checkoutButtonStatus
+                              : 'CHECKOUT'}
+                          </button>
+                        </div>
+                      </div>
+                      <div className="w-full lg:w-1/2">
+                        <div>
+                          <div
+                            style={{
+                              backgroundColor: '#EFEFEF',
+                            }}
+                          >
+                            <div className="text-sm">
+                              Delivery Day:{' '}
+                              <strong>
+                                {cartInfo.deliveryDate
+                                  ? getUsaStandard(cartInfo.deliveryDate)
+                                  : '---- -- --'}
+                              </strong>
+                            </div>
+                            <div className="text-sm" style={{color: '#DB9707'}}>
+                              <button
+                                onClick={() =>
+                                  setIsDeliveryDateEditing(
+                                    !isDeliveryDateEditing,
+                                  )
+                                }
+                              >
+                                <u>Change Delivery Day</u>
+                              </button>
+                            </div>
+                            <p />
+                          </div>
+                        </div>
+                        <div>
+                          {isDeliveryDateEditing &&
+                            availableSlots.length > 0 && (
+                              <div
+                                className="bg-white mt-4"
+                                style={{
+                                  'box-shadow': '0 3px 10px rgb(0 0 0 / 0.2)',
+                                }}
+                              >
+                                <div className="mb-1">
+                                  <div
+                                    className="mb-1"
+                                    style={{color: '#000000'}}
+                                  >
+                                    <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0 p-2">
+                                      {availableSlots.map((slot, key) => (
+                                        <div
+                                          key={key}
+                                          className="w-full md:w-1/2 px-4 mb-4 md:mb-0"
+                                        >
+                                          <label>
+                                            <input
+                                              type="radio"
+                                              name="radio-name"
+                                              value="option 1"
+                                              checked={
+                                                cartInfo.deliveryDate ===
+                                                slot.date
+                                              }
+                                              onClick={() => {
+                                                setCartInfo({
+                                                  ...cartInfo,
+                                                  deliveryDate: slot.date,
+                                                });
+                                                setIsDeliveryDateEditing(false);
+                                              }}
+                                            />
+                                            <span className="ml-3 font-bold">
+                                              {dayjs(slot.date).format(
+                                                'dddd, MMM DD',
+                                              )}{' '}
+                                            </span>
+                                            <br />
+                                          </label>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                        </div>
+                      </div>
                     </div>
                     <div>
                       <div
