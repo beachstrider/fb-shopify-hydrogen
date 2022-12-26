@@ -218,7 +218,9 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
       }
     }
   }
-
+const handleChangeCupon = () =>{
+  console.log("ad")
+}
   function updateCartAttributes() {
     if (lines.length && typeof id !== 'undefined') {
       linesUpdate([
@@ -677,7 +679,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
                         3. Choose your Price
                       </div>
                       <div className="flex flex-wrap -mx-4 mb-24">
-                        <div className="w-full px-2">
+                        <div className="lg:w-[50%] md:w-full sm-max:w-full px-2">
                           <div className="relative  bg-gray-50">
                             <div
                               className="px-6 py-4 mt-8"
@@ -869,7 +871,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
                             </div>
                           </div>
                         </div>
-                        <div className="w-full mb-20 px-2">
+                        <div className="lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2">
                           <div className="relative  bg-gray-50">
                             <div
                               className="px-6 py-4 mt-8"
@@ -937,6 +939,10 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
                                       >
                                         $12.66/Serving
                                       </span>
+                                    </div>
+                                    <div className='w-full flex items-center px-[20px] py-[10px]'>
+                                      <input className='border-[1px] border-[#707070] p-[5px]' placeholder='Coupon Code' onChange={handleChangeCupon} value={'tysor123'}/>
+                                      <span className='text-[#DB9707] ml-[5px] font-bold'>Code applied</span>
                                     </div>
                                   </div>
                                   <hr />
