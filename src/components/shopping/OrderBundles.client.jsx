@@ -13,6 +13,7 @@ import {
 } from '~/utils/dates';
 import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
+import {MealModal} from "../global/index";
 
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
@@ -69,6 +70,7 @@ export function OrderBundles({
   );
 
   const [newDiscountCodes, setNewDiscountCodes] = useState([]);
+  const [openModal, setOpenModal] = useState(false)
 
   const {
     id,
@@ -528,6 +530,7 @@ export function OrderBundles({
                               >
                                 <img
                                   className="mx-auto object-contain"
+                                  onClick={() => setOpenModal(true)}
                                   src={
                                     product.variants.nodes[0].image
                                       ? product.variants.nodes[0].image?.url
@@ -624,6 +627,48 @@ export function OrderBundles({
                                 </div>
                               )}
                             </div>
+
+                            <MealModal open={openModal} close={() => setOpenModal(false)}>
+                              <div className="border-0 shadow-lg relative flex flex-col w-80 sm:w-full bg-white outline-none focus:outline-none">
+                                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 px-5 py-5" >
+                                        <div>
+                                          <img
+                                            alt="Laptop"
+                                            src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
+                                            className="h-full w-full object-cover"
+                                          />
+                                        </div>
+                                        <div>
+                                          <h1 className="text-lg font-bold text-center mb-4 text-black">
+                                            BBQ FeastBox
+                                          </h1>
+                                          {/*<Tabs/>*/}
+                                          <div className='px-12 text-black'>
+                                            <h3 className='font-bold text-lg'>What's in the box</h3>
+                                            <div>
+                                              <p className='font-bold text-sm'>Main courses</p>
+                                              <span className='text-sm'>15oz Briker,</span><br/>
+                                              <span className='text-sm'>Pulled fork</span>
+                                            </div>
+                                            <div className='py-2'>
+                                              <p className='font-bold text-sm'>Side Dishes</p>
+                                              <span className='text-sm'>20oz Mac & Cheese</span><br/>
+                                              <span className='text-sm'>20oz Green Beans</span>
+                                            </div>
+                                            <div>
+                                              <p className='font-bold text-sm'>Sauce</p>
+                                              <span className='text-sm'>30oz BBQ sauce</span>
+                                            </div>
+                                          </div>
+                                          <div className='px-12 pt-2 pb-6 text-black'>
+                                            <h3 className='font-bold text-lg'>Allergens</h3>
+                                            <span className='text-sm'>Wheat,milk</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                            </MealModal>
+
                           </div>
                         ))
                       ) : (
