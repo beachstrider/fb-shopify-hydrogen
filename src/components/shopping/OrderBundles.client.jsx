@@ -3,6 +3,7 @@ import {useState, useEffect} from 'react';
 import axios from 'axios';
 
 import {
+  today,
   isFuture,
   sortByDateProperty,
   dayjs,
@@ -17,11 +18,11 @@ const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
 // This platform product ID is the bundle product ID.
 
- // first of all we need get all the bundle products from shpify where the product_type is Custom Bundle
- // what is the url (family which is default url or event or Infunencer )
- //then based on taf of bundle product we will get our bundle product
- // if tag in 'Family Feastbox' then it will get the product id of Family Feastbox bundle product
- // if tag in 'Event Feastbox' then it will get the product id of Family Feastbox bundle product
+// first of all we need get all the bundle products from shpify where the product_type is Custom Bundle
+// what is the url (family which is default url or event or Infunencer )
+//then based on taf of bundle product we will get our bundle product
+// if tag in 'Family Feastbox' then it will get the product id of Family Feastbox bundle product
+// if tag in 'Event Feastbox' then it will get the product id of Family Feastbox bundle product
 const platform_product_id = 8022523347235; //family feastbox
 
 function getCartInfo() {
@@ -71,6 +72,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
     buyerIdentityUpdate,
     discountCodesUpdate,
     checkoutUrl,
+    status,
   } = useCart();
 
   const isQuantityLimit = (() => {
@@ -88,6 +90,8 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
 
     fetchAll();
   }, []);
+
+  console.log('status: ', id, status, lines);
 
   useEffect(() => {
     setIsProductsLoading(true);
@@ -107,6 +111,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
   }, [cartInfo.bundle]);
 
   useEffect(() => {
+    console.log('useEffect with cartInfo.pricetype, frequency');
     if (typeof id !== 'undefined') updateCart();
   }, [cartInfo.priceType, cartInfo.frequencyValue]);
 
@@ -162,6 +167,8 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
   async function updateCart() {
     if (cartInfo.bundle) {
       let newTotalPrice = cartInfo.bundle.variants.nodes[0].priceV2.amount;
+      const deliveryDate =
+        cartInfo.deliveryDate !== '' ? cartInfo.deliveryDate : today();
 
       const line = {
         merchandiseId: cartInfo.bundle.variants.nodes[0].id,
@@ -174,7 +181,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
           // },
           {
             key: 'Delivery_Date',
-            value: cartInfo.deliveryDate, //delivery date format will be 2022-12-26
+            value: deliveryDate, //delivery date format will be 2022-12-26
           },
           {
             key: 'Cart Token',
@@ -203,10 +210,13 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
       setCartInfo({...cartInfo, totalPrice: newTotalPrice});
       setCheckoutButtonStatus('CART UPDATING...');
       if (lines.length) {
+        console.log('cart removing..');
         linesRemove(lines.map((line) => line.id));
         setTimeout(() => {
+          console.log('before linesAdd');
           linesAdd([line]);
           setTimeout(() => {
+            console.log('after linesAdd');
             setCheckoutButtonStatus('');
           }, [1500]);
         }, 1500);
@@ -371,12 +381,15 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
     }
 
     setCheckoutButtonStatus('CHECKOUT...');
+
     //car save function which has bundle product and meals product save in database
     const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
     //this is the meals product array which has only one meal Item but there can be multiple meals item selected
     const items = cartInfo.productsInCart.map((el) => ({
       bundle_configuration_content_id: el.bundleConfigurationId,
-      platform_product_variant_id: parseInt(el.variants.nodes[0]?.id.split('ProductVariant/')[1]),
+      platform_product_variant_id: parseInt(
+        el.variants.nodes[0]?.id.split('ProductVariant/')[1],
+      ),
       quantity: el.quantity,
     }));
 
@@ -384,9 +397,13 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
       platform_customer_id: null, //if customer logged in then save shopify customer idp
       platform_cart_token,
       platform_product_id: cartInfo.bundleData.platform_product_id,
-      platform_variant_id: parseInt(cartInfo.bundle.variants.nodes[0]?.id.split('ProductVariant/')[1]), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
-      subscription_type: cartInfo.bundle.variants.nodes[0]?.title.split(' /')[0],
-      subscription_sub_type:  cartInfo.bundle.variants.nodes[0]?.title.split('/ ')[1],
+      platform_variant_id: parseInt(
+        cartInfo.bundle.variants.nodes[0]?.id.split('ProductVariant/')[1],
+      ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
+      subscription_type:
+        cartInfo.bundle.variants.nodes[0]?.title.split(' /')[0],
+      subscription_sub_type:
+        cartInfo.bundle.variants.nodes[0]?.title.split('/ ')[1],
       bundle_id: cartInfo.bundleData.id,
       delivery_day: getDayUsa(cartInfo.deliveryDate),
       contents: [...items],
@@ -395,7 +412,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
     await axios.post(`/api/bundle/carts`, cartData);
 
     setCheckoutButtonStatus('');
-    window.open(checkoutUrl, '_blank');
+    window.open(checkoutUrl, '_self');
   }
 
   return (

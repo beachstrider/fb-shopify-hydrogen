@@ -1,4 +1,4 @@
-import {Image, useNavigate, Link, fetchSync,useCart} from '@shopify/hydrogen';
+import {Image, useNavigate, Link, fetchSync, useCart} from '@shopify/hydrogen';
 import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';
@@ -7,7 +7,7 @@ import {
   isFuture,
   sortByDateProperty,
   dayjs,
-  now,
+  today,
   getISO,
   getDayUsa,
 } from '~/utils/dates';
@@ -60,7 +60,7 @@ const Index = ({subscription}) => {
     cost,
     checkoutUrl,
   } = useCart();
-  
+
   useEffect(() => {
     fetch();
   }, []);
@@ -310,22 +310,22 @@ const Index = ({subscription}) => {
                           style={{boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)'}}
                         >
                           <select
-                          className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
-                          name="week"
-                          onChange={handleWeekChange}
-                          value={selectedWeekIndex}
-                          style={{borderWidth: 0, backgroundImage: 'none'}}
-                        >
-                          <option disabled value={-1}>
-                            --Choose an option--
-                          </option>
-                          {weeks.map((week, key) => (
-                            <option key={key} value={key}>
-                              {getUsaStandard(week[0])} -{' '}
-                              {getUsaStandard(week[6])}
+                            className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
+                            name="week"
+                            onChange={handleWeekChange}
+                            value={selectedWeekIndex}
+                            style={{borderWidth: 0, backgroundImage: 'none'}}
+                          >
+                            <option disabled value={-1}>
+                              --Choose an option--
                             </option>
-                          ))}
-                        </select>
+                            {weeks.map((week, key) => (
+                              <option key={key} value={key}>
+                                {getUsaStandard(week[0])} -{' '}
+                                {getUsaStandard(week[6])}
+                              </option>
+                            ))}
+                          </select>
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg
                               className="fill-current h-4 w-4"
@@ -480,13 +480,15 @@ const Index = ({subscription}) => {
                         2. Choose your Meals
                       </div>
                       <div className="text-xl font-medium mt-[19px]">
-                        <Link to={`/account/subscriptions/${subscription.id}/edit-order`}>
-                        <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
-                          Edit Order
-                        </button>
+                        <Link
+                          to={`/account/subscriptions/${subscription.id}/edit-order`}
+                        >
+                          <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
+                            Edit Order
+                          </button>
                         </Link>
                       </div>
-                    </div> 
+                    </div>
 
                     <div className="flex flex-wrap -mx-2 -mb-2">
                       {/*--1----*/}
