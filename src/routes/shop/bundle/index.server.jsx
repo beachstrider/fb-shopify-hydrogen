@@ -10,6 +10,17 @@ const Index = () => {
   discountCodes = typeof discountCodes === 'undefined' ? [] : discountCodes;
 
   const {customerAccessToken} = useSession();
+  let customerId = '';
+
+  if (customerAccessToken) {
+    const {data} = useShopQuery({
+      query: CUSTOMER_QUERY,
+      variables: {customerAccessToken},
+    });
+
+    const {customer} = data;
+    customerId = customer.id;
+  }
 
   return (
     <Layout>
@@ -18,8 +29,9 @@ const Index = () => {
       </Suspense>
       <Suspense>
         <OrderBundles
-          discountCodes={discountCodes}
+          customerId={customerId}
           customerAccessToken={customerAccessToken}
+          discountCodes={discountCodes}
         />
       </Suspense>
     </Layout>
