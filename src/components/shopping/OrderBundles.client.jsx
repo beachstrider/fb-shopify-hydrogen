@@ -50,7 +50,11 @@ function getCartInfo() {
   };
 }
 
-export function OrderBundles({discountCodes, customerAccessToken}) {
+export function OrderBundles({
+  discountCodes,
+  customerAccessToken,
+  customerId = '',
+}) {
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [products, setProducts] = useState([]);
@@ -60,7 +64,9 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
-  const [checkoutButtonStatus, setCheckoutButtonStatus] = useState('');
+  const [checkoutButtonStatus, setCheckoutButtonStatus] = useState(
+    'CART INITIALIZING...',
+  );
 
   const {
     id,
@@ -72,7 +78,6 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
     buyerIdentityUpdate,
     discountCodesUpdate,
     checkoutUrl,
-    status,
   } = useCart();
 
   const isQuantityLimit = (() => {
@@ -90,8 +95,6 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
 
     fetchAll();
   }, []);
-
-  console.log('status: ', id, status, lines);
 
   useEffect(() => {
     setIsProductsLoading(true);
@@ -111,7 +114,6 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
   }, [cartInfo.bundle]);
 
   useEffect(() => {
-    console.log('useEffect with cartInfo.pricetype, frequency');
     if (typeof id !== 'undefined') updateCart();
   }, [cartInfo.priceType, cartInfo.frequencyValue]);
 
@@ -138,11 +140,34 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
     (week) => week.findIndex((el) => el === cartInfo.deliveryDate) !== -1,
   );
 
+  function getAttributes(cartToken, customerId, deliveryDate) {
+    deliveryDate = cartInfo.deliveryDate !== '' ? deliveryDate : today();
+    cartToken = cartToken !== '' ? cartToken.substring(19) : 'xxx';
+    customerId =
+      customerId !== '' ? customerId.substring(23) : 'unauthenticated customer';
+
+    return [
+      {
+        key: 'Customer Id', //when customer logged in then get from there (this will be shopify customer ID)
+        value: customerId,
+      },
+      {
+        key: 'Delivery_Date',
+        value: deliveryDate, //delivery date format will be 2022-12-26
+      },
+      {
+        key: 'Cart Token',
+        value: cartToken, // issue on checkout without updating cart
+      },
+    ];
+  }
+
   async function initCart(merchandiseId) {
     const line = {
       merchandiseId,
       sellingPlanId: undefined,
       quantity: 1,
+      attributes: getAttributes('', customerId, cartInfo.deliveryDate),
     };
 
     if (typeof id === 'undefined') {
@@ -167,27 +192,12 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
   async function updateCart() {
     if (cartInfo.bundle) {
       let newTotalPrice = cartInfo.bundle.variants.nodes[0].priceV2.amount;
-      const deliveryDate =
-        cartInfo.deliveryDate !== '' ? cartInfo.deliveryDate : today();
 
       const line = {
         merchandiseId: cartInfo.bundle.variants.nodes[0].id,
         sellingPlanId: undefined,
         quantity: 1,
-        attributes: [
-          // {
-          //   key: 'Customer Id', //when customer logged in then get from there (this will be shopify customer ID)
-          //   value: '6732587368739',
-          // },
-          {
-            key: 'Delivery_Date',
-            value: deliveryDate, //delivery date format will be 2022-12-26
-          },
-          {
-            key: 'Cart Token',
-            value: id.substring(19),
-          },
-        ],
+        attributes: getAttributes(id, customerId, cartInfo.deliveryDate),
       };
 
       if (cartInfo.priceType === 'recuring') {
@@ -208,15 +218,11 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
       }
 
       setCartInfo({...cartInfo, totalPrice: newTotalPrice});
-      setCheckoutButtonStatus('CART UPDATING...');
       if (lines.length) {
-        console.log('cart removing..');
         linesRemove(lines.map((line) => line.id));
         setTimeout(() => {
-          console.log('before linesAdd');
           linesAdd([line]);
           setTimeout(() => {
-            console.log('after linesAdd');
             setCheckoutButtonStatus('');
           }, [1500]);
         }, 1500);
@@ -234,20 +240,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
       linesUpdate([
         {
           id: lines[0].id,
-          attributes: [
-            // {
-            //   key: 'Customer Id',
-            //   value: '6732587368739', //when customer logged in then get from there (this will be shopify customer ID)
-            // },
-            {
-              key: 'Delivery_Date',
-              value: cartInfo.deliveryDate, //delivery date format will be 2022-12-26
-            },
-            {
-              key: 'Cart Token',
-              value: id.substring(19),
-            },
-          ],
+          attributes: getAttributes(id, customerId, cartInfo.deliveryDate),
         },
       ]);
     }
@@ -412,7 +405,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
     await axios.post(`/api/bundle/carts`, cartData);
 
     setCheckoutButtonStatus('');
-    window.open(checkoutUrl, '_self');
+    location.href = checkoutUrl;
   }
 
   return (
@@ -734,6 +727,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
                                           defaultChecked={
                                             cartInfo.priceType === 'recuring'
                                           }
+                                          disabled={checkoutButtonStatus !== ''}
                                           onClick={(e) =>
                                             setCartInfo({
                                               ...cartInfo,
@@ -742,7 +736,11 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
                                           }
                                         />
                                         <span
-                                          className="ml-3 font-bold"
+                                          className={`ml-3 font-bold ${
+                                            checkoutButtonStatus !== ''
+                                              ? 'text-gray-400'
+                                              : ''
+                                          }`}
                                           style={{fontSize: 18}}
                                         >
                                           SUBSCRIBE &amp; SAVE
@@ -909,6 +907,7 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
                                           type="radio"
                                           name="price_type"
                                           value="onetime"
+                                          disabled={checkoutButtonStatus !== ''}
                                           defaultChecked={
                                             cartInfo.priceType === 'onetime'
                                           }
@@ -920,7 +919,11 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
                                           }
                                         />
                                         <span
-                                          className="ml-3 font-bold"
+                                          className={`ml-3 font-bold ${
+                                            checkoutButtonStatus !== ''
+                                              ? 'text-gray-400'
+                                              : ''
+                                          }`}
                                           style={{fontSize: 18}}
                                         >
                                           ONE-TIME
@@ -1025,7 +1028,9 @@ export function OrderBundles({discountCodes, customerAccessToken}) {
                           textAlign: 'center',
                         }}
                       >
-                        <u>100% Money-Back Guarantee</u>
+                        <u>
+                          <a href={checkoutUrl}>100% Money-Back Guarantee</a>
+                        </u>
                       </div>
                       <div
                         name="money_hidden"
