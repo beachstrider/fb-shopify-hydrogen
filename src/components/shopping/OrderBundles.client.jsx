@@ -13,11 +13,7 @@ import {
 } from '~/utils/dates';
 import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
-<<<<<<< HEAD
-import {MealModal} from '../global/index';
-=======
-import {MealItem} from "./MealItem.client";
->>>>>>> 4529fcadea870822587c5770312511b4408558d3
+import {MealItem} from './MealItem.client';
 
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
@@ -528,10 +524,13 @@ export function OrderBundles({
                             className="flex w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center"
                           >
                             <div className="flex flex-col justify-between text-center">
-
                               <MealItem
                                 title={product.title}
-                                image={product.variants.nodes[0].image ? product.variants.nodes[0].image?.url : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'}
+                                image={
+                                  product.variants.nodes[0].image
+                                    ? product.variants.nodes[0].image?.url
+                                    : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                                }
                               />
 
                               {cartInfo.productsInCart.findIndex(
