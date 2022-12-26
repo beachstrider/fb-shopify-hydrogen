@@ -19,23 +19,6 @@ const Index = ({subscription}) => {
   const [processSkip, setProcessSkip] = useState(false);
   const [processCancel, setProcessCancel] = useState(false);
   const [processReactivate, setProcessReactivate] = useState(false);
-  const [deliveryDates, setDeliveryDates] = useState([]);
-  const [selectedWeekIndex, setSelectedWeekIndex] = useState(-1);
-  const [availableSlots, setAvailableSlots] = useState([]);
-  const [deliveryDate, setDeliveryDate] = useState('');
-  const [bundleData, setBundleData] = useState();
-  const [bundleContents, setBundleContents] = useState([]);
-
-  const [bundle, setBundle] = useState(null);
-  const [products, setProducts] = useState([]);
-  const [priceType, setPriceType] = useState();
-  const [frequencyValue, setFrequencyValue] = useState('7 Day(s)');
-  const [productsInCart, setProductsInCart] = useState([]);
-
-  const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
-  const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
-  const [isProductsLoading, setIsProductsLoading] = useState(false);
-  const [isCartUpdating, setIsCartUpdating] = useState(false);
   const {
     register,
     handleSubmit,
@@ -48,173 +31,6 @@ const Index = ({subscription}) => {
       order_interval_unit: subscription.order_interval_unit,
     },
   });
-  const {
-    id,
-    cartCreate,
-    lines,
-    linesAdd,
-    linesUpdate,
-    linesRemove,
-    cartAttributesUpdate,
-    discountCodesUpdate,
-    cost,
-    checkoutUrl,
-  } = useCart();
-  
-  useEffect(() => {
-    fetch();
-  }, []);
-
-  useEffect(() => {
-    async function fetchAll() {
-      await fetchDeliveryDates();
-      await fetchBundle();
-      setIsInitialDataLoading(false);
-    }
-
-    fetchAll();
-  }, []);
-
-  useEffect(() => {
-    setIsProductsLoading(true);
-    const contents = [...bundleContents].filter((content) => {
-      return dayjs(deliveryDate).isBetween(
-        content.deliver_after,
-        content.deliver_before,
-      );
-    });
-
-    fetchContents(contents);
-  }, [deliveryDate]);
-
-  useEffect(() => {
-    initCart();
-  }, [bundle]);
-
-  useEffect(() => {
-    initCart();
-  }, [priceType, frequencyValue]);
-
-  const weeks = [...new Array(6)]
-    .map((_, weekIndex) =>
-      [...new Array(7)].map((_, dayIndex) =>
-        getISO(dayjs().weekday(7 * weekIndex + dayIndex)),
-      ),
-    )
-    .filter(
-      (week) =>
-        !week.every((weekDate) =>
-          deliveryDates.findIndex(
-            (deliveryDate) => weekDate === deliveryDate.date,
-          ) !== -1
-            ? false
-            : true,
-        ),
-    );
-
-  async function initCart() {
-    if (bundle) {
-      const sellingPlanId =
-        priceType === 'recuring'
-          ? bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
-              (el) => el.options[0].value === frequencyValue,
-            )?.id
-          : undefined;
-      console.log('sellingPlanId:', sellingPlanId);
-
-      setIsCartUpdating(true);
-      cartCreate({
-        lines: [
-          {
-            merchandiseId: bundle.variants.nodes[0].id,
-            sellingPlanId,
-          },
-        ],
-      });
-
-      setTimeout(async () => {
-        await discountCodesUpdate(discountCodes);
-        alert();
-        setIsCartUpdating(false);
-      }, 2000);
-    }
-  }
-
-  async function fetchDeliveryDates() {
-    const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
-      .data;
-
-    const data = sortByDateProperty(
-      res.filter((el) => isFuture(el.date)),
-      'date',
-    );
-
-    setDeliveryDates(data);
-  }
-
-  async function fetchBundle() {
-    const bundleDataRes = (
-      await axios.get(`${caching_server}/bundles_dev.json`)
-    ).data.find((el) => el.platform_product_id === platform_product_id);
-
-    setBundleData(bundleDataRes);
-
-    const config = (
-      await axios.get(
-        `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
-      )
-    ).data;
-
-    setBundleContents(config.contents);
-  }
-
-  async function fetchContents(contents) {
-    const product_ids = [];
-    const config_ids = {};
-
-    for await (const content of contents) {
-      const res = (
-        await axios.get(
-          `/api/bundle/bundles/${bundleData.id}/configurations/${bundleData.configurations[0].id}/contents/${content.id}/products`,
-        )
-      ).data;
-
-      res.map((el) => {
-        product_ids.push(el.platform_product_id);
-        config_ids[`gid://shopify/Product/${el.platform_product_id}`] =
-          el.contents.bundle_configuration_id;
-      });
-    }
-
-    if (product_ids.length) {
-      const bundle_id = `gid://shopify/Product/${bundleData.platform_product_id}`;
-      const {
-        data: {bundle, products},
-      } = await axios.post(`/api/products/bundle-products`, {
-        bundle_id,
-        product_ids,
-      });
-
-      setBundle(bundle);
-      setProducts(
-        products.map((product) => ({
-          ...product,
-          bundleConfigurationId: config_ids[product.id],
-        })),
-      );
-    } else {
-      setBundle(null);
-      setProducts([]);
-    }
-
-    setProductsInCart([]);
-    setIsProductsLoading(false);
-  }
-  async function fetch() {
-    // const res = (await axios.get('/api/bundle-api/delivery-dates')).data;
-    // console.log('===', res);
-  }
-
   const onSubmit = async (data) => {
     await axios.post(`/api/account/subscriptions/update`, {
       id: subscription.id,
@@ -260,21 +76,6 @@ const Index = ({subscription}) => {
     });
     setChangedDeliveryDate(false);
   };
-
-  function handleWeekChange(e) {
-    const week = weeks[e.target.value];
-
-    const slots = deliveryDates.filter(
-      (deliveryDate) => week.findIndex((el) => deliveryDate.date === el) !== -1,
-    );
-
-    setSelectedWeekIndex(e.target.value);
-    setAvailableSlots(slots);
-    setDeliveryDate(slots[0].date);
-
-    setIsDeliveryDateEditing(false);
-  }
-
   return (
     <div className="flex flex-wrap -m-4">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -312,19 +113,11 @@ const Index = ({subscription}) => {
                           <select
                           className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
                           name="week"
-                          onChange={handleWeekChange}
-                          value={selectedWeekIndex}
                           style={{borderWidth: 0, backgroundImage: 'none'}}
                         >
                           <option disabled value={-1}>
                             --Choose an option--
                           </option>
-                          {weeks.map((week, key) => (
-                            <option key={key} value={key}>
-                              {getUsaStandard(week[0])} -{' '}
-                              {getUsaStandard(week[6])}
-                            </option>
-                          ))}
                         </select>
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg
