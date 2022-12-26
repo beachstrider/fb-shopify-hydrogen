@@ -1,4 +1,5 @@
 import {Link, useUrl} from '@shopify/hydrogen';
+import ButtonMailto from './MailTo.client';
 
 /**
  * A server component that specifies the content of the footer on the website
@@ -18,7 +19,7 @@ export function Footer({menu}) {
 
   return (
     <div>
-      <section className="relative pt-24 pb-12 bg-black overflow-hidden pl-6">
+      <section className="relative pt-24 pb-12 bg-[#121111] overflow-hidden pl-6">
         {/* <img className="absolute right-0 top-0" src="assets/gradient2.svg" alt=""/> */}
         <div className="relative z-10 container px-4 mx-auto">
           <div className="flex flex-wrap justify-between -m-8">
@@ -114,18 +115,10 @@ export function Footer({menu}) {
               </h3>
               <ul>
                 <li className="mb-1.5">
-                  <Link className="font-medium text-white" to="tel:5555555555">
-                    Phone: <br />
-                    1-888-503-6539
-                  </Link>
+                <ButtonMailto label="Phone: 1-888-503-6539" mailto="tel:5555555555" />
                 </li>
                 <li className="mb-1.5">
-                  <Link
-                    className="font-medium text-white"
-                    to="mailto:support@feastbox.com"
-                  >
-                    Email:  support@feastbox.com
-                  </Link>
+                <ButtonMailto label="Email: support@feastbox.com" mailto="mailto:support@feastbox.com" />
                 </li>
                 <li className="mb-1.5 font-medium text-white">
                   Address: <br />
