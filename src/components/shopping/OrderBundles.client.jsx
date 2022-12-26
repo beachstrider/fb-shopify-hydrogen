@@ -964,10 +964,6 @@ const handleChangeCupon = () =>{
                                         $12.66/Serving
                                       </span>
                                     </div>
-                                    <div className='w-full flex items-center px-[20px] py-[10px]'>
-                                      <input className='border-[1px] border-[#707070] p-[5px]' placeholder='Coupon Code' onChange={handleChangeCupon} value={'tysor123'}/>
-                                      <span className='text-[#DB9707] ml-[5px] font-bold'>Code applied</span>
-                                    </div>
                                   </div>
                                   <hr />
                                   <div className="flex flex-wrap -mx-2">
