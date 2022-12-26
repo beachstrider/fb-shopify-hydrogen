@@ -1076,7 +1076,7 @@ export function OrderBundles({
                                             />
                                             <span className="ml-3 font-bold">
                                               {dayjs(slot.date).format(
-                                                'dddd, MMM DD',
+                                                'ddd, MMM DD',
                                               )}{' '}
                                             </span>
                                             <br />
