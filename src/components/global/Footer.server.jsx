@@ -19,7 +19,7 @@ export function Footer({menu}) {
 
   return (
     <div>
-      <section className="relative pt-24 pb-12 bg-[#231F20] overflow-hidden pl-6">
+      <section className="relative pt-24 pb-12 font-opensans bg-[#231F20] overflow-hidden pl-6">
         {/* <img className="absolute right-0 top-0" src="assets/gradient2.svg" alt=""/> */}
         <div className="relative z-10 container px-4 mx-auto">
           <div className="flex flex-wrap justify-between -m-8">
@@ -32,7 +32,7 @@ export function Footer({menu}) {
               </Link>
             </div>
             <div className="w-full sm:w-1/2 lg:w-2/12 p-6">
-              <h3 className="font-semibold leading-normal mb-2 text-3xl text-white">
+              <h3 className="font-bold leading-normal mb-2 text-4xl text-white">
                 About Us
               </h3>
               <ul>
@@ -63,7 +63,7 @@ export function Footer({menu}) {
               </ul>
             </div>
             <div className="w-full sm:w-1/2 lg:w-2/12 p-6">
-              <h3 className="font-semibold leading-normal mb-2 text-3xl text-white">
+              <h3 className="font-bold leading-normal mb-2 text-4xl text-white">
                 Need Help?
               </h3>
               <ul>
@@ -110,7 +110,7 @@ export function Footer({menu}) {
               </ul>
             </div>
             <div className="w-full sm:w-1/2 lg:w-3/12 p-6">
-              <h3 className="font-semibold leading-normal mb-2 text-3xl text-white">
+              <h3 className="font-bold leading-normal mb-2 text-4xl text-white">
                 Contact Us
               </h3>
               <ul>
