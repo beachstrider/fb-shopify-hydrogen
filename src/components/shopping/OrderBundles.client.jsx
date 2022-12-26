@@ -449,54 +449,19 @@ export function OrderBundles({
 
   return (
     <Loading className="py-20" isLoading={isInitialDataLoading}>
-      <section className="py-20 bg-[#EFEFEF]">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap -mx-4 mb-24">
-            <div className="w-full px-4 mb-8 md:mb-0 md:w-1/1 xl:w-1/3 lg:w-1/3">
-              <div className="relative mb-10" style={{height: 564}}>
-                <button
-                  className="absolute top-1/2 left-0 ml-8 transform translate-1/2"
-                  href="#"
-                >
-                  <svg
-                    width={10}
-                    height={18}
-                    viewBox="0 0 10 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9 16.0185C9.268 16.2905 9.268 16.7275 9 16.9975C8.732 17.2675 8.299 17.2685 8.031 16.9975L0.201 9.0895C-0.067 8.8195 -0.067 8.3825 0.201 8.1105L8.031 0.2025C8.299 -0.0675 8.732 -0.0675 9 0.2025C9.268 0.4735 9.268 0.9115 9 1.1815L1.859 8.6005L9 16.0185Z"
-                      fill="#1F40FF"
-                    />
-                  </svg>
-                </button>
-                <img
-                  className="object-cover w-full h-full"
-                  src={cartInfo.bundle?.variants?.nodes[0]?.image?.url}
-                  alt="img"
+      <section className="bg-[#EFEFEF]">
+        <div className="2xl-only container lg:container mx-auto">
+          <div className="flex flex-wrap mb-8">
+            <div className="absolutew w-full md:w-1/1 xl:w-1/2 lg:w-1/2 xl:w-1/2">
+              <div className="relative left-0 top-0 ">
+                <img className="object-cover w-full md:h-1/2"
+                     src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/shop/hero.png"
+                     alt="FeastBox bundle Image"
                 />
-                <button
-                  className="absolute top-1/2 right-0 mr-8 transform translate-1/2"
-                  href="#"
-                >
-                  <svg
-                    width={10}
-                    height={18}
-                    viewBox="0 0 10 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M0.19922 1.1817C-0.0687795 0.909696 -0.0687794 0.472695 0.19922 0.202695C0.46722 -0.0673054 0.90022 -0.0683048 1.16822 0.202695L8.99822 8.11069C9.26622 8.3807 9.26622 8.81769 8.99822 9.08969L1.16822 16.9977C0.900219 17.2677 0.467218 17.2677 0.199219 16.9977C-0.0687809 16.7267 -0.0687808 16.2887 0.199219 16.0187L7.34022 8.5997L0.19922 1.1817Z"
-                      fill="#1F40FF"
-                    />
-                  </svg>
-                </button>
               </div>
             </div>
-            <div className="w-full px-4 md:w-1/1 xl:w-2/3 lg:w-2/3">
-              <div className="xl:pl-10">
+            <div className="w-full md:w-1/1 xl:w-1/2 lg:w-1/2 xl:w-1/2 px-8">
+              <div className="">
                 <div className="mb-10 pb-10">
                   <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
                     <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
@@ -726,7 +691,7 @@ export function OrderBundles({
                         3. Choose your Price
                       </div>
                       <div className="flex flex-wrap -mx-4 mb-24">
-                        <div className="w-full lg:w-1/2 px-2">
+                        <div className="w-full px-2">
                           <div className="relative  bg-gray-50">
                             <div
                               className="px-6 py-4 mt-8"
@@ -923,7 +888,7 @@ export function OrderBundles({
                             </div>
                           </div>
                         </div>
-                        <div className="w-full lg:w-1/2 mb-20 px-2">
+                        <div className="w-full mb-20 px-2">
                           <div className="relative  bg-gray-50">
                             <div
                               className="px-6 py-4 mt-8"
