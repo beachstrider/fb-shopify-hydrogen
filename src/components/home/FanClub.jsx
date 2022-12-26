@@ -4,7 +4,7 @@ export function FanClub() {
       <div className="container max-w-screen-xl m-auto">
         <h1 className="font-opensans text-center text-[60px] text-white capitalize font-bold leading-[70px] pt-[70px]">
           Join the{' '}
-          <a className="underline decoration-[#DB971D] underline-offset-8">
+          <a className="text-underline-round">
             FEASTbox
           </a>{' '}
           Fan Club

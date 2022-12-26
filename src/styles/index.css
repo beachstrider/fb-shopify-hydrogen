@@ -148,7 +148,19 @@ shop-pay-button {
     border-radius: 8px;
     background-color: #DB9707;
     transform: rotate(-7deg); 
-
+  }
+  .text-underline-round{
+    position: relative;
+  }
+  .text-underline-round::after{
+    content: "";
+    position: absolute;
+    top: 93%;
+    width: 100%;
+    left: 0;
+    height: 8px;
+    border-radius: 8px;
+    background-color: #DB9707;
   }
   .fadeIn {
     opacity: 0;
