@@ -7,16 +7,16 @@ export function MealModal({children, open, close}) {
   //   setSelectedTag(index)
   // }
   return open ? (
-      <div
-        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-        aria-labelledby="modal-title"
-        role="dialog"
-        aria-modal="true"
-        id="modal-bg"
-      >
-        <div className="relative my-10 mx-auto max-w-3xl">
-          <div className="fixed inset-0 transition-opacity bg-opacity-75 bg-primary/40"></div>
-          <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div
+      className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+      id="modal-bg"
+    >
+      <div className="relative my-10 mx-auto max-w-3xl">
+        <div className="fixed inset-0 transition-opacity bg-opacity-75 bg-primary/40"></div>
+        <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-full p-4 text-center sm:p-0">
             <div
               className="relative flex-1 px-4 pt-5 pb-4 overflow-hidden text-left transition-all transform rounded shadow-xl bg-contrast sm:my-12 sm:flex-none sm:w-full sm:max-w-sm sm:p-6"
@@ -50,7 +50,7 @@ export function MealModal({children, open, close}) {
             </div>
           </div>
         </div>
-        </div>
       </div>
-      ): null
+    </div>
+  ) : null;
 }
