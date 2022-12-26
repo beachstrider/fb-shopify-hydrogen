@@ -1,7 +1,5 @@
 export async function api(request, {params: {code}, session}) {
-  console.log('code =====>', code);
   const {discountCodes} = await session.get();
-  console.log('discountCodes =====>', discountCodes);
   const newDiscountCodes =
     typeof discountCodes === 'undefined' ? [] : discountCodes;
 
@@ -11,8 +9,4 @@ export async function api(request, {params: {code}, session}) {
   await session.set('discountCodes', newDiscountCodes);
 
   return 'OK';
-  // return await new Response(null, {
-  //   status: 301,
-  //   headers: {Location: '/'},
-  // });
 }

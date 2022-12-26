@@ -1,5 +1,5 @@
 import {useCart} from '@shopify/hydrogen/client';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 
 import {
@@ -56,7 +56,7 @@ export function OrderBundles({
   customerId = '',
 }) {
   const [deliveryDates, setDeliveryDates] = useState([]);
-  const [availableSlots, setAvailableSlots] = useState([]);
+  // const [availableSlots, setAvailableSlots] = useState([]);
   const [products, setProducts] = useState([]);
 
   const [cartInfo, setCartInfo] = useState(getCartInfo());
@@ -68,10 +68,13 @@ export function OrderBundles({
     'CART INITIALIZING...',
   );
 
+  const [newDiscountCodes, setNewDiscountCodes] = useState([]);
+
   const {
     id,
-    cartCreate,
     lines,
+
+    cartCreate,
     linesAdd,
     linesRemove,
     linesUpdate,
@@ -79,6 +82,10 @@ export function OrderBundles({
     discountCodesUpdate,
     checkoutUrl,
   } = useCart();
+
+  const discountCodeInputRef = useRef(null);
+
+  console.log('lines', lines);
 
   const isQuantityLimit = (() => {
     let currentQuantity = 0;
@@ -114,13 +121,18 @@ export function OrderBundles({
   }, [cartInfo.bundle]);
 
   useEffect(() => {
-    if (typeof id !== 'undefined') updateCart();
+    if (typeof id !== 'undefined') {
+      setCheckoutButtonStatus('CART UPDATING...');
+      updateCart();
+      setTimeout(() => {
+        setCheckoutButtonStatus('');
+      }, [3000]);
+    }
   }, [cartInfo.priceType, cartInfo.frequencyValue]);
 
   useEffect(() => {
     localStorage?.setItem('cartInfo', JSON.stringify(cartInfo));
   }, [cartInfo]);
-
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
       [...new Array(7)].map((_, dayIndex) =>
@@ -139,6 +151,19 @@ export function OrderBundles({
   const selectedWeekIndex = weeks.findIndex(
     (week) => week.findIndex((el) => el === cartInfo.deliveryDate) !== -1,
   );
+
+  const availableSlots = (() => {
+    if (selectedWeekIndex !== -1) {
+      const week = weeks[selectedWeekIndex];
+
+      const slots = deliveryDates.filter(
+        (deliveryDate) =>
+          week.findIndex((el) => deliveryDate.date === el) !== -1,
+      );
+      return slots;
+    }
+    return [];
+  })();
 
   function getAttributes(cartToken, customerId, deliveryDate) {
     deliveryDate = cartInfo.deliveryDate !== '' ? deliveryDate : today();
@@ -167,9 +192,14 @@ export function OrderBundles({
       merchandiseId,
       sellingPlanId: undefined,
       quantity: 1,
-      attributes: getAttributes('', customerId, cartInfo.deliveryDate),
+      attributes: getAttributes(
+        typeof id !== 'undefined' ? id : '',
+        customerId,
+        cartInfo.deliveryDate,
+      ),
     };
 
+    console.log('init id', id, line);
     if (typeof id === 'undefined') {
       cartCreate({
         lines: [line],
@@ -217,6 +247,7 @@ export function OrderBundles({
             100;
       }
 
+      console.log('update id', id, line);
       setCartInfo({...cartInfo, totalPrice: newTotalPrice});
       if (lines.length) {
         linesRemove(lines.map((line) => line.id));
@@ -322,14 +353,14 @@ export function OrderBundles({
   }
 
   function handleWeekChange(e) {
-    const week = weeks[e.target.value];
+    const newWeek = weeks[e.target.value];
 
-    const slots = deliveryDates.filter(
-      (deliveryDate) => week.findIndex((el) => deliveryDate.date === el) !== -1,
+    const newSlots = deliveryDates.filter(
+      (deliveryDate) =>
+        newWeek.findIndex((el) => deliveryDate.date === el) !== -1,
     );
 
-    setAvailableSlots(slots);
-    setCartInfo({...cartInfo, deliveryDate: slots[0].date});
+    setCartInfo({...cartInfo, deliveryDate: newSlots[0].date});
 
     setIsDeliveryDateEditing(false);
   }
@@ -406,6 +437,14 @@ export function OrderBundles({
 
     setCheckoutButtonStatus('');
     location.href = checkoutUrl;
+  }
+
+  async function handleSubmitDiscountCode() {
+    await axios.get(`/api/discount/set/${discountCodeInputRef.current.value}`);
+    discountCodesUpdate([discountCodeInputRef.current.value]);
+    setTimeout(() => {
+      setNewDiscountCodes([discountCodeInputRef.current.value]);
+    }, 1500);
   }
 
   return (
@@ -687,7 +726,7 @@ export function OrderBundles({
                         3. Choose your Price
                       </div>
                       <div className="flex flex-wrap -mx-4 mb-24">
-                        <div className="w-full px-2">
+                        <div className="w-full lg:w-1/2 px-2">
                           <div className="relative  bg-gray-50">
                             <div
                               className="px-6 py-4 mt-8"
@@ -884,7 +923,7 @@ export function OrderBundles({
                             </div>
                           </div>
                         </div>
-                        <div className="w-full mb-20 px-2">
+                        <div className="w-full lg:w-1/2 mb-20 px-2">
                           <div className="relative  bg-gray-50">
                             <div
                               className="px-6 py-4 mt-8"
@@ -960,6 +999,33 @@ export function OrderBundles({
                                     </div>
                                   </div>
                                   <hr />
+                                  <div className="flex flex-wrap -mx-2">
+                                    <div className="w-2/3 py-4 px-2 mb-4 md:mb-0">
+                                      <input
+                                        ref={discountCodeInputRef}
+                                        className="block w-full py-3 px-4 mb-2 md:mb-0 leading-tight border-[#707070] focus:bg-white border focus:outline-none"
+                                        defaultValue={newDiscountCodes.join(
+                                          ' ',
+                                        )}
+                                        disabled={newDiscountCodes.length > 0}
+                                      />
+                                    </div>
+                                    <div className="flex items-center w-1/3 py-4  mb-4 md:mb-0">
+                                      {newDiscountCodes.length === 0 && (
+                                        <button
+                                          className="inline-block py-3 px-6 leading-none text-white shadow bg-[#DB9707] p-[30px]"
+                                          onClick={handleSubmitDiscountCode}
+                                        >
+                                          Apply
+                                        </button>
+                                      )}
+                                      {newDiscountCodes.length > 0 && (
+                                        <div className="text-lg font-bold text-[#DB9707]">
+                                          Code Applied
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
