@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Tabs  from '../Tabs.client';
 import {MealModal} from '../global';
 
 export function MealItem({title, image}) {
@@ -41,6 +42,7 @@ export function MealItem({title, image}) {
             <h1 className="text-lg font-bold text-center mb-4 text-black">
               {title}
             </h1>
+            <Tabs />
             <div className="px-12 text-black">
               <h3 className="font-bold text-lg">What's in the box</h3>
               <div>
