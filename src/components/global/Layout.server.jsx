@@ -16,6 +16,7 @@ const SHOP_NAME_FALLBACK = 'Hydrogen';
 export function Layout({children}) {
   return (
     <>
+    <div className='bg-[#A60D1E] text-center py-3'><h3 className='text-[#FFFFFF] text-bold'>FREE LIFETIME BREAKFAST WHEN YOU SUBSCRIBE!</h3></div>
       <div className="flex flex-col min-h-screen">
         <div className="">
           <a href="#mainContent" className="sr-only">
