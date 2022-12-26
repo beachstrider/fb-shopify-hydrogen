@@ -19,7 +19,7 @@ export function Footer({menu}) {
 
   return (
     <div>
-      <section className="relative pt-24 pb-12 bg-[#121111] overflow-hidden pl-6">
+      <section className="relative pt-24 pb-12 bg-[#231F20] overflow-hidden pl-6">
         {/* <img className="absolute right-0 top-0" src="assets/gradient2.svg" alt=""/> */}
         <div className="relative z-10 container px-4 mx-auto">
           <div className="flex flex-wrap justify-between -m-8">
@@ -32,29 +32,29 @@ export function Footer({menu}) {
               </Link>
             </div>
             <div className="w-full sm:w-1/2 lg:w-2/12 p-6">
-              <h3 className="mb-6 font-semibold leading-normal text-white">
+              <h3 className="font-semibold leading-normal mb-2 text-3xl text-white">
                 About Us
               </h3>
               <ul>
-                <li className="mb-1.5">
+                <li className="">
                   <Link
-                    className="font-medium leading-relaxed text-white"
+                    className="leading-relaxed text-white"
                     to="/menus"
                   >
                     Our Menu
                   </Link>
                 </li>
-                <li className="mb-1.5">
+                <li className="">
                   <Link
-                    className="font-medium leading-relaxed text-white"
+                    className="leading-relaxed text-white"
                     to="/how-it-works"
                   >
                     How it Works
                   </Link>
                 </li>
-                <li className="mb-1.5">
+                <li className="">
                   <Link
-                    className="font-medium leading-relaxed text-white"
+                    className="leading-relaxed text-white"
                     to="/influencers"
                   >
                     Influencers
@@ -63,45 +63,45 @@ export function Footer({menu}) {
               </ul>
             </div>
             <div className="w-full sm:w-1/2 lg:w-2/12 p-6">
-              <h3 className="mb-6 font-semibold leading-normal text-white text-md">
+              <h3 className="font-semibold leading-normal mb-2 text-3xl text-white">
                 Need Help?
               </h3>
               <ul>
-                <li className="mb-1.5">
+                <li className="">
                   <Link
-                    className="font-medium leading-relaxed text-white"
+                    className="leading-relaxed text-white"
                     to="/faq"
                   >
                     FAQs
                   </Link>
                 </li>
-                <li className="mb-1.5">
+                <li className="">
                   <Link
-                    className="font-medium leading-relaxed text-white"
+                    className="leading-relaxed text-white"
                     to="/heating-instructions"
                   >
                     Heating Instructions
                   </Link>
                 </li>
-                <li className="mb-1.5">
+                <li className="">
                   <Link
-                    className="font-medium leading-relaxed text-white"
+                    className="leading-relaxed text-white"
                     to="/policies/terms-of-service"
                   >
                     Terms of Service
                   </Link>
                 </li>
-                <li className="mb-1.5">
+                <li className="">
                   <Link
-                    className="font-medium leading-relaxed text-white"
+                    className="leading-relaxed text-white"
                     to="/policies/refund-policy"
                   >
                     Refund Policy
                   </Link>
                 </li>
-                <li className="mb-1.5">
+                <li className="">
                   <Link
-                    className="font-medium leading-relaxed text-white"
+                    className="leading-relaxed text-white"
                     to="/policies/privacy-policy"
                   >
                     Privacy Policy
@@ -110,17 +110,17 @@ export function Footer({menu}) {
               </ul>
             </div>
             <div className="w-full sm:w-1/2 lg:w-3/12 p-6">
-              <h3 className="mb-6 font-semibold leading-normal text-white text-md">
+              <h3 className="font-semibold leading-normal mb-2 text-3xl text-white">
                 Contact Us
               </h3>
               <ul>
-                <li className="mb-1.5">
+                <li className="">
                 <ButtonMailto label="Phone: 1-888-503-6539" mailto="tel:5555555555" />
                 </li>
-                <li className="mb-1.5">
+                <li className="">
                 <ButtonMailto label="Email: support@feastbox.com" mailto="mailto:support@feastbox.com" />
                 </li>
-                <li className="mb-1.5 font-medium text-white">
+                <li className=" font-medium text-white">
                   Address: <br />
                   676 W 1200 N Springville, UT 84663
                   <br /><br/>
@@ -200,8 +200,7 @@ export function Footer({menu}) {
           </div>
         </div>
       </section>
-      <hr className='bg-[#C1C1C1]'/>
-      <div className='bg-black text-center py-8'>
+      <div className='bg-[#231F20] text-center pt-8 pb-12'>
         <p className='text-white'>© 2022 FEASTbox, All Rights Reserved</p>
       </div>
     </div>
