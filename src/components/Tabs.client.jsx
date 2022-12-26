@@ -7,23 +7,23 @@ const Tabs = (setOpenModal) => {
   return (
     <>
     <div className="max-w-2xl mx-auto px-8 sm:px-0">
-      <div className="sm:w-7/12 sm:mx-auto">
+      <div className="sm:w-12/12 sm:mx-auto">
         <div 
           role="tablist"
           aria-label="tabs"
-          className="relative w-max mx-auto  grid grid-cols-2 items-center bg-white-900/20 border-[2px] font-bold border-amber-500 overflow-hidden"
+          className="relative w-max mx-auto  grid grid-cols-2 items-center font-bold overflow-hidden"
         >
-          <div className="absolute indicator my-auto top-0 bottom-0 left-0 bg-white shadow-md"></div>
+          <div className="absolute indicator my-auto top-0 bottom-0 left-0 shadow-md"></div>
           <button
             role="tab"
             aria-selected="true"
             aria-controls="panel-1"
             id="tab-1"
             tabIndex="0"
-            className={selectedTag === 1 ?"relative block h-10 px-6 tab bg-amber-500 text-white":"relative block h-10 px-6 tab bg-white"}
+            className={selectedTag === 1 ?"relative block h-10 px-2 tab  text-[#DB9707]":"relative block h-10 px-2 tab"}
             onClick={()=>handleSelect(1)}
           >
-            <span className={selectedTag===1?"text-white":"text-black"}>Details</span>
+            <span className={selectedTag===1?"text-[#DB9707] ":"text-black text-tab-underline"}>Details</span>
           </button>
           <button
             role="tab"
@@ -31,10 +31,10 @@ const Tabs = (setOpenModal) => {
             aria-controls="panel-2"
             id="tab-2"
             tabIndex="-1"
-            className={selectedTag === 2 ? "relative block h-10 px-6 tab bg-amber-500 text-white":"relative block h-10 px-6 tab bg-white"}
+            className={selectedTag === 2 ? "relative block h-10 px-2 tab text-[#DB9707]":"relative block h-10 px-2 tab"}
             onClick={()=>handleSelect(2)}
           >
-            <span className={selectedTag===2?"text-white":"text-black"}>Nutritions</span>
+            <span className={selectedTag===2?"text-[#DB9707]":"text-black text-tab-underline"}>Nutritions</span>
           </button>
        
         </div>
@@ -42,16 +42,39 @@ const Tabs = (setOpenModal) => {
           <div
             role="tabpanel"
             id="panel-1"
-            className={selectedTag ===1 ? "tab-panel text-center":"absolute top-0 invisible opacity-0 text-center"}
+            className={selectedTag ===1 ? "tab-panel text-center":"absolute top-0 invisible opacity-0 text-left"}
           >
-            <p className="">Details BBQ managed pull fork served.</p>
+                 <div className="text-left text-black">
+                  <p>BBQ marinated pulled pork served with roasted sweet potatoes, coleslaw, black beans, peppers, onion, and corn.</p>
+              <h3 className="font-bold text-lg">What's in the box</h3>
+              <div>
+                <p className="font-bold text-sm">Main courses</p>
+                <span className="text-sm">15oz Briker,</span>
+                <br />
+                <span className="text-sm">Pulled fork</span>
+              </div>
+              <div className="py-2">
+                <p className="font-bold text-sm">Side Dishes</p>
+                <span className="text-sm">20oz Mac & Cheese</span>
+                <br />
+                <span className="text-sm">20oz Green Beans</span>
+              </div>
+              <div>
+                <p className="font-bold text-sm">Sauce</p>
+                <span className="text-sm">30oz BBQ sauce</span>
+              </div>
+            </div>
+            <div className="text-left text-black">
+              <h3 className="font-bold text-lg">Allergens</h3>
+              <span className="text-sm">Wheat,milk</span>
+            </div>
           </div>
           <div
             role="tabpanel"
             id="panel-2"
             className={selectedTag ===2 ? "tab-panel text-center":"absolute top-0 invisible opacity-0 tab-panel text-center"}
          >
-            <p className="">Nutrician BBQ managed pull fork served.</p>
+            <p className="">Insert nutrition label just like in menu.</p>
           </div>
         </div>
       </div>

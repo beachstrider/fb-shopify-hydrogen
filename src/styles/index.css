@@ -162,6 +162,19 @@ shop-pay-button {
     border-radius: 8px;
     background-color: #DB9707;
   }
+  .text-tab-underline{
+    position: relative;
+  }
+  .text-tab-underline::before{
+    content: "";
+    position: absolute;
+    top: 93%;
+    width: 100%;
+    left: 0;
+    height: 2px;
+    border-radius: 8px;
+    background-color: #0A2463;
+  }
   .fadeIn {
     opacity: 0;
     animation: fadeInAnimation ease 500ms forwards;
