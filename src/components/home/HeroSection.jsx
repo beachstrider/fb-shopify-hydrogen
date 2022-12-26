@@ -38,7 +38,7 @@ export function HeroSection() {
                   <h5 className="font-opensans font-extrabold">3 Family Meals a Week</h5>
                   <h2 className="font-opensans font-bold text-5xl my-1">
                     MouthWatering Grub <br />
-                    For <span className="text-[#DB9707]">$8.5</span>/ person
+                    For <span className="text-[#DB9707] price-underline">$8.50</span>/ person
                   </h2>
                   <p className="mt-5 font-opensans">
                     Here's to epic flavors with ready-to-eat convenience at a{' '}
