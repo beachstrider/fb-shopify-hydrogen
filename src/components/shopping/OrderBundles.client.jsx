@@ -494,9 +494,6 @@ export function OrderBundles({
                         <div className="text-2xl font-bold">
                           1. Choose your Week
                         </div>
-                        <div className="text-sm">
-                          ({currentQuantity} of {cartInfo.mealQuantity})
-                        </div>
                       </div>
                       <div
                         className="relative"
@@ -573,11 +570,13 @@ export function OrderBundles({
                     </div>
                   )}
                   <div className="mb-14">
-                    <div
-                      className="block text-gray-800 text-lg font-bold mb-2"
-                      style={{fontSize: 24, marginTop: 20}}
-                    >
-                      2. Choose your Meals
+                    <div className="flex items-center gap-6 text-gray-800  mb-2">
+                      <div className="text-2xl font-bold">
+                        2. Choose your Meals
+                      </div>
+                      <div className="text-sm">
+                        ({currentQuantity} of {cartInfo.mealQuantity})
+                      </div>
                     </div>
                     <Loading isLoading={isProductsLoading}>
                       <div className="flex flex-wrap -mx-2 -mb-2">
