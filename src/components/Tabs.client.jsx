@@ -46,24 +46,24 @@ const Tabs = ({metafields}) => {
             className={selectedTag ===1 ? "tab-panel text-center":"absolute top-0 invisible opacity-0 text-left"}
           >
                  <div className="text-left text-black">
-                  <p>{ metafields.find(x => x.key === "description").value }</p>
+                  <p>{ metafields?.find(x => x.key === "description").value }</p>
               <h3 className="font-bold text-lg">What's in the box</h3>
               <div>
                 <p className="font-bold text-sm">Main courses</p>
-                <span className="text-sm">{ metafields.find(x => x.key === "main_course").value }</span>
+                <span className="text-sm">{ metafields?.find(x => x.key === "main_course").value }</span>
               </div>
               <div className="py-2">
                 <p className="font-bold text-sm">Side Dishes</p>
-                <span className="text-sm">{ metafields.find(x => x.key === "side_dishes").value }</span>
+                <span className="text-sm">{ metafields?.find(x => x.key === "side_dishes").value }</span>
               </div>
               <div>
                 <p className="font-bold text-sm">Sauce</p>
-                <span className="text-sm">{ metafields.find(x => x.key === "sauce").value }</span>
+                <span className="text-sm">{ metafields?.find(x => x.key === "sauce").value }</span>
               </div>
             </div>
             <div className="text-left text-black">
               <h3 className="font-bold text-lg">Allergens</h3>
-              <span className="text-sm">{ metafields.find(x => x.key === "allergens").value }</span>
+              <span className="text-sm">{ metafields?.find(x => x.key === "allergens").value }</span>
             </div>
           </div>
           <div
@@ -71,7 +71,7 @@ const Tabs = ({metafields}) => {
             id="panel-2"
             className={selectedTag ===2 ? "tab-panel text-center":"absolute top-0 invisible opacity-0 tab-panel text-center"}
          >
-            <p className="">Insert nutrition label just like in menu.</p>
+            <script src={`https://www.recipal.com/recipes/${metafields?.find(x => x.key === 'recipal_embed').value}/embed.js?label_format=new_fda&ingredients=1&allergens=1`}> </script>
           </div>
         </div>
       </div>
