@@ -26,7 +26,7 @@ export function AboutUs() {
               <h2 className="font-opensans custom-font lg:text-center sm-max:mt-16 mt-12 text-start font-bold bg-[#DB9707] lg:ml-[-50px] lg:text-[60px] md:text-[40px] sm-max:text-[35px] -tracking-[3.5px] px-[30px]">
                 WHO EVEN ARE WE?
               </h2>
-              <p className="font-opensans  lg:p-12 md:px-[7%] md:py-[22px] sm-max:px-[7%] sm-max:py-[22px] text-[25px] lg:text-[25px] md:text-[20px] sm-max:text-[20px] text-white">
+              <p className="font-opensans  lg:p-12 md:px-[7%] md:py-[22px] sm-max:px-[7%] sm-max:py-[22px] text-[25px] lg:text-[30px] md:text-[20px] sm-max:text-[20px] text-white">
                 FEASTbox solves the timeless “what’s for dinner?” question, one
                 box at a time. With incredible flavor, convenience, and fun
                 vibes, we believe that everybody deserves to drool over dinner.
@@ -45,7 +45,7 @@ export function AboutUs() {
             <h2 className="font-opensans mt-10 mr-4 font-bold lg:text-[50px] md:text-[40px] sm-max:text-[35px]">
               Feast Your Eyes on These Ingredients
             </h2>
-            <p className="font-opensans mt-1 card-para mr-5  lg:text-[25px] md:text-[20px] sm-max:text-[20px]">
+            <p className="font-opensans mt-1 card-para mr-5  lg:text-[30px] md:text-[20px] sm-max:text-[20px]">
               Our ish is local and clean and natural and… well, everything food
               you should be TBH. Over-processing is so 2020 and nobody liked
               2020.
@@ -88,7 +88,7 @@ export function AboutUs() {
               <h2 className="font-opensans mt-10 lg:ml-4 font-bold lg:text-[50px] md:text-[40px] sm-max:text-[35px]">
                 Meet the Feastie Boys (and Girls)
               </h2>
-              <p className="font-opensans mt-1 card-para lg:ml-5 lg:text-[25px] md:text-[20px] sm-max:text-[20px]">
+              <p className="font-opensans mt-1 card-para lg:ml-5 lg:text-[30px] md:text-[20px] sm-max:text-[20px]">
                 Our epic team of dieticians, nutritionists, and chefs have
                 developed epic flavors that result in epic meals that mean epic
                 dinner experiences for smart EPIC subscribers like you.
@@ -105,7 +105,7 @@ export function AboutUs() {
               <h2 className="font-opensans mt-10 mr-4 font-bold lg:text-[50px] md:text-[40px] sm-max:text-[35px]">
                 The Belly of the Feast!
               </h2>
-              <p className="font-opensans mt-1 card-para mr-5 lg:text-[25px] md:text-[20px] sm-max:text-[20px]">
+              <p className="font-opensans mt-1 card-para mr-5 lg:text-[30px] md:text-[20px] sm-max:text-[20px]">
                 Our kitchen, located in Springville, Utah, is staffed with real
                 human beings who chop every vegetable, trim every chunk of meat,
                 sort every grain of rice, all to bring you the BEST dinner
@@ -236,10 +236,10 @@ export function AboutUs() {
               FULL OF HOPE
             </h2>
             <p className="font-opensans mt-1 text-[25px] card-para mr-5 lg:text-[25px] md:text-[20px] sm-max:text-[20px]">
-              We’ve partnered with Full of Hope to reach our goal of feeding
-              100,000 families in 2023. Learn more about Full of Hope, a charity
-              all about giving back and helping to feed families. For every box
-              purchased, FEASTbox will donate a meal to a local family in need.
+              Our passion and relentless focus is to provide delicious, clean,
+              ready-to-eat meals for families who are experiencing financial,
+              health, or other setbacks that make it difficult to consistently
+              feed their family.
             </p>
             <Link to="http://fullofhope.org" target="_blank">
               <button className="font-opensans py-[15px] px-[50px] bg-[#A60D1E] text-[25px] font-sans mt-[35px] font-bold">
