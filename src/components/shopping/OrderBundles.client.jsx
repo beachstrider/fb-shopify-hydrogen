@@ -536,11 +536,8 @@ export function OrderBundles({
                             <div className="flex flex-col justify-between text-center">
                               <MealItem
                                 title={product.title}
-                                image={
-                                  product.variants.nodes[0].image
-                                    ? product.variants.nodes[0].image?.url
-                                    : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
-                                }
+                                image={product.variants.nodes[0].image ? product.variants.nodes[0].image?.url : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'}
+                                metafields={product.variants.nodes[0].metafields}
                               />
 
                               {cartInfo.productsInCart.findIndex(
