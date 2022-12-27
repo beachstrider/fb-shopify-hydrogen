@@ -4,17 +4,23 @@ export function Influencers() {
   return (
     <section className="">
        <div className="">
-        <div className=" h-[500px] bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/hero_bg.png')]">
-          <div className="container max-w-screen-xl mx-auto">
+        <div className=" h-[500px] bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-image md:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/hero_bg.png')] bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/hero_bg_mobile.png')]">
+          <div className=" mx-auto">
             <div className="flex items-center justify-start h-full">
               <div className="text-white text-lg pl-2 pt-[200px] md:pl-[4rem] md:pt-[65px] mx-6 md:mx-0">
-                <span className="font-bungee text-[80px] md:text-[100px] font-bold leading-[60px] md:leading-[80px] mb-[-0.5rem]">
+                <span className="ml-2 font-bold" >Help Feed Families in Need</span><br/>
+                <span className="tracking-wide font-bungee text-[60px] md:text-[120px] font-bold leading-[63px] md:leading-[110px] mb-[-0.5rem]">
                   {' '}
-                  A BOX <br />
-                  NEVER <br />
-                  TESTED <br />
-                  SO GOOD
+                  Buy One  <br />
+                  Feed One
                 </span>
+                <div className="flex items-center mt-9  pb-2">
+                    <Link to="/shop/bundle">
+                        <button className="px-6 bg-[#A60D1E] text-white font-bold py-2 w-[190px]">
+                            Get Eating
+                        </button>
+                    </Link>
+                  </div>
               </div>
             </div>
           </div>
