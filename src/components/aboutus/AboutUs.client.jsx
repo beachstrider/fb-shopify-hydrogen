@@ -1,3 +1,4 @@
+import {Link} from '@shopify/hydrogen';
 
 export function AboutUs() {
   return (
@@ -8,23 +9,24 @@ export function AboutUs() {
             <h1 className="font-bungee lg:text-center md:text-start font-extrabold lg:text-[90px] md:text-[70px] sm-max:text-[60px] lg:leading-[90px] md:leading-[70px] sm-max:leading-[60px] md:mt-[-30px] mt-[-22px] mb-[29px] -tracking-[-7px]">
               HERE’S THE FEASTBOX 411
             </h1>
-            <p className='font-opensans lg:text-right md:text-start sm-max:text-start font-medium font-sans lg:text-[30px] md:text-[20px] sm:text-[20px]'>(Does anybody say that anymore?)</p>
+            <p className="font-opensans lg:text-right md:text-start sm-max:text-start font-medium font-sans lg:text-[30px] md:text-[20px] sm:text-[20px]">
+              (Does anybody say that anymore?)
+            </p>
           </div>
 
           <div className="flex flex-wrap">
             <div className="lg:w-7/12 md:w-full sm-max:w-full">
               <img
-                className='lg:block md:hidden sm-max:hidden'
+                className="lg:block md:hidden sm-max:hidden"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/hero_image.png"
                 alt=""
               />
             </div>
             <div className="lg:w-5/12 md:w-full sm-max:w-full">
-              <h2
-                className="font-opensans custom-font lg:text-center sm-max:mt-16 mt-12 text-start font-bold bg-[#DB9707] lg:ml-[-50px] lg:text-[60px] md:text-[40px] sm-max:text-[35px] -tracking-[3.5px] px-[30px]">
+              <h2 className="font-opensans custom-font lg:text-center sm-max:mt-16 mt-12 text-start font-bold bg-[#DB9707] lg:ml-[-50px] lg:text-[60px] md:text-[40px] sm-max:text-[35px] -tracking-[3.5px] px-[30px]">
                 WHO EVEN ARE WE?
               </h2>
-              <p className="font-opensans  lg:p-12 md:px-[7%] md:py-[22px] sm-max:px-[7%] sm-max:py-[22px] text-[25px] lg:text-[25px] md:text-[20px] sm-max:text-[20px] text-white">
+              <p className="font-opensans  lg:p-12 md:px-[7%] md:py-[22px] sm-max:px-[7%] sm-max:py-[22px] text-[25px] lg:text-[30px] md:text-[20px] sm-max:text-[20px] text-white">
                 FEASTbox solves the timeless “what’s for dinner?” question, one
                 box at a time. With incredible flavor, convenience, and fun
                 vibes, we believe that everybody deserves to drool over dinner.
@@ -41,10 +43,9 @@ export function AboutUs() {
         <div className="lg:grid grid-cols-2 sm-max:grid-cols-2 md:flex sm-max:flex md:flex-wrap sm-max:flex-wrap">
           <div className="w-auto lg:text-right pr-[35px] lg:pl-[30%] lg:order-1 md:order-2 sm-max:order-2">
             <h2 className="font-opensans mt-10 mr-4 font-bold lg:text-[50px] md:text-[40px] sm-max:text-[35px]">
-              Feast Your Eyes on
-              These Ingredients
+              Feast Your Eyes on These Ingredients
             </h2>
-            <p className="font-opensans mt-1 card-para mr-5  lg:text-[25px] md:text-[20px] sm-max:text-[20px]">
+            <p className="font-opensans mt-1 card-para mr-5  lg:text-[30px] md:text-[20px] sm-max:text-[20px]">
               Our ish is local and clean and natural and… well, everything food
               you should be TBH. Over-processing is so 2020 and nobody liked
               2020.
@@ -87,7 +88,7 @@ export function AboutUs() {
               <h2 className="font-opensans mt-10 lg:ml-4 font-bold lg:text-[50px] md:text-[40px] sm-max:text-[35px]">
                 Meet the Feastie Boys (and Girls)
               </h2>
-              <p className="font-opensans mt-1 card-para lg:ml-5 lg:text-[25px] md:text-[20px] sm-max:text-[20px]">
+              <p className="font-opensans mt-1 card-para lg:ml-5 lg:text-[30px] md:text-[20px] sm-max:text-[20px]">
                 Our epic team of dieticians, nutritionists, and chefs have
                 developed epic flavors that result in epic meals that mean epic
                 dinner experiences for smart EPIC subscribers like you.
@@ -104,7 +105,7 @@ export function AboutUs() {
               <h2 className="font-opensans mt-10 mr-4 font-bold lg:text-[50px] md:text-[40px] sm-max:text-[35px]">
                 The Belly of the Feast!
               </h2>
-              <p className="font-opensans mt-1 card-para mr-5 lg:text-[25px] md:text-[20px] sm-max:text-[20px]">
+              <p className="font-opensans mt-1 card-para mr-5 lg:text-[30px] md:text-[20px] sm-max:text-[20px]">
                 Our kitchen, located in Springville, Utah, is staffed with real
                 human beings who chop every vegetable, trim every chunk of meat,
                 sort every grain of rice, all to bring you the BEST dinner
@@ -222,28 +223,31 @@ export function AboutUs() {
           for families who are experiencing financial, health, or other setbacks
           that make it difficult to consistently feed their family.
         </p>
-        <button className="font-opensans py-[15px] px-[50px] bg-[#A60D1E] text-[25px] font-sans mt-[35px] font-bold">
-          Join the Cause
-        </button>
+        <Link to="http://fullofhope.org" target="_blank">
+          <button className="font-opensans py-[15px] px-[50px] bg-[#A60D1E] text-[25px] font-sans mt-[35px] font-bold">
+            Join the Cause
+          </button>
+        </Link>
       </div>
       <div className="card-section mx-auto lg:px-0 md:px-[7%] sm-max:px-[7%]">
         <div className="lg:grid md:flex sm-max:flex grid-cols-2 sm-max:grid-cols-2 flex-wrap">
           <div className="w-auto lg:px-[15%] md:px-0 sm-max:px-0 mt-10 lg:order-1 md:order-2 sm-max:order-2">
-            <h2
-              className="font-bungee mt-10 mr-4 font-bold text-[50px]">
+            <h2 className="font-bungee mt-10 mr-4 font-bold text-[50px]">
               FULL OF HOPE
             </h2>
             <p className="font-opensans mt-1 text-[25px] card-para mr-5 lg:text-[25px] md:text-[20px] sm-max:text-[20px]">
-              We’ve partnered with Full of Hope to reach our goal of feeding
-              100,000 families in 2023. Learn more about Full of Hope, a charity
-              all about giving back and helping to feed families. For every box
-              purchased, FEASTbox will donate a meal to a local family in need.
+              Our passion and relentless focus is to provide delicious, clean,
+              ready-to-eat meals for families who are experiencing financial,
+              health, or other setbacks that make it difficult to consistently
+              feed their family.
             </p>
-            <button className="font-opensans py-[15px] px-[50px] bg-[#A60D1E] text-[25px] font-sans mt-[35px] font-bold">
-              Learn More
-            </button>
+            <Link to="http://fullofhope.org" target="_blank">
+              <button className="font-opensans py-[15px] px-[50px] bg-[#A60D1E] text-[25px] font-sans mt-[35px] font-bold">
+                Learn More
+              </button>
+            </Link>
           </div>
-          <div className=' lg:order-2 md:order-1 sm-max:order-1'>
+          <div className=" lg:order-2 md:order-1 sm-max:order-1">
             <img
               className="mx-auto sm-max:w-auto"
               src={
