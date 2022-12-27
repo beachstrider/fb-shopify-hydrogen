@@ -111,7 +111,7 @@ export const formatUTCDate = (date, format = 'YYYY-MM-DDTHH:mm:ssZ[Z]') => {
 };
 
 export const formatTodayDate = (date, format = 'YYYY-MM-DDT06:00:00.000Z') => {
-  return dayjs.utc(date).format(format);
+  return dayjs(date).format(format);
 };
 
 export const formatUTDateToISO = (date) => dayjs.utc(date).toISOString();

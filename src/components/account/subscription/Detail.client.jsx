@@ -3,19 +3,14 @@ import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';
 import {getUsaStandard} from '~/utils/dates';
-import {
-  isFuture,
-  sortByDateProperty,
-  dayjs,
-  today,
-  getISO,
-  getDayUsa,
-  formatUTCDate,
-} from '~/utils/dates';
+import {dayjs, findWeekDayBetween, getCutOffDate} from '~/utils/dates';
 import {formatTodayDate} from '../../../utils/dates';
 
 const Index = ({subscription, subscription_id, user}) => {
   // console.log('subscription===', subscription);
+  const TOTAL_WEEKS_DISPLAY = 4;
+  const TOTAL_WEEKS_PER_PAGE = 1;
+
   const navigate = useNavigate();
   const [processOrder, setProcessOrder] = useState(false);
   const [processSkip, setProcessSkip] = useState(false);
@@ -79,6 +74,14 @@ const Index = ({subscription, subscription_id, user}) => {
     setChangedDeliveryDate(false);
   };
 
+  const createWeekList = (weeksMenu, deliverAfterDate) => {
+    if (!weeksMenu.includes(dayjs(deliverAfterDate).format('YYYY-MM-DD'))) {
+      weeksMenu.push(dayjs.utc(deliverAfterDate).format('YYYY-MM-DD'));
+    }
+
+    return weeksMenu;
+  };
+
   useEffect(() => {
     const getData = async (subscription_id) => {
       // const userToken = await getToken()
@@ -100,6 +103,7 @@ const Index = ({subscription, subscription_id, user}) => {
     console.log('----getOrdersToShow----');
     const todayDate = formatTodayDate(new Date());
 
+    console.log('user', user);
     const activeWeeksArr = [];
     const activeWeeksLimit = [];
     const weeksMenu = [];
@@ -117,7 +121,7 @@ const Index = ({subscription, subscription_id, user}) => {
     let subApi = subResponse.data;
     console.log('subApi', subApi);
 
-    // var firstOrderDeliveryDate = todayDate;
+    var firstOrderDeliveryDate = todayDate;
     // console.log('----subApi----', subApi)
     if (subApi) {
       for (const sub of subApi) {
@@ -133,146 +137,152 @@ const Index = ({subscription, subscription_id, user}) => {
         );
         const configData = configDataResponse.data;
         console.log('----configData----', configData);
+        console.log('----USERDATA----', user);
 
         if (configData.length > 0) {
-          /*for (const config of configData) {
-            let subCount = 0
+          for (const config of configData) {
+            let subCount = 0;
             for (const content of config.contents) {
               // find delivery date between range
               const deliveryDate = findWeekDayBetween(
                 sub.delivery_day,
                 content.deliver_after,
-                content.deliver_before
-              )
-              const cutoffDate = getCutOffDate(deliveryDate)
-              const firstOrder = shopCustomer.orders[0] || null
-              if(firstOrderDeliveryDate === todayDate){
-                try{
-                  firstOrderDeliveryDate = config.contents.find(x => x.id === sub.orders[0]?.bundle_configuration_content_id)?.deliver_before;
-                  firstOrderDeliveryDate = (typeof firstOrderDeliveryDate !== 'undefined' && firstOrderDeliveryDate != null) ? firstOrderDeliveryDate : todayDate;
-                }
-                catch(e){
+                content.deliver_before,
+              );
+              const cutoffDate = getCutOffDate(deliveryDate);
+              const firstOrder = user.orders?.edges?.pop() || null;
+
+              if (firstOrderDeliveryDate === todayDate) {
+                try {
+                  firstOrderDeliveryDate = config.contents.find(
+                    (x) =>
+                      x.id === sub.orders[0]?.bundle_configuration_content_id,
+                  )?.deliver_before;
+                  firstOrderDeliveryDate =
+                    typeof firstOrderDeliveryDate !== 'undefined' &&
+                    firstOrderDeliveryDate != null
+                      ? firstOrderDeliveryDate
+                      : todayDate;
+                } catch (e) {
                   firstOrderDeliveryDate = todayDate;
                 }
               }
 
               const firstOrderDate =
-                (firstOrder && dayjs(firstOrder.orderDate).utc()) ||
-                dayjs().utc()
+                (firstOrder && dayjs(firstOrder.node.processedAt).utc()) ||
+                dayjs().utc();
 
-              // console.log('----subCount----', subCount)
-              // console.log(
-              //   '----deliverBefore day js----',
-              //   dayjs(content.deliver_before).utc(),
-              //   todayDate,
-              //   dayjs(content.deliver_before).utc().isSameOrAfter(todayDate)
-              // )
-              // console.log(
-              //   '----deliverAfter day js----',
-              //   content.deliver_after,
-              //   firstOrderDate,
-              //   firstOrderDate.isSameOrBefore(content.deliver_after)
-              // )
               // validates the first order to avoid displaying the week where the order was placed (always show next week)
               console.log('firstOrderDeliveryDate', firstOrderDeliveryDate);
               if (
                 subCount < TOTAL_WEEKS_DISPLAY &&
-                dayjs(content.deliver_before).utc().isSameOrAfter(firstOrderDeliveryDate) && dayjs(content.deliver_before).utc().isSameOrAfter(todayDate) &&
+                dayjs(content.deliver_before)
+                  .utc()
+                  .isSameOrAfter(firstOrderDeliveryDate) &&
+                dayjs(content.deliver_before).utc().isSameOrAfter(todayDate) &&
                 firstOrderDate.isSameOrBefore(content.deliver_after)
               ) {
-                const orderedItems = subscriptionOrders.data.data.filter(
+                console.log('subscriptionOrders', subscriptionOrders);
+                console.log('content', content);
+                const orderedItems = subscriptionOrders.filter(
                   (ord) =>
                     ord.bundle_configuration_content.deliver_after ===
-                    content.deliver_after
-                )
+                    content.deliver_after,
+                );
+
+                console.log('orderedItemsorderedItems', orderedItems);
 
                 const subscriptionObjKey = `${
                   content.deliver_after.split('T')[0]
-                }_${sub.bundle_id}`
+                }_${sub.bundle_id}`;
 
                 // push date to weeksMenu
                 // console.log('----weeksMenu----', weeksMenu)
                 // console.log('----deliver_after----', content.deliver_after)
-                createWeekList(weeksMenu, content.deliver_after)
+                createWeekList(weeksMenu, content.deliver_after);
 
                 if (
                   !Object.keys(subscriptionArray).includes(subscriptionObjKey)
                 ) {
-                  subscriptionArray[subscriptionObjKey] = {}
-                  subscriptionArray[subscriptionObjKey].items = []
+                  subscriptionArray[subscriptionObjKey] = {};
+                  subscriptionArray[subscriptionObjKey].items = [];
 
                   if (orderedItems.length > 0) {
-                    const orderFound = orderedItems[0]
+                    const orderFound = orderedItems[0];
                     if (subscriptionArray[subscriptionObjKey]) {
-                      let thisItemsArray = []
+                      let thisItemsArray = [];
                       for (const order of orderedItems) {
                         const prodArr = await buildProductArrayFromVariant(
                           order.items,
                           sub.subscription_sub_type,
-                          shopProducts
-                        )
-                        thisItemsArray = thisItemsArray.concat(prodArr)
+                          shopProducts,
+                        );
+                        thisItemsArray = thisItemsArray.concat(prodArr);
                       }
-                      subscriptionArray[subscriptionObjKey].subId = sub.id
-                      subscriptionArray[subscriptionObjKey].bundleProductId	 = sub.platform_product_id
+                      subscriptionArray[subscriptionObjKey].subId = sub.id;
+                      subscriptionArray[subscriptionObjKey].bundleProductId =
+                        sub.platform_product_id;
                       subscriptionArray[subscriptionObjKey].deliveryDay =
-                        sub.delivery_day
+                        sub.delivery_day;
                       subscriptionArray[subscriptionObjKey].items =
-                        thisItemsArray
+                        thisItemsArray;
                       subscriptionArray[subscriptionObjKey].status =
                         orderFound.platform_order_id !== null
                           ? STATUS_SENT
                           : todayDate.isSameOrAfter(cutoffDate)
-                            ? STATUS_LOCKED
-                            : STATUS_PENDING
+                          ? STATUS_LOCKED
+                          : STATUS_PENDING;
                       subscriptionArray[subscriptionObjKey].subscriptionDate =
                         dayjs(subscriptionObjKey.split('_')[0]).format(
-                          'YYYY-MM-DD'
-                        )
+                          'YYYY-MM-DD',
+                        );
                       subscriptionArray[subscriptionObjKey].queryDate =
-                        content.deliver_after
+                        content.deliver_after;
                       if (orderFound.platform_order_id !== null) {
                         subscriptionArray[subscriptionObjKey].trackingUrl =
                           await getOrderTrackingUrl(
                             orderFound.platform_order_id,
-                            shopCustomer
-                          )
+                            shopCustomer,
+                          );
                       }
                     }
                   } else {
-                    const defaultProducts = await getDefaultProducts(
-                      token,
-                      config.bundle_id,
-                      config.id,
-                      content.id
-                    )
+
+                    const defaultProductsResponse = await axios.get(
+                      `/api/bundleAuth/bundles/${config.bundle_id}/configurations/${config.id}/contents/${content.id}/products?is_default=1`,
+                    );
+                    const defaultProducts = defaultProductsResponse.data;
+                    console.log('defaultProducts', defaultProducts);
+
+
                     const thisProductsArray = await buildProductArrayFromId(
                       defaultProducts.data.data,
                       sub.subscription_sub_type,
-                      shopProducts
-                    )
-                    subscriptionArray[subscriptionObjKey].subId = sub.id
-                    subscriptionArray[subscriptionObjKey].bundleProductId	 = sub.platform_product_id
+                      shopProducts,
+                    );
+                    subscriptionArray[subscriptionObjKey].subId = sub.id;
+                    subscriptionArray[subscriptionObjKey].bundleProductId =
+                      sub.platform_product_id;
                     subscriptionArray[subscriptionObjKey].items =
                       subscriptionArray[subscriptionObjKey].items.concat(
-                        thisProductsArray
-                      )
+                        thisProductsArray,
+                      );
                     subscriptionArray[subscriptionObjKey].status =
                       todayDate.isSameOrAfter(cutoffDate)
                         ? STATUS_LOCKED
-                        : STATUS_PENDING
+                        : STATUS_PENDING;
                     subscriptionArray[subscriptionObjKey].subscriptionDate =
                       dayjs(subscriptionObjKey.split('_')[0]).format(
-                        'YYYY-MM-DD'
-                      )
+                        'YYYY-MM-DD',
+                      );
                     subscriptionArray[subscriptionObjKey].queryDate =
-                      content.deliver_after
+                      content.deliver_after;
                   }
                 }
-                subCount++
+                subCount++;
               }
             }
-          }*/
+          }
         }
       }
     }
