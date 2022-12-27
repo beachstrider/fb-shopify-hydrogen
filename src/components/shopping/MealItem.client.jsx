@@ -22,7 +22,7 @@ export function MealItem({title, image, metafields}) {
           alt="Meals"
         />
         <h3 className="font-bold font-heading text-sm text-center">{title}</h3>
-        <div className="text-center text-sm mb-2 ">Serves: 5</div>
+        {/*<div className="text-center text-sm mb-2 ">Serves: 5</div>*/}
       </button>
 
       {/* <MealModal open={openModal} close={() => setOpenModal(false)}>
@@ -88,7 +88,7 @@ export function MealItem({title, image, metafields}) {
         </div>
       <div className='pl-5'>
         <h1 className="text-lg font-bold text-left mb-4 text-black">
-          {title}
+          {metafields?.find(x => x.key === "display_name").value }
         </h1>
         <Tabs metafields={metafields} />
         
