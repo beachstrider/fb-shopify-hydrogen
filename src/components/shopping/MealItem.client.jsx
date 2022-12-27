@@ -57,13 +57,13 @@ export function MealItem({title, image, metafields}) {
          {/*header*/}
          <button
              type="button"
-             className="absolute -top-1 -right-1 rounded-full border border-gray-200 bg-white p-1 text-gray-800"
+             className="absolute top-[15px] right-[10px] text-gray-800"
               onClick={() => setOpenModal(false)}
            >
             <span className="sr-only">Close</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
+              className="h-5 w-5"
               viewBox="0 0 20 20"
               fill="black 800"
             >
