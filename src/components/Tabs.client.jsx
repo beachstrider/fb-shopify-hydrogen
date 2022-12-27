@@ -71,7 +71,7 @@ console.log('metafields',metafields)
             id="panel-2"
             className={selectedTag ===2 ? "tab-panel text-center":"absolute top-0 invisible opacity-0 tab-panel text-center"}
          >
-            <p className="">Insert nutrition label just like in menu.</p>
+            <script src={`https://www.recipal.com/recipes/${metafields?.find(x => x.key === 'recipal_embed').value}/embed.js?label_format=new_fda&ingredients=1&allergens=1`}> </script>
           </div>
         </div>
       </div>
