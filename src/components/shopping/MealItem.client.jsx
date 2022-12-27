@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Tabs  from '../Tabs.client';
 import {MealModal} from '../global';
 
-export function MealItem({title, image}) {
+export function MealItem({title, image, metafields}) {
   const [openModal, setOpenModal] = useState(false);
 
   return (
@@ -42,7 +42,7 @@ export function MealItem({title, image}) {
             <h1 className="text-lg font-bold text-center mb-4 text-black">
               {title}
             </h1>
-            <Tabs />
+            <Tabs metafields={metafields} />
           </div>
         </div>
       </MealModal>
