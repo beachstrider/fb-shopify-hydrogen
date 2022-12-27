@@ -69,7 +69,6 @@ export function OrderBundles({
   );
 
   const [newDiscountCodes, setNewDiscountCodes] = useState(discountCodes);
-  const [openModal, setOpenModal] = useState(false);
 
   const {
     id,
@@ -167,6 +166,21 @@ export function OrderBundles({
     return [];
   })();
 
+  const totalPrice = (() => {
+    let price = bundle.variants.nodes[0].priceV2.amount;
+    if (cartInfo.priceType === 'recuring') {
+      price =
+        price -
+        (price *
+          bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+            (el) => el.options[0].value === cartInfo.frequencyValue,
+          )?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage) /
+          100;
+    }
+
+    return price;
+  })();
+
   function getAttributes(cartToken, customerId, deliveryDate) {
     deliveryDate = cartInfo.deliveryDate !== '' ? deliveryDate : today();
     cartToken = cartToken !== '' ? cartToken.substring(19) : 'xxx';
@@ -222,9 +236,6 @@ export function OrderBundles({
   }
 
   async function updateCart() {
-    // if (cartInfo.bundle) {
-    let newTotalPrice = bundle.variants.nodes[0].priceV2.amount;
-
     const line = {
       merchandiseId: bundle.variants.nodes[0].id,
       sellingPlanId: undefined,
@@ -240,17 +251,6 @@ export function OrderBundles({
 
       line.sellingPlanId = sellingPlanId;
 
-      newTotalPrice =
-        newTotalPrice -
-        (newTotalPrice *
-          bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
-            (el) => el.options[0].value === cartInfo.frequencyValue,
-          )?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage) /
-          100;
-      // }
-
-      console.log('update id', id, line);
-      setCartInfo({...cartInfo, totalPrice: newTotalPrice});
       if (lines.length) {
         linesRemove(lines.map((line) => line.id));
         setTimeout(() => {
@@ -267,9 +267,7 @@ export function OrderBundles({
       }
     }
   }
-  const handleChangeCupon = () => {
-    console.log('ad');
-  };
+
   function updateCartAttributes() {
     if (lines.length && typeof id !== 'undefined') {
       linesUpdate([
@@ -536,8 +534,14 @@ export function OrderBundles({
                             <div className="flex flex-col justify-between text-center">
                               <MealItem
                                 title={product.title}
-                                image={product.variants.nodes[0].image ? product.variants.nodes[0].image?.url : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'}
-                                metafields={product.variants.nodes[0].metafields}
+                                image={
+                                  product.variants.nodes[0].image
+                                    ? product.variants.nodes[0].image?.url
+                                    : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                                }
+                                metafields={
+                                  product.variants.nodes[0].metafields
+                                }
                               />
 
                               {cartInfo.productsInCart.findIndex(
@@ -835,7 +839,7 @@ export function OrderBundles({
                                   style={{color: '#000000'}}
                                 >
                                   <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-                                    <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0">
+                                    <div className="w-full px-4 mb-4 md:mb-0">
                                       {' '}
                                       <label>
                                         <input
@@ -949,7 +953,7 @@ export function OrderBundles({
                           <span className="font-bold text-[28px]">
                             Total:{' '}
                             {getFullCost(
-                              cartInfo.totalPrice,
+                              totalPrice,
                               bundle.variants?.nodes[0]?.priceV2?.currencyCode,
                             )}
                           </span>
@@ -1009,7 +1013,7 @@ export function OrderBundles({
                               <div
                                 className="bg-white mt-4"
                                 style={{
-                                  'box-shadow': '0 3px 10px rgb(0 0 0 / 0.2)',
+                                  boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
                                 }}
                               >
                                 <div className="mb-1">
