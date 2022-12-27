@@ -1,17 +1,18 @@
 import {Suspense} from 'react';
-import {Seo, useSession, useShopQuery} from '@shopify/hydrogen';
+import {Seo, useSession, useShopQuery, useRouteParams} from '@shopify/hydrogen';
 import {Layout} from '~/components/index.server';
 import {OrderBundles} from '~/components/shopping/OrderBundles.client';
 
-import {CUSTOMER_QUERY} from '~/lib/queries';
+import {CUSTOMER_QUERY, BUNDLE_QUERY} from '~/lib/queries';
 
 const Index = () => {
+  const {customerAccessToken} = useSession();
+  const {handle} = useRouteParams();
   let {discountCodes} = useSession();
+
   discountCodes = typeof discountCodes === 'undefined' ? [] : discountCodes;
 
-  const {customerAccessToken} = useSession();
   let customerId = '';
-  const bundleId = 8051623395619;
 
   if (customerAccessToken) {
     const {data} = useShopQuery({
@@ -23,6 +24,13 @@ const Index = () => {
     customerId = customer.id;
   }
 
+  const {
+    data: {product: bundle},
+  } = useShopQuery({
+    query: BUNDLE_QUERY,
+    variables: {handle},
+  });
+
   return (
     <Layout>
       <Suspense>
@@ -30,7 +38,7 @@ const Index = () => {
       </Suspense>
       <Suspense>
         <OrderBundles
-          bundleId={bundleId}
+          bundle={bundle}
           customerId={customerId}
           customerAccessToken={customerAccessToken}
           discountCodes={discountCodes}

@@ -122,10 +122,10 @@ export const LOGIN_MUTATION = gql`
   }
 `;
 
-const BUNDLE_QUERY = gql`
+export const BUNDLE_QUERY = gql`
   ${PRODUCT_CARD_FRAGMENT}
-  query Bundle($id: ID) {
-    product(id: $id) {
+  query Bundle($handle: String) {
+    product(handle: $handle) {
       ...ProductCard
     }
   }
