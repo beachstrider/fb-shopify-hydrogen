@@ -41,7 +41,7 @@ function getCartInfo() {
     bundleContents: [],
     bundleData: undefined,
     deliveryDate: '',
-    priceType: undefined,
+    priceType: 'onetime',
     frequencyValue: '7 Day(s)',
     totalPrice: 0,
     productsInCart: [],
@@ -441,7 +441,7 @@ export function OrderBundles({
       setNewDiscountCodes([discountCodeInputRef.current.value]);
     }, 1500);
   }
-
+  console.log('bundle', bundle);
   return (
     <Loading className="py-20" isLoading={isInitialDataLoading}>
       <section className="bg-[#EFEFEF]">
@@ -460,24 +460,23 @@ export function OrderBundles({
               <div className="">
                 <div className="mt-16 font-bold">
                   <div className="text-[60px] ">{bundle?.title}</div>
-                  <div className="flex gap-2">
-                    <div className="font-bold text-md">Feeding a party?</div>
-                    <Link
-                      className="font-bold text-md text-[#DB9707] underline"
-                      to="/shop/bundle/event-feastbox"
-                    >
-                      Try our Event Box
-                    </Link>
-                  </div>
+                  {bundle.handle === 'family-feastbox' && (
+                    <div className="flex gap-2">
+                      <div className="font-bold text-md">Feeding a party?</div>
+                      <Link
+                        className="font-bold text-md text-[#DB9707] underline"
+                        to="/shop/bundle/event-feastbox"
+                      >
+                        Try our Event Box
+                      </Link>
+                    </div>
+                  )}
                 </div>
                 <div className="mb-10 pb-10">
                   <div style={{padding: '20px 0'}}>
                     <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
-                      <div
-                        className="flex items-center gap-6 text-gray-800  mb-2"
-                        style={{fontSize: 24}}
-                      >
-                        <div className="text-lg font-bold">
+                      <div className="flex items-center gap-6 text-gray-800  mb-2">
+                        <div className="text-2xl font-bold">
                           1. Choose your Week
                         </div>
                         <div className="text-sm">
@@ -517,400 +516,448 @@ export function OrderBundles({
                       </div>
                     </div>
                   </div>
-                  <div
-                    className="block text-gray-800 text-lg font-bold mb-2"
-                    style={{fontSize: 24, marginTop: 20}}
-                  >
-                    2. Choose your Meals
-                  </div>
-                  <Loading isLoading={isProductsLoading}>
-                    <div className="flex flex-wrap -mx-2 -mb-2">
-                      {products.length ? (
-                        products.map((product, key) => (
-                          <div
-                            key={key}
-                            className="flex w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center"
-                          >
-                            <div className="flex flex-col justify-between text-center">
-                              <MealItem
-                                title={product.title}
-                                image={
-                                  product.variants.nodes[0].image
-                                    ? product.variants.nodes[0].image?.url
-                                    : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
-                                }
-                                metafields={
-                                  product.variants.nodes[0].metafields
-                                }
-                              />
-
-                              {cartInfo.productsInCart.findIndex(
-                                (el) =>
-                                  el.variants.nodes[0].id ===
-                                  product.variants.nodes[0].id,
-                              ) === -1 ? (
-                                <div className="px-4 text-center">
-                                  <button
-                                    className="text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
-                                    onClick={() => handleUpdateCart(product)}
-                                    disabled={isQuantityLimit}
-                                  >
-                                    Add+
-                                  </button>
-                                </div>
-                              ) : (
-                                <div className="flex justify-center font-semibold font-heading">
-                                  <button
-                                    className="hover:text-gray-700 text-center bg-[#DB9707] text-white"
-                                    onClick={() =>
-                                      handleUpdateCart(product, -1)
-                                    }
-                                  >
-                                    <svg
-                                      width={24}
-                                      height={2}
-                                      viewBox="0 0 12 2"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <g opacity="0.35">
-                                        <rect
-                                          x={12}
-                                          width={2}
-                                          height={12}
-                                          transform="rotate(90 12 0)"
-                                          fill="currentColor"
-                                        />
-                                      </g>
-                                    </svg>
-                                  </button>
-                                  <div className="w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
-                                    {
-                                      cartInfo.productsInCart.find(
-                                        (el) =>
-                                          el.variants.nodes[0].id ===
-                                          product.variants.nodes[0].id,
-                                      ).quantity
-                                    }
-                                  </div>
-                                  <button
-                                    className="hover:text-gray-700 text-center bg-[#DB9707] text-white disabled:bg-[#bdac89]"
-                                    onClick={() => handleUpdateCart(product, 1)}
-                                    disabled={isQuantityLimit}
-                                  >
-                                    <svg
-                                      width={24}
-                                      height={12}
-                                      viewBox="0 0 12 12"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <g opacity="0.35">
-                                        <rect
-                                          x={5}
-                                          width={2}
-                                          height={12}
-                                          fill="currentColor"
-                                        />
-                                        <rect
-                                          x={12}
-                                          y={5}
-                                          width={2}
-                                          height={12}
-                                          transform="rotate(90 12 5)"
-                                          fill="currentColor"
-                                        />
-                                      </g>
-                                    </svg>
-                                  </button>
-                                </div>
-                              )}
-                            </div>
+                  {bundle.handle === 'event-feastbox' && (
+                    <div style={{padding: '20px 0'}}>
+                      <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
+                        <div className="flex items-center gap-6 text-gray-800  mb-2">
+                          <div className="text-2xl font-bold">
+                            1.1 Party Size?
                           </div>
-                        ))
-                      ) : (
-                        <div className="w-full flex justify-center items-center py-8 text-lg">
-                          <div>No available products</div>
                         </div>
-                      )}
-                    </div>
-                  </Loading>
-                  <div className="container mx-auto px-4">
-                    <div className="max-w-4xl mx-auto">
-                      <div
-                        className="block text-gray-800 text-lg font-bold mb-2 -ml-4"
-                        style={{fontSize: 24, marginTop: 60}}
-                      >
-                        3. Choose your Price
-                      </div>
-                      <div className="flex flex-wrap -mx-4 mb-24">
-                        <div className="lg:w-[50%] md:w-full sm-max:w-full px-2">
-                          <div className="relative  bg-gray-50">
-                            <div
-                              className="px-6 py-4 mt-8"
-                              style={{
-                                boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
-                                border: 'solid #DB9707 4px',
-                              }}
+                        <div
+                          className="relative"
+                          style={{boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)'}}
+                        >
+                          <select
+                            className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
+                            name="week"
+                            onChange={handleWeekChange}
+                            value={selectedWeekIndex}
+                            style={{borderWidth: 0, backgroundImage: 'none'}}
+                          >
+                            <option disabled value={-1}>
+                              --Choose an option--
+                            </option>
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg
+                              className="fill-current h-4 w-4"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
                             >
-                              <span
-                                className="font-bold"
+                              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="mb-14">
+                    <div
+                      className="block text-gray-800 text-lg font-bold mb-2"
+                      style={{fontSize: 24, marginTop: 20}}
+                    >
+                      2. Choose your Meals
+                    </div>
+                    <Loading isLoading={isProductsLoading}>
+                      <div className="flex flex-wrap -mx-2 -mb-2">
+                        {products.length ? (
+                          products.map((product, key) => (
+                            <div
+                              key={key}
+                              className="flex w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center"
+                            >
+                              <div className="flex flex-col justify-between text-center">
+                                <MealItem
+                                  title={product.title}
+                                  image={
+                                    product.variants.nodes[0].image
+                                      ? product.variants.nodes[0].image?.url
+                                      : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                                  }
+                                  metafields={
+                                    product.variants.nodes[0].metafields
+                                  }
+                                />
+
+                                {cartInfo.productsInCart.findIndex(
+                                  (el) =>
+                                    el.variants.nodes[0].id ===
+                                    product.variants.nodes[0].id,
+                                ) === -1 ? (
+                                  <div className="px-4 text-center">
+                                    <button
+                                      className="text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
+                                      onClick={() => handleUpdateCart(product)}
+                                      disabled={isQuantityLimit}
+                                    >
+                                      Add+
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="flex justify-center font-semibold font-heading">
+                                    <button
+                                      className="hover:text-gray-700 text-center bg-[#DB9707] text-white"
+                                      onClick={() =>
+                                        handleUpdateCart(product, -1)
+                                      }
+                                    >
+                                      <svg
+                                        width={24}
+                                        height={2}
+                                        viewBox="0 0 12 2"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                      >
+                                        <g opacity="0.35">
+                                          <rect
+                                            x={12}
+                                            width={2}
+                                            height={12}
+                                            transform="rotate(90 12 0)"
+                                            fill="currentColor"
+                                          />
+                                        </g>
+                                      </svg>
+                                    </button>
+                                    <div className="w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
+                                      {
+                                        cartInfo.productsInCart.find(
+                                          (el) =>
+                                            el.variants.nodes[0].id ===
+                                            product.variants.nodes[0].id,
+                                        ).quantity
+                                      }
+                                    </div>
+                                    <button
+                                      className="hover:text-gray-700 text-center bg-[#DB9707] text-white disabled:bg-[#bdac89]"
+                                      onClick={() =>
+                                        handleUpdateCart(product, 1)
+                                      }
+                                      disabled={isQuantityLimit}
+                                    >
+                                      <svg
+                                        width={24}
+                                        height={12}
+                                        viewBox="0 0 12 12"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                      >
+                                        <g opacity="0.35">
+                                          <rect
+                                            x={5}
+                                            width={2}
+                                            height={12}
+                                            fill="currentColor"
+                                          />
+                                          <rect
+                                            x={12}
+                                            y={5}
+                                            width={2}
+                                            height={12}
+                                            transform="rotate(90 12 5)"
+                                            fill="currentColor"
+                                          />
+                                        </g>
+                                      </svg>
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="w-full flex justify-center items-center py-8 text-lg">
+                            <div>No available products</div>
+                          </div>
+                        )}
+                      </div>
+                    </Loading>
+                  </div>
+                  <div className="container mx-auto px-4">
+                    {bundle.handle === 'family-feastbox' && (
+                      <div className="max-w-4xl mx-auto">
+                        <div className="block text-gray-800 text-2xl font-bold mb-2 -ml-4">
+                          3. Choose your Price
+                        </div>
+                        <div className="flex flex-wrap -mx-4 mb-24">
+                          <div className="lg:w-[50%] md:w-full sm-max:w-full px-2">
+                            <div className="relative  bg-gray-50">
+                              <div
+                                className="px-6 py-4 mt-8"
                                 style={{
-                                  float: 'right',
-                                  backgroundColor: '#DB9725',
-                                  color: '#FFFFFF',
-                                  padding: '4px 44px',
-                                  marginTop: '-48px',
-                                  marginRight: '-28px',
+                                  boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
+                                  border: 'solid #DB9707 4px',
                                 }}
                               >
-                                Most Popular
-                              </span>
-                              {/*---radio---*/}
-                              <div className="mb-1">
-                                <div
-                                  className="mb-1"
-                                  style={{color: '#000000'}}
+                                <span
+                                  className="font-bold"
+                                  style={{
+                                    float: 'right',
+                                    backgroundColor: '#DB9725',
+                                    color: '#FFFFFF',
+                                    padding: '4px 44px',
+                                    marginTop: '-48px',
+                                    marginRight: '-28px',
+                                  }}
                                 >
-                                  <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-                                    <div className="w-full px-4 mb-4 md:mb-0">
-                                      {' '}
-                                      <label>
-                                        <input
-                                          id="subscribe_save"
-                                          type="radio"
-                                          name="price_type"
-                                          value="recuring"
-                                          defaultChecked={
-                                            cartInfo.priceType === 'recuring'
-                                          }
-                                          disabled={checkoutButtonStatus !== ''}
-                                          onClick={(e) =>
-                                            setCartInfo({
-                                              ...cartInfo,
-                                              priceType: e.target.value,
-                                            })
-                                          }
-                                        />
-                                        <span
-                                          className={`ml-3 font-bold ${
-                                            checkoutButtonStatus !== ''
-                                              ? 'text-gray-400'
-                                              : ''
-                                          }`}
-                                          style={{fontSize: 18}}
-                                        >
-                                          SUBSCRIBE &amp; SAVE
-                                        </span>
-                                        <br />
-                                        <div style={{paddingBottom: 14}}>
-                                          <span className="mr-2">
-                                            <strike>
-                                              {getFullCost(
-                                                typeof bundle?.variants
-                                                  ?.nodes[0]?.priceV2
-                                                  ?.amount !== 'undefined'
-                                                  ? bundle?.variants?.nodes[0]
-                                                      ?.priceV2?.amount
-                                                  : undefined,
-                                                bundle?.variants?.nodes[0]
-                                                  ?.priceV2?.currencyCode,
-                                              )}
-                                            </strike>
+                                  Most Popular
+                                </span>
+                                {/*---radio---*/}
+                                <div className="mb-1">
+                                  <div
+                                    className="mb-1"
+                                    style={{color: '#000000'}}
+                                  >
+                                    <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
+                                      <div className="w-full px-4 mb-4 md:mb-0">
+                                        {' '}
+                                        <label>
+                                          <input
+                                            id="subscribe_save"
+                                            type="radio"
+                                            name="price_type"
+                                            value="recuring"
+                                            defaultChecked={
+                                              cartInfo.priceType === 'recuring'
+                                            }
+                                            disabled={
+                                              checkoutButtonStatus !== ''
+                                            }
+                                            onClick={(e) =>
+                                              setCartInfo({
+                                                ...cartInfo,
+                                                priceType: e.target.value,
+                                              })
+                                            }
+                                          />
+                                          <span
+                                            className={`ml-3 font-bold ${
+                                              checkoutButtonStatus !== ''
+                                                ? 'text-gray-400'
+                                                : ''
+                                            }`}
+                                            style={{fontSize: 18}}
+                                          >
+                                            SUBSCRIBE &amp; SAVE
                                           </span>
+                                          <br />
+                                          <div style={{paddingBottom: 14}}>
+                                            <span className="mr-2">
+                                              <strike>
+                                                {getFullCost(
+                                                  typeof bundle?.variants
+                                                    ?.nodes[0]?.priceV2
+                                                    ?.amount !== 'undefined'
+                                                    ? bundle?.variants?.nodes[0]
+                                                        ?.priceV2?.amount
+                                                    : undefined,
+                                                  bundle?.variants?.nodes[0]
+                                                    ?.priceV2?.currencyCode,
+                                                )}
+                                              </strike>
+                                            </span>
+                                            <span
+                                              className="font-bold"
+                                              style={{fontSize: 18}}
+                                            >
+                                              {(() => {
+                                                const price =
+                                                  bundle?.variants?.nodes[0]
+                                                    ?.priceV2?.amount;
+                                                const adjustmentPercentage =
+                                                  bundle?.sellingPlanGroups
+                                                    ?.nodes[0]?.sellingPlans
+                                                    ?.nodes[0]
+                                                    ?.priceAdjustments[0]
+                                                    ?.adjustmentValue
+                                                    ?.adjustmentPercentage;
+
+                                                if (
+                                                  typeof adjustmentPercentage !==
+                                                  'undefined'
+                                                )
+                                                  return getFullCost(
+                                                    (
+                                                      price -
+                                                      (price *
+                                                        adjustmentPercentage) /
+                                                        100
+                                                    ).toFixed(2),
+                                                    bundle?.variants?.nodes[0]
+                                                      ?.priceV2?.currencyCode,
+                                                  );
+
+                                                return '';
+                                              })()}
+                                              /{' '}
+                                            </span>
+                                            <span>
+                                              {cartInfo.mealQuantity + ' meals'}
+                                            </span>
+                                          </div>
+                                        </label>
+                                      </div>
+                                    </div>
+                                    <hr />
+                                    <p
+                                      style={{color: '#DB9725', marginTop: 10}}
+                                    >
+                                      <span
+                                        style={{fontSize: 18}}
+                                        className=" font-bold"
+                                      >
+                                        Limited Time Promotion:
+                                      </span>{' '}
+                                      <br />
+                                      Get a FREE Breakfast with the life of your
+                                      Subscription. (A $60.00 value)
+                                    </p>
+                                    <br />
+                                    <p>
+                                      Delivery Every:{' '}
+                                      <button
+                                        className={`text-[#DB9725]`}
+                                        onClick={handleToggleFrequency}
+                                      >
+                                        <u>
+                                          {' '}
+                                          {cartInfo.frequencyValue ===
+                                          '7 Day(s)'
+                                            ? 'Weekly'
+                                            : 'Biweekly'}
+                                        </u>{' '}
+                                        &gt;{' '}
+                                      </button>
+                                    </p>
+                                    <p>
+                                      {(() => {
+                                        const price =
+                                          bundle?.variants?.nodes[0]?.priceV2
+                                            ?.amount;
+                                        const adjustmentPercentage =
+                                          bundle?.sellingPlanGroups?.nodes[0]
+                                            ?.sellingPlans?.nodes[0]
+                                            ?.priceAdjustments[0]
+                                            ?.adjustmentValue
+                                            ?.adjustmentPercentage;
+
+                                        if (
+                                          typeof adjustmentPercentage !==
+                                          'undefined'
+                                        ) {
+                                          const diff =
+                                            (price * adjustmentPercentage) /
+                                            100;
+
+                                          return (
+                                            'Save ' +
+                                            getFullCost(
+                                              diff,
+                                              bundle?.variants?.nodes[0]
+                                                ?.priceV2?.currencyCode,
+                                            )
+                                          );
+                                        }
+                                        return '';
+                                      })()}
+                                    </p>
+                                    <p>No Commitments, Cancel Anytime</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2">
+                            <div className="relative  bg-gray-50">
+                              <div
+                                className="px-6 py-4 mt-8"
+                                style={{
+                                  boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
+                                  border: 'solid #DB9707 4px',
+                                }}
+                              >
+                                <div className="mb-1">
+                                  <div
+                                    className="mb-1"
+                                    style={{color: '#000000'}}
+                                  >
+                                    <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
+                                      <div className="w-full px-4 mb-4 md:mb-0">
+                                        {' '}
+                                        <label>
+                                          <input
+                                            id="one-time"
+                                            type="radio"
+                                            name="price_type"
+                                            value="onetime"
+                                            disabled={
+                                              checkoutButtonStatus !== ''
+                                            }
+                                            defaultChecked={
+                                              cartInfo.priceType === 'onetime'
+                                            }
+                                            onClick={(e) =>
+                                              setCartInfo({
+                                                ...cartInfo,
+                                                priceType: e.target.value,
+                                              })
+                                            }
+                                          />
+                                          <span
+                                            className={`ml-3 font-bold ${
+                                              checkoutButtonStatus !== ''
+                                                ? 'text-gray-400'
+                                                : ''
+                                            }`}
+                                            style={{fontSize: 18}}
+                                          >
+                                            ONE-TIME
+                                          </span>
+                                          <br />
                                           <span
                                             className="font-bold"
                                             style={{fontSize: 18}}
                                           >
-                                            {(() => {
-                                              const price =
-                                                bundle?.variants?.nodes[0]
-                                                  ?.priceV2?.amount;
-                                              const adjustmentPercentage =
-                                                bundle?.sellingPlanGroups
-                                                  ?.nodes[0]?.sellingPlans
-                                                  ?.nodes[0]
-                                                  ?.priceAdjustments[0]
-                                                  ?.adjustmentValue
-                                                  ?.adjustmentPercentage;
-
-                                              if (
-                                                typeof adjustmentPercentage !==
-                                                'undefined'
-                                              )
-                                                return getFullCost(
-                                                  (
-                                                    price -
-                                                    (price *
-                                                      adjustmentPercentage) /
-                                                      100
-                                                  ).toFixed(2),
-                                                  bundle?.variants?.nodes[0]
-                                                    ?.priceV2?.currencyCode,
-                                                );
-
-                                              return '';
-                                            })()}
+                                            {getFullCost(
+                                              bundle?.variants?.nodes[0]
+                                                ?.priceV2?.amount,
+                                              bundle?.variants?.nodes[0]
+                                                ?.priceV2?.currencyCode,
+                                            )}{' '}
                                             /{' '}
                                           </span>
-                                          <span>
-                                            {cartInfo.mealQuantity + ' meals'}
-                                          </span>
-                                        </div>
-                                      </label>
+                                          <span>3 meals</span>
+                                        </label>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <hr />
-                                  <p style={{color: '#DB9725', marginTop: 10}}>
-                                    <span
-                                      style={{fontSize: 18}}
-                                      className=" font-bold"
-                                    >
-                                      Limited Time Promotion:
-                                    </span>{' '}
-                                    <br />
-                                    Get a FREE Breakfast with the life of your
-                                    Subscription. (A $60.00 value)
-                                  </p>
-                                  <br />
-                                  <p>
-                                    Delivery Every:{' '}
-                                    <button
-                                      className={`text-[#DB9725]`}
-                                      onClick={handleToggleFrequency}
-                                    >
-                                      <u>
-                                        {' '}
-                                        {cartInfo.frequencyValue === '7 Day(s)'
-                                          ? 'Weekly'
-                                          : 'Biweekly'}
-                                      </u>{' '}
-                                      &gt;{' '}
-                                    </button>
-                                  </p>
-                                  <p>
-                                    {(() => {
-                                      const price =
-                                        bundle?.variants?.nodes[0]?.priceV2
-                                          ?.amount;
-                                      const adjustmentPercentage =
-                                        bundle?.sellingPlanGroups?.nodes[0]
-                                          ?.sellingPlans?.nodes[0]
-                                          ?.priceAdjustments[0]?.adjustmentValue
-                                          ?.adjustmentPercentage;
-
-                                      if (
-                                        typeof adjustmentPercentage !==
-                                        'undefined'
-                                      ) {
-                                        const diff =
-                                          (price * adjustmentPercentage) / 100;
-
-                                        return (
-                                          'Save ' +
-                                          getFullCost(
-                                            diff,
-                                            bundle?.variants?.nodes[0]?.priceV2
-                                              ?.currencyCode,
-                                          )
-                                        );
-                                      }
-                                      return '';
-                                    })()}
-                                  </p>
-                                  <p>No Commitments, Cancel Anytime</p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2">
-                          <div className="relative  bg-gray-50">
-                            <div
-                              className="px-6 py-4 mt-8"
-                              style={{
-                                boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
-                                border: 'solid #DB9707 4px',
-                              }}
-                            >
-                              <div className="mb-1">
-                                <div
-                                  className="mb-1"
-                                  style={{color: '#000000'}}
-                                >
-                                  <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-                                    <div className="w-full px-4 mb-4 md:mb-0">
-                                      {' '}
-                                      <label>
+                                    <hr />
+                                    <div className="flex justify-between -mx-2">
+                                      <div className=" grow py-4 px-2 mb-4 md:mb-0">
                                         <input
-                                          id="one-time"
-                                          type="radio"
-                                          name="price_type"
-                                          value="onetime"
-                                          disabled={checkoutButtonStatus !== ''}
-                                          defaultChecked={
-                                            cartInfo.priceType === 'onetime'
-                                          }
-                                          onClick={(e) =>
-                                            setCartInfo({
-                                              ...cartInfo,
-                                              priceType: e.target.value,
-                                            })
-                                          }
+                                          ref={discountCodeInputRef}
+                                          className="max-w-[146px] py-3 px-4 mb-2 md:mb-0 border-[#707070] focus:bg-white border focus:outline-none"
+                                          defaultValue={newDiscountCodes.join(
+                                            ' ',
+                                          )}
+                                          disabled={newDiscountCodes.length > 0}
                                         />
-                                        <span
-                                          className={`ml-3 font-bold ${
-                                            checkoutButtonStatus !== ''
-                                              ? 'text-gray-400'
-                                              : ''
-                                          }`}
-                                          style={{fontSize: 18}}
-                                        >
-                                          ONE-TIME
-                                        </span>
-                                        <br />
-                                        <span
-                                          className="font-bold"
-                                          style={{fontSize: 18}}
-                                        >
-                                          {getFullCost(
-                                            bundle?.variants?.nodes[0]?.priceV2
-                                              ?.amount,
-                                            bundle?.variants?.nodes[0]?.priceV2
-                                              ?.currencyCode,
-                                          )}{' '}
-                                          /{' '}
-                                        </span>
-                                        <span>3 meals</span>
-                                      </label>
-                                    </div>
-                                  </div>
-                                  <hr />
-                                  <div className="flex justify-between -mx-2">
-                                    <div className=" grow py-4 px-2 mb-4 md:mb-0">
-                                      <input
-                                        ref={discountCodeInputRef}
-                                        className="max-w-[146px] py-3 px-4 mb-2 md:mb-0 border-[#707070] focus:bg-white border focus:outline-none"
-                                        defaultValue={newDiscountCodes.join(
-                                          ' ',
+                                      </div>
+                                      <div className="flex items-center py-4  mb-4 md:mb-0">
+                                        {newDiscountCodes.length === 0 && (
+                                          <button
+                                            className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
+                                            onClick={handleSubmitDiscountCode}
+                                          >
+                                            Apply
+                                          </button>
                                         )}
-                                        disabled={newDiscountCodes.length > 0}
-                                      />
-                                    </div>
-                                    <div className="flex items-center py-4  mb-4 md:mb-0">
-                                      {newDiscountCodes.length === 0 && (
-                                        <button
-                                          className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
-                                          onClick={handleSubmitDiscountCode}
-                                        >
-                                          Apply
-                                        </button>
-                                      )}
-                                      {newDiscountCodes.length > 0 && (
-                                        <div className="text-lg font-bold text-[#DB9707]">
-                                          Code Applied
-                                        </div>
-                                      )}
+                                        {newDiscountCodes.length > 0 && (
+                                          <div className="text-lg font-bold text-[#DB9707]">
+                                            Code Applied
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -919,7 +966,8 @@ export function OrderBundles({
                           </div>
                         </div>
                       </div>
-                    </div>
+                    )}
+
                     <div className="w-full flex gap-4">
                       <div className="w-full lg:w-1/2">
                         <div className="mb-4 md:mb-0">
