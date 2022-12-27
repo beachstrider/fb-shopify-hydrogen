@@ -1,20 +1,21 @@
 import React, {useState, useEffect} from 'react';
 import {loadScript} from '@shopify/hydrogen';
 const Tabs = ({metafields}) => {
+  const embedLink = `https://www.recipal.com/recipes/${
+    metafields?.find((x) => x?.key === 'recipal_embed')?.value
+  }/embed.js?label_format=new_fda&ingredients=1&allergens=1`;
   const [selectedTag, setSelectedTag] = useState(1);
-  const [url, setUrl] = useState(null);
+
   const handleSelect = (index) => {
     setSelectedTag(index);
-    setUrl(
-      `https://www.recipal.com/recipes/${
-        metafields?.find((x) => x?.key === 'recipal_embed')?.value
-      }/embed.js?label_format=new_fda&ingredients=1&allergens=1`,
-    );
   };
 
+  console.log('url', embedLink);
+  console.log('meta', metafields);
+
   useEffect(() => {
-    loadScript(url).catch(() => {});
-  }, [url]);
+    loadScript(embedLink);
+  }, []);
 
   return (
     <>
@@ -42,8 +43,8 @@ const Tabs = ({metafields}) => {
               <span
                 className={
                   selectedTag === 1
-                    ? 'text-[#DB9707] '
-                    : 'text-black text-tab-underline'
+                    ? 'text-[#DB9707]  border-b-2 border-b-[#DB9707]'
+                    : 'text-black'
                 }
               >
                 Details
@@ -65,8 +66,8 @@ const Tabs = ({metafields}) => {
               <span
                 className={
                   selectedTag === 2
-                    ? 'text-[#DB9707]'
-                    : 'text-black text-tab-underline'
+                    ? 'text-[#DB9707] border-b-2 border-b-[#DB9707]'
+                    : 'text-black'
                 }
               >
                 Nutritions
@@ -119,8 +120,13 @@ const Tabs = ({metafields}) => {
                   : 'absolute top-0 invisible opacity-0 tab-panel text-center'
               }
             >
-              {/*<div>{loadScript(`https://www.recipal.com/recipes/${metafields?.find(x => x?.key === 'recipal_embed')?.value}/embed.js?label_format=new_fda&ingredients=1&allergens=1`)}</div>*/}
-              {/*<script src={`https://www.recipal.com/recipes/${metafields?.find(x => x?.key === 'recipal_embed')?.value}/embed.js?label_format=new_fda&ingredients=1&allergens=1`}> </script>*/}
+              <iframe
+                title="Nutritions"
+                allowFullScreen
+                srcDoc={`
+                    <script src="${embedLink}"></script>
+                `}
+              />
             </div>
           </div>
         </div>
