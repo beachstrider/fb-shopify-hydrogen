@@ -115,7 +115,10 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
         className="flex items-center self-stretch leading-[1rem] md:leading-[4rem] justify-center flex-grow w-full h-full"
         to="/"
       >
-        <Heading className="font-bold text-center" as={isHome ? 'h1' : 'h2'}>
+        <Heading
+          className="font-bold text-center p-8 lg:p-0"
+          as={isHome ? 'h1' : 'h2'}
+        >
           <Image
             src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_75/fb/logo/fb_logo_white.png"
             width={'auto'}

@@ -126,6 +126,10 @@ const Tabs = ({metafields}) => {
                 srcDoc={`
                     <script src="${embedLink}"></script>
                 `}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                }}
               />
             </div>
           </div>
