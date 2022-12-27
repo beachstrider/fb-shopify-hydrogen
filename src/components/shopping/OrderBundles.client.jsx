@@ -465,7 +465,6 @@ export function OrderBundles({
                   className="object-cover w-full md:h-1/2"
                   src={bundle?.variants?.nodes[0]?.image?.url}
                   alt="FeastBox bundle"
-                  onLoadStart={() => setIsInitialDataLoading(true)}
                   onLoad={() => setIsInitialDataLoading(false)}
                 />
               </div>
