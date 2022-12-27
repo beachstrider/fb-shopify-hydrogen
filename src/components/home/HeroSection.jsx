@@ -5,9 +5,9 @@ export function HeroSection() {
       <div className="">
         <div className=" h-[500px] bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-image md:lg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/hero_bg.png')] md:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/hero_bg.png')] bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/hero_bg_mobile.png')]">
           <div className="container max-w-screen-xl mx-auto">
-            <div className="flex items-center justify-start h-full">
+            <div className="flex items-center justify-center md:justify-start h-full">
               <div className="text-white text-lg pl-2 pt-[200px] md:pl-[4rem] md:pt-[65px]">
-                <span className="font-bungee text-[80px] md:text-[100px] font-extrabold leading-[60px] md:leading-[80px] mb-[-0.5rem]">
+                <span className="font-bungee text-[70px] md:text-[100px] text-center font-semibold md:font-extrabold leading-[60px] md:leading-[80px] mb-[-0.5rem]">
                   {' '}
                   A BOX <br />
                   NEVER <br />
@@ -34,11 +34,11 @@ export function HeroSection() {
                 />
               </div>
               <div className="text-white text-lg mt-5 w-full sm:w-[50%-100px] md:w-1/2 md:pl-[100px] py-6">
-                <div className="px-2">
+                <div className="px-7 md:px-2">
                   <h5 className="font-opensans font-extrabold">
                     3 Family Meals a Week
                   </h5>
-                  <h2 className="font-opensans font-bold text-5xl my-1">
+                  <h2 className="font-opensans font-bold text-3xl md:text-5xl my-1">
                     MouthWatering Grub <br />
                     For{' '}
                     <span className="text-[#DB9707] price-underline">
@@ -46,21 +46,21 @@ export function HeroSection() {
                     </span>
                     / person
                   </h2>
-                  <p className="mt-5 font-opensans">
+                  <p className="mt-5 font-opensans font-normal text-base">
                     Here's to epic flavors with ready-to-eat convenience at a{' '}
                     <br />
                     fraction of the cost of restaurant delivery. Now that was a{' '}
                     <br />
                     mouthful! Just like our food.{' '}
                   </p>
-                  <div className="flex items-center mt-9">
+                  <div className="md:flex items-center justify-start block  flex-col md:flex-row mt-9">
                     <Link to="/shop/bundle">
-                      <button className="font-opensans font-bold px-6 py-2 bg-[#A60D1E] text-white font-bold px-4 px-5 w-[190px]">
+                      <button className="font-opensans font-bold px-9 md:px-6 py-4 md:py-2 bg-[#A60D1E] text-white font-bold px-4 px-5 w-[260px] md:w-[190px]">
                         Get Eating
                       </button>
                     </Link>
-                    <div className="ml-[20]">
-                      <h2 className="font-opensans font-extrabold ml-5 text-2xl">
+                    <div className="ml-0 md:ml-[20]">
+                      <h2 className="font-opensans font-extrabold ml-0 md:ml-5 text-xl md:text-2xl mt-5 md:mt-0 ">
                         Subscribe now for free <br />
                         Breakfast! Cancel anytime!{' '}
                       </h2>

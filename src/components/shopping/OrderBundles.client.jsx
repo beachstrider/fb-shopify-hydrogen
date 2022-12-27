@@ -14,7 +14,7 @@ import {
 import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
 import {MealItem} from './MealItem.client';
-
+const LEAD_TIME = 3; // 3 days ahead of selecting delivery dates
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
 // This platform product ID is the bundle product ID.
@@ -283,12 +283,31 @@ export function OrderBundles({
     const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
       .data;
 
-    const data = sortByDateProperty(
-      res.filter((el) => isFuture(el.date)),
-      'date',
-    );
+    const today = new Date();
+    today.setHours(0);
+    today.setMinutes(0);
+    today.setSeconds(0);
+    const todayDate = dayjs();
+    const earliestAvailableDate = todayDate.add(LEAD_TIME, 'day');
 
-    setDeliveryDates(data);
+    const filteredDates = res
+      .filter((deliveryDate) => {
+        const date = new Date(deliveryDate.date);
+        return (
+          date > today.getTime() && deliveryDate.quantity > deliveryDate.used
+        );
+      })
+      .map((deliveryDate, index) => {
+        deliveryDate.day = new Date(deliveryDate.date).getDay() + 1; // Add day since midnight is counting as previous day
+        return deliveryDate;
+      })
+      .sort((a, b) => (new Date(a.date) < new Date(b.date) ? -1 : 1));
+
+    const filteredDatesFinal = filteredDates.filter((deliveryDate) => {
+      return earliestAvailableDate.isSameOrBefore(dayjs(deliveryDate.date));
+    });
+
+    setDeliveryDates(filteredDatesFinal);
   }
 
   async function fetchBundle() {
