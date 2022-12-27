@@ -56,7 +56,6 @@ export function OrderBundles({
   customerId = '',
   bundleIdNumber = Number(bundle.id.substring(22)),
 }) {
-  console.log('bundle', bundle);
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
 
@@ -69,7 +68,7 @@ export function OrderBundles({
     'CART INITIALIZING...',
   );
 
-  const [newDiscountCodes, setNewDiscountCodes] = useState([]);
+  const [newDiscountCodes, setNewDiscountCodes] = useState(discountCodes);
   const [openModal, setOpenModal] = useState(false);
 
   const {
@@ -84,14 +83,19 @@ export function OrderBundles({
     buyerIdentityUpdate,
     discountCodesUpdate,
   } = useCart();
+  console.log('disocuntcodes', discountCodes);
 
   const discountCodeInputRef = useRef(null);
 
   console.log('lines', lines);
 
+  const currentQuantity = (() => {
+    let quantity = 0;
+    cartInfo.productsInCart.forEach((el) => (quantity += el.quantity));
+    return quantity;
+  })();
+
   const isQuantityLimit = (() => {
-    let currentQuantity = 0;
-    cartInfo.productsInCart.forEach((el) => (currentQuantity += el.quantity));
     return currentQuantity === cartInfo.mealQuantity;
   })();
 
@@ -388,7 +392,7 @@ export function OrderBundles({
         cartInfo.frequencyValue === '7 Day(s)' ? '14 Day(s)' : '7 Day(s)',
     });
   }
-
+  console.log(cartInfo.productsInCart.length);
   async function handleCheckout() {
     if (!cartInfo.productsInCart.length || !isQuantityLimit) {
       alert(`Please select ${cartInfo.mealQuantity} meal(s).`);
@@ -472,10 +476,15 @@ export function OrderBundles({
                   <div style={{padding: '20px 0'}}>
                     <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
                       <div
-                        className="block text-gray-800 text-lg font-bold mb-2"
+                        className="flex items-center gap-6 text-gray-800  mb-2"
                         style={{fontSize: 24}}
                       >
-                        1. Choose your Week
+                        <div className="text-lg font-bold">
+                          1. Choose your Week
+                        </div>
+                        <div className="text-sm">
+                          ({currentQuantity} of {cartInfo.mealQuantity})
+                        </div>
                       </div>
                       <div
                         className="relative"
@@ -876,21 +885,21 @@ export function OrderBundles({
                                     </div>
                                   </div>
                                   <hr />
-                                  <div className="flex flex-wrap -mx-2">
-                                    <div className="w-2/3 py-4 px-2 mb-4 md:mb-0">
+                                  <div className="flex justify-between -mx-2">
+                                    <div className=" grow py-4 px-2 mb-4 md:mb-0">
                                       <input
                                         ref={discountCodeInputRef}
-                                        className="block w-full py-3 px-4 mb-2 md:mb-0 leading-tight border-[#707070] focus:bg-white border focus:outline-none"
+                                        className="max-w-[146px] py-3 px-4 mb-2 md:mb-0 border-[#707070] focus:bg-white border focus:outline-none"
                                         defaultValue={newDiscountCodes.join(
                                           ' ',
                                         )}
                                         disabled={newDiscountCodes.length > 0}
                                       />
                                     </div>
-                                    <div className="flex items-center w-1/3 py-4  mb-4 md:mb-0">
+                                    <div className="flex items-center py-4  mb-4 md:mb-0">
                                       {newDiscountCodes.length === 0 && (
                                         <button
-                                          className="inline-block py-3 px-6 leading-none text-white shadow bg-[#DB9707] p-[30px]"
+                                          className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
                                           onClick={handleSubmitDiscountCode}
                                         >
                                           Apply
