@@ -51,13 +51,13 @@ function getCartInfo() {
 }
 
 export function OrderBundles({
-  bundleId,
+  bundle,
   discountCodes,
   customerAccessToken,
   customerId = '',
+  bundleIdNumber = Number(bundle.id.substring(22)),
 }) {
   const [deliveryDates, setDeliveryDates] = useState([]);
-  // const [availableSlots, setAvailableSlots] = useState([]);
   const [products, setProducts] = useState([]);
 
   const [cartInfo, setCartInfo] = useState(getCartInfo());
@@ -75,6 +75,7 @@ export function OrderBundles({
   const {
     id,
     lines,
+    checkoutUrl,
 
     cartCreate,
     linesAdd,
@@ -82,7 +83,6 @@ export function OrderBundles({
     linesUpdate,
     buyerIdentityUpdate,
     discountCodesUpdate,
-    checkoutUrl,
   } = useCart();
 
   const discountCodeInputRef = useRef(null);
@@ -296,23 +296,18 @@ export function OrderBundles({
   async function fetchBundle() {
     const bundleDataRes = (
       await axios.get(`${caching_server}/bundles_dev.json`)
-    ).data.find((el) => el.platform_product_id === bundleId);
+    ).data.find((el) => el.platform_product_id === bundleIdNumber);
 
     const {data: config} = await axios.get(
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
 
-    const bundle_id = `gid://shopify/Product/${bundleId}`;
-    const {data: bundleProduct} = await axios.post(`/api/products/bundle`, {
-      id: bundle_id,
-    });
-
-    await initCart(bundleProduct.variants.nodes[0].id);
+    await initCart(bundle.variants.nodes[0].id);
 
     setCartInfo({
       ...cartInfo,
+      bundle,
       bundleData: bundleDataRes,
-      bundle: bundleProduct,
       bundleContents: config.contents,
       mealQuantity: config.quantity,
     });
@@ -468,12 +463,12 @@ export function OrderBundles({
             <div className="w-full md:w-1/1 lg:w-1/2 xl:w-1/2 px-8">
               <div className="">
                 <div className="mt-16 font-bold">
-                  <div className="text-[60px] ">FAMILY FEASTBOX</div>
+                  <div className="text-[60px] ">{bundle?.title}</div>
                   <div className="flex gap-2">
                     <div className="font-bold text-md">Feeding a party?</div>
                     <Link
                       className="font-bold text-md text-[#DB9707] underline"
-                      to="/shop/bundle/event"
+                      to="/shop/bundle/event-feastbox"
                     >
                       Try our Event Box
                     </Link>
