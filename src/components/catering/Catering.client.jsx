@@ -5,7 +5,7 @@ export function Catering() {
     <section className="text-white">
       <div className="overflow-hidden">
         <div className="bg-image object-cover bg-cover bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/hero_bg_mobile.png')] md:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/hero_bg.png')] bg-no-repeat">
-          <div className="px-12 font-bungee ml-8 py-12 w-[60%] text-[50px] leading-[50px] md:text-[80px] md:leading-[80px] relative">
+          <div className="px-12 font-bungee md:ml-8 lg:ml-8 py-12 w-[60%] text-[50px] leading-[50px] md:text-[80px] md:leading-[80px] relative">
             A BOX
             <br />
             NEVER
@@ -26,7 +26,7 @@ export function Catering() {
           <div className="md:flex">
             <div className="w-full md:w-1/2 ">
               <img
-                className=" mx-auto w-[90%] pb-8 "
+                className="mx-auto w-[90%] pb-8 "
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/host_most.png"
                 alt=""
               />
