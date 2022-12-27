@@ -1,10 +1,17 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
+import {loadScript} from '@shopify/hydrogen';
 const Tabs = ({metafields}) => {
   const [selectedTag,setSelectedTag]=useState(1);
+  const [url,setUrl]=useState(null);
   const handleSelect=(index)=>{
     setSelectedTag(index)
+    setUrl(`https://www.recipal.com/recipes/${metafields?.find(x => x.key === 'recipal_embed').value}/embed.js?label_format=new_fda&ingredients=1&allergens=1`);
   }
-console.log('metafields',metafields)
+
+  useEffect(() => {
+      loadScript(url).catch(() => {});
+  },[url]);
+
   return (
     <>
     <div className="max-w-2xl mx-auto sm:px-0">
@@ -71,7 +78,8 @@ console.log('metafields',metafields)
             id="panel-2"
             className={selectedTag ===2 ? "tab-panel text-center":"absolute top-0 invisible opacity-0 tab-panel text-center"}
          >
-            <script src={`https://www.recipal.com/recipes/${metafields?.find(x => x.key === 'recipal_embed').value}/embed.js?label_format=new_fda&ingredients=1&allergens=1`}> </script>
+            {/*<div>{loadScript(`https://www.recipal.com/recipes/${metafields?.find(x => x.key === 'recipal_embed').value}/embed.js?label_format=new_fda&ingredients=1&allergens=1`)}</div>*/}
+            {/*<script src={`https://www.recipal.com/recipes/${metafields?.find(x => x.key === 'recipal_embed').value}/embed.js?label_format=new_fda&ingredients=1&allergens=1`}> </script>*/}
           </div>
         </div>
       </div>
