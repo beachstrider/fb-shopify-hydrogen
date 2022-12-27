@@ -46,6 +46,7 @@ function getCartInfo() {
     totalPrice: 0,
     productsInCart: [],
     mealQuantity: 0,
+    partySizeIndex: 0,
   };
 }
 
@@ -129,7 +130,7 @@ export function OrderBundles({
         setCheckoutButtonStatus('');
       }, [3000]);
     }
-  }, [cartInfo.priceType, cartInfo.frequencyValue]);
+  }, [cartInfo.priceType, cartInfo.frequencyValue, cartInfo.partySizeIndex]);
 
   useEffect(() => {
     localStorage?.setItem('cartInfo', JSON.stringify(cartInfo));
@@ -167,7 +168,7 @@ export function OrderBundles({
   })();
 
   const totalPrice = (() => {
-    let price = bundle.variants.nodes[0].priceV2.amount;
+    let price = bundle.variants.nodes[cartInfo.partySizeIndex].priceV2.amount;
     if (cartInfo.priceType === 'recuring') {
       price =
         price -
@@ -237,7 +238,7 @@ export function OrderBundles({
 
   async function updateCart() {
     const line = {
-      merchandiseId: bundle.variants.nodes[0].id,
+      merchandiseId: bundle.variants.nodes[cartInfo.partySizeIndex].id,
       sellingPlanId: undefined,
       quantity: 1,
       attributes: getAttributes(id, customerId, cartInfo.deliveryDate),
@@ -250,21 +251,20 @@ export function OrderBundles({
         )?.id;
 
       line.sellingPlanId = sellingPlanId;
-
-      if (lines.length) {
-        linesRemove(lines.map((line) => line.id));
-        setTimeout(() => {
-          linesAdd([line]);
-          setTimeout(() => {
-            setCheckoutButtonStatus('');
-          }, [1500]);
-        }, 1500);
-      } else {
+    }
+    if (lines.length) {
+      linesRemove(lines.map((line) => line.id));
+      setTimeout(() => {
         linesAdd([line]);
         setTimeout(() => {
           setCheckoutButtonStatus('');
         }, [1500]);
-      }
+      }, 1500);
+    } else {
+      linesAdd([line]);
+      setTimeout(() => {
+        setCheckoutButtonStatus('');
+      }, [1500]);
     }
   }
 
@@ -300,7 +300,7 @@ export function OrderBundles({
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
 
-    await initCart(bundle.variants.nodes[0].id);
+    await initCart(bundle.variants.nodes[cartInfo.partySizeIndex].id);
 
     setCartInfo({
       ...cartInfo,
@@ -361,17 +361,18 @@ export function OrderBundles({
 
     setIsDeliveryDateEditing(false);
   }
-  const [selectedPartySize, setSelectedPartySize] = useState(-1)
+
   function handlePartyChange(e) {
-    
-    setSelectedPartySize(e.target.value)
+    setCartInfo({...cartInfo, partySizeIndex: e.target.value});
   }
 
   async function handleUpdateCart(product, diff) {
     let newProductsInCart = [...cartInfo.productsInCart];
 
     const productIndex = newProductsInCart.findIndex(
-      (el) => el.variants.nodes[0].id === product.variants.nodes[0].id,
+      (el) =>
+        el.variants.nodes[cartInfo.partySizeIndex].id ===
+        product.variants.nodes[cartInfo.partySizeIndex].id,
     );
 
     if (typeof diff === 'undefined') {
@@ -414,7 +415,9 @@ export function OrderBundles({
     const items = cartInfo.productsInCart.map((el) => ({
       bundle_configuration_content_id: el.bundleConfigurationId,
       platform_product_variant_id: parseInt(
-        el.variants.nodes[0]?.id.split('ProductVariant/')[1],
+        el.variants.nodes[cartInfo.partySizeIndex]?.id.split(
+          'ProductVariant/',
+        )[1],
       ),
       quantity: el.quantity,
     }));
@@ -424,10 +427,14 @@ export function OrderBundles({
       platform_cart_token,
       platform_product_id: cartInfo.bundleData.platform_product_id,
       platform_variant_id: parseInt(
-        bundle.variants.nodes[0]?.id.split('ProductVariant/')[1],
+        bundle.variants.nodes[cartInfo.partySizeIndex]?.id.split(
+          'ProductVariant/',
+        )[1],
       ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
-      subscription_type: bundle.variants.nodes[0]?.title.split(' /')[0],
-      subscription_sub_type: bundle.variants.nodes[0]?.title.split('/ ')[1],
+      subscription_type:
+        bundle.variants.nodes[cartInfo.partySizeIndex]?.title.split(' /')[0],
+      subscription_sub_type:
+        bundle.variants.nodes[cartInfo.partySizeIndex]?.title.split('/ ')[1],
       bundle_id: cartInfo.bundleData.id,
       delivery_day: getDayUsa(cartInfo.deliveryDate),
       contents: [...items],
@@ -537,14 +544,16 @@ export function OrderBundles({
                             className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
                             name="week"
                             onChange={handlePartyChange}
-                            value={selectedPartySize}
+                            value={cartInfo.partySizeIndex}
                             style={{borderWidth: 0, backgroundImage: 'none'}}
                           >
                             <option disabled value={-1}>
                               --Choose an option--
                             </option>
                             {bundle?.variants?.nodes?.map((index, key) => (
-                              <option key={key} value={key}>{index.metafields[0].value}</option>
+                              <option key={key} value={key}>
+                                {index.metafields[0].value}
+                              </option>
                             ))}
                           </select>
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -579,19 +588,28 @@ export function OrderBundles({
                                 <MealItem
                                   title={product.title}
                                   image={
-                                    product.variants.nodes[0].image
-                                      ? product.variants.nodes[0].image?.url
+                                    product.variants.nodes[
+                                      cartInfo.partySizeIndex
+                                    ].image
+                                      ? product.variants.nodes[
+                                          cartInfo.partySizeIndex
+                                        ].image?.url
                                       : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                                   }
                                   metafields={
-                                    product.variants.nodes[0].metafields
+                                    product.variants.nodes[
+                                      cartInfo.partySizeIndex
+                                    ].metafields
                                   }
                                 />
 
                                 {cartInfo.productsInCart.findIndex(
                                   (el) =>
-                                    el.variants.nodes[0].id ===
-                                    product.variants.nodes[0].id,
+                                    el.variants.nodes[cartInfo.partySizeIndex]
+                                      .id ===
+                                    product.variants.nodes[
+                                      cartInfo.partySizeIndex
+                                    ].id,
                                 ) === -1 ? (
                                   <div className="px-4 text-center">
                                     <button
@@ -632,8 +650,12 @@ export function OrderBundles({
                                       {
                                         cartInfo.productsInCart.find(
                                           (el) =>
-                                            el.variants.nodes[0].id ===
-                                            product.variants.nodes[0].id,
+                                            el.variants.nodes[
+                                              cartInfo.partySizeIndex
+                                            ].id ===
+                                            product.variants.nodes[
+                                              cartInfo.partySizeIndex
+                                            ].id,
                                         ).quantity
                                       }
                                     </div>
