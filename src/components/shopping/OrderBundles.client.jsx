@@ -361,6 +361,11 @@ export function OrderBundles({
 
     setIsDeliveryDateEditing(false);
   }
+  const [selectedPartySize, setSelectedPartySize] = useState(-1)
+  function handlePartyChange(e) {
+    
+    setSelectedPartySize(e.target.value)
+  }
 
   async function handleUpdateCart(product, diff) {
     let newProductsInCart = [...cartInfo.productsInCart];
@@ -531,13 +536,16 @@ export function OrderBundles({
                           <select
                             className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
                             name="week"
-                            onChange={handleWeekChange}
-                            value={selectedWeekIndex}
+                            onChange={handlePartyChange}
+                            value={selectedPartySize}
                             style={{borderWidth: 0, backgroundImage: 'none'}}
                           >
                             <option disabled value={-1}>
                               --Choose an option--
                             </option>
+                            {bundle?.variants?.nodes?.map((index, key) => (
+                              <option key={key} value={key}>{index.metafields[0].value}</option>
+                            ))}
                           </select>
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg
