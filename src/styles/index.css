@@ -138,6 +138,10 @@ shop-pay-button {
     color: #DB9707;
     position: relative;
   }
+  .price-underline-only{
+    position: relative;
+  }
+
   .price-underline::before{
     content: "";
     position: absolute;
@@ -149,6 +153,19 @@ shop-pay-button {
     background-color: #DB9707;
     transform: rotate(-7deg); 
   }
+
+  .price-underline-only::before{
+    content: "";
+    position: absolute;
+    top: 93%;
+    width: 100%;
+    left: 0;
+    height: 6px;
+    border-radius: 8px;
+    background-color: #DB9707;
+    transform: rotate(-7deg); 
+  }
+
   .text-underline-round{
     position: relative;
   }

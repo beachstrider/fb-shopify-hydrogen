@@ -25,7 +25,7 @@ export function Influencers() {
             </div>
           </div>
         </div>
-        <div className="bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-[#231F20]">
+        {/* <div className="bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-[#231F20]">
           <div className="container max-w-screen-xl mx-auto">
             <div className="md:flex block items-start justify-between h-full">
               <div className="w-full md:w-1/2 relative">
@@ -65,49 +65,65 @@ export function Influencers() {
               </div>
             </div>
           </div>
+        </div> */}
+        <div className="bg-right bg-center bg-no-repeat bg-cover z-0  bg-[#231F20]">
+          <div className="container  mx-auto">
+            <div className="md:flex block items-start justify-between h-full">
+              <div className="w-full md:w-1/2 relative">
+                <img
+                  src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/food_slider_3.png"
+                  className=" object-cover mx-auto w-full h-auto  mt-0"
+                  alt=""
+                />
+                <img
+                  src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/down_arrows.png"
+                  className="absolute object-cover w-[100px] max-w-md h-auto md:top-[-85px] right-0 top-[40px]"
+                  alt=""
+                />
+              </div>
+              <div className="text-white text-lg mt-5 w-full sm:w-[50%-100px] md:w-1/2 md:pl-[100px] py-6">
+                <div className="px-2">
+                  <h5 className="font-opensans font-extrabold">
+                  Choose 3 Feasts | Each Feast Feeds 5+
+                  </h5>
+                  <h2 className="font-opensans font-bold text-5xl my-1">
+                  Mouthwatering Grub  <br />
+                  for <span className="price-underline-only text-white"> Only</span>{' '}
+                    
+                  <span className="text-[#DB9707]">  $149.95 </span>
+                    
+                    / person
+                  </h2>
+                  <p className="mt-5 font-opensans">
+                     Here’s to epic flavors with ready-to-eat convenience at a {' '}
+                    <br />
+                    fraction of the cost of restaurant delivery. Now that was a{' '}
+                    <br />
+                    mouthful! Just like our food.{' '}
+                  </p>
+                  <div className="flex items-center mt-9">
+                    <Link to="/shop/bundle">
+                      <button className="font-opensans font-bold px-6 py-2 bg-[#A60D1E] text-white font-bold px-4 px-5 w-[190px]">
+                        Get Started
+                      </button>
+                    </Link>
+                    {/* <div className="ml-[20]">
+                      <h2 className="font-opensans font-extrabold ml-5 text-2xl">
+                        Subscribe now for free <br />
+                        Breakfast! Cancel anytime!{' '}
+                      </h2>
+                      <h2></h2>
+                    </div> */}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="h-[10px] bg-[#DB9707]"></div>
+        {/* <div className="h-[10px] bg-[#DB9707]"></div> */}
       </div>
-      <div className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-[#231F20]">
-          <div className="container max-w-screen-xl m-auto">
-            <h1 className="font-bungee text-center mt-5 text-6xl text-white uppercase font-extrabold leading-[80px]">
-              Welcome to the robot-free zone
-            </h1>
-            <p className="font-sens mb-6 text-center text-4xl text-white capitalize px-6">
-              Just clean, Natural ingredients Prepared by Clean, Natural Humans
-            </p>
-            </div>
-            <div className="flex items-center justify-center pt-[15px]">
-              <Marquee 
-                  pauseOnHover={false} 
-                  direction={"right"} 
-                  speed={50} 
-                  gradient={false} 
-                  pauseOnClick={true}
-              >
-                  <div className="w-1/4 ml-[10px]">
-                    <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/carousel_1.png" className="w-[350px] h-full" alt="" />
-                  </div>
-                  <div className="w-1/4 ml-[10px]">
-                    <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/carousel_2.png" className="w-[350px] h-full" alt="" />
-                  </div>
-                  <div className="w-1/4 ml-[10px]">
-                    <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/carousel_3.png" className="w-[350px] h-full" alt="" />
-                  </div>
-                  <div className="w-1/4 ml-[10px]">
-                    <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/carousel_1.png" className="w-[350px] h-full" alt="" />
-                  </div>
-              </Marquee>
-            </div>
-            <div className="text-center py-5">
-              <Link to="/how-it-works">
-                  <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
-                      How It Works
-                  </button>
-              </Link>
-            </div>
-    </div>
-    <div>
+
+     <div>
         <div className="w-0 md:w-full">
           <img
             src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good.png"
@@ -132,16 +148,13 @@ export function Influencers() {
           <div className="md:flex">
             <div className="w-full md:w-[calc(100%-300px)] pl-6 pr-6 py-10 md:pl-[100px] md:py-[50px] pr-[70px]">
               <p className='text-white text-3xl'>
-                FEASTbox has partnered with Full of Hope to reach our goal of
-                feeding 100,000 families in 2023. Learn more about Full of Hope,
-                a charity all about giving back and helping to feed families.
-                For every box purchased, FEASTbox will donate a meal to a local
-                family in need.
+              FEASTbox has partnered with Full of Hope to reach our goal of feeding 500,000 families in 2023. Learn more about Full of Hope, 
+              a charity all about giving back and helping to feed families. For every box purchased, FEASTbox will donate a meal to a local family in need.
               </p>
                   <div className="text-center md:text-left py-5">
                     <Link to="/how-it-works">
                         <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
-                          How It Works
+                          Learn More
                       </button>
                     </Link>
                 </div>
@@ -156,8 +169,8 @@ export function Influencers() {
           </div>
         </div>
       </div>
-    
-    <div className="min-h-fit  relative pt-10 pb-20 bg-[#231F20]">
+
+      <div className="min-h-fit  relative pt-10 pb-20 bg-[#231F20]">
       <span>
         <img className="invisible md:visible bg-left top-0  absolute overflow-hidden bg-no-repeat bg-cover" src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/triangles_all.png" alt="" />
       </span>
@@ -222,6 +235,48 @@ export function Influencers() {
         </h3>
       </div>
     </div>
+            
+      <div className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-[#231F20]">
+          <div className="container max-w-screen-xl m-auto">
+            <h1 className="font-bungee text-center mt-5 text-6xl text-white uppercase font-extrabold leading-[80px]">
+              Welcome to the robot-free zone
+            </h1>
+            <p className="font-sens mb-6 text-center text-4xl text-white capitalize px-6">
+              Just clean, Natural ingredients Prepared by Clean, Natural Humans
+            </p>
+            </div>
+            <div className="flex items-center justify-center pt-[15px]">
+              <Marquee 
+                  pauseOnHover={false} 
+                  direction={"right"} 
+                  speed={50} 
+                  gradient={false} 
+                  pauseOnClick={true}
+              >
+                  <div className="w-1/4 ml-[10px]">
+                    <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/carousel_1.png" className="w-[350px] h-full" alt="" />
+                  </div>
+                  <div className="w-1/4 ml-[10px]">
+                    <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/carousel_2.png" className="w-[350px] h-full" alt="" />
+                  </div>
+                  <div className="w-1/4 ml-[10px]">
+                    <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/carousel_3.png" className="w-[350px] h-full" alt="" />
+                  </div>
+                  <div className="w-1/4 ml-[10px]">
+                    <img src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/carousel_1.png" className="w-[350px] h-full" alt="" />
+                  </div>
+              </Marquee>
+            </div>
+            <div className="text-center py-5">
+              <Link to="/how-it-works">
+                  <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
+                      How It Works
+                  </button>
+              </Link>
+            </div>
+    </div>
+    
+    <div className="h-[10px] bg-[#DB9707]"></div>
 
     </section>
   );
