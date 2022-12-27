@@ -465,6 +465,8 @@ export function OrderBundles({
                   className="object-cover w-full md:h-1/2"
                   src={bundle?.variants?.nodes[0]?.image?.url}
                   alt="FeastBox bundle"
+                  onLoadStart={() => setIsInitialDataLoading(true)}
+                  onLoad={() => setIsInitialDataLoading(false)}
                 />
               </div>
             </div>
@@ -595,6 +597,11 @@ export function OrderBundles({
                                       ? product.variants.nodes[
                                           cartInfo.partySizeIndex
                                         ].image?.url
+                                      : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                                  }
+                                  modalimage={
+                                    product.variants.nodes[1].image
+                                      ? product.variants.nodes[1].image?.url
                                       : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                                   }
                                   metafields={

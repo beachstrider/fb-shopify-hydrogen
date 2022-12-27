@@ -5,8 +5,10 @@ export default defineConfig({
     defaultCountryCode: 'US',
     defaultLanguageCode: 'EN',
     storeDomain: 'feast-box-sandbox.myshopify.com',
-    storefrontToken: '68d7b1f1d3c2d81bc3cbee699d6d76ea',
+    storefrontToken: '7a651b792fe13887f386d145ccb1b39b',
+    privateStorefrontToken: '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',
     storefrontApiVersion: '2022-10',
+    storefrontId: '65827',
   },
   session: CookieSessionStorage('__session', {
     path: '/',
