@@ -25,19 +25,21 @@ const caching_server =
 // if tag in 'Family Feastbox' then it will get the product id of Family Feastbox bundle product
 // if tag in 'Event Feastbox' then it will get the product id of Family Feastbox bundle product
 
-function getCartInfo() {
+function getCartInfo(param) {
   if (
     typeof window !== 'undefined' &&
     localStorage.getItem('cartInfo') !== null
   ) {
-    const {deliveryDate} = JSON.parse(localStorage.getItem('cartInfo'));
+    const {deliveryDate, handle} = JSON.parse(localStorage.getItem('cartInfo'));
 
-    if (dayjs().isBefore(deliveryDate)) {
+    if (dayjs().isBefore(deliveryDate) && handle === param.handle) {
+      console.log('handle', param.handle, handle);
       return JSON.parse(localStorage?.getItem('cartInfo'));
     }
   }
 
   return {
+    handle: param.handle,
     bundleContents: [],
     bundleData: undefined,
     deliveryDate: '',
@@ -60,7 +62,9 @@ export function OrderBundles({
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
 
-  const [cartInfo, setCartInfo] = useState(getCartInfo());
+  const [cartInfo, setCartInfo] = useState(
+    getCartInfo({handle: bundle.handle}),
+  );
 
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
@@ -83,11 +87,8 @@ export function OrderBundles({
     buyerIdentityUpdate,
     discountCodesUpdate,
   } = useCart();
-  console.log('disocuntcodes', discountCodes);
 
   const discountCodeInputRef = useRef(null);
-
-  console.log('lines', lines);
 
   const currentQuantity = (() => {
     let quantity = 0;
@@ -216,7 +217,6 @@ export function OrderBundles({
       ),
     };
 
-    console.log('init id', id, line);
     if (typeof id === 'undefined') {
       cartCreate({
         lines: [line],
@@ -396,7 +396,7 @@ export function OrderBundles({
         cartInfo.frequencyValue === '7 Day(s)' ? '14 Day(s)' : '7 Day(s)',
     });
   }
-  console.log(cartInfo.productsInCart.length);
+
   async function handleCheckout() {
     if (!cartInfo.productsInCart.length || !isQuantityLimit) {
       alert(`Please select ${cartInfo.mealQuantity} meal(s).`);
@@ -480,6 +480,7 @@ export function OrderBundles({
                       <Link
                         className="font-bold text-md text-[#DB9707] underline"
                         to="/shop/bundle/event-feastbox"
+                        reloadDocument
                       >
                         Try our Event Box
                       </Link>
