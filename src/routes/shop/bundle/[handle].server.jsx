@@ -31,8 +31,6 @@ const Index = () => {
     variables: {handle},
   });
 
-  console.log(bundle);
-
   return (
     <Layout>
       <Suspense>

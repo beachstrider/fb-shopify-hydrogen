@@ -41,7 +41,6 @@ function getCartInfo() {
     bundleContents: [],
     bundleData: undefined,
     deliveryDate: '',
-    bundle: null,
     priceType: undefined,
     frequencyValue: '7 Day(s)',
     totalPrice: 0,
@@ -57,6 +56,7 @@ export function OrderBundles({
   customerId = '',
   bundleIdNumber = Number(bundle.id.substring(22)),
 }) {
+  console.log('bundle', bundle);
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
 
@@ -117,10 +117,6 @@ export function OrderBundles({
     fetchContents(contents);
     updateCartAttributes();
   }, [cartInfo.deliveryDate]);
-
-  useEffect(() => {
-    if (typeof id !== 'undefined') updateCart();
-  }, [cartInfo.bundle]);
 
   useEffect(() => {
     if (typeof id !== 'undefined') {
@@ -222,32 +218,32 @@ export function OrderBundles({
   }
 
   async function updateCart() {
-    if (cartInfo.bundle) {
-      let newTotalPrice = cartInfo.bundle.variants.nodes[0].priceV2.amount;
+    // if (cartInfo.bundle) {
+    let newTotalPrice = bundle.variants.nodes[0].priceV2.amount;
 
-      const line = {
-        merchandiseId: cartInfo.bundle.variants.nodes[0].id,
-        sellingPlanId: undefined,
-        quantity: 1,
-        attributes: getAttributes(id, customerId, cartInfo.deliveryDate),
-      };
+    const line = {
+      merchandiseId: bundle.variants.nodes[0].id,
+      sellingPlanId: undefined,
+      quantity: 1,
+      attributes: getAttributes(id, customerId, cartInfo.deliveryDate),
+    };
 
-      if (cartInfo.priceType === 'recuring') {
-        const sellingPlanId =
-          cartInfo.bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+    if (cartInfo.priceType === 'recuring') {
+      const sellingPlanId =
+        bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+          (el) => el.options[0].value === cartInfo.frequencyValue,
+        )?.id;
+
+      line.sellingPlanId = sellingPlanId;
+
+      newTotalPrice =
+        newTotalPrice -
+        (newTotalPrice *
+          bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
             (el) => el.options[0].value === cartInfo.frequencyValue,
-          )?.id;
-
-        line.sellingPlanId = sellingPlanId;
-
-        newTotalPrice =
-          newTotalPrice -
-          (newTotalPrice *
-            cartInfo.bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
-              (el) => el.options[0].value === cartInfo.frequencyValue,
-            )?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage) /
-            100;
-      }
+          )?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage) /
+          100;
+      // }
 
       console.log('update id', id, line);
       setCartInfo({...cartInfo, totalPrice: newTotalPrice});
@@ -421,12 +417,10 @@ export function OrderBundles({
       platform_cart_token,
       platform_product_id: cartInfo.bundleData.platform_product_id,
       platform_variant_id: parseInt(
-        cartInfo.bundle.variants.nodes[0]?.id.split('ProductVariant/')[1],
+        bundle.variants.nodes[0]?.id.split('ProductVariant/')[1],
       ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
-      subscription_type:
-        cartInfo.bundle.variants.nodes[0]?.title.split(' /')[0],
-      subscription_sub_type:
-        cartInfo.bundle.variants.nodes[0]?.title.split('/ ')[1],
+      subscription_type: bundle.variants.nodes[0]?.title.split(' /')[0],
+      subscription_sub_type: bundle.variants.nodes[0]?.title.split('/ ')[1],
       bundle_id: cartInfo.bundleData.id,
       delivery_day: getDayUsa(cartInfo.deliveryDate),
       contents: [...items],
@@ -455,7 +449,7 @@ export function OrderBundles({
               <div className="relative left-0 top-0 ">
                 <img
                   className="object-cover w-full md:h-1/2"
-                  src={cartInfo.bundle?.variants?.nodes[0]?.image?.url}
+                  src={bundle?.variants?.nodes[0]?.image?.url}
                   alt="FeastBox bundle"
                 />
               </div>
@@ -703,16 +697,14 @@ export function OrderBundles({
                                           <span className="mr-2">
                                             <strike>
                                               {getFullCost(
-                                                typeof cartInfo.bundle?.variants
+                                                typeof bundle?.variants
                                                   ?.nodes[0]?.priceV2
                                                   ?.amount !== 'undefined'
-                                                  ? cartInfo.bundle?.variants
-                                                      ?.nodes[0]?.priceV2
-                                                      ?.amount
+                                                  ? bundle?.variants?.nodes[0]
+                                                      ?.priceV2?.amount
                                                   : undefined,
-                                                cartInfo.bundle?.variants
-                                                  ?.nodes[0]?.priceV2
-                                                  ?.currencyCode,
+                                                bundle?.variants?.nodes[0]
+                                                  ?.priceV2?.currencyCode,
                                               )}
                                             </strike>
                                           </span>
@@ -722,12 +714,12 @@ export function OrderBundles({
                                           >
                                             {(() => {
                                               const price =
-                                                cartInfo.bundle?.variants
-                                                  ?.nodes[0]?.priceV2?.amount;
+                                                bundle?.variants?.nodes[0]
+                                                  ?.priceV2?.amount;
                                               const adjustmentPercentage =
-                                                cartInfo.bundle
-                                                  ?.sellingPlanGroups?.nodes[0]
-                                                  ?.sellingPlans?.nodes[0]
+                                                bundle?.sellingPlanGroups
+                                                  ?.nodes[0]?.sellingPlans
+                                                  ?.nodes[0]
                                                   ?.priceAdjustments[0]
                                                   ?.adjustmentValue
                                                   ?.adjustmentPercentage;
@@ -743,9 +735,8 @@ export function OrderBundles({
                                                       adjustmentPercentage) /
                                                       100
                                                   ).toFixed(2),
-                                                  cartInfo.bundle?.variants
-                                                    ?.nodes[0]?.priceV2
-                                                    ?.currencyCode,
+                                                  bundle?.variants?.nodes[0]
+                                                    ?.priceV2?.currencyCode,
                                                 );
 
                                               return '';
@@ -790,11 +781,11 @@ export function OrderBundles({
                                   <p>
                                     {(() => {
                                       const price =
-                                        cartInfo.bundle?.variants?.nodes[0]
-                                          ?.priceV2?.amount;
+                                        bundle?.variants?.nodes[0]?.priceV2
+                                          ?.amount;
                                       const adjustmentPercentage =
-                                        cartInfo.bundle?.sellingPlanGroups
-                                          ?.nodes[0]?.sellingPlans?.nodes[0]
+                                        bundle?.sellingPlanGroups?.nodes[0]
+                                          ?.sellingPlans?.nodes[0]
                                           ?.priceAdjustments[0]?.adjustmentValue
                                           ?.adjustmentPercentage;
 
@@ -809,8 +800,8 @@ export function OrderBundles({
                                           'Save ' +
                                           getFullCost(
                                             diff,
-                                            cartInfo.bundle?.variants?.nodes[0]
-                                              ?.priceV2?.currencyCode,
+                                            bundle?.variants?.nodes[0]?.priceV2
+                                              ?.currencyCode,
                                           )
                                         );
                                       }
@@ -873,10 +864,10 @@ export function OrderBundles({
                                           style={{fontSize: 18}}
                                         >
                                           {getFullCost(
-                                            cartInfo.bundle?.variants?.nodes[0]
-                                              ?.priceV2?.amount,
-                                            cartInfo.bundle?.variants?.nodes[0]
-                                              ?.priceV2?.currencyCode,
+                                            bundle?.variants?.nodes[0]?.priceV2
+                                              ?.amount,
+                                            bundle?.variants?.nodes[0]?.priceV2
+                                              ?.currencyCode,
                                           )}{' '}
                                           /{' '}
                                         </span>
@@ -925,10 +916,10 @@ export function OrderBundles({
                           <span className="font-bold" style={{fontSize: 18}}>
                             {/* {(() => {
                               const price =
-                                cartInfo.bundle?.variants?.nodes[0]?.priceV2
+                                bundle?.variants?.nodes[0]?.priceV2
                                   ?.amount;
                               const adjustmentPercentage =
-                                cartInfo.bundle?.sellingPlanGroups?.nodes[0]
+                                bundle?.sellingPlanGroups?.nodes[0]
                                   ?.sellingPlans?.nodes[0]?.priceAdjustments[0]
                                   ?.adjustmentValue?.adjustmentPercentage;
 
@@ -940,7 +931,7 @@ export function OrderBundles({
                                     "You're Saving " +
                                     getFullCost(
                                       diff,
-                                      cartInfo.bundle?.variants?.nodes[0]
+                                      bundle?.variants?.nodes[0]
                                         ?.priceV2?.currencyCode,
                                     ) +
                                     '!'
@@ -953,8 +944,7 @@ export function OrderBundles({
                             Total:{' '}
                             {getFullCost(
                               cartInfo.totalPrice,
-                              cartInfo.bundle?.variants?.nodes[0]?.priceV2
-                                ?.currencyCode,
+                              bundle.variants?.nodes[0]?.priceV2?.currencyCode,
                             )}
                           </span>
                         </div>
