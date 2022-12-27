@@ -2,7 +2,7 @@ import {Link} from '@shopify/hydrogen';
 export function PartyTime() {
   return (
     <section className="">
-      <div className="">
+      <div className="relative">
         <div className=" h-[120px] bg-[#DB9707]"></div>
         <div className=" h-auto bg-[#FFFFFF]">
           <div className="container max-w-screen-xl mx-auto">
@@ -26,10 +26,11 @@ export function PartyTime() {
                       Cater Your Event
                     </button>
                   </Link>
-                  <a to="/how-it-works"
+                  <a
+                    to="/how-it-works"
                     className="font-opensans font-bold text-[#A60D1E] mx-[20px] font-bold underline"
                   >
-                   <Link to="/how-it-works"> LEARN MORE </Link>
+                    <Link to="/how-it-works"> LEARN MORE </Link>
                   </a>
                 </div>
               </div>
@@ -43,7 +44,7 @@ export function PartyTime() {
             </div>
           </div>
         </div>
-        <div className="h-[100px] bg-[#FFFFFF] bg-right bg-center bg-no-repeat bg-cover pb-6 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/triangles_all_mobile.png')] md:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/triangles_top.png')]"></div>
+        <div className="sm:static absolute sm:bottom-0 -bottom-20 w-full sm:w-auto z-50 h-[120px] sm:bg-[#FFFFFF] bg-center bg-no-repeat bg-contain sm:bg-cover pb-6 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/triangles_all_mobile.png')] md:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/triangles_top.png')]"></div>
       </div>
     </section>
   );
