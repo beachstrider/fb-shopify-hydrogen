@@ -24,9 +24,9 @@ export function Catering() {
 
         <div className="bg-[#DB9707] py-[35px]">
           <div className="md:flex">
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-1/2 ">
               <img
-                className="mx-auto w-[90%] pb-8"
+                className=" mx-auto w-[90%] pb-8 "
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/host_most.png"
                 alt=""
               />
