@@ -577,6 +577,11 @@ export function OrderBundles({
                                       ? product.variants.nodes[0].image?.url
                                       : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                                   }
+                                  modalimage={
+                                    product.variants.nodes[1].image
+                                      ? product.variants.nodes[1].image?.url
+                                      : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                                  }
                                   metafields={
                                     product.variants.nodes[0].metafields
                                   }

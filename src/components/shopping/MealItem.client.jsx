@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Tabs  from '../Tabs.client';
 import {MealModal} from '../global';
 
-export function MealItem({title, image, metafields}) {
+export function MealItem({title, image, modalimage metafields}) {
   const [openModal, setOpenModal] = useState(false);
 
   return (
@@ -79,8 +79,8 @@ export function MealItem({title, image, metafields}) {
       <img
         alt="Laptop"
         src={
-          image
-            ? image
+          modalimage
+            ? modalimage
             : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
         }
         className="h-full w-full object-cover"
