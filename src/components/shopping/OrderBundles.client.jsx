@@ -1,4 +1,4 @@
-import {useCart} from '@shopify/hydrogen/client';
+import {useCart, Link} from '@shopify/hydrogen/client';
 import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 
@@ -13,7 +13,7 @@ import {
 } from '~/utils/dates';
 import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
-import {MealItem} from "./MealItem.client";
+import {MealItem} from './MealItem.client';
 
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
@@ -24,7 +24,6 @@ const caching_server =
 //then based on taf of bundle product we will get our bundle product
 // if tag in 'Family Feastbox' then it will get the product id of Family Feastbox bundle product
 // if tag in 'Event Feastbox' then it will get the product id of Family Feastbox bundle product
-const platform_product_id = 8022523347235; //family feastbox
 
 function getCartInfo() {
   if (
@@ -52,6 +51,7 @@ function getCartInfo() {
 }
 
 export function OrderBundles({
+  bundleId,
   discountCodes,
   customerAccessToken,
   customerId = '',
@@ -70,7 +70,7 @@ export function OrderBundles({
   );
 
   const [newDiscountCodes, setNewDiscountCodes] = useState([]);
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState(false);
 
   const {
     id,
@@ -296,13 +296,13 @@ export function OrderBundles({
   async function fetchBundle() {
     const bundleDataRes = (
       await axios.get(`${caching_server}/bundles_dev.json`)
-    ).data.find((el) => el.platform_product_id === platform_product_id);
+    ).data.find((el) => el.platform_product_id === bundleId);
 
     const {data: config} = await axios.get(
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
 
-    const bundle_id = `gid://shopify/Product/${bundleDataRes.platform_product_id}`;
+    const bundle_id = `gid://shopify/Product/${bundleId}`;
     const {data: bundleProduct} = await axios.post(`/api/products/bundle`, {
       id: bundle_id,
     });
@@ -465,10 +465,22 @@ export function OrderBundles({
                 />
               </div>
             </div>
-            <div className="w-full md:w-1/1 xl:w-1/2 lg:w-1/2 xl:w-1/2 px-8">
+            <div className="w-full md:w-1/1 lg:w-1/2 xl:w-1/2 px-8">
               <div className="">
+                <div className="mt-16 font-bold">
+                  <div className="text-[60px] ">FAMILY FEASTBOX</div>
+                  <div className="flex gap-2">
+                    <div className="font-bold text-md">Feeding a party?</div>
+                    <Link
+                      className="font-bold text-md text-[#DB9707] underline"
+                      to="/shop/bundle/event"
+                    >
+                      Try our Event Box
+                    </Link>
+                  </div>
+                </div>
                 <div className="mb-10 pb-10">
-                  <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
+                  <div style={{padding: '20px 0'}}>
                     <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
                       <div
                         className="block text-gray-800 text-lg font-bold mb-2"
@@ -526,8 +538,11 @@ export function OrderBundles({
                             <div className="flex flex-col justify-between text-center">
                               <MealItem
                                 title={product.title}
-                                image={product.variants.nodes[0].image ? product.variants.nodes[0].image?.url : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'}
-                                metafields={product.variants.nodes[0].metafields}
+                                image={
+                                  product.variants.nodes[0].image
+                                    ? product.variants.nodes[0].image?.url
+                                    : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                                }
                               />
 
                               {cartInfo.productsInCart.findIndex(
@@ -659,7 +674,7 @@ export function OrderBundles({
                                   style={{color: '#000000'}}
                                 >
                                   <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-                                    <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0">
+                                    <div className="w-full px-4 mb-4 md:mb-0">
                                       {' '}
                                       <label>
                                         <input
@@ -747,20 +762,6 @@ export function OrderBundles({
                                           </span>
                                         </div>
                                       </label>
-                                    </div>
-                                    <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-                                      <span
-                                        className="font-bold"
-                                        style={{
-                                          float: 'right',
-                                          backgroundColor: '#DB9725',
-                                          color: '#FFFFFF',
-                                          padding: '10px 6px',
-                                          marginTop: '-8px',
-                                        }}
-                                      >
-                                        $8.50/Serving
-                                      </span>
                                     </div>
                                   </div>
                                   <hr />
@@ -886,20 +887,6 @@ export function OrderBundles({
                                         </span>
                                         <span>3 meals</span>
                                       </label>
-                                    </div>
-                                    <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-                                      <span
-                                        className="font-bold"
-                                        style={{
-                                          float: 'right',
-                                          backgroundColor: '#DB9725',
-                                          color: '#FFFFFF',
-                                          padding: '10px 6px',
-                                          marginTop: '-8px',
-                                        }}
-                                      >
-                                        $12.66/Serving
-                                      </span>
                                     </div>
                                   </div>
                                   <hr />

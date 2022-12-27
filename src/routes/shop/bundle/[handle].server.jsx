@@ -10,9 +10,8 @@ const Index = () => {
   discountCodes = typeof discountCodes === 'undefined' ? [] : discountCodes;
 
   const {customerAccessToken} = useSession();
-  const bundleId = 8022523347235;
-
   let customerId = '';
+  const bundleId = 8051623395619;
 
   if (customerAccessToken) {
     const {data} = useShopQuery({

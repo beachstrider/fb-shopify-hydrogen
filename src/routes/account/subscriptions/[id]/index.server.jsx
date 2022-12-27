@@ -9,7 +9,7 @@ import {
   useRouteParams,
 } from '@shopify/hydrogen';
 
-import {CUSTOMER_QUERY} from '~/lib/gql';
+import {CUSTOMER_QUERY} from '~/lib/queries';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 import SubscriptionDetail from '~/components/account/subscription/Detail.client';
 import {Layout} from '~/components/index.server';
@@ -57,7 +57,11 @@ export default function Account({response}) {
         <Seo type="noindex" data={{title: 'Account Subscription'}} />
       </Suspense>
       <AccountPageLayout user={customer} currentPath="subscriptions">
-        <SubscriptionDetail subscription={subscription} subscription_id={id} user={customer} />
+        <SubscriptionDetail
+          subscription={subscription}
+          subscription_id={id}
+          user={customer}
+        />
       </AccountPageLayout>
     </Layout>
   );
