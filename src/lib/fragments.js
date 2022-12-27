@@ -63,6 +63,7 @@ export const PRODUCT_CARD_FRAGMENT = gql`
         }
         metafields(
           identifiers: [
+            {namespace: "custom", key: "party_size"}
             {namespace: "custom", key: "recipal_embed"}
             {namespace: "my_fields", key: "recipal_id"}
             {namespace: "meal", key: "allergens"}
