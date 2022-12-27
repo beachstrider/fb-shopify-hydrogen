@@ -100,7 +100,7 @@ export function MealItem({title, image, modalimage, metafields}) {
       Close
       </button>
       
-     </div>
+     </div> 
        </div>
      </div>
    </div>
