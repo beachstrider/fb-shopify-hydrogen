@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Tabs  from '../Tabs.client';
 import {MealModal} from '../global';
 
-export function MealItem({title, image, modalimage metafields}) {
+export function MealItem({title, image, modalimage, metafields}) {
   const [openModal, setOpenModal] = useState(false);
 
   return (
