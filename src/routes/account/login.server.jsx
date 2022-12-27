@@ -1,7 +1,7 @@
 import {Suspense} from 'react';
 import {useShopQuery, CacheLong, CacheNone, Seo, gql} from '@shopify/hydrogen';
 
-import {LOGIN_MUTATION} from '~/lib/gql';
+import {LOGIN_MUTATION} from '~/lib/queries';
 import {AccountLoginForm} from '~/components';
 import {Layout} from '~/components/index.server';
 

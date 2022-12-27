@@ -13,7 +13,7 @@ import {
   CUSTOMER_QUERY,
   CUSTOMER_UPDATE_MUTATION,
   LOGIN_MUTATION,
-} from '~/lib/gql';
+} from '~/lib/queries';
 import {getApiErrorMessage} from '~/lib/utils';
 import {
   AccountAddressBook,

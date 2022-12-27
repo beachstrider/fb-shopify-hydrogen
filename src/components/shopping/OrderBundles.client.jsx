@@ -24,7 +24,6 @@ const caching_server =
 //then based on taf of bundle product we will get our bundle product
 // if tag in 'Family Feastbox' then it will get the product id of Family Feastbox bundle product
 // if tag in 'Event Feastbox' then it will get the product id of Family Feastbox bundle product
-const platform_product_id = 8022523347235; //family feastbox
 
 function getCartInfo() {
   if (
@@ -52,6 +51,7 @@ function getCartInfo() {
 }
 
 export function OrderBundles({
+  bundleId,
   discountCodes,
   customerAccessToken,
   customerId = '',
@@ -296,13 +296,13 @@ export function OrderBundles({
   async function fetchBundle() {
     const bundleDataRes = (
       await axios.get(`${caching_server}/bundles_dev.json`)
-    ).data.find((el) => el.platform_product_id === platform_product_id);
+    ).data.find((el) => el.platform_product_id === bundleId);
 
     const {data: config} = await axios.get(
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
 
-    const bundle_id = `gid://shopify/Product/${bundleDataRes.platform_product_id}`;
+    const bundle_id = `gid://shopify/Product/${bundleId}`;
     const {data: bundleProduct} = await axios.post(`/api/products/bundle`, {
       id: bundle_id,
     });
@@ -473,7 +473,7 @@ export function OrderBundles({
                     <div className="font-bold text-md">Feeding a party?</div>
                     <Link
                       className="font-bold text-md text-[#DB9707] underline"
-                      to="#"
+                      to="/shop/bundle/event"
                     >
                       Try our Event Box
                     </Link>

@@ -11,7 +11,7 @@ import '../../../../../assets/CSS/style.css';
 import {Layout} from '~/components/index.server';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 import {EditOrder} from '~/components';
-import {CUSTOMER_QUERY} from '~/lib/gql';
+import {CUSTOMER_QUERY} from '~/lib/queries';
 
 const Index = ({response}) => {
   response.cache(CacheNone());
