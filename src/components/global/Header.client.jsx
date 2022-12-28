@@ -126,7 +126,7 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
             width={'auto'}
             height={'auto'}
             alt={'Feastbox'}
-            className='w-16'
+            className="w-16"
           />
         </Heading>
       </Link>
@@ -184,13 +184,13 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
             </Menu.Items>
           </Transition>
         </Menu>
-        <button
+        {/* <button
           onClick={openCart}
           className="relative flex items-center justify-center w-8 h-8"
         >
           <IconBag />
           <CartBadge dark={isHome} />
-        </button>
+        </button> */}
       </div>
     </header>
   );
@@ -297,14 +297,14 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
             </Menu.Items>
           </Transition>
         </Menu>
-
+        {/* 
         <button
           onClick={openCart}
           className="relative flex items-center justify-center w-8 h-8"
         >
           <IconBag />
           <CartBadge dark={isHome} />
-        </button>
+        </button> */}
       </div>
     </header>
   );
