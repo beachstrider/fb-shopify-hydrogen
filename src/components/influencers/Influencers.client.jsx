@@ -81,9 +81,10 @@ export function Influencers() {
                   </div>
 
                   <div className="md:mt-[-480px] md:ml-[454px] bg-[#DB9707] md:w-40 md:h-40 rounded-full md:text-3xl text-center font-bold flex justify-center items-center invisible sm:visible md:visible lg:visible ">
-                      <p>SAVE <br/> $40</p>
+                    <p>
+                      SAVE <br /> $40
+                    </p>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -100,7 +101,7 @@ export function Influencers() {
           />
         </div>
         <div className="w-full md:w-0">
-        <div className="w-full bg-[#231f20] py-10 px-6 md:py-0 md:px-0">
+          <div className="w-full bg-[#231f20] py-10 px-6 md:py-0 md:px-0">
             <img
               className="w-full"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good_mobile.png"
@@ -215,7 +216,10 @@ export function Influencers() {
           </h3>
           <h3 className="text-center md:text-center  md:text-[25px] text-[17px] text-white capitalize font-normal leading-[30px] md:leading-[40px]">
             <a className="underline text-[#DB9707]">
-            <Link to="http://fullofhope.org" target="_blank"> Learn More </Link>
+              <Link to="http://fullofhope.org" target="_blank">
+                {' '}
+                Learn More{' '}
+              </Link>
             </a>{' '}
             About Full of Hope
           </h3>
@@ -270,9 +274,9 @@ export function Influencers() {
           </Marquee>
         </div>
         <div className="text-center py-5">
-          <Link to="/how-it-works">
+          <Link to="http://fullofhope.org" target="_blank">
             <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
-              How It Works
+              Learn More
             </button>
           </Link>
         </div>
