@@ -519,7 +519,7 @@ export function OrderBundles({
                   <div style={{padding: '20px 0'}}>
                     <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
                       <div className="flex items-center gap-6 text-gray-800  mb-2">
-                        <div className="text-2xl font-bold">
+                        <div className="md:text-2xl text-lg font-bold">
                           1. Choose your Week
                         </div>
                       </div>
@@ -599,7 +599,7 @@ export function OrderBundles({
                   )}
                   <div className="mb-14">
                     <div className="flex items-center gap-6 text-gray-800  mb-2">
-                      <div className="text-2xl font-bold">
+                      <div className="md:text-2xl text-lg font-bold">
                         {bundle.handle === 'event-feastbox' ? '3' : '2'}.
                         Choose. Choose your Meals
                       </div>
@@ -614,7 +614,7 @@ export function OrderBundles({
                           products.map((product, key) => (
                             <div
                               key={key}
-                              className="flex w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center"
+                              className="flex w-1/2 lg:w-1/5 sm:w-1/3 md:w-1/3 md:p-2 text-center mb-4"
                             >
                               <div className="flex flex-col justify-between text-center">
                                 <MealItem
@@ -655,9 +655,9 @@ export function OrderBundles({
                                       cartInfo[bundle.handle].partySizeIndex
                                     ].id,
                                 ) === -1 ? (
-                                  <div className="px-4 text-center">
+                                  <div className="mt-2 px-4 text-center">
                                     <button
-                                      className="text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
+                                      className="w-full text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] md:w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
                                       onClick={() => handleUpdateCart(product)}
                                       disabled={isQuantityLimit}
                                     >
@@ -665,7 +665,7 @@ export function OrderBundles({
                                     </button>
                                   </div>
                                 ) : (
-                                  <div className="flex justify-center font-semibold font-heading">
+                                  <div className="flex mt-2 lg:justify-center font-semibold font-heading px-4">
                                     <button
                                       className="hover:text-gray-700 text-center bg-[#DB9707] text-white"
                                       onClick={() =>
@@ -690,7 +690,7 @@ export function OrderBundles({
                                         </g>
                                       </svg>
                                     </button>
-                                    <div className="w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
+                                    <div className="grow w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
                                       {
                                         cartInfo[bundle.handle].meals.find(
                                           (el) =>
@@ -753,12 +753,14 @@ export function OrderBundles({
                   <div className="container mx-auto px-4 mt-5">
                     {bundle.handle === 'family-feastbox' && (
                       <div className="max-w-4xl mx-auto">
-                        <div className="block text-gray-800 text-2xl font-bold mb-2 -ml-4">
+                        <div className="block text-gray-800 md:text-2xl text-lg font-bold mb-2 -ml-4">
                           3. Choose your Price
                         </div>
                         <div className="flex flex-wrap -mx-4">
                           <div
-                            className={`lg:w-[50%] md:w-full sm-max:w-full px-2 `}
+                            className={`lg:w-[50%] md:w-full sm-max:w-full px-2 ${
+                              !isQuantityLimit ? 'opacity-50' : ''
+                            }`}
                           >
                             <div className="relative bg-gray-50">
                               <div
@@ -946,7 +948,11 @@ export function OrderBundles({
                               </div>
                             </div>
                           </div>
-                          <div className="lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2">
+                          <div
+                            className={`lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2 ${
+                              !isQuantityLimit ? 'opacity-50' : ''
+                            }`}
+                          >
                             <div className={`relative bg-gray-50`}>
                               <div
                                 className="px-6 py-4 mt-8"
