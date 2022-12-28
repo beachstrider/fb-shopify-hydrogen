@@ -6,6 +6,8 @@ import {
   today,
   // isFuture,
   // sortByDateProperty,
+  formatUTCDate,
+  getNextWeekDay,
   dayjs,
   getUsaStandard,
   getISO,
@@ -78,7 +80,8 @@ export function OrderBundles({
     id,
     lines,
     checkoutUrl,
-
+    attributes,
+    cartAttributesUpdate,
     cartCreate,
     linesAdd,
     linesRemove,
@@ -193,11 +196,31 @@ export function OrderBundles({
     cartToken = cartToken !== '' ? cartToken.substring(19) : 'xxx';
     customerId =
       customerId !== '' ? customerId.substring(23) : 'unauthenticated customer';
+    const purchaseType =
+      cartInfo[bundle.handle]?.priceType === 'recuring'
+        ? 'Recurring'
+        : 'Onetime';
+    const selectedMeals = cartInfo[bundle.handle].meals.map((el) => {
+      return {
+        title: el.variants.nodes[
+          cartInfo[bundle.handle].partySizeIndex
+        ]?.metafields?.find((x) => x?.key === 'display_name')?.value,
+        qty: el.quantity,
+      };
+    });
+    const mealsProperties = selectedMeals.map((meal, index) => {
+      return meal.title + ' (qty: ' + meal.qty + ') ';
+    });
 
     return [
+      //No need customer ID for now: if needed later we will
+      // {
+      //   key: 'Customer Id', //when customer logged in then get from there (this will be shopify customer ID)
+      //   value: customerId,
+      // },
       {
-        key: 'Customer Id', //when customer logged in then get from there (this will be shopify customer ID)
-        value: customerId,
+        key: 'Selected Meals',
+        value: mealsProperties.toString(), //delivery date format will be 2022-12-26
       },
       {
         key: 'Delivery_Date',
@@ -206,6 +229,10 @@ export function OrderBundles({
       {
         key: 'Cart Token',
         value: cartToken, // issue on checkout without updating cart
+      },
+      {
+        key: 'Purchase Type',
+        value: purchaseType, // issue on checkout without updating cart
       },
     ];
   }
@@ -320,6 +347,7 @@ export function OrderBundles({
       [bundle.handle]: {
         ...cartInfo[bundle.handle],
         deliveryDate: newSlots[0].date,
+        deliveryDay: newSlots[0].day,
       },
     });
 
@@ -419,6 +447,22 @@ export function OrderBundles({
 
     setTimeout(() => {
       linesAdd([line]);
+    }, [API_CALLING_INTERVAL]);
+
+    // add cart note attribute its required
+    setTimeout(() => {
+      cartAttributesUpdate({
+        attributes: {
+          'delivery-date': formatUTCDate(
+            cartInfo[bundle.handle].deliveryDate,
+            'YYYY-MM-DD',
+          ),
+          'delivery-day': cartInfo[bundle.handle].deliveryDay
+            ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format('dddd')
+            : '',
+        },
+        cartId: id
+      });
     }, [API_CALLING_INTERVAL]);
 
     setTimeout(() => {
