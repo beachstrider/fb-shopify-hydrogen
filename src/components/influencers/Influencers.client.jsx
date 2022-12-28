@@ -30,7 +30,7 @@ export function Influencers() {
         </div>
 
         <div className="bg-right bg-center bg-no-repeat bg-cover z-0  bg-[#231F20]">
-          <div className="container  mx-auto">
+          <div className="  mx-auto">
             <div className="md:flex block items-start justify-between h-full">
               <div className="w-full md:w-1/2 relative">
                 <img
