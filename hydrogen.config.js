@@ -4,9 +4,11 @@ export default defineConfig({
   shopify: {
     defaultCountryCode: 'US',
     defaultLanguageCode: 'EN',
-    storeDomain: Oxygen.env.STORE_DOMAIN, // eslint-disable-line no-undef
-    storefrontToken: Oxygen.env.STORE_FRONT_TOKEN, // eslint-disable-line no-undef
+    storeDomain: Oxygen.env.PUBLIC_STORE_DOMAIN,
+    storefrontToken: Oxygen.env.PUBLIC_STOREFRONT_API_TOKEN,
+    privateStorefrontToken: Oxygen.env.PRIVATE_STOREFRONT_API_TOKEN,
     storefrontApiVersion: '2022-07',
+    storefrontId: Oxygen.env.PUBLIC_STOREFRONT_ID,
   },
   session: CookieSessionStorage('__session', {
     path: '/',
