@@ -7,7 +7,7 @@ export function PartyTime() {
         <div className=" h-auto bg-[#FFFFFF]">
           <div className="container max-w-screen-xl mx-auto">
             <div className="text-black text-lg relative flex justify-center">
-              <h1 className="font-bungee text-[100px] md:text-[120px] text-center text-neutral-900 uppercase leading-[100px] md:leading-[80px] mt-[-52px] mb-[-0.5rem]">
+              <h1 className="font-bungee text-[100px] md:text-[120px] text-center text-neutral-900 uppercase leading-[100px] md:leading-[80px] mt-[-52px] mb-[-0.5rem] xsm:text-[80px] xsm:mt-[-80px]">
                 {' '}
                 Party Time?
               </h1>

@@ -95,13 +95,11 @@ export function MealItem({title, image, modalimage, metafields}) {
                   </div>
                 </div>
 
-                <div className="bg-[#DB9707] py-4 text-white text-bold text-base">
-                  <button
-                    onClick={() => setOpenModal(false)}
-                    className="no-underline"
-                  >
-                    Close
-                  </button>
+                <div
+                  onClick={() => setOpenModal(false)}
+                  className="bg-[#DB9707] py-4 text-white text-bold text-base cursor-pointer"
+                >
+                  Close
                 </div>
               </div>
             </div>

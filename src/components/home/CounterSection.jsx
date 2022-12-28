@@ -19,33 +19,33 @@ export function CounterSection() {
         </h1>
         <div className="bg-white max-w-3xl px-5 py-4 m-auto mt-[25px]">
           <div className="flex items-center justify-center">
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
-              <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
+            <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+              <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[55px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
-              <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
+            <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+              <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[55px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
-              <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
+            <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+              <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[55px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
-              <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
+            <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+              <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[55px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
-              <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
+            <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+              <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[55px]">
                 0
               </div>
             </div>
-            <div className="w-[100px] h-[175px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
-              <div className="text-white flex items-center justify-center h-full font-bold text-[70px]">
+            <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+              <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[55px]">
                 1
               </div>
             </div>

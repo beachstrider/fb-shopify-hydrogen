@@ -4,8 +4,8 @@ import axios from 'axios';
 
 import {
   today,
-  isFuture,
-  sortByDateProperty,
+  // isFuture,
+  // sortByDateProperty,
   dayjs,
   getUsaStandard,
   getISO,
@@ -14,41 +14,42 @@ import {
 import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
 import {MealItem} from './MealItem.client';
+import MoneyBackModal from './MoneyBackModal';
 const LEAD_TIME = 3; // 3 days ahead of selecting delivery dates
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
-// This platform product ID is the bundle product ID.
 
-// first of all we need get all the bundle products from shpify where the product_type is Custom Bundle
-// what is the url (family which is default url or event or Infunencer )
-//then based on taf of bundle product we will get our bundle product
-// if tag in 'Family Feastbox' then it will get the product id of Family Feastbox bundle product
-// if tag in 'Event Feastbox' then it will get the product id of Family Feastbox bundle product
+const API_CALLING_INTERVAL = 1300;
 
 function getCartInfo(param) {
-  if (
-    typeof window !== 'undefined' &&
-    localStorage.getItem('cartInfo') !== null
-  ) {
-    const {deliveryDate, handle} = JSON.parse(localStorage.getItem('cartInfo'));
-
-    if (dayjs().isBefore(deliveryDate) && handle === param.handle) {
-      console.log('handle', param.handle, handle);
-      return JSON.parse(localStorage?.getItem('cartInfo'));
+  if (typeof window !== 'undefined') {
+    const localStorageCartInfo = localStorage.getItem('cartInfo');
+    const savedCartInfo =
+      localStorageCartInfo !== null ? JSON.parse(localStorageCartInfo) : null;
+    if (
+      savedCartInfo !== null &&
+      typeof savedCartInfo[param.handle] !== 'undefined'
+    ) {
+      const {deliveryDate} = savedCartInfo[param.handle];
+      if (dayjs().isBefore(deliveryDate)) {
+        return savedCartInfo;
+      }
     }
   }
 
   return {
-    handle: param.handle,
-    bundleContents: [],
-    bundleData: undefined,
-    deliveryDate: '',
-    priceType: 'onetime',
-    frequencyValue: '7 Day(s)',
-    totalPrice: 0,
-    productsInCart: [],
-    mealQuantity: 0,
-    partySizeIndex: 0,
+    [param.handle]: {
+      handle: param.handle,
+      bundleContents: [],
+      bundleData: undefined,
+      deliveryDate: '',
+      priceType: 'onetime',
+      frequencyValue: '7 Day(s)',
+      totalPrice: 0,
+      meals: [],
+      mealQuantity: 0,
+      partySizeIndex: 0,
+    },
   };
 }
 
@@ -57,23 +58,21 @@ export function OrderBundles({
   discountCodes,
   customerAccessToken,
   customerId = '',
-  bundleIdNumber = Number(bundle.id.substring(22)),
 }) {
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
+  const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
 
   const [cartInfo, setCartInfo] = useState(
     getCartInfo({handle: bundle.handle}),
   );
 
+  const [newDiscountCodes, setNewDiscountCodes] = useState(discountCodes);
+
   const [isInitialDataLoading, setIsInitialDataLoading] = useState(true);
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
-  const [checkoutButtonStatus, setCheckoutButtonStatus] = useState(
-    'CART INITIALIZING...',
-  );
-
-  const [newDiscountCodes, setNewDiscountCodes] = useState(discountCodes);
+  const [isCheckoutProcessing, setIsCheckoutProcessing] = useState(false);
 
   const {
     id,
@@ -83,24 +82,27 @@ export function OrderBundles({
     cartCreate,
     linesAdd,
     linesRemove,
-    linesUpdate,
     buyerIdentityUpdate,
     discountCodesUpdate,
   } = useCart();
+  console.log('cartInfo', cartInfo);
 
+  const bundleIdNumber = Number(bundle.id.substring(22));
   const discountCodeInputRef = useRef(null);
 
   const currentQuantity = (() => {
     let quantity = 0;
-    cartInfo.productsInCart.forEach((el) => (quantity += el.quantity));
+    cartInfo[bundle.handle].meals.forEach((el) => (quantity += el.quantity));
     return quantity;
   })();
 
   const isQuantityLimit = (() => {
-    return currentQuantity === cartInfo.mealQuantity;
+    return currentQuantity === cartInfo[bundle.handle].mealQuantity;
   })();
 
   useEffect(() => {
+    if (typeof id === 'undefined') cartCreate({});
+
     async function fetchAll() {
       await fetchDeliveryDates();
       await fetchBundle();
@@ -110,34 +112,29 @@ export function OrderBundles({
     fetchAll();
   }, []);
 
-  console.log(isQuantityLimit);
-
   useEffect(() => {
     setIsProductsLoading(true);
-    const contents = [...cartInfo.bundleContents].filter((content) => {
-      return dayjs(cartInfo.deliveryDate).isBetween(
-        content.deliver_after,
-        content.deliver_before,
-      );
-    });
+    const contents = [...cartInfo[bundle.handle].bundleContents].filter(
+      (content) => {
+        return dayjs(cartInfo[bundle.handle].deliveryDate).isBetween(
+          content.deliver_after,
+          content.deliver_before,
+        );
+      },
+    );
 
     fetchContents(contents);
-    updateCartAttributes();
-  }, [cartInfo.deliveryDate]);
+  }, [cartInfo[bundle.handle].deliveryDate]);
 
   useEffect(() => {
-    if (typeof id !== 'undefined') {
-      setCheckoutButtonStatus('CART UPDATING...');
-      updateCart();
-      setTimeout(() => {
-        setCheckoutButtonStatus('');
-      }, [3000]);
-    }
-  }, [cartInfo.priceType, cartInfo.frequencyValue, cartInfo.partySizeIndex]);
+    const oldCartInfo = localStorage.getItem('cartInfo');
+    // const savingCartInfo = oldCartInfo !== null ? JSON.parse(oldCartInfo) : {};
+    const savingCartInfo = oldCartInfo !== null ? {} : {};
+    savingCartInfo[bundle.handle] = cartInfo[bundle.handle];
 
-  useEffect(() => {
-    localStorage?.setItem('cartInfo', JSON.stringify(cartInfo));
+    localStorage.setItem('cartInfo', JSON.stringify(savingCartInfo));
   }, [cartInfo]);
+
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
       [...new Array(7)].map((_, dayIndex) =>
@@ -154,7 +151,9 @@ export function OrderBundles({
     );
 
   const selectedWeekIndex = weeks.findIndex(
-    (week) => week.findIndex((el) => el === cartInfo.deliveryDate) !== -1,
+    (week) =>
+      week.findIndex((el) => el === cartInfo[bundle.handle].deliveryDate) !==
+      -1,
   );
 
   const availableSlots = (() => {
@@ -171,13 +170,16 @@ export function OrderBundles({
   })();
 
   const totalPrice = (() => {
-    let price = bundle.variants.nodes[cartInfo.partySizeIndex].priceV2.amount;
-    if (cartInfo.priceType === 'recuring') {
+    let price =
+      bundle.variants.nodes[cartInfo[bundle.handle].partySizeIndex]?.priceV2
+        .amount;
+    if (cartInfo[bundle.handle].priceType === 'recuring') {
       price =
         price -
         (price *
           bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
-            (el) => el.options[0].value === cartInfo.frequencyValue,
+            (el) =>
+              el.options[0].value === cartInfo[bundle.handle].frequencyValue,
           )?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage) /
           100;
     }
@@ -186,7 +188,8 @@ export function OrderBundles({
   })();
 
   function getAttributes(cartToken, customerId, deliveryDate) {
-    deliveryDate = cartInfo.deliveryDate !== '' ? deliveryDate : today();
+    deliveryDate =
+      cartInfo[bundle.handle].deliveryDate !== '' ? deliveryDate : today();
     cartToken = cartToken !== '' ? cartToken.substring(19) : 'xxx';
     customerId =
       customerId !== '' ? customerId.substring(23) : 'unauthenticated customer';
@@ -207,80 +210,6 @@ export function OrderBundles({
     ];
   }
 
-  async function initCart(merchandiseId) {
-    const line = {
-      merchandiseId,
-      sellingPlanId: undefined,
-      quantity: 1,
-      attributes: getAttributes(
-        typeof id !== 'undefined' ? id : '',
-        customerId,
-        cartInfo.deliveryDate,
-      ),
-    };
-
-    if (typeof id === 'undefined') {
-      cartCreate({
-        lines: [line],
-      });
-    }
-
-    setTimeout(() => {
-      discountCodesUpdate(discountCodes);
-      setTimeout(() => {
-        buyerIdentityUpdate({
-          customerAccessToken,
-        });
-        setTimeout(() => {
-          setCheckoutButtonStatus('');
-        }, [1500]);
-      }, [1500]);
-    }, [1500]);
-  }
-
-  async function updateCart() {
-    const line = {
-      merchandiseId: bundle.variants.nodes[cartInfo.partySizeIndex].id,
-      sellingPlanId: undefined,
-      quantity: 1,
-      attributes: getAttributes(id, customerId, cartInfo.deliveryDate),
-    };
-
-    if (cartInfo.priceType === 'recuring') {
-      const sellingPlanId =
-        bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
-          (el) => el.options[0].value === cartInfo.frequencyValue,
-        )?.id;
-
-      line.sellingPlanId = sellingPlanId;
-    }
-    if (lines.length) {
-      linesRemove(lines.map((line) => line.id));
-      setTimeout(() => {
-        linesAdd([line]);
-        setTimeout(() => {
-          setCheckoutButtonStatus('');
-        }, [1500]);
-      }, 1500);
-    } else {
-      linesAdd([line]);
-      setTimeout(() => {
-        setCheckoutButtonStatus('');
-      }, [1500]);
-    }
-  }
-
-  function updateCartAttributes() {
-    if (lines.length && typeof id !== 'undefined') {
-      linesUpdate([
-        {
-          id: lines[0].id,
-          attributes: getAttributes(id, customerId, cartInfo.deliveryDate),
-        },
-      ]);
-    }
-  }
-
   async function fetchDeliveryDates() {
     const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
       .data;
@@ -299,7 +228,7 @@ export function OrderBundles({
           date > today.getTime() && deliveryDate.quantity > deliveryDate.used
         );
       })
-      .map((deliveryDate, index) => {
+      .map((deliveryDate) => {
         deliveryDate.day = new Date(deliveryDate.date).getDay() + 1; // Add day since midnight is counting as previous day
         return deliveryDate;
       })
@@ -321,14 +250,16 @@ export function OrderBundles({
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
 
-    await initCart(bundle.variants.nodes[cartInfo.partySizeIndex].id);
+    // await initCart(bundle.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id);
 
     setCartInfo({
       ...cartInfo,
-      bundle,
-      bundleData: bundleDataRes,
-      bundleContents: config.contents,
-      mealQuantity: config.quantity,
+      [bundle.handle]: {
+        ...cartInfo[bundle.handle],
+        bundleData: bundleDataRes,
+        bundleContents: config.contents,
+        mealQuantity: config.quantity,
+      },
     });
   }
 
@@ -339,7 +270,11 @@ export function OrderBundles({
     for await (const content of contents) {
       const res = (
         await axios.get(
-          `/api/bundle/bundles/${cartInfo.bundleData.id}/configurations/${cartInfo.bundleData.configurations[0].id}/contents/${content.id}/products`,
+          `/api/bundle/bundles/${
+            cartInfo[bundle.handle].bundleData.id
+          }/configurations/${
+            cartInfo[bundle.handle].bundleData.configurations[0].id
+          }/contents/${content.id}/products`,
         )
       ).data;
 
@@ -362,11 +297,13 @@ export function OrderBundles({
         })),
       );
     } else {
-      setCartInfo({...cartInfo, bundle: null});
       setProducts([]);
     }
 
-    setCartInfo({...cartInfo, productsInCart: []});
+    setCartInfo({
+      ...cartInfo,
+      [bundle.handle]: {...cartInfo[bundle.handle], meals: []},
+    });
     setIsProductsLoading(false);
   }
 
@@ -378,22 +315,34 @@ export function OrderBundles({
         newWeek.findIndex((el) => deliveryDate.date === el) !== -1,
     );
 
-    setCartInfo({...cartInfo, deliveryDate: newSlots[0].date});
+    setCartInfo({
+      ...cartInfo,
+      [bundle.handle]: {
+        ...cartInfo[bundle.handle],
+        deliveryDate: newSlots[0].date,
+      },
+    });
 
     setIsDeliveryDateEditing(false);
   }
 
   function handlePartyChange(e) {
-    setCartInfo({...cartInfo, partySizeIndex: e.target.value});
+    setCartInfo({
+      ...cartInfo,
+      [bundle.handle]: {
+        ...cartInfo[bundle.handle],
+        partySizeIndex: e.target.value,
+      },
+    });
   }
 
   async function handleUpdateCart(product, diff) {
-    let newProductsInCart = [...cartInfo.productsInCart];
+    let newProductsInCart = [...cartInfo[bundle.handle].meals];
 
     const productIndex = newProductsInCart.findIndex(
       (el) =>
-        el.variants.nodes[cartInfo.partySizeIndex].id ===
-        product.variants.nodes[cartInfo.partySizeIndex].id,
+        el.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id ===
+        product.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id,
     );
 
     if (typeof diff === 'undefined') {
@@ -407,81 +356,137 @@ export function OrderBundles({
       }
     }
 
-    setCartInfo({...cartInfo, productsInCart: newProductsInCart});
+    setCartInfo({
+      ...cartInfo,
+      [bundle.handle]: {...cartInfo[bundle.handle], meals: newProductsInCart},
+    });
   }
 
   function handleToggleFrequency() {
     setCartInfo({
       ...cartInfo,
-      frequencyValue:
-        cartInfo.frequencyValue === '7 Day(s)' ? '14 Day(s)' : '7 Day(s)',
+      [bundle.handle]: {
+        ...cartInfo[bundle.handle],
+        frequencyValue:
+          cartInfo[bundle.handle].frequencyValue === '7 Day(s)'
+            ? '14 Day(s)'
+            : '7 Day(s)',
+      },
     });
   }
 
   async function handleCheckout() {
-    if (!cartInfo.productsInCart.length || !isQuantityLimit) {
-      alert(`Please select ${cartInfo.mealQuantity} meal(s).`);
+    setIsCheckoutProcessing(true);
+    if (!cartInfo[bundle.handle].meals.length || !isQuantityLimit) {
+      alert(`Please select ${cartInfo[bundle.handle].mealQuantity} meal(s).`);
       return;
     }
-    if (typeof cartInfo.priceType === 'undefined') {
+    if (typeof cartInfo[bundle.handle].priceType === 'undefined') {
       alert('Please choose a price type.');
       return;
     }
 
-    setCheckoutButtonStatus('CHECKOUT...');
-
-    //car save function which has bundle product and meals product save in database
-    const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
-    //this is the meals product array which has only one meal Item but there can be multiple meals item selected
-    const items = cartInfo.productsInCart.map((el) => ({
-      bundle_configuration_content_id: el.bundleConfigurationId,
-      platform_product_variant_id: parseInt(
-        el.variants.nodes[cartInfo.partySizeIndex]?.id.split(
-          'ProductVariant/',
-        )[1],
+    const line = {
+      merchandiseId:
+        bundle.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id,
+      sellingPlanId: undefined,
+      quantity: 1,
+      attributes: getAttributes(
+        id,
+        customerId,
+        cartInfo[bundle.handle].deliveryDate,
       ),
-      quantity: el.quantity,
-    }));
-
-    const cartData = {
-      platform_customer_id: null, //if customer logged in then save shopify customer idp
-      platform_cart_token,
-      platform_product_id: cartInfo.bundleData.platform_product_id,
-      platform_variant_id: parseInt(
-        bundle.variants.nodes[cartInfo.partySizeIndex]?.id.split(
-          'ProductVariant/',
-        )[1],
-      ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
-      subscription_type:
-        bundle.variants.nodes[cartInfo.partySizeIndex]?.title.split(' /')[0],
-      subscription_sub_type:
-        bundle.variants.nodes[cartInfo.partySizeIndex]?.title.split('/ ')[1],
-      bundle_id: cartInfo.bundleData.id,
-      delivery_day: getDayUsa(cartInfo.deliveryDate),
-      contents: [...items],
     };
-    //save data in customer_cart table
-    await axios.post(`/api/bundle/carts`, cartData);
 
-    setCheckoutButtonStatus('');
-    location.href = checkoutUrl;
+    if (cartInfo[bundle.handle].priceType === 'recuring') {
+      const sellingPlanId =
+        bundle.sellingPlanGroups.nodes[0]?.sellingPlans?.nodes?.find(
+          (el) =>
+            el.options[0].value === cartInfo[bundle.handle].frequencyValue,
+        )?.id;
+
+      line.sellingPlanId = sellingPlanId;
+    }
+
+    const removingLinesIds = lines
+      .filter(
+        (line) =>
+          !line.attributes.every((attr) => attr.key !== 'Delivery_Date'),
+      )
+      .map((el) => el.id);
+
+    linesRemove(removingLinesIds);
+
+    setTimeout(() => {
+      linesAdd([line]);
+    }, [API_CALLING_INTERVAL]);
+
+    setTimeout(() => {
+      if (
+        discountCodeInputRef.current !== null &&
+        discountCodeInputRef.current.value !== null
+      )
+        discountCodesUpdate(discountCodeInputRef.current.value);
+      setTimeout(() => {
+        buyerIdentityUpdate({
+          customerAccessToken,
+        });
+
+        setTimeout(async () => {
+          const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
+
+          const items = cartInfo[bundle.handle].meals.map((el) => ({
+            bundle_configuration_content_id: el.bundleConfigurationId,
+            platform_product_variant_id: parseInt(
+              el.variants.nodes[
+                cartInfo[bundle.handle].partySizeIndex
+              ]?.id.split('ProductVariant/')[1],
+            ),
+            quantity: el.quantity,
+          }));
+
+          const cartData = {
+            platform_customer_id: null, //if customer logged in then save shopify customer idp
+            platform_cart_token,
+            platform_product_id:
+              cartInfo[bundle.handle].bundleData.platform_product_id,
+            platform_variant_id: parseInt(
+              bundle.variants.nodes[
+                cartInfo[bundle.handle].partySizeIndex
+              ]?.id.split('ProductVariant/')[1],
+            ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
+            subscription_type:
+              bundle.variants.nodes[
+                cartInfo[bundle.handle].partySizeIndex
+              ]?.title.split(' /')[0],
+            subscription_sub_type:
+              bundle.variants.nodes[
+                cartInfo[bundle.handle].partySizeIndex
+              ]?.title.split('/ ')[1],
+            bundle_id: cartInfo[bundle.handle].bundleData.id,
+            delivery_day: getDayUsa(cartInfo[bundle.handle].deliveryDate),
+            contents: [...items],
+          };
+
+          await axios.post(`/api/bundle/carts`, cartData);
+
+          location.href = checkoutUrl;
+        }, [API_CALLING_INTERVAL]);
+      }, [API_CALLING_INTERVAL]);
+    }, [API_CALLING_INTERVAL * 2]);
   }
 
   async function handleSubmitDiscountCode() {
     await axios.get(`/api/discount/set/${discountCodeInputRef.current.value}`);
-    discountCodesUpdate([discountCodeInputRef.current.value]);
-    setTimeout(() => {
-      setNewDiscountCodes([discountCodeInputRef.current.value]);
-    }, 1500);
+    setNewDiscountCodes([discountCodeInputRef.current.value]);
   }
-  // console.log('bundle', bundle);
-  console.log('checkoutButtonStatus', checkoutButtonStatus);
+
   return (
     <Loading className="py-20" isLoading={isInitialDataLoading}>
       <section className="bg-[#EFEFEF]">
-        <div className="2xl-only container lg:container mx-auto">
+        <div className="2xl-only max-w-full lg:container mx-auto">
           <div className="flex flex-wrap">
-            <div className="absolutew w-full md:w-1/1 xl:w-1/2 lg:w-1/2 xl:w-1/2">
+            <div className="w-full md:w-1/1 xl:w-1/2 lg:w-1/2">
               <div className="relative left-0 top-0 ">
                 <img
                   className="object-cover w-full md:h-1/2"
@@ -493,10 +498,12 @@ export function OrderBundles({
             </div>
             <div className="w-full md:w-1/1 lg:w-1/2 xl:w-1/2 px-8">
               <div className="">
-                <div className="mt-16 font-bold">
-                  <div className="text-[60px] ">{bundle?.title}</div>
+                <div className="mt-2 lg:mt-16 font-bold">
+                  <div className="lg:text-[60px] text-[36px]">
+                    {bundle?.title}
+                  </div>
                   {bundle.handle === 'family-feastbox' && (
-                    <div className="flex gap-2">
+                    <div className="lg:flex lg:gap-2">
                       <div className="font-bold text-md">Feeding a party?</div>
                       <Link
                         className="font-bold text-md text-[#DB9707] underline"
@@ -512,7 +519,7 @@ export function OrderBundles({
                   <div style={{padding: '20px 0'}}>
                     <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
                       <div className="flex items-center gap-6 text-gray-800  mb-2">
-                        <div className="text-2xl font-bold">
+                        <div className="md:text-2xl text-lg font-bold">
                           1. Choose your Week
                         </div>
                       </div>
@@ -554,7 +561,7 @@ export function OrderBundles({
                       <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
                         <div className="flex items-center gap-6 text-gray-800  mb-2">
                           <div className="text-2xl font-bold">
-                            1.1 Party Size?
+                            2. Party Size?
                           </div>
                         </div>
                         <div
@@ -565,7 +572,7 @@ export function OrderBundles({
                             className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
                             name="week"
                             onChange={handlePartyChange}
-                            value={cartInfo.partySizeIndex}
+                            value={cartInfo[bundle.handle].partySizeIndex}
                             style={{borderWidth: 0, backgroundImage: 'none'}}
                           >
                             <option disabled value={-1}>
@@ -592,11 +599,13 @@ export function OrderBundles({
                   )}
                   <div className="mb-14">
                     <div className="flex items-center gap-6 text-gray-800  mb-2">
-                      <div className="text-2xl font-bold">
-                        2. Choose your Meals
+                      <div className="md:text-2xl text-lg font-bold">
+                        {bundle.handle === 'event-feastbox' ? '3' : '2'}.
+                        Choose. Choose your Meals
                       </div>
                       <div className="text-sm">
-                        ({currentQuantity} of {cartInfo.mealQuantity})
+                        ({currentQuantity} of{' '}
+                        {cartInfo[bundle.handle].mealQuantity})
                       </div>
                     </div>
                     <Loading isLoading={isProductsLoading}>
@@ -605,17 +614,23 @@ export function OrderBundles({
                           products.map((product, key) => (
                             <div
                               key={key}
-                              className="flex w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center"
+                              className="flex w-1/2 lg:w-1/5 sm:w-1/3 md:w-1/3 md:p-2 text-center mb-4"
                             >
                               <div className="flex flex-col justify-between text-center">
                                 <MealItem
-                                  title={product.title}
+                                  title={
+                                    product.variants.nodes[
+                                      cartInfo[bundle.handle].partySizeIndex
+                                    ].metafields?.find(
+                                      (x) => x?.key === 'display_name',
+                                    )?.value
+                                  }
                                   image={
                                     product.variants.nodes[
-                                      cartInfo.partySizeIndex
-                                    ].image
+                                      cartInfo[bundle.handle].partySizeIndex
+                                    ]?.image
                                       ? product.variants.nodes[
-                                          cartInfo.partySizeIndex
+                                          cartInfo[bundle.handle].partySizeIndex
                                         ].image?.url
                                       : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                                   }
@@ -626,22 +641,23 @@ export function OrderBundles({
                                   }
                                   metafields={
                                     product.variants.nodes[
-                                      cartInfo.partySizeIndex
+                                      cartInfo[bundle.handle].partySizeIndex
                                     ].metafields
                                   }
                                 />
 
-                                {cartInfo.productsInCart.findIndex(
+                                {cartInfo[bundle.handle].meals.findIndex(
                                   (el) =>
-                                    el.variants.nodes[cartInfo.partySizeIndex]
-                                      .id ===
+                                    el.variants.nodes[
+                                      cartInfo[bundle.handle].partySizeIndex
+                                    ].id ===
                                     product.variants.nodes[
-                                      cartInfo.partySizeIndex
+                                      cartInfo[bundle.handle].partySizeIndex
                                     ].id,
                                 ) === -1 ? (
-                                  <div className="px-4 text-center">
+                                  <div className="mt-2 px-4 text-center">
                                     <button
-                                      className="text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
+                                      className="w-full text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] md:w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
                                       onClick={() => handleUpdateCart(product)}
                                       disabled={isQuantityLimit}
                                     >
@@ -649,7 +665,7 @@ export function OrderBundles({
                                     </button>
                                   </div>
                                 ) : (
-                                  <div className="flex justify-center font-semibold font-heading">
+                                  <div className="flex mt-2 lg:justify-center font-semibold font-heading px-4">
                                     <button
                                       className="hover:text-gray-700 text-center bg-[#DB9707] text-white"
                                       onClick={() =>
@@ -674,15 +690,17 @@ export function OrderBundles({
                                         </g>
                                       </svg>
                                     </button>
-                                    <div className="w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
+                                    <div className="grow w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
                                       {
-                                        cartInfo.productsInCart.find(
+                                        cartInfo[bundle.handle].meals.find(
                                           (el) =>
                                             el.variants.nodes[
-                                              cartInfo.partySizeIndex
+                                              cartInfo[bundle.handle]
+                                                .partySizeIndex
                                             ].id ===
                                             product.variants.nodes[
-                                              cartInfo.partySizeIndex
+                                              cartInfo[bundle.handle]
+                                                .partySizeIndex
                                             ].id,
                                         ).quantity
                                       }
@@ -732,15 +750,19 @@ export function OrderBundles({
                       </div>
                     </Loading>
                   </div>
-                  <div className="container mx-auto px-4">
+                  <div className="container mx-auto px-4 mt-5">
                     {bundle.handle === 'family-feastbox' && (
                       <div className="max-w-4xl mx-auto">
-                        <div className="block text-gray-800 text-2xl font-bold mb-2 -ml-4">
+                        <div className="block text-gray-800 md:text-2xl text-lg font-bold mb-2 -ml-4">
                           3. Choose your Price
                         </div>
-                        <div className="flex flex-wrap -mx-4 mb-24">
-                          <div className="lg:w-[50%] md:w-full sm-max:w-full px-2">
-                            <div className="relative  bg-gray-50">
+                        <div className="flex flex-wrap -mx-4">
+                          <div
+                            className={`lg:w-[50%] md:w-full sm-max:w-full px-2 ${
+                              !isQuantityLimit ? 'opacity-50' : ''
+                            }`}
+                          >
+                            <div className="relative bg-gray-50">
                               <div
                                 className="px-6 py-4 mt-8"
                                 style={{
@@ -777,24 +799,21 @@ export function OrderBundles({
                                             name="price_type"
                                             value="recuring"
                                             defaultChecked={
-                                              cartInfo.priceType === 'recuring'
-                                            }
-                                            disabled={
-                                              checkoutButtonStatus !== ''
+                                              cartInfo[bundle.handle]
+                                                .priceType === 'recuring'
                                             }
                                             onClick={(e) =>
                                               setCartInfo({
                                                 ...cartInfo,
-                                                priceType: e.target.value,
+                                                [bundle.handle]: {
+                                                  ...cartInfo[bundle.handle],
+                                                  priceType: e.target.value,
+                                                },
                                               })
                                             }
                                           />
                                           <span
-                                            className={`ml-3 font-bold ${
-                                              checkoutButtonStatus !== ''
-                                                ? 'text-gray-400'
-                                                : ''
-                                            }`}
+                                            className={`ml-3 font-bold`}
                                             style={{fontSize: 18}}
                                           >
                                             SUBSCRIBE &amp; SAVE
@@ -851,7 +870,9 @@ export function OrderBundles({
                                               /{' '}
                                             </span>
                                             <span>
-                                              {cartInfo.mealQuantity + ' meals'}
+                                              {cartInfo[bundle.handle]
+                                                .mealQuantity +
+                                                ' Family Meals + 1 Free breakfast'}
                                             </span>
                                           </div>
                                         </label>
@@ -877,11 +898,12 @@ export function OrderBundles({
                                       <button
                                         className={`text-[#DB9725]`}
                                         onClick={handleToggleFrequency}
+                                        disabled={!isQuantityLimit}
                                       >
                                         <u>
                                           {' '}
-                                          {cartInfo.frequencyValue ===
-                                          '7 Day(s)'
+                                          {cartInfo[bundle.handle]
+                                            .frequencyValue === '7 Day(s)'
                                             ? 'Weekly'
                                             : 'Biweekly'}
                                         </u>{' '}
@@ -926,8 +948,12 @@ export function OrderBundles({
                               </div>
                             </div>
                           </div>
-                          <div className="lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2">
-                            <div className="relative  bg-gray-50">
+                          <div
+                            className={`lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2 ${
+                              !isQuantityLimit ? 'opacity-50' : ''
+                            }`}
+                          >
+                            <div className={`relative bg-gray-50`}>
                               <div
                                 className="px-6 py-4 mt-8"
                                 style={{
@@ -949,25 +975,22 @@ export function OrderBundles({
                                             type="radio"
                                             name="price_type"
                                             value="onetime"
-                                            disabled={
-                                              checkoutButtonStatus !== ''
-                                            }
                                             defaultChecked={
-                                              cartInfo.priceType === 'onetime'
+                                              cartInfo[bundle.handle]
+                                                .priceType === 'onetime'
                                             }
                                             onClick={(e) =>
                                               setCartInfo({
                                                 ...cartInfo,
-                                                priceType: e.target.value,
+                                                [bundle.handle]: {
+                                                  ...cartInfo[bundle.handle],
+                                                  priceType: e.target.value,
+                                                },
                                               })
                                             }
                                           />
                                           <span
-                                            className={`ml-3 font-bold ${
-                                              checkoutButtonStatus !== ''
-                                                ? 'text-gray-400'
-                                                : ''
-                                            }`}
+                                            className={`ml-3 font-bold`}
                                             style={{fontSize: 18}}
                                           >
                                             ONE-TIME
@@ -985,215 +1008,178 @@ export function OrderBundles({
                                             )}{' '}
                                             /{' '}
                                           </span>
-                                          <span>3 meals</span>
+                                          <span>
+                                            3 Family Meals + 1 Free breakfast
+                                          </span>
                                         </label>
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div className="flex justify-between -mx-2">
-                                      <div className=" grow py-4 px-2 mb-4 md:mb-0">
-                                        <input
-                                          ref={discountCodeInputRef}
-                                          className="max-w-[146px] py-3 px-4 mb-2 md:mb-0 border-[#707070] focus:bg-white border focus:outline-none"
-                                          defaultValue={newDiscountCodes.join(
-                                            ' ',
-                                          )}
-                                          disabled={newDiscountCodes.length > 0}
-                                        />
-                                      </div>
-                                      <div className="flex items-center py-4  mb-4 md:mb-0">
-                                        {newDiscountCodes.length === 0 && (
-                                          <button
-                                            className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
-                                            onClick={handleSubmitDiscountCode}
-                                          >
-                                            Apply
-                                          </button>
-                                        )}
-                                        {newDiscountCodes.length > 0 && (
-                                          <div className="text-lg font-bold text-[#DB9707]">
-                                            Code Applied
-                                          </div>
-                                        )}
                                       </div>
                                     </div>
                                   </div>
                                 </div>
+                              </div>
+                            </div>
+                            <p style={{color: '#DB9725', marginTop: 10}}>
+                              <span
+                                style={{fontSize: 18}}
+                                className=" font-bold"
+                              >
+                                Discount Applied:
+                              </span>
+                              <br />
+                            </p>
+                            <div className="flex items-center gap-4 py-4">
+                              <div className="grow">
+                                <input
+                                  ref={discountCodeInputRef}
+                                  className="w-full py-3 px-4 border-[#707070] focus:bg-white border focus:outline-none"
+                                  defaultValue={newDiscountCodes.join(' ')}
+                                  disabled={newDiscountCodes.length > 0}
+                                />
+                              </div>
+                              <div className="flex-none flex items-center">
+                                {newDiscountCodes.length === 0 && (
+                                  <button
+                                    className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
+                                    onClick={handleSubmitDiscountCode}
+                                  >
+                                    Apply
+                                  </button>
+                                )}
+                                {newDiscountCodes.length > 0 && (
+                                  <div className="text-lg font-bold text-[#DB9707]">
+                                    Code Applied
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     )}
-
-                    <div className="w-full flex gap-4">
-                      <div className="w-full lg:w-1/2">
-                        <div className="mb-4 md:mb-0">
-                          <span className="font-bold" style={{fontSize: 18}}>
-                            {/* {(() => {
-                              const price =
-                                bundle?.variants?.nodes[0]?.priceV2
-                                  ?.amount;
-                              const adjustmentPercentage =
-                                bundle?.sellingPlanGroups?.nodes[0]
-                                  ?.sellingPlans?.nodes[0]?.priceAdjustments[0]
-                                  ?.adjustmentValue?.adjustmentPercentage;
-
-                              if (typeof adjustmentPercentage !== 'undefined') {
-                                const diff =
-                                  (price * adjustmentPercentage) / 100;
-                                if (cartInfo.priceType === 'recuring')
-                                  return (
-                                    "You're Saving " +
-                                    getFullCost(
-                                      diff,
-                                      bundle?.variants?.nodes[0]
-                                        ?.priceV2?.currencyCode,
-                                    ) +
-                                    '!'
-                                  );
-                              }
-                              return '';
-                            })()} */}
-                          </span>
-                          <span className="font-bold text-[28px]">
-                            Total:{' '}
-                            {getFullCost(
-                              totalPrice,
-                              bundle.variants?.nodes[0]?.priceV2?.currencyCode,
-                            )}
-                          </span>
-                        </div>
-                        <div className="mb-4 md:mb-0">
-                          <button
-                            disabled={
-                              checkoutButtonStatus !== '' || !isQuantityLimit
-                            }
-                            className={`block w-full py-5 text-lg text-white mt-[10px] text-center uppercase font-bold ${
-                              checkoutButtonStatus === '' && isQuantityLimit
-                                ? 'bg-[#DB9707]'
-                                : 'bg-[#D8D8D8]'
-                            }`}
-                            onClick={handleCheckout}
-                          >
-                            {isQuantityLimit
-                              ? 'CHECKOUT'
-                              : 'ADD MEALS TO CONTINUE'}
-                          </button>
-                        </div>
-                        <div className="block text-gray-700 text-sm font-bold mb-4 md:mb-0 underline mt-8">
-                          100% Money-Back Guarantee
-                        </div>
-                      </div>
-                      <div className="w-full lg:w-1/2">
-                        <div>
-                          <div
-                            style={{
-                              backgroundColor: '#EFEFEF',
-                            }}
-                          >
-                            <div className="text-sm">
-                              Delivery Day:{' '}
-                              <strong>
-                                {cartInfo.deliveryDate
-                                  ? getUsaStandard(cartInfo.deliveryDate)
-                                  : '---- -- --'}
-                              </strong>
-                            </div>
-                            <div className="text-sm" style={{color: '#DB9707'}}>
-                              <button
-                                onClick={() =>
-                                  setIsDeliveryDateEditing(
-                                    !isDeliveryDateEditing,
-                                  )
-                                }
+                    <div className="flex flex-col gap-2 mt-10 text-center sm:text-left">
+                      <span className="font-bold md:text-[28px] text-lg text-right">
+                        Total:{' '}
+                        {getFullCost(
+                          totalPrice,
+                          bundle.variants?.nodes[0]?.priceV2?.currencyCode,
+                        )}
+                      </span>
+                      <div className="flex flex-col sm:flex-row items-center gap-4">
+                        <button
+                          disabled={!isQuantityLimit || isCheckoutProcessing}
+                          className={`flex justify-center md:w-[264px] w-full py-5 text-lg text-white text-center bg-[#DB9707] disabled:bg-[#D8D8D8] uppercase font-bold`}
+                          onClick={handleCheckout}
+                        >
+                          {isCheckoutProcessing ? (
+                            <>
+                              <svg
+                                aria-hidden="true"
+                                className="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-[#DB9707]"
+                                viewBox="0 0 100 101"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
                               >
-                                <u>Change Delivery Day</u>
-                              </button>
+                                <path
+                                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                  fill="currentColor"
+                                />
+                                <path
+                                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                  fill="currentFill"
+                                />
+                              </svg>
+                            </>
+                          ) : (
+                            <>
+                              {isQuantityLimit
+                                ? 'CHECKOUT'
+                                : 'ADD MEALS TO CONTINUE'}
+                            </>
+                          )}
+                        </button>
+                        <p className="text-sm bg-[#EFEFEF]">
+                          Delivery Day:{' '}
+                          <strong>
+                            {cartInfo[bundle.handle].deliveryDate
+                              ? getUsaStandard(
+                                  cartInfo[bundle.handle].deliveryDate,
+                                )
+                              : '---- -- --'}
+                          </strong>
+                          <br />
+                          <span
+                            onClick={() =>
+                              setIsDeliveryDateEditing(!isDeliveryDateEditing)
+                            }
+                            className="text-[#DB9707] cursor-pointer"
+                          >
+                            <u>Change Delivery Day</u>
+                          </span>
+                        </p>
+                      </div>
+                      <p
+                        onClick={() => setShowMoneyBackModal(true)}
+                        className="text-gray-700 text-sm font-bold underline cursor-pointer"
+                      >
+                        *100% Money-Back Guarantee
+                      </p>
+                    </div>
+                    {showMoneyBackModal && (
+                      <MoneyBackModal
+                        setOpenModal={(showMoneyBackModal) =>
+                          setShowMoneyBackModal(showMoneyBackModal)
+                        }
+                      />
+                    )}
+                    <div>
+                      {isDeliveryDateEditing && availableSlots.length > 0 && (
+                        <div
+                          className="bg-white mt-4"
+                          style={{
+                            boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
+                          }}
+                        >
+                          <div className="mb-1">
+                            <div className="mb-1" style={{color: '#000000'}}>
+                              <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0 p-2">
+                                {availableSlots.map((slot, key) => (
+                                  <div
+                                    key={key}
+                                    className="w-full md:w-1/2 px-4 mb-4 md:mb-0"
+                                  >
+                                    <label>
+                                      <input
+                                        type="radio"
+                                        name="radio-name"
+                                        value="option 1"
+                                        checked={
+                                          cartInfo[bundle.handle]
+                                            .deliveryDate === slot.date
+                                        }
+                                        onClick={() => {
+                                          setCartInfo({
+                                            ...cartInfo,
+                                            [bundle.handle]: {
+                                              ...cartInfo[bundle.handle],
+                                              deliveryDate: slot.date,
+                                            },
+                                            deliveryDate: slot.date,
+                                          });
+                                          setIsDeliveryDateEditing(false);
+                                        }}
+                                      />
+                                      <span className="ml-3 font-bold">
+                                        {dayjs(slot.date).format('ddd, MMM DD')}{' '}
+                                      </span>
+                                      <br />
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                            <p />
                           </div>
                         </div>
-                        <div>
-                          {isDeliveryDateEditing &&
-                            availableSlots.length > 0 && (
-                              <div
-                                className="bg-white mt-4"
-                                style={{
-                                  boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
-                                }}
-                              >
-                                <div className="mb-1">
-                                  <div
-                                    className="mb-1"
-                                    style={{color: '#000000'}}
-                                  >
-                                    <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0 p-2">
-                                      {availableSlots.map((slot, key) => (
-                                        <div
-                                          key={key}
-                                          className="w-full md:w-1/2 px-4 mb-4 md:mb-0"
-                                        >
-                                          <label>
-                                            <input
-                                              type="radio"
-                                              name="radio-name"
-                                              value="option 1"
-                                              checked={
-                                                cartInfo.deliveryDate ===
-                                                slot.date
-                                              }
-                                              onClick={() => {
-                                                setCartInfo({
-                                                  ...cartInfo,
-                                                  deliveryDate: slot.date,
-                                                });
-                                                setIsDeliveryDateEditing(false);
-                                              }}
-                                            />
-                                            <span className="ml-3 font-bold">
-                                              {dayjs(slot.date).format(
-                                                'ddd, MMM DD',
-                                              )}{' '}
-                                            </span>
-                                            <br />
-                                          </label>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        name="money_hidden"
-                        className="w-full  text-center"
-                        style={{
-                          backgroundColor: '#FFFFFF',
-                          padding: 40,
-                          marginTop: 30,
-                          boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
-                        }}
-                      >
-                        <p style={{fontSize: 36}} className="font-bold">
-                          100% Money Back Guarantee
-                        </p>
-                        <br />
-                        <p style={{fontSize: 22}} className="font-bold">
-                          We stand by our delicious food, and the good we are
-                          doing feeding families across the country.
-                        </p>
-                        <br />
-                        <p style={{fontSize: 20}}>
-                          Get a full refund for your FEASTbox if you don’t love
-                          our food. Eating good shouldn’t be stressful, so we
-                          want to make it as easy as possible.{' '}
-                        </p>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -91,7 +91,6 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
   const {y} = useWindowScroll();
 
   const styles = {
-    button: 'relative flex items-center justify-center w-8 h-8',
     container: `${
       isHome
         ? 'bg-[#121111] text-contrast text-primary shadow-darkHeader'
@@ -106,7 +105,10 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
   return (
     <header role="banner" className={styles.container}>
       <div className="flex items-center justify-start w-full gap-4">
-        <button onClick={openMenu} className={styles.button}>
+        <button
+          onClick={openMenu}
+          className="relative flex items-center justify-center w-8 h-8"
+        >
           <IconMenu />
         </button>
       </div>
@@ -124,6 +126,7 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
             width={'auto'}
             height={'auto'}
             alt={'Feastbox'}
+            className="w-16"
           />
         </Heading>
       </Link>
@@ -181,10 +184,13 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
             </Menu.Items>
           </Transition>
         </Menu>
-        <button onClick={openCart} className={styles.button}>
+        {/* <button
+          onClick={openCart}
+          className="relative flex items-center justify-center w-8 h-8"
+        >
           <IconBag />
           <CartBadge dark={isHome} />
-        </button>
+        </button> */}
       </div>
     </header>
   );
@@ -291,8 +297,11 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
             </Menu.Items>
           </Transition>
         </Menu>
-
-        {/* <button onClick={openCart} className={styles.button}>
+        {/* 
+        <button
+          onClick={openCart}
+          className="relative flex items-center justify-center w-8 h-8"
+        >
           <IconBag />
           <CartBadge dark={isHome} />
         </button> */}
