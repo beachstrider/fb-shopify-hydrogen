@@ -9,8 +9,8 @@ export function MenuMexican() {
         <div className="flex flex-col relative lg:pr-[15%] lg:pt-[35%] md:p-0 sm-max:p-0">
           <img className="lg:block md:hidden sm-max:hidden absolute right-0 top-[-20%]" src={'https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/menu/triangles_1.png'} alt='' />
           <img className="lg:block md:hidden sm-max:hidden absolute m-auto left-[-30%] bottom-[-25%] z-[3] w-[20%]" src={'https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/arrows_down.png'} alt='' />
-          <h3 className="lg:text-[5rem] md:text-[4rem] sm-max:text-[3rem] text-white" style={{fontFamily:'Bungee'}}>MEXICAN FEAST</h3>
-          <p className="lg:text-[30px] md:text-[25px] sm-max:text-[20px] tracking-tighter text-white">Have you ever suffered from uncontrollable drooling, overwhelming endorphin release, better digestion and a proud doctor (gotta love that bean fiber), and a sudden yet oddly strong urge to get into the tortilla making business?! No? Well you will now. (Some advice? Leave the tortillas to the experts, like us.)</p>
+          <h3 className="font-bungee lg:text-[5rem] md:text-[4rem] sm-max:text-[3rem] text-white">MEXICAN FEAST</h3>
+          <p className="font-opensans lg:text-[30px] md:text-[25px] sm-max:text-[20px] tracking-tighter text-white">Have you ever suffered from uncontrollable drooling, overwhelming endorphin release, better digestion and a proud doctor (gotta love that bean fiber), and a sudden yet oddly strong urge to get into the tortilla making business?! No? Well you will now. (Some advice? Leave the tortillas to the experts, like us.)</p>
         </div>
       </div>
     </div>
