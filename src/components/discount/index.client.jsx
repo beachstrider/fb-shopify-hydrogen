@@ -1,11 +1,11 @@
 import {useEffect} from 'react';
 import axios from 'axios';
 
-export default function ({code}) {
+export default function ({code, redirect}) {
   useEffect(() => {
     async function action() {
       await axios.get(`/api/discount/set/${code}`);
-      await window.open('/', '_self');
+      location.href = redirect;
     }
 
     action();

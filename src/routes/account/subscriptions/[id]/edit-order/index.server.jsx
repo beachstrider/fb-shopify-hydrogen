@@ -7,15 +7,13 @@ import {
   useShopQuery,
   useServerAnalytics,
 } from '@shopify/hydrogen';
-
-import {CUSTOMER_QUERY} from '~/lib/queries';
-import OrderHisotry from '~/components/account/orderHistory/OrderHistoryList.client';
+import '../../../../../assets/CSS/style.css';
 import {Layout} from '~/components/index.server';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
+import {EditOrder} from '~/components';
+import {CUSTOMER_QUERY} from '~/lib/queries';
 
-import {getOrderHistory} from '~/lib/recharge';
-
-export default function OrderHistory({response}) {
+const Index = ({response}) => {
   response.cache(CacheNone());
 
   const {
@@ -47,23 +45,16 @@ export default function OrderHistory({response}) {
   });
 
   const external_customer_id = customer.id.slice(23);
-
-  const charges = getOrderHistory({external_customer_id});
-
   return (
     <Layout>
       <Suspense>
-        <Seo type="noindex" data={{title: 'Billing And Account'}} />
+        <Seo type="noindex" data={{title: 'FeastBox How it works page'}} />
       </Suspense>
-      <AccountPageLayout user={customer} currentPath="order-history">
-        <OrderHisotry orders={charges} user={customer} />
+      <AccountPageLayout user={customer} currentPath="subscriptions">
+        <EditOrder />
       </AccountPageLayout>
-      <div
-        id="version_mark"
-        className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
-      >
-        BETA, Dec 17 - Jason
-      </div>
     </Layout>
   );
-}
+};
+
+export default Index;

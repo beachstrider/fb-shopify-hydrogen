@@ -91,7 +91,6 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
   const {y} = useWindowScroll();
 
   const styles = {
-    button: 'relative flex items-center justify-center w-8 h-8',
     container: `${
       isHome
         ? 'bg-[#121111] text-contrast text-primary shadow-darkHeader'
@@ -106,7 +105,10 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
   return (
     <header role="banner" className={styles.container}>
       <div className="flex items-center justify-start w-full gap-4">
-        <button onClick={openMenu} className={styles.button}>
+        <button
+          onClick={openMenu}
+          className="relative flex items-center justify-center w-8 h-8"
+        >
           <IconMenu />
         </button>
       </div>
@@ -115,12 +117,16 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
         className="flex items-center self-stretch leading-[1rem] md:leading-[4rem] justify-center flex-grow w-full h-full"
         to="/"
       >
-        <Heading className="font-bold text-center" as={isHome ? 'h1' : 'h2'}>
+        <Heading
+          className="font-bold text-center p-8 lg:p-0"
+          as={isHome ? 'h1' : 'h2'}
+        >
           <Image
             src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_75/fb/logo/fb_logo_white.png"
             width={'auto'}
             height={'auto'}
             alt={'Feastbox'}
+            className="w-16"
           />
         </Heading>
       </Link>
@@ -178,10 +184,13 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
             </Menu.Items>
           </Transition>
         </Menu>
-        <button onClick={openCart} className={styles.button}>
+        {/* <button
+          onClick={openCart}
+          className="relative flex items-center justify-center w-8 h-8"
+        >
           <IconBag />
           <CartBadge dark={isHome} />
-        </button>
+        </button> */}
       </div>
     </header>
   );
@@ -288,8 +297,11 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
             </Menu.Items>
           </Transition>
         </Menu>
-
-        {/* <button onClick={openCart} className={styles.button}>
+        {/* 
+        <button
+          onClick={openCart}
+          className="relative flex items-center justify-center w-8 h-8"
+        >
           <IconBag />
           <CartBadge dark={isHome} />
         </button> */}

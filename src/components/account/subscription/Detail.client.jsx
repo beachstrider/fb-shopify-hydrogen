@@ -1,24 +1,21 @@
-import {Image, useNavigate, Link, fetchSync} from '@shopify/hydrogen';
+import {Image, useNavigate, Link, fetchSync, useCart} from '@shopify/hydrogen';
 import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';
 import {getUsaStandard} from '~/utils/dates';
-import {
-  isFuture,
-  now,
-  sortByDateProperty,
-  dayjs,
-  getCutOffDate,
-} from '~/utils/dates';
+import {dayjs, findWeekDayBetween, getCutOffDate} from '~/utils/dates';
+import {formatTodayDate} from '../../../utils/dates';
 
-const Index = ({subscription}) => {
-  console.log('subscription===', subscription);
+const Index = ({subscription, subscription_id, user}) => {
+  // console.log('subscription===', subscription);
+  const TOTAL_WEEKS_DISPLAY = 4;
+  const TOTAL_WEEKS_PER_PAGE = 1;
+
   const navigate = useNavigate();
   const [processOrder, setProcessOrder] = useState(false);
   const [processSkip, setProcessSkip] = useState(false);
   const [processCancel, setProcessCancel] = useState(false);
   const [processReactivate, setProcessReactivate] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -31,34 +28,6 @@ const Index = ({subscription}) => {
       order_interval_unit: subscription.order_interval_unit,
     },
   });
-
-  useEffect(() => {
-    fetch();
-  }, []);
-
-  async function fetch() {
-    // const res = (await axios.get('/api/bundle-api/delivery-dates')).data;
-    // console.log('===', res);
-  }
-
-  // const deliveryDates = sortByDateProperty(
-  //   allDeliveryDates.filter((el) => isFuture(el.date)),
-  //   'date',
-  // );
-
-  // const weeks = [...new Array(6)].map(() => {
-  //   var curr = new Date(); // get current date
-  //   var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
-  //   var last = first + 6; // last day is the first day + 6
-
-  //   var firstDate = new Date(curr.setDate(first)).toUTCString();
-  //   var lastDate = new Date(curr.setDate(last)).toUTCString();
-
-  //   return {firstDate, lastDate};
-  // });
-
-  // console.log('weeks===', getCutOffDate(dayjs()));
-
   const onSubmit = async (data) => {
     await axios.post(`/api/account/subscriptions/update`, {
       id: subscription.id,
@@ -105,11 +74,250 @@ const Index = ({subscription}) => {
     setChangedDeliveryDate(false);
   };
 
+  const createWeekList = (weeksMenu, deliverAfterDate) => {
+    if (!weeksMenu.includes(dayjs(deliverAfterDate).format('YYYY-MM-DD'))) {
+      weeksMenu.push(dayjs.utc(deliverAfterDate).format('YYYY-MM-DD'));
+    }
+
+    return weeksMenu;
+  };
+
+  useEffect(() => {
+    const getData = async (subscription_id) => {
+      // const userToken = await getToken()
+      // await clearState()
+      await getOrdersToShow(subscription_id);
+      // dispatch(setEmail(shopCustomer?.email || ''))
+      // const onSubmit = async (data) => {
+      //     await axios.post(`/api/account/subscriptions/update`, {
+      //       id: subscription.id,
+      //       data,
+      //     });
+      //     alert('The subscription info is updated.');
+      //   };
+    };
+    getData(subscription_id);
+  }, []);
+
+  const getOrdersToShow = async (subscription_id) => {
+    console.log('----getOrdersToShow----');
+    const todayDate = formatTodayDate(new Date());
+
+    console.log('user', user);
+    const activeWeeksArr = [];
+    const activeWeeksLimit = [];
+    const weeksMenu = [];
+    const subscriptionArray = {};
+
+    // set customer email to session so that we can use it in apis call
+    await axios.post(`/api/bundleAuth/setSession`, {
+      email: user.email,
+    });
+
+    //get subscription data
+    const subResponse = await axios.get(
+      `/api/bundleAuth/subscriptions?is_active=1&platform_subscription_id=${subscription_id}`,
+    );
+    let subApi = subResponse.data;
+    console.log('subApi', subApi);
+
+    var firstOrderDeliveryDate = todayDate;
+    // console.log('----subApi----', subApi)
+    if (subApi) {
+      for (const sub of subApi) {
+        const subscriptionOrdersResponse = await axios.get(
+          `/api/bundleAuth/subscriptions/${sub.id}/orders`,
+        );
+        const subscriptionOrders = subscriptionOrdersResponse.data;
+        console.log('----sub----', sub);
+        console.log('----subscriptionOrders----', subscriptionOrders);
+
+        const configDataResponse = await axios.get(
+          `/api/bundleAuth/bundles/${sub.bundle_id}/configurations`,
+        );
+        const configData = configDataResponse.data;
+        console.log('----configData----', configData);
+        console.log('----USERDATA----', user);
+
+        if (configData.length > 0) {
+          for (const config of configData) {
+            let subCount = 0;
+            for (const content of config.contents) {
+              // find delivery date between range
+              const deliveryDate = findWeekDayBetween(
+                sub.delivery_day,
+                content.deliver_after,
+                content.deliver_before,
+              );
+              const cutoffDate = getCutOffDate(deliveryDate);
+              const firstOrder = user.orders?.edges?.pop() || null;
+
+              if (firstOrderDeliveryDate === todayDate) {
+                try {
+                  firstOrderDeliveryDate = config.contents.find(
+                    (x) =>
+                      x.id === sub.orders[0]?.bundle_configuration_content_id,
+                  )?.deliver_before;
+                  firstOrderDeliveryDate =
+                    typeof firstOrderDeliveryDate !== 'undefined' &&
+                    firstOrderDeliveryDate != null
+                      ? firstOrderDeliveryDate
+                      : todayDate;
+                } catch (e) {
+                  firstOrderDeliveryDate = todayDate;
+                }
+              }
+
+              const firstOrderDate =
+                (firstOrder && dayjs(firstOrder.node.processedAt).utc()) ||
+                dayjs().utc();
+
+              // validates the first order to avoid displaying the week where the order was placed (always show next week)
+              console.log('firstOrderDeliveryDate', firstOrderDeliveryDate);
+              if (
+                subCount < TOTAL_WEEKS_DISPLAY &&
+                dayjs(content.deliver_before)
+                  .utc()
+                  .isSameOrAfter(firstOrderDeliveryDate) &&
+                dayjs(content.deliver_before).utc().isSameOrAfter(todayDate) &&
+                firstOrderDate.isSameOrBefore(content.deliver_after)
+              ) {
+                console.log('subscriptionOrders', subscriptionOrders);
+                console.log('content', content);
+                const orderedItems = subscriptionOrders.filter(
+                  (ord) =>
+                    ord.bundle_configuration_content.deliver_after ===
+                    content.deliver_after,
+                );
+
+                console.log('orderedItemsorderedItems', orderedItems);
+
+                const subscriptionObjKey = `${
+                  content.deliver_after.split('T')[0]
+                }_${sub.bundle_id}`;
+
+                // push date to weeksMenu
+                // console.log('----weeksMenu----', weeksMenu)
+                // console.log('----deliver_after----', content.deliver_after)
+                createWeekList(weeksMenu, content.deliver_after);
+
+                if (
+                  !Object.keys(subscriptionArray).includes(subscriptionObjKey)
+                ) {
+                  subscriptionArray[subscriptionObjKey] = {};
+                  subscriptionArray[subscriptionObjKey].items = [];
+
+                  if (orderedItems.length > 0) {
+                    const orderFound = orderedItems[0];
+                    if (subscriptionArray[subscriptionObjKey]) {
+                      let thisItemsArray = [];
+                      for (const order of orderedItems) {
+                        const prodArr = await buildProductArrayFromVariant(
+                          order.items,
+                          sub.subscription_sub_type,
+                          shopProducts,
+                        );
+                        thisItemsArray = thisItemsArray.concat(prodArr);
+                      }
+                      subscriptionArray[subscriptionObjKey].subId = sub.id;
+                      subscriptionArray[subscriptionObjKey].bundleProductId =
+                        sub.platform_product_id;
+                      subscriptionArray[subscriptionObjKey].deliveryDay =
+                        sub.delivery_day;
+                      subscriptionArray[subscriptionObjKey].items =
+                        thisItemsArray;
+                      subscriptionArray[subscriptionObjKey].status =
+                        orderFound.platform_order_id !== null
+                          ? STATUS_SENT
+                          : todayDate.isSameOrAfter(cutoffDate)
+                          ? STATUS_LOCKED
+                          : STATUS_PENDING;
+                      subscriptionArray[subscriptionObjKey].subscriptionDate =
+                        dayjs(subscriptionObjKey.split('_')[0]).format(
+                          'YYYY-MM-DD',
+                        );
+                      subscriptionArray[subscriptionObjKey].queryDate =
+                        content.deliver_after;
+                      if (orderFound.platform_order_id !== null) {
+                        subscriptionArray[subscriptionObjKey].trackingUrl =
+                          await getOrderTrackingUrl(
+                            orderFound.platform_order_id,
+                            shopCustomer,
+                          );
+                      }
+                    }
+                  } else {
+
+                    const defaultProductsResponse = await axios.get(
+                      `/api/bundleAuth/bundles/${config.bundle_id}/configurations/${config.id}/contents/${content.id}/products?is_default=1`,
+                    );
+                    const defaultProducts = defaultProductsResponse.data;
+                    console.log('defaultProducts', defaultProducts);
+
+
+                    const thisProductsArray = await buildProductArrayFromId(
+                      defaultProducts.data.data,
+                      sub.subscription_sub_type,
+                      shopProducts,
+                    );
+                    subscriptionArray[subscriptionObjKey].subId = sub.id;
+                    subscriptionArray[subscriptionObjKey].bundleProductId =
+                      sub.platform_product_id;
+                    subscriptionArray[subscriptionObjKey].items =
+                      subscriptionArray[subscriptionObjKey].items.concat(
+                        thisProductsArray,
+                      );
+                    subscriptionArray[subscriptionObjKey].status =
+                      todayDate.isSameOrAfter(cutoffDate)
+                        ? STATUS_LOCKED
+                        : STATUS_PENDING;
+                    subscriptionArray[subscriptionObjKey].subscriptionDate =
+                      dayjs(subscriptionObjKey.split('_')[0]).format(
+                        'YYYY-MM-DD',
+                      );
+                    subscriptionArray[subscriptionObjKey].queryDate =
+                      content.deliver_after;
+                  }
+                }
+                subCount++;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    /* const itemsToDisplay = mapWeeksToDisplay(
+      sortObjectKeys(subscriptionArray),
+      query.get('date')
+    )
+    itemsToDisplay.forEach((item) => {
+      activeWeeksLimit.push(5)
+      activeWeeksArr.push(item)
+    })
+
+    const sortedActiveWeeks = sortByDateProperty(
+      activeWeeksArr,
+      'subscriptionDate'
+    )
+    const uniqueValues = uniqueArray([...weeksMenu])
+    const sortedDates = sortDatesArray(uniqueValues)
+    // console.log('----subscriptionArray----', subscriptionArray)
+    setSubscriptions(subscriptionArray)
+    // console.log('----sortedDates----', sortedDates)
+    setWeeksMenu(sortedDates)
+    // console.log('----sortedActiveWeeks----', sortedActiveWeeks)
+    setActive(sortedActiveWeeks)
+    // console.log('----activeWeeksLimit----', activeWeeksLimit)
+    setLimit(activeWeeksLimit)
+    setLoading(false)*/
+  };
+
   return (
     <div className="flex flex-wrap -m-4">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full flex justify-between max-w-2xl mb-4 text-3xl uppercase font-bold">
-          EDIT YOUR SUBSCRIPTIONS
+          EDIT YOUR SUBSCRIPTION ({subscription_id})
         </div>
         <div className="w-full  p-4">
           {/*-------Subscription box--------------------------*/}
@@ -141,24 +349,11 @@ const Index = ({subscription}) => {
                         >
                           <select
                             className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
-                            name="field-name"
+                            name="week"
                             style={{borderWidth: 0, backgroundImage: 'none'}}
                           >
-                            <option value="Jan 3-5, 2023">Jan 3-5, 2023</option>
-                            <option value="Jan 10-13, 2023">
-                              Jan 10-13, 2023
-                            </option>
-                            <option value="Jan 17-20, 2023">
-                              Jan 17-20, 2023
-                            </option>
-                            <option value="Jan 24-27, 2023">
-                              Jan 24-27, 2023
-                            </option>
-                            <option value="Jan 31 - Feb 3, 2023">
-                              Jan 31 - Feb 3, 2023
-                            </option>
-                            <option value="Feb 7-10, 2023">
-                              Feb 7-10, 2023
+                            <option disabled value={-1}>
+                              --Choose an option--
                             </option>
                           </select>
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -172,147 +367,26 @@ const Index = ({subscription}) => {
                           </div>
                         </div>
                       </div>
-                      <div
-                        style={{
-                          backgroundColor: '#EFEFEF',
-                          paddingBottom: 20,
-                          textAlign: 'center',
-                        }}
-                      >
-                        <p className="mb-2 text-md text-gray-500" />
-                        <div className="text-sm">
-                          Delivery Day:
-                          <strong>
-                            {getUsaStandard(
-                              subscription.next_charge_scheduled_at,
-                            )}
-                          </strong>
-                        </div>
-                        <div className="text-sm" style={{color: '#DB9707'}}>
-                          <button type="button" onClick={() => {}}>
-                            <u>
-                              {changedDeliveryDate
-                                ? 'Save changed Delivery Day'
-                                : 'Change Delivery Day'}
-                            </u>
-                          </button>
-                        </div>
-                        <p />
-                      </div>
-                      <div
-                        className="flex flex-wrap -mx-4 -mb-4 md:mb-0"
-                        style={{
-                          maxWidth: 600,
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                          backgroundColor: '#FFFFFF',
-                          padding: '20px 10px',
-                        }}
-                      >
-                        <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-                          <button
-                            className="block py-5 text-sm text-center  uppercase font-bold leading-normal border-2"
-                            href="#"
-                            style={{color: '#DB9707', borderColor: '#DB9707'}}
-                          >
-                            TUESDAY
-                            <br />
-                            Jan 3, 2023
-                          </button>
-                        </div>
-                        <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-                          <button
-                            className="block py-5 text-sm text-center text-blue-800 uppercase font-bold "
-                            href="#"
-                            style={{
-                              backgroundColor: '#DB9707',
-                              color: '#FFFFFF',
-                            }}
-                          >
-                            WEDNESDAY
-                            <br />
-                            Jan 4, 2023
-                          </button>
-                        </div>
-                        <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
-                          <button
-                            className="block py-5 text-sm text-center  uppercase font-bold leading-normal border-2"
-                            href="#"
-                            style={{color: '#DB9707', borderColor: '#DB9707'}}
-                          >
-                            THURSDAY
-                            <br />
-                            Jan 5, 2023
-                          </button>
-                        </div>
-                      </div>
-                      <br />
-                      <div
-                        className="flex flex-wrap -mx-4 -mb-4 md:mb-0"
-                        style={{
-                          maxWidth: 600,
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                          backgroundColor: '#FFFFFF',
-                          padding: '20px 10px',
-                        }}
-                      >
-                        <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0">
-                          <button
-                            className="block py-5 text-sm text-center  uppercase font-bold leading-normal border-2"
-                            href="#"
-                            style={{color: '#DB9707', borderColor: '#DB9707'}}
-                          >
-                            TUESDAY
-                            <br />
-                            Jan 3, 2023
-                          </button>
-                        </div>
-                        <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0">
-                          <button
-                            className="block py-5 text-sm text-center text-blue-800 uppercase font-bold "
-                            href="#"
-                            style={{
-                              backgroundColor: '#DB9707',
-                              color: '#FFFFFF',
-                            }}
-                          >
-                            WEDNESDAY
-                            <br />
-                            Jan 4, 2023
-                          </button>
-                        </div>
-                        <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0">
-                          <button
-                            className="block py-5 text-sm text-center  uppercase font-bold leading-normal border-2"
-                            href="#"
-                            style={{color: '#DB9707', borderColor: '#DB9707'}}
-                          >
-                            THURSDAY
-                            <br />
-                            Jan 5, 2023
-                          </button>
-                        </div>
-                        <div className="w-full md:w-1/4 px-4 mb-4 md:mb-0">
-                          <button
-                            className="block py-5 text-sm text-center  uppercase font-bold leading-normal border-2"
-                            href="#"
-                            style={{color: '#DB9707', borderColor: '#DB9707'}}
-                          >
-                            FRIDAY
-                            <br />
-                            Jan 6, 2023
-                          </button>
-                        </div>
-                      </div>
                     </div>
                     {/*--------------Step 2--------------------------------------*/}
-                    <div
-                      className="block text-gray-800 text-lg font-bold mb-2"
-                      style={{fontSize: 24, marginTop: 20}}
-                    >
-                      2. Choose your Meals
+                    <div className="flex justify-between">
+                      <div
+                        className="block text-gray-800 text-lg font-bold mb-2"
+                        style={{fontSize: 24, marginTop: 20}}
+                      >
+                        2. Choose your Meals
+                      </div>
+                      <div className="text-xl font-medium mt-[19px]">
+                        <Link
+                          to={`/account/subscriptions/${subscription.id}/edit-order`}
+                        >
+                          <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
+                            Edit Order
+                          </button>
+                        </Link>
+                      </div>
                     </div>
+
                     <div className="flex flex-wrap -mx-2 -mb-2">
                       {/*--1----*/}
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2">

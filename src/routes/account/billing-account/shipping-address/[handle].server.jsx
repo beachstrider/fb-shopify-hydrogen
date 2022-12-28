@@ -9,7 +9,7 @@ import {
   useRouteParams,
 } from '@shopify/hydrogen';
 
-import {CUSTOMER_QUERY} from '~/lib/gql';
+import {CUSTOMER_QUERY} from '~/lib/queries';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 import ShippingAddress from '~/components/account/BillingAndAccount/ShippingAddress.client';
 import {Layout} from '~/components/index.server';

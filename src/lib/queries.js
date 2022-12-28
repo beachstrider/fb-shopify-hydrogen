@@ -121,3 +121,12 @@ export const LOGIN_MUTATION = gql`
     }
   }
 `;
+
+export const BUNDLE_QUERY = gql`
+  ${PRODUCT_CARD_FRAGMENT}
+  query Bundle($handle: String) {
+    product(handle: $handle) {
+      ...ProductCard
+    }
+  }
+`;

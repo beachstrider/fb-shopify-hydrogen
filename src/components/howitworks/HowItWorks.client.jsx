@@ -20,13 +20,13 @@ export function HowItWorks() {
 
               <h1
                 className="font-opensans text-[65px] leading-[70px] md:text-7xl lg:text-[130px] text-center font-extrabold lg:mt-[-90px]
-          md:mt-[-40px] mt-[-46px]
-          "
+               md:mt-[-40px] mt-[-46px]
+                  "
               >
                 THE NITTY GRITTY
               </h1>
               <p className="font-opensans text-center mb-0 sm:mt-12 md:mt-5 text-[30px] md:text-3xl lg:text-[55px]">
-                A Look Into the World of FEASTbox
+                A Look Into the World of <span className='relative'>FEASTbox<span className='absolute bg-[#DB9707] -bottom-[10px] w-full lg:h-[15px] md:h-[15px] sm-max:h-[5px] -rotate-[3deg] rounded-[10px] left-0'></span></span>
               </p>
             </div>
           </div>
@@ -40,7 +40,7 @@ export function HowItWorks() {
                   alt=""
                 />
               </div>
-              <div className="w-auto px-[45px] md:px-0 lg:px-0 max-h-0 md:ml-5 lg:ml-[-120px] lg:mt-12">
+              <div className="w-auto px-[15px] md:px-0 lg:px-0 max-h-0 md:ml-5 lg:ml-[-120px] lg:mt-12">
                 <h2 className="font-bungee sm:mt-24 mt-5 text-start font-bold lg:text-[110px] mb-5 text-[65px] leading-[70px] md:text-5xl">
                   CHEF-MADE
                 </h2>
@@ -50,7 +50,7 @@ export function HowItWorks() {
                   epicness.
                 </p>
                 <img
-                  className="ml-[240px] md:ml-0 lg:ml-0 mt-5 lg:mt-28 visible sm:visible md:mt-12 w-[30%] md:w-28 lg:w-52 "
+                  className="ml-[175px] md:ml-0 lg:ml-0 mt-5 lg:mt-28 visible sm:visible md:mt-12 w-[30%] md:w-28 lg:w-52 relative sm-max:absolute "
                   src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/down_arrows.png"
                   alt=""
                 />
@@ -65,7 +65,7 @@ export function HowItWorks() {
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/sealed_fresh.png"
                 alt=""
               />
-              <div className="w-auto text-left md:text-right lg:text-right lg:mr-[-130px] px-[45px] md:px-0 lg:px-0">
+              <div className="w-auto text-left md:text-right lg:text-right lg:mr-[-130px] px-[15px] md:px-0 lg:px-0">
                 <h2 className="font-bungee sm:mt-48 md:text-5xl mb-5 lg:ml-[-150px] lg:text-[110px] mt-5 mr-4 font-bold text-[65px] leading-[70px] sm:text-8xl">
                   SEALED FRESH
                 </h2>
@@ -94,7 +94,7 @@ export function HowItWorks() {
                   alt=""
                 />
               </div>
-              <div className="w-auto lg:ml-[-100px] max-h-0 md:ml-5 px-[45px] md:px-0 lg:px-0">
+              <div className="w-auto lg:ml-[-100px] max-h-0 md:ml-5 px-[15px] md:px-0 lg:px-0">
                 <h2 className="font-bungee mb-5 md:text-5xl lg:text-[110px]  sm:mt-24 mt-5 text-start font-bold text-[65px] leading-[70px] sm:text-8xl">
                   HEAT IT UP
                 </h2>
@@ -120,20 +120,21 @@ export function HowItWorks() {
                 alt=""
               />
 
-              <div className="w-auto text-left md:text-right lg:text-right mr-0 lg:mr-12 md:mr-0 lg:mt-[-90px]">
-                <h2 className="font-bungee md:text-5xl lg:text-[110px]  mt-4 md:mt-16 lg:mt-80 mb-5 ml-[68px] md:mr-4 lg:mr-4 font-bold text-[65px] sm:text-8xl">
+              <div className="mt-[30px] w-auto text-left md:text-right lg:text-right mr-0 lg:mr-12 md:mr-0 lg:mt-[-90px]">
+                <h2 className="font-bungee md:text-5xl lg:text-[110px]  mt-4 md:mt-16 lg:mt-80 mb-5 ml-[68px] sm-max:ml-[15px] md:mr-4 lg:mr-4 font-bold text-[65px] sm:text-8xl">
                   FEAST!
                 </h2>
-                <p className="font-opensans mt-[-20px] md:mt-1 lg:mt-1 w-[90%] ml-7 md:ml-3 lg:ml-10 text-[16px] sm:text-5xl md:text-3xl lg:text-5xl card-para mr-5 px-[45px] md:px-0 lg:px-0">
+                <p className="font-opensans mt-[-20px] md:mt-1 lg:mt-1 w-[90%] ml-5 md:ml-3 lg:ml-10 text-[16px] sm:text-5xl md:text-3xl lg:text-5xl card-para mr-5 px-[45px] sm-max:px-0 md:px-0 lg:px-0">
                   Lay out the feast, pass out the plates & watch the drool, I
                   mean
-                  <span className="ml-4 bg-contain pb-3 bg-bottom bg-[url(https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/underline_2.png)] bg-no-repeat">
+                  <span className="relative ml-4 bg-contain bg-[url(https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/underline_2.png)] bg-no-repeat">
                     smiles,
+                    <span className='absolute bg-[#DB9707] -bottom-[10px] w-full lg:h-[15px] md:h-[15px] sm-max:h-[5px] -rotate-[3deg] rounded-[10px] left-0'></span>
                   </span>{' '}
                   spread!
                 </p>
                 <Link to={'/shop/bundle'}>
-                <button className="font-opensans ml-[72px] md:ml-0 lg:ml-0 text-[25px] md:text-[25px] md:mr-6 lg:text-[25px] font-semibold btn bg-[#A60D1E] sm:px-6 sm:py-2 px-4 py-1 sm:mr-8 mr-5 mt-8 sm:mt-8 ">
+                <button className="mt-[70px] mb-[35px] font-opensans ml-[72px] sm-max:ml-[25px] md:ml-0 lg:ml-0 text-[25px] md:text-[25px] md:mr-6 lg:text-[25px] font-semibold btn bg-[#A60D1E] sm:px-6 sm:py-2 px-4 py-1 sm:mr-8 mr-5 ">
                   Hungry? Order now
                 </button>
                 </Link>

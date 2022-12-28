@@ -17,7 +17,7 @@ import {Suspense} from 'react';
 import {Text, PageHeader, Heading} from '~/components';
 import {Layout} from '~/components/index.server';
 import {statusMessage} from '~/lib/utils';
-import {CUSTOMER_QUERY} from '~/lib/gql';
+import {CUSTOMER_QUERY} from '~/lib/queries';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 import ChargeDetail from '~/components/account/orderHistory/ChargeDetails.client';
 import {getOrderDetail} from '~/lib/recharge';

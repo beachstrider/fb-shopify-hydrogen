@@ -61,6 +61,25 @@ export const PRODUCT_CARD_FRAGMENT = gql`
           amount
           currencyCode
         }
+        metafields(
+          identifiers: [
+            {namespace: "custom", key: "party_size"}
+            {namespace: "custom", key: "recipal_embed"}
+            {namespace: "my_fields", key: "recipal_id"}
+            {namespace: "meal", key: "allergens"}
+            {namespace: "meal", key: "sauce"}
+            {namespace: "meal", key: "side_dishes"}
+            {namespace: "meal", key: "main_course"}
+            {namespace: "meal", key: "description"}
+            {namespace: "meal", key: "detailed_name"}
+            {namespace: "meal", key: "display_name"}
+          ]
+        ) {
+          namespace
+          id
+          key
+          value
+        }
       }
     }
     sellingPlanGroups(first: 10) {

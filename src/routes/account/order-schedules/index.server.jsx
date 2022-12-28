@@ -8,7 +8,7 @@ import {
   useServerAnalytics,
 } from '@shopify/hydrogen';
 
-import {CUSTOMER_QUERY} from '~/lib/gql';
+import {CUSTOMER_QUERY} from '~/lib/queries';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 import OrderSchedulesList from '~/components/account/orderSchedules/List.client';
 import {Layout} from '~/components/index.server';

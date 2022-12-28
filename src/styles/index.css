@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /* Tokens */
 :root {
   --color-primary: 20 20 20; /* Text, buttons, etc. */
@@ -133,6 +134,72 @@ shop-pay-button {
 }
 
 @layer utilities {
+  .price-underline{
+    color: #DB9707;
+    position: relative;
+  }
+  .price-underline-only{
+    position: relative;
+  }
+  .price-underline-only::after{
+    content: "";
+    position: absolute;
+    top: 93%;
+    width: 100%;
+    left: 0;
+    height: 6px;
+    border-radius: 8px;
+    background-color: #DB9707;
+    transform: rotate(-7deg); 
+  }
+
+  .flat-offer{
+      height: 125px;
+    width: 125px;
+    background-color: #DB9707;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .price-underline::before{
+    content: "";
+    position: absolute;
+    top: 93%;
+    width: 100%;
+    left: 0;
+    height: 6px;
+    border-radius: 8px;
+    background-color: #DB9707;
+    transform: rotate(-7deg); 
+  }
+
+
+  .text-underline-round{
+    position: relative;
+  }
+  .text-underline-round::after{
+    content: "";
+    position: absolute;
+    top: 93%;
+    width: 100%;
+    left: 0;
+    height: 8px;
+    border-radius: 8px;
+    background-color: #DB9707;
+  }
+  .text-tab-underline{
+    position: relative;
+  }
+  .text-tab-underline::before{
+    content: "";
+    position: absolute;
+    top: 93%;
+    width: 100%;
+    left: 0;
+    height: 2px;
+    border-radius: 8px;
+    background-color: #0A2463;
+  }
   .fadeIn {
     opacity: 0;
     animation: fadeInAnimation ease 500ms forwards;
