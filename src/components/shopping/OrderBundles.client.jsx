@@ -1032,7 +1032,7 @@ export function OrderBundles({
                       </div>
                     )}
 
-                    <div className="w-full flex gap-4">
+                    <div className="w-full flex sm:flex-row flex-col gap-4">
                       <div className="w-full lg:w-1/2">
                         <div className="mb-4 md:mb-0">
                           <span className="font-bold" style={{fontSize: 18}}>
@@ -1075,7 +1075,7 @@ export function OrderBundles({
                             disabled={
                               checkoutButtonStatus !== '' || !isQuantityLimit
                             }
-                            className={`block w-full py-5 text-lg text-white mt-[10px] text-center uppercase font-bold ${
+                            className={`block w-[264px] py-5 text-lg text-white mt-[10px] text-center uppercase font-bold ${
                               checkoutButtonStatus === '' && isQuantityLimit
                                 ? 'bg-[#DB9707]'
                                 : 'bg-[#D8D8D8]'
