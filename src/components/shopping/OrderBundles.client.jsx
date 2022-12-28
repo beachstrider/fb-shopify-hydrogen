@@ -1057,7 +1057,7 @@ export function OrderBundles({
                       </div>
                     )}
                     <div className="flex flex-col gap-2 mt-10 text-center sm:text-left">
-                      <span className="font-bold text-[28px]">
+                      <span className="font-bold md:text-[28px] text-lg text-right">
                         Total:{' '}
                         {getFullCost(
                           totalPrice,
@@ -1067,7 +1067,7 @@ export function OrderBundles({
                       <div className="flex flex-col sm:flex-row items-center gap-4">
                         <button
                           disabled={!isQuantityLimit || isCheckoutProcessing}
-                          className={`flex justify-center w-[264px] py-5 text-lg text-white text-center bg-[#DB9707] disabled:bg-[#D8D8D8] uppercase font-bold`}
+                          className={`flex justify-center md:w-[264px] w-full py-5 text-lg text-white text-center bg-[#DB9707] disabled:bg-[#D8D8D8] uppercase font-bold`}
                           onClick={handleCheckout}
                         >
                           {isCheckoutProcessing ? (
