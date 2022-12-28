@@ -232,14 +232,20 @@ export function Influencers() {
               </div>
             </div>
           </div>
-          <h2 className="text-right md:text-center text-[40px] text-[#DB9707] uppercase font-bold leading-[60px]">
+          <h2 className="text-center text-[40px] text-[#DB9707] uppercase font-bold leading-[60px]">
             Meals Served
           </h2>
-          <h3 className="text-left md:text-center md:text-[25px] text-[21px] text-white capitalize font-light leading-[40px]">
+          <h3 className="text-center md:text-center md:text-[25px] text-[17px] text-white capitalize font-light leading-[30px] md:leading-[40px]">
             1 Box purchase = 1 meal donated
           </h3>
-          <h3 className="text-left md:text-center md:text-[25px] text-[21px] text-white font-light leading-[40px]">
+          <h3 className="text-center md:text-center md:text-[25px] text-[17px] text-white font-light leading-[30px] md:leading-[40px]">
             Because we all deserve to drool over dinner.
+          </h3>
+          <h3 className="text-center md:text-center  md:text-[25px] text-[17px] text-white capitalize font-normal leading-[30px] md:leading-[40px]">
+            <a className="underline text-[#DB9707]">
+              <Link to="/how-it-works"> Learn More </Link>
+            </a>{' '}
+            About Full of Hope
           </h3>
         </div>
       </div>
