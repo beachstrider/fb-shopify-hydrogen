@@ -23,8 +23,13 @@ function getCartInfo() {
     typeof window !== 'undefined' &&
     localStorage.getItem('cartInfo') !== null
   ) {
-    return JSON.parse(localStorage?.getItem('cartInfo'));
+    const {deliveryDate} = JSON.parse(localStorage.getItem('cartInfo'));
+
+    if (dayjs().isBefore(deliveryDate)) {
+      return JSON.parse(localStorage?.getItem('cartInfo'));
+    }
   }
+
   return {
     bundleContents: [],
     bundleData: undefined,
@@ -38,7 +43,7 @@ function getCartInfo() {
   };
 }
 
-export function OrderBundles({discountCodes}) {
+export function OrderBundles({discountCodes, customerAccessToken}) {
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [products, setProducts] = useState([]);
@@ -56,9 +61,9 @@ export function OrderBundles({discountCodes}) {
     lines,
     linesAdd,
     linesRemove,
-    cartAttributesUpdate,
+    linesUpdate,
+    buyerIdentityUpdate,
     discountCodesUpdate,
-    cost,
     checkoutUrl,
   } = useCart();
 
@@ -69,10 +74,6 @@ export function OrderBundles({discountCodes}) {
   })();
 
   useEffect(() => {
-    // if (localStorage.getItem('cartInfo') !== null) {
-    //   setCartInfo(JSON.parse(localStorage.getItem('cartInfo')));
-    // }
-
     async function fetchAll() {
       await fetchDeliveryDates();
       await fetchBundle();
@@ -92,14 +93,15 @@ export function OrderBundles({discountCodes}) {
     });
 
     fetchContents(contents);
+    updateCartAttributes();
   }, [cartInfo.deliveryDate]);
 
   useEffect(() => {
-    updateCart();
+    if (typeof id !== 'undefined') updateCart();
   }, [cartInfo.bundle]);
 
   useEffect(() => {
-    updateCart();
+    if (typeof id !== 'undefined') updateCart();
   }, [cartInfo.priceType, cartInfo.frequencyValue]);
 
   useEffect(() => {
@@ -125,6 +127,32 @@ export function OrderBundles({discountCodes}) {
     (week) => week.findIndex((el) => el === cartInfo.deliveryDate) !== -1,
   );
 
+  async function initCart(merchandiseId) {
+    const line = {
+      merchandiseId,
+      sellingPlanId: undefined,
+      quantity: 1,
+    };
+
+    if (typeof id === 'undefined') {
+      cartCreate({
+        lines: [line],
+      });
+    }
+
+    setTimeout(() => {
+      discountCodesUpdate(discountCodes);
+      setTimeout(() => {
+        buyerIdentityUpdate({
+          customerAccessToken,
+        });
+        setTimeout(() => {
+          setCheckoutButtonStatus('');
+        }, [1500]);
+      }, [1500]);
+    }, [1500]);
+  }
+
   async function updateCart() {
     if (cartInfo.bundle) {
       let newTotalPrice = cartInfo.bundle.variants.nodes[0].priceV2.amount;
@@ -133,6 +161,20 @@ export function OrderBundles({discountCodes}) {
         merchandiseId: cartInfo.bundle.variants.nodes[0].id,
         sellingPlanId: undefined,
         quantity: 1,
+        attributes: [
+          {
+            key: 'Customer ID',
+            value: 'XXX',
+          },
+          {
+            key: 'Delivery Date',
+            value: getUsaStandard(cartInfo.deliveryDate),
+          },
+          {
+            key: 'Cart Token',
+            value: id.substring(19),
+          },
+        ],
       };
 
       if (cartInfo.priceType === 'recuring') {
@@ -154,33 +196,44 @@ export function OrderBundles({discountCodes}) {
 
       setCartInfo({...cartInfo, totalPrice: newTotalPrice});
       setCheckoutButtonStatus('CART UPDATING...');
-      if (typeof id === 'undefined') {
-        cartCreate({
-          lines: [line],
-        });
-
+      if (lines.length) {
+        linesRemove(lines.map((line) => line.id));
         setTimeout(() => {
-          discountCodesUpdate(discountCodes);
-          setTimeout(() => {
-            setCheckoutButtonStatus('');
-          }, [2000]);
-        }, 2000);
-      } else {
-        if (lines.length) {
-          linesRemove(lines.map((line) => line.id));
-          setTimeout(() => {
-            linesAdd([line]);
-            setTimeout(() => {
-              setCheckoutButtonStatus('');
-            }, [2000]);
-          }, 2000);
-        } else {
           linesAdd([line]);
           setTimeout(() => {
             setCheckoutButtonStatus('');
-          }, [2000]);
-        }
+          }, [1500]);
+        }, 1500);
+      } else {
+        linesAdd([line]);
+        setTimeout(() => {
+          setCheckoutButtonStatus('');
+        }, [1500]);
       }
+    }
+  }
+
+  function updateCartAttributes() {
+    if (lines.length && typeof id !== 'undefined') {
+      linesUpdate([
+        {
+          id: lines[0].id,
+          attributes: [
+            {
+              key: 'Customer ID',
+              value: 'XXX',
+            },
+            {
+              key: 'Delivery Date',
+              value: getUsaStandard(cartInfo.deliveryDate),
+            },
+            {
+              key: 'Cart Token',
+              value: id.substring(19),
+            },
+          ],
+        },
+      ]);
     }
   }
 
@@ -209,6 +262,8 @@ export function OrderBundles({discountCodes}) {
     const {data: bundleProduct} = await axios.post(`/api/products/bundle`, {
       id: bundle_id,
     });
+
+    await initCart(bundleProduct.variants.nodes[0].id);
 
     setCartInfo({
       ...cartInfo,
@@ -264,7 +319,6 @@ export function OrderBundles({discountCodes}) {
       (deliveryDate) => week.findIndex((el) => deliveryDate.date === el) !== -1,
     );
 
-    // setSelectedWeekIndex(e.target.value);
     setAvailableSlots(slots);
     setCartInfo({...cartInfo, deliveryDate: slots[0].date});
 
@@ -279,10 +333,8 @@ export function OrderBundles({discountCodes}) {
     );
 
     if (typeof diff === 'undefined') {
-      // if the selected product doesn't exist in cart
       newProductsInCart.push({...product, quantity: 1});
     } else {
-      // if the selected product exists in cart
       const quantity = (newProductsInCart[productIndex].quantity += diff);
       if (quantity === 0) {
         newProductsInCart = newProductsInCart.filter(
