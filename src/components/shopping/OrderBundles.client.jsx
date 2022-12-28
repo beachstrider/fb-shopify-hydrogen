@@ -76,6 +76,7 @@ export function OrderBundles({
   );
 
   const [newDiscountCodes, setNewDiscountCodes] = useState(discountCodes);
+  const [quantityStatus, setQuantityStatus] = useState(0);
 
   const {
     id,
@@ -140,6 +141,19 @@ export function OrderBundles({
   useEffect(() => {
     localStorage?.setItem('cartInfo', JSON.stringify(cartInfo));
   }, [cartInfo]);
+
+  useEffect(() => {
+    getcartquantity()
+  }, [cartInfo.productsInCart]);
+
+  const getcartquantity=()=>{
+    let qn = 0;
+    cartInfo.productsInCart.forEach(cartqun=>{
+      qn = qn+cartqun.quantity;
+    })
+    setQuantityStatus(qn)
+  }
+
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
       [...new Array(7)].map((_, dayIndex) =>
@@ -595,10 +609,10 @@ export function OrderBundles({
                   <div className="mb-14">
                     <div className="flex items-center gap-6 text-gray-800  mb-2">
                       <div className="text-2xl font-bold">
-                        2. Choose your Meals
+                        2. Choose your Meals 
                       </div>
                       <div className="text-sm">
-                        ({currentQuantity} of {cartInfo.mealQuantity})
+                        ({quantityStatus} of 3)
                       </div>
                     </div>
                     <Loading isLoading={isProductsLoading}>
@@ -859,7 +873,7 @@ export function OrderBundles({
                                               /{' '}
                                             </span>
                                             <span>
-                                              {cartInfo.mealQuantity + ' meals'}
+                                              {cartInfo.mealQuantity + ' Family Meals + 1 Free breakfast'}
                                             </span>
                                           </div>
                                         </label>
@@ -993,7 +1007,7 @@ export function OrderBundles({
                                             )}{' '}
                                             /{' '}
                                           </span>
-                                          <span>3 meals</span>
+                                          <span>3 Family Meals + 1 Free breakfast</span>
                                         </label>
                                       </div>
                                     </div>
