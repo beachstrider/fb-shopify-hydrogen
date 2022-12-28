@@ -50,7 +50,7 @@ export function HowItWorks() {
                   epicness.
                 </p>
                 <img
-                  className="ml-[240px] md:ml-0 lg:ml-0 mt-5 lg:mt-28 visible sm:visible md:mt-12 w-[30%] md:w-28 lg:w-52 relative sm-max:absolute "
+                  className="ml-[175px] md:ml-0 lg:ml-0 mt-5 lg:mt-28 visible sm:visible md:mt-12 w-[30%] md:w-28 lg:w-52 relative sm-max:absolute "
                   src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/down_arrows.png"
                   alt=""
                 />
