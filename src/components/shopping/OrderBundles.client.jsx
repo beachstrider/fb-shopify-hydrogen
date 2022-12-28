@@ -110,6 +110,8 @@ export function OrderBundles({
     fetchAll();
   }, []);
 
+  console.log(isQuantityLimit);
+
   useEffect(() => {
     setIsProductsLoading(true);
     const contents = [...cartInfo.bundleContents].filter((content) => {
@@ -472,7 +474,8 @@ export function OrderBundles({
       setNewDiscountCodes([discountCodeInputRef.current.value]);
     }, 1500);
   }
-  console.log('bundle', bundle);
+  // console.log('bundle', bundle);
+  console.log('checkoutButtonStatus', checkoutButtonStatus);
   return (
     <Loading className="py-20" isLoading={isInitialDataLoading}>
       <section className="bg-[#EFEFEF]">
@@ -1063,18 +1066,19 @@ export function OrderBundles({
                         </div>
                         <div className="mb-4 md:mb-0">
                           <button
-                            disabled={checkoutButtonStatus !== ''}
-                            className="block w-full py-5 text-lg text-center uppercase font-bold "
-                            style={{
-                              backgroundColor: '#DB9707',
-                              color: '#FFFFFF',
-                              marginTop: 10,
-                            }}
+                            disabled={
+                              checkoutButtonStatus !== '' || !isQuantityLimit
+                            }
+                            className={`block w-full py-5 text-lg text-white mt-[10px] text-center uppercase font-bold ${
+                              checkoutButtonStatus === '' && isQuantityLimit
+                                ? 'bg-[#DB9707]'
+                                : 'bg-[#D8D8D8]'
+                            }`}
                             onClick={handleCheckout}
                           >
-                            {checkoutButtonStatus !== ''
-                              ? checkoutButtonStatus
-                              : 'CHECKOUT'}
+                            {isQuantityLimit
+                              ? 'CHECKOUT'
+                              : 'ADD MEALS TO CONTINUE'}
                           </button>
                         </div>
                         <div className="block text-gray-700 text-sm font-bold mb-4 md:mb-0 underline mt-8">
