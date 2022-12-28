@@ -70,7 +70,7 @@ const Tabs = ({metafields}) => {
                     : 'text-black'
                 }
               >
-                Nutritions
+                Nutrition
               </span>
             </button>
           </div>
