@@ -4,11 +4,9 @@ export default defineConfig({
   shopify: {
     defaultCountryCode: 'US',
     defaultLanguageCode: 'EN',
-    storeDomain: 'feast-box-sandbox.myshopify.com',
-    storefrontToken: '7a651b792fe13887f386d145ccb1b39b',
-    privateStorefrontToken: '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',
-    storefrontApiVersion: '2022-10',
-    storefrontId: '65827',
+    storeDomain: Oxygen.env.STORE_DOMAIN, // eslint-disable-line no-undef
+    storefrontToken: Oxygen.env.STORE_FRONT_TOKEN, // eslint-disable-line no-undef
+    storefrontApiVersion: '2022-07',
   },
   session: CookieSessionStorage('__session', {
     path: '/',
