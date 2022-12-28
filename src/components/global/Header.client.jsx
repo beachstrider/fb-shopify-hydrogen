@@ -126,6 +126,7 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
             width={'auto'}
             height={'auto'}
             alt={'Feastbox'}
+            className='w-16'
           />
         </Heading>
       </Link>

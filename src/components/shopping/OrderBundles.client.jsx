@@ -4,8 +4,8 @@ import axios from 'axios';
 
 import {
   today,
-  isFuture,
-  sortByDateProperty,
+  // isFuture,
+  // sortByDateProperty,
   dayjs,
   getUsaStandard,
   getISO,
@@ -14,6 +14,7 @@ import {
 import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
 import {MealItem} from './MealItem.client';
+import MoneyBackModal from './MoneyBackModal';
 const LEAD_TIME = 3; // 3 days ahead of selecting delivery dates
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
@@ -25,11 +26,12 @@ function getCartInfo(param) {
     const localStorageCartInfo = localStorage.getItem('cartInfo');
     const savedCartInfo =
       localStorageCartInfo !== null ? JSON.parse(localStorageCartInfo) : null;
-    if (savedCartInfo !== null) {
-      const {deliveryDate, handle} = savedCartInfo;
-
+    if (
+      savedCartInfo !== null &&
+      typeof savedCartInfo[param.handle] !== 'undefined'
+    ) {
+      const {deliveryDate} = savedCartInfo[param.handle];
       if (dayjs().isBefore(deliveryDate)) {
-        console.log('handle', param.handle, handle);
         return savedCartInfo;
       }
     }
@@ -59,6 +61,7 @@ export function OrderBundles({
 }) {
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
+  const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
 
   const [cartInfo, setCartInfo] = useState(
     getCartInfo({handle: bundle.handle}),
@@ -82,6 +85,7 @@ export function OrderBundles({
     buyerIdentityUpdate,
     discountCodesUpdate,
   } = useCart();
+  console.log('cartInfo', cartInfo);
 
   const bundleIdNumber = Number(bundle.id.substring(22));
   const discountCodeInputRef = useRef(null);
@@ -126,7 +130,7 @@ export function OrderBundles({
     const oldCartInfo = localStorage.getItem('cartInfo');
     // const savingCartInfo = oldCartInfo !== null ? JSON.parse(oldCartInfo) : {};
     const savingCartInfo = oldCartInfo !== null ? {} : {};
-    savingCartInfo[bundle.handle] = cartInfo;
+    savingCartInfo[bundle.handle] = cartInfo[bundle.handle];
 
     localStorage.setItem('cartInfo', JSON.stringify(savingCartInfo));
   }, [cartInfo]);
@@ -418,7 +422,11 @@ export function OrderBundles({
     }, [API_CALLING_INTERVAL]);
 
     setTimeout(() => {
-      discountCodesUpdate(discountCodeInputRef.current.value);
+      if (
+        discountCodeInputRef.current !== null &&
+        discountCodeInputRef.current.value !== null
+      )
+        discountCodesUpdate(discountCodeInputRef.current.value);
       setTimeout(() => {
         buyerIdentityUpdate({
           customerAccessToken,
@@ -478,7 +486,7 @@ export function OrderBundles({
       <section className="bg-[#EFEFEF]">
         <div className="2xl-only container lg:container mx-auto">
           <div className="flex flex-wrap">
-            <div className="absolutew w-full md:w-1/1 lg:w-1/2 xl:w-1/2">
+            <div className="w-full md:w-1/1 xl:w-1/2 lg:w-1/2">
               <div className="relative left-0 top-0 ">
                 <img
                   className="object-cover w-full md:h-1/2"
@@ -607,7 +615,13 @@ export function OrderBundles({
                             >
                               <div className="flex flex-col justify-between text-center">
                                 <MealItem
-                                  title={product.title}
+                                  title={
+                                    product.variants.nodes[
+                                      cartInfo[bundle.handle].partySizeIndex
+                                    ].metafields?.find(
+                                      (x) => x?.key === 'display_name',
+                                    )?.value
+                                  }
                                   image={
                                     product.variants.nodes[
                                       cartInfo[bundle.handle].partySizeIndex
@@ -733,15 +747,17 @@ export function OrderBundles({
                       </div>
                     </Loading>
                   </div>
-                  <div className="container mx-auto px-4">
+                  <div className="container mx-auto px-4 mt-5">
                     {bundle.handle === 'family-feastbox' && (
                       <div className="max-w-4xl mx-auto">
                         <div className="block text-gray-800 text-2xl font-bold mb-2 -ml-4">
                           3. Choose your Price
                         </div>
-                        <div className="flex flex-wrap -mx-4 mb-24">
-                          <div className="lg:w-[50%] md:w-full sm-max:w-full px-2">
-                            <div className="relative  bg-gray-50">
+                        <div className="flex flex-wrap -mx-4">
+                          <div
+                            className={`lg:w-[50%] md:w-full sm-max:w-full px-2 `}
+                          >
+                            <div className="relative bg-gray-50">
                               <div
                                 className="px-6 py-4 mt-8"
                                 style={{
@@ -850,7 +866,8 @@ export function OrderBundles({
                                             </span>
                                             <span>
                                               {cartInfo[bundle.handle]
-                                                .mealQuantity + ' meals'}
+                                                .mealQuantity +
+                                                ' Family Meals + 1 Free breakfast'}
                                             </span>
                                           </div>
                                         </label>
@@ -876,6 +893,7 @@ export function OrderBundles({
                                       <button
                                         className={`text-[#DB9725]`}
                                         onClick={handleToggleFrequency}
+                                        disabled={!isQuantityLimit}
                                       >
                                         <u>
                                           {' '}
@@ -981,214 +999,155 @@ export function OrderBundles({
                                             )}{' '}
                                             /{' '}
                                           </span>
-                                          <span>3 meals</span>
+                                          <span>
+                                            3 Family Meals + 1 Free breakfast
+                                          </span>
                                         </label>
-                                      </div>
-                                    </div>
-                                    <hr />
-                                    <div className="flex justify-between -mx-2">
-                                      <div className=" grow py-4 px-2 mb-4 md:mb-0">
-                                        <input
-                                          ref={discountCodeInputRef}
-                                          className="max-w-[146px] py-3 px-4 mb-2 md:mb-0 border-[#707070] focus:bg-white border focus:outline-none"
-                                          defaultValue={newDiscountCodes.join(
-                                            ' ',
-                                          )}
-                                          disabled={newDiscountCodes.length > 0}
-                                        />
-                                      </div>
-                                      <div className="flex items-center py-4  mb-4 md:mb-0">
-                                        {newDiscountCodes.length === 0 && (
-                                          <button
-                                            className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
-                                            onClick={handleSubmitDiscountCode}
-                                          >
-                                            Apply
-                                          </button>
-                                        )}
-                                        {newDiscountCodes.length > 0 && (
-                                          <div className="text-lg font-bold text-[#DB9707]">
-                                            Code Applied
-                                          </div>
-                                        )}
                                       </div>
                                     </div>
                                   </div>
                                 </div>
+                              </div>
+                            </div>
+                            <p style={{color: '#DB9725', marginTop: 10}}>
+                              <span
+                                style={{fontSize: 18}}
+                                className=" font-bold"
+                              >
+                                Discount Applied:
+                              </span>
+                              <br />
+                            </p>
+                            <div className="flex items-center gap-4 py-4">
+                              <div className="grow">
+                                <input
+                                  ref={discountCodeInputRef}
+                                  className="w-full py-3 px-4 border-[#707070] focus:bg-white border focus:outline-none"
+                                  defaultValue={newDiscountCodes.join(' ')}
+                                  disabled={newDiscountCodes.length > 0}
+                                />
+                              </div>
+                              <div className="flex-none flex items-center">
+                                {newDiscountCodes.length === 0 && (
+                                  <button
+                                    className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
+                                    onClick={handleSubmitDiscountCode}
+                                  >
+                                    Apply
+                                  </button>
+                                )}
+                                {newDiscountCodes.length > 0 && (
+                                  <div className="text-lg font-bold text-[#DB9707]">
+                                    Code Applied
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     )}
-
-                    <div className="w-full flex gap-4">
-                      <div className="w-full lg:w-1/2">
-                        <div className="mb-4 md:mb-0">
-                          <span className="font-bold" style={{fontSize: 18}}>
-                            {/* {(() => {
-                              const price =
-                                bundle?.variants?.nodes[0]?.priceV2
-                                  ?.amount;
-                              const adjustmentPercentage =
-                                bundle?.sellingPlanGroups?.nodes[0]
-                                  ?.sellingPlans?.nodes[0]?.priceAdjustments[0]
-                                  ?.adjustmentValue?.adjustmentPercentage;
-
-                              if (typeof adjustmentPercentage !== 'undefined') {
-                                const diff =
-                                  (price * adjustmentPercentage) / 100;
-                                if (cartInfo[bundle.handle].priceType === 'recuring')
-                                  return (
-                                    "You're Saving " +
-                                    getFullCost(
-                                      diff,
-                                      bundle?.variants?.nodes[0]
-                                        ?.priceV2?.currencyCode,
-                                    ) +
-                                    '!'
-                                  );
-                              }
-                              return '';
-                            })()} */}
-                          </span>
-                          <span className="font-bold text-[28px]">
-                            Total:{' '}
-                            {getFullCost(
-                              totalPrice,
-                              bundle.variants?.nodes[0]?.priceV2?.currencyCode,
-                            )}
-                          </span>
-                        </div>
-                        <div className="mb-4 md:mb-0">
-                          <button
-                            disabled={!isQuantityLimit || isCheckoutProcessing}
-                            className={`block w-full py-5 text-lg text-white bg-[#DB9707] disabled:bg-[#D8D8D8] mt-[10px] text-center uppercase font-bold`}
-                            onClick={handleCheckout}
+                    <div className="flex flex-col gap-2 mt-10 text-center sm:text-left">
+                      <span className="font-bold text-[28px]">
+                        Total:{' '}
+                        {getFullCost(
+                          totalPrice,
+                          bundle.variants?.nodes[0]?.priceV2?.currencyCode,
+                        )}
+                      </span>
+                      <div className="flex flex-col sm:flex-row items-center gap-4">
+                        <button
+                          disabled={!isQuantityLimit || isCheckoutProcessing}
+                          className={`block w-[264px] py-5 text-lg text-white text-center bg-[#DB9707] disabled:bg-[#D8D8D8] uppercase font-bold`}
+                          onClick={handleCheckout}
+                        >
+                          {isQuantityLimit
+                            ? 'CHECKOUT'
+                            : 'ADD MEALS TO CONTINUE'}
+                        </button>
+                        <p className="text-sm bg-[#EFEFEF]">
+                          Delivery Day:{' '}
+                          <strong>
+                            {cartInfo[bundle.handle].deliveryDate
+                              ? getUsaStandard(
+                                  cartInfo[bundle.handle].deliveryDate,
+                                )
+                              : '---- -- --'}
+                          </strong>
+                          <br />
+                          <span
+                            onClick={() =>
+                              setIsDeliveryDateEditing(!isDeliveryDateEditing)
+                            }
+                            className="text-[#DB9707] cursor-pointer"
                           >
-                            {isQuantityLimit
-                              ? 'CHECKOUT'
-                              : 'ADD MEALS TO CONTINUE'}
-                          </button>
-                        </div>
-                        <div className="block text-gray-700 text-sm font-bold mb-4 md:mb-0 underline mt-8">
-                          100% Money-Back Guarantee
-                        </div>
+                            <u>Change Delivery Day</u>
+                          </span>
+                        </p>
                       </div>
-                      <div className="w-full lg:w-1/2">
-                        <div>
-                          <div
-                            style={{
-                              backgroundColor: '#EFEFEF',
-                            }}
-                          >
-                            <div className="text-sm">
-                              Delivery Day:{' '}
-                              <strong>
-                                {cartInfo[bundle.handle].deliveryDate
-                                  ? getUsaStandard(
-                                      cartInfo[bundle.handle].deliveryDate,
-                                    )
-                                  : '---- -- --'}
-                              </strong>
+                      <p
+                        onClick={() => setShowMoneyBackModal(true)}
+                        className="text-gray-700 text-sm font-bold underline cursor-pointer"
+                      >
+                        *100% Money-Back Guarantee
+                      </p>
+                    </div>
+                    {showMoneyBackModal && (
+                      <MoneyBackModal
+                        setOpenModal={(showMoneyBackModal) =>
+                          setShowMoneyBackModal(showMoneyBackModal)
+                        }
+                      />
+                    )}
+                    <div>
+                      {isDeliveryDateEditing && availableSlots.length > 0 && (
+                        <div
+                          className="bg-white mt-4"
+                          style={{
+                            boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
+                          }}
+                        >
+                          <div className="mb-1">
+                            <div className="mb-1" style={{color: '#000000'}}>
+                              <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0 p-2">
+                                {availableSlots.map((slot, key) => (
+                                  <div
+                                    key={key}
+                                    className="w-full md:w-1/2 px-4 mb-4 md:mb-0"
+                                  >
+                                    <label>
+                                      <input
+                                        type="radio"
+                                        name="radio-name"
+                                        value="option 1"
+                                        checked={
+                                          cartInfo[bundle.handle]
+                                            .deliveryDate === slot.date
+                                        }
+                                        onClick={() => {
+                                          setCartInfo({
+                                            ...cartInfo,
+                                            [bundle.handle]: {
+                                              ...cartInfo[bundle.handle],
+                                              deliveryDate: slot.date,
+                                            },
+                                            deliveryDate: slot.date,
+                                          });
+                                          setIsDeliveryDateEditing(false);
+                                        }}
+                                      />
+                                      <span className="ml-3 font-bold">
+                                        {dayjs(slot.date).format('ddd, MMM DD')}{' '}
+                                      </span>
+                                      <br />
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                            <div className="text-sm" style={{color: '#DB9707'}}>
-                              <button
-                                onClick={() =>
-                                  setIsDeliveryDateEditing(
-                                    !isDeliveryDateEditing,
-                                  )
-                                }
-                              >
-                                <u>Change Delivery Day</u>
-                              </button>
-                            </div>
-                            <p />
                           </div>
                         </div>
-                        <div>
-                          {isDeliveryDateEditing &&
-                            availableSlots.length > 0 && (
-                              <div
-                                className="bg-white mt-4"
-                                style={{
-                                  boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
-                                }}
-                              >
-                                <div className="mb-1">
-                                  <div
-                                    className="mb-1"
-                                    style={{color: '#000000'}}
-                                  >
-                                    <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0 p-2">
-                                      {availableSlots.map((slot, key) => (
-                                        <div
-                                          key={key}
-                                          className="w-full md:w-1/2 px-4 mb-4 md:mb-0"
-                                        >
-                                          <label>
-                                            <input
-                                              type="radio"
-                                              name="radio-name"
-                                              value="option 1"
-                                              checked={
-                                                cartInfo[bundle.handle]
-                                                  .deliveryDate === slot.date
-                                              }
-                                              onClick={() => {
-                                                setCartInfo({
-                                                  ...cartInfo,
-                                                  [bundle.handle]: {
-                                                    ...cartInfo[bundle.handle],
-                                                    deliveryDate: slot.date,
-                                                  },
-                                                });
-                                                setIsDeliveryDateEditing(false);
-                                              }}
-                                            />
-                                            <span className="ml-3 font-bold">
-                                              {dayjs(slot.date).format(
-                                                'ddd, MMM DD',
-                                              )}{' '}
-                                            </span>
-                                            <br />
-                                          </label>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        name="money_hidden"
-                        className="w-full  text-center"
-                        style={{
-                          backgroundColor: '#FFFFFF',
-                          padding: 40,
-                          marginTop: 30,
-                          boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
-                        }}
-                      >
-                        <p style={{fontSize: 36}} className="font-bold">
-                          100% Money Back Guarantee
-                        </p>
-                        <br />
-                        <p style={{fontSize: 22}} className="font-bold">
-                          We stand by our delicious food, and the good we are
-                          doing feeding families across the country.
-                        </p>
-                        <br />
-                        <p style={{fontSize: 20}}>
-                          Get a full refund for your FEASTbox if you don’t love
-                          our food. Eating good shouldn’t be stressful, so we
-                          want to make it as easy as possible.{' '}
-                        </p>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>

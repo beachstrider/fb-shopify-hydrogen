@@ -10,5 +10,8 @@ module.exports = {
     'no-console': 0,
     'no-empty': 1,
     'react-hooks/exhaustive-deps': 0,
+    'jsx-a11y/no-static-element-interactions': 'off',
+    'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/no-noninteractive-element-interactions': 'off',
   },
 };

@@ -4,7 +4,7 @@ export function HeroInnerSection() {
   return (
     <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-[#231F20]">
       <div className="container max-w-screen-xl m-auto">
-        <h1 className="font-bungee text-center text-6xl text-white uppercase leading-[80px] mt-5">
+        <h1 className="font-bungee text-center text-6xl xsm:text-3xl text-white uppercase leading-[80px] mt-5">
           Welcome to the robot-free zone
         </h1>
         <p className="font-opensans text-center text-2xl text-white capitalize px-6 mb-5">
