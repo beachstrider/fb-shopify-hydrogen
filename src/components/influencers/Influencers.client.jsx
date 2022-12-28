@@ -45,7 +45,7 @@ export function Influencers() {
                 />
               </div>
 
-              <div className="text-white text-lg mt-5 w-full sm:w-[50%-100px] md:w-1/2 md:pl-[100px] py-6">
+              <div className="text-white text-lg mt-5 w-full sm:w-[50%-100px] md:w-1/2 md:pl-[100px] pt-6">
                 <div className="md:px-2 px-3">
                   <h5 className="font-opensans font-extrabold text-[17px]">
                     Choose 3 Feasts | Each Feast Feeds 5+
@@ -100,18 +100,24 @@ export function Influencers() {
           />
         </div>
         <div className="w-full md:w-0">
+        <div className="w-full bg-[#231f20] py-10 px-6 md:py-0 md:px-0">
+            <img
+              className="w-full"
+              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good_mobile.png"
+            />
+          </div>
           <div className="w-full">
             <img
               className="w-full"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/mom_daughter_mobile.png"
             />
           </div>
-          <div className="w-full bg-[#231f20] py-10 px-6 md:py-0 md:px-0">
+          {/* <div className="w-full bg-[#231f20] py-10 px-6 md:py-0 md:px-0">
             <img
               className="w-full"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good_mobile.png"
             />
-          </div>
+          </div> */}
         </div>
         <div className="bg-[#DB9707]">
           <div className="md:flex">
