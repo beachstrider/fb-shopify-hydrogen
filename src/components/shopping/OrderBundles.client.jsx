@@ -14,6 +14,7 @@ import {
 import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
 import {MealItem} from './MealItem.client';
+import MoneyBackModal from './MoneyBackModal';
 const LEAD_TIME = 3; // 3 days ahead of selecting delivery dates
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
@@ -61,6 +62,7 @@ export function OrderBundles({
 }) {
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
+  const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
 
   const [cartInfo, setCartInfo] = useState(
     getCartInfo({handle: bundle.handle}),
@@ -1093,9 +1095,17 @@ export function OrderBundles({
                               : 'ADD MEALS TO CONTINUE'}
                           </button>
                         </div>
-                        <div className="block text-gray-700 text-sm font-bold mb-4 md:mb-0 underline mt-8">
+                        <div
+                          onClick={() => setShowMoneyBackModal(true)}
+                          className="block text-gray-700 text-sm font-bold mb-4 md:mb-0 underline mt-8 cursor-pointer"
+                        >
                           100% Money-Back Guarantee
                         </div>
+                        {showMoneyBackModal && (
+                          <MoneyBackModal
+                            setOpenModal={(flag) => setShowMoneyBackModal(flag)}
+                          />
+                        )}
                       </div>
                       <div className="w-full lg:w-1/2">
                         <div>
