@@ -1190,7 +1190,7 @@ export function OrderBundles({
                         </div>
                       </div>
                     </div>
-                    <div>
+                    {/* <div>
                       <div
                         name="money_hidden"
                         className="w-full  text-center"
@@ -1216,7 +1216,7 @@ export function OrderBundles({
                           want to make it as easy as possible.{' '}
                         </p>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

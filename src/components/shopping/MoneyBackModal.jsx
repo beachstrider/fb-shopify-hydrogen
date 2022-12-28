@@ -25,16 +25,22 @@ export default function MoneyBackModal({setOpenModal}) {
                 />
               </svg>
             </button>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 px-5 py-5">
-              <div>
-                <img
-                  alt="Laptop"
-                  src="https://www.freeiconspng.com/uploads/no-image-icon-6.png"
-                  className="h-full w-full object-cover"
-                />
-              </div>
+            <div className="p-10 text-center">
+              <p style={{fontSize: 36}} className="font-bold">
+                100% Money Back Guarantee
+              </p>
+              <br />
+              <p style={{fontSize: 22}} className="font-bold">
+                We stand by our delicious food, and the good we are doing
+                feeding families across the country.
+              </p>
+              <br />
+              <p style={{fontSize: 20}}>
+                Get a full refund for your FEASTbox if you don’t love our food.
+                Eating good shouldn’t be stressful, so we want to make it as
+                easy as possible.{' '}
+              </p>
             </div>
-
             <div
               onClick={() => setOpenModal(false)}
               className="bg-[#DB9707] py-4 text-white text-bold text-base text-center cursor-pointer"
