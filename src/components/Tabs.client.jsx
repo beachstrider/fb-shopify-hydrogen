@@ -24,7 +24,7 @@ const Tabs = ({metafields}) => {
           <div
             role="tablist"
             aria-label="tabs"
-            className="relative w-max   grid grid-cols-2 items-center font-bold overflow-hidden"
+            className="relative flex flex-row gap-6 items-center font-bold overflow-hidden"
           >
             <div className="absolute indicator my-auto top-0 bottom-0 left-0 shadow-md"></div>
             <button
@@ -36,7 +36,7 @@ const Tabs = ({metafields}) => {
               className={
                 selectedTag === 1
                   ? 'relative block h-10 text-left tab  text-[#DB9707]'
-                  : 'relative block h-10 px-2 tab'
+                  : 'relative block h-10 tab'
               }
               onClick={() => handleSelect(1)}
             >
@@ -58,8 +58,8 @@ const Tabs = ({metafields}) => {
               tabIndex="-1"
               className={
                 selectedTag === 2
-                  ? 'relative block h-10 px-2 tab text-[#DB9707]'
-                  : 'relative block h-10 px-2 tab'
+                  ? 'relative block h-10 tab text-[#DB9707]'
+                  : 'relative block h-10 tab'
               }
               onClick={() => handleSelect(2)}
             >
@@ -78,7 +78,7 @@ const Tabs = ({metafields}) => {
             <div
               role="tablist"
               aria-label="tabs"
-              className="relative w-max mx-auto  grid grid-cols-2 items-center font-bold overflow-hidden"
+              className="relative mx-auto font-bold overflow-hidden"
             >
               <div className="text-left text-black">
                 <p>
@@ -103,8 +103,6 @@ const Tabs = ({metafields}) => {
                     {metafields?.find((x) => x?.key === 'sauce')?.value}
                   </span>
                 </div>
-              </div>
-              <div className="text-left text-black">
                 <h3 className="font-bold text-lg">Allergens</h3>
                 <span className="text-sm">
                   {metafields?.find((x) => x?.key === 'allergens')?.value}
