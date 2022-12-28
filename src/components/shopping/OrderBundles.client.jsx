@@ -61,6 +61,7 @@ export function OrderBundles({
   customerAccessToken,
   customerId = '',
 }) {
+  const CDN_CACHE_ENV_MODE = 'production';
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
   const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
@@ -238,8 +239,8 @@ export function OrderBundles({
   }
 
   async function fetchDeliveryDates() {
-    const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
-      .data;
+    const deliveryDateCacheUrl = CDN_CACHE_ENV_MODE === 'production' ? 'delivery_dates.json' : 'delivery_dates_dev.json';
+    const res = (await axios.get(`${caching_server}/${deliveryDateCacheUrl}`)).data;
 
     const today = new Date();
     today.setHours(0);
@@ -269,8 +270,9 @@ export function OrderBundles({
   }
 
   async function fetchBundle() {
+    const bundleCacheUrl = CDN_CACHE_ENV_MODE === 'production' ? 'bundles.json' : 'bundles_dev.json';
     const bundleDataRes = (
-      await axios.get(`${caching_server}/bundles_dev.json`)
+      await axios.get(`${caching_server}/${bundleCacheUrl}`)
     ).data.find((el) => el.platform_product_id === bundleIdNumber);
 
     const {data: config} = await axios.get(
