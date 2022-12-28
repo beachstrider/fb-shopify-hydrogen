@@ -989,36 +989,42 @@ export function OrderBundles({
                                         </label>
                                       </div>
                                     </div>
-                                    <hr />
-                                    <div className="flex justify-between -mx-2">
-                                      <div className=" grow py-4 px-2 mb-4 md:mb-0">
-                                        <input
-                                          ref={discountCodeInputRef}
-                                          className="max-w-[146px] py-3 px-4 mb-2 md:mb-0 border-[#707070] focus:bg-white border focus:outline-none"
-                                          defaultValue={newDiscountCodes.join(
-                                            ' ',
-                                          )}
-                                          disabled={newDiscountCodes.length > 0}
-                                        />
-                                      </div>
-                                      <div className="flex items-center py-4  mb-4 md:mb-0">
-                                        {newDiscountCodes.length === 0 && (
-                                          <button
-                                            className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
-                                            onClick={handleSubmitDiscountCode}
-                                          >
-                                            Apply
-                                          </button>
-                                        )}
-                                        {newDiscountCodes.length > 0 && (
-                                          <div className="text-lg font-bold text-[#DB9707]">
-                                            Code Applied
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
                                   </div>
                                 </div>
+                              </div>
+                            </div>
+                            <p style={{color: '#DB9725', marginTop: 10}}>
+                              <span
+                                style={{fontSize: 18}}
+                                className=" font-bold"
+                              >
+                                Discount Applied:
+                              </span>
+                              <br />
+                            </p>
+                            <div className="flex justify-between -mx-2">
+                              <div className=" grow py-4 px-2 mb-4 md:mb-0">
+                                <input
+                                  ref={discountCodeInputRef}
+                                  className="max-w-[256px] py-3 px-4 mb-2 md:mb-0 border-[#707070] focus:bg-white border focus:outline-none"
+                                  defaultValue={newDiscountCodes.join(' ')}
+                                  disabled={newDiscountCodes.length > 0}
+                                />
+                              </div>
+                              <div className="flex items-center py-4  mb-4 md:mb-0">
+                                {newDiscountCodes.length === 0 && (
+                                  <button
+                                    className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
+                                    onClick={handleSubmitDiscountCode}
+                                  >
+                                    Apply
+                                  </button>
+                                )}
+                                {newDiscountCodes.length > 0 && (
+                                  <div className="text-lg font-bold text-[#DB9707]">
+                                    Code Applied
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>

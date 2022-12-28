@@ -85,7 +85,7 @@ const Tabs = ({metafields}) => {
                   <p>
                     {metafields?.find((x) => x?.key === 'description')?.value}
                   </p>
-                  <h3 className="font-bold text-lg">What's in the box</h3>
+                  <h3 className="font-bold text-lg">What&apos;s in the box</h3>
                   <div>
                     <p className="font-bold text-sm">Main courses</p>
                     <span className="text-sm">
