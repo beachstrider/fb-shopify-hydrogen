@@ -227,9 +227,10 @@ export function Influencers() {
         <h3 className="text-left md:text-center text-[25px] text-white font-light leading-[40px]">
           Because we all deserve to drool over dinner.
         </h3>
+
         <h3 className="text-left md:text-center md:text-center text-[25px] text-white capitalize font-normal leading-[40px]">
-          <a href="" className="underline text-[#DB9707]">
-            Learn More
+          <a className="underline text-[#DB9707]">
+          <Link to="/how-it-works"> Learn More </Link> 
           </a>{' '}
           About Full of Hope
         </h3>
