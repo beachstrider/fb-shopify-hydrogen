@@ -484,7 +484,7 @@ export function OrderBundles({
   return (
     <Loading className="py-20" isLoading={isInitialDataLoading}>
       <section className="bg-[#EFEFEF]">
-        <div className="2xl-only container lg:container mx-auto">
+        <div className="2xl-only max-w-full lg:container mx-auto">
           <div className="flex flex-wrap">
             <div className="w-full md:w-1/1 xl:w-1/2 lg:w-1/2">
               <div className="relative left-0 top-0 ">
@@ -498,10 +498,12 @@ export function OrderBundles({
             </div>
             <div className="w-full md:w-1/1 lg:w-1/2 xl:w-1/2 px-8">
               <div className="">
-                <div className="mt-16 font-bold">
-                  <div className="text-[60px] ">{bundle?.title}</div>
+                <div className="mt-2 lg:mt-16 font-bold">
+                  <div className="lg:text-[60px] text-[36px]">
+                    {bundle?.title}
+                  </div>
                   {bundle.handle === 'family-feastbox' && (
-                    <div className="flex gap-2">
+                    <div className="lg:flex lg:gap-2">
                       <div className="font-bold text-md">Feeding a party?</div>
                       <Link
                         className="font-bold text-md text-[#DB9707] underline"
