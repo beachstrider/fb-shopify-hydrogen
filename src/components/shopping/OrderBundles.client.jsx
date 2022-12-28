@@ -609,7 +609,13 @@ export function OrderBundles({
                             >
                               <div className="flex flex-col justify-between text-center">
                                 <MealItem
-                                  title={product.title}
+                                  title={
+                                    product.variants.nodes[
+                                      cartInfo.partySizeIndex
+                                    ].metafields?.find(
+                                      (x) => x?.key === 'display_name',
+                                    )?.value
+                                  }
                                   image={
                                     product.variants.nodes[
                                       cartInfo.partySizeIndex
