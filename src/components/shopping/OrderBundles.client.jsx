@@ -4,8 +4,8 @@ import axios from 'axios';
 
 import {
   today,
-  isFuture,
-  sortByDateProperty,
+  // isFuture,
+  // sortByDateProperty,
   dayjs,
   getUsaStandard,
   getISO,
@@ -301,7 +301,7 @@ export function OrderBundles({
           date > today.getTime() && deliveryDate.quantity > deliveryDate.used
         );
       })
-      .map((deliveryDate, index) => {
+      .map((deliveryDate) => {
         deliveryDate.day = new Date(deliveryDate.date).getDay() + 1; // Add day since midnight is counting as previous day
         return deliveryDate;
       })
@@ -483,7 +483,7 @@ export function OrderBundles({
       <section className="bg-[#EFEFEF]">
         <div className="2xl-only container lg:container mx-auto">
           <div className="flex flex-wrap">
-            <div className="absolutew w-full md:w-1/1 xl:w-1/2 lg:w-1/2 xl:w-1/2">
+            <div className="absolutew w-full md:w-1/1 xl:w-1/2 lg:w-1/2">
               <div className="relative left-0 top-0 ">
                 <img
                   className="object-cover w-full md:h-1/2"
@@ -747,8 +747,12 @@ export function OrderBundles({
                           3. Choose your Price
                         </div>
                         <div className="flex flex-wrap -mx-4">
-                          <div className="lg:w-[50%] md:w-full sm-max:w-full px-2">
-                            <div className="relative  bg-gray-50">
+                          <div
+                            className={`lg:w-[50%] md:w-full sm-max:w-full px-2 ${
+                              isQuantityLimit ? 'opacity-100' : 'opacity-30'
+                            } `}
+                          >
+                            <div className="relative bg-gray-50">
                               <div
                                 className="px-6 py-4 mt-8"
                                 style={{
@@ -788,7 +792,8 @@ export function OrderBundles({
                                               cartInfo.priceType === 'recuring'
                                             }
                                             disabled={
-                                              checkoutButtonStatus !== ''
+                                              checkoutButtonStatus !== '' ||
+                                              !isQuantityLimit
                                             }
                                             onClick={(e) =>
                                               setCartInfo({
@@ -885,6 +890,7 @@ export function OrderBundles({
                                       <button
                                         className={`text-[#DB9725]`}
                                         onClick={handleToggleFrequency}
+                                        disabled={!isQuantityLimit}
                                       >
                                         <u>
                                           {' '}
@@ -958,7 +964,8 @@ export function OrderBundles({
                                             name="price_type"
                                             value="onetime"
                                             disabled={
-                                              checkoutButtonStatus !== ''
+                                              checkoutButtonStatus !== '' ||
+                                              !isQuantityLimit
                                             }
                                             defaultChecked={
                                               cartInfo.priceType === 'onetime'
@@ -1075,7 +1082,7 @@ export function OrderBundles({
                             onClick={() =>
                               setIsDeliveryDateEditing(!isDeliveryDateEditing)
                             }
-                            className="text-[#DB9707]"
+                            className="text-[#DB9707] cursor-pointer"
                           >
                             <u>Change Delivery Day</u>
                           </span>
