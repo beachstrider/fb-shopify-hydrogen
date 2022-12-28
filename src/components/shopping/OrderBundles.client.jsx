@@ -143,16 +143,16 @@ export function OrderBundles({
   }, [cartInfo]);
 
   useEffect(() => {
-    getcartquantity()
+    getcartquantity();
   }, [cartInfo.productsInCart]);
 
-  const getcartquantity=()=>{
+  const getcartquantity = () => {
     let qn = 0;
-    cartInfo.productsInCart.forEach(cartqun=>{
-      qn = qn+cartqun.quantity;
-    })
-    setQuantityStatus(qn)
-  }
+    cartInfo.productsInCart.forEach((cartqun) => {
+      qn = qn + cartqun.quantity;
+    });
+    setQuantityStatus(qn);
+  };
 
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
@@ -609,11 +609,9 @@ export function OrderBundles({
                   <div className="mb-14">
                     <div className="flex items-center gap-6 text-gray-800  mb-2">
                       <div className="text-2xl font-bold">
-                        2. Choose your Meals 
+                        2. Choose your Meals
                       </div>
-                      <div className="text-sm">
-                        ({quantityStatus} of 3)
-                      </div>
+                      <div className="text-sm">({quantityStatus} of 3)</div>
                     </div>
                     <Loading isLoading={isProductsLoading}>
                       <div className="flex flex-wrap -mx-2 -mb-2">
@@ -878,7 +876,8 @@ export function OrderBundles({
                                               /{' '}
                                             </span>
                                             <span>
-                                              {cartInfo.mealQuantity + ' Family Meals + 1 Free breakfast'}
+                                              {cartInfo.mealQuantity +
+                                                ' Family Meals + 1 Free breakfast'}
                                             </span>
                                           </div>
                                         </label>
@@ -955,7 +954,11 @@ export function OrderBundles({
                             </div>
                           </div>
                           <div className="lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2">
-                            <div className="relative  bg-gray-50">
+                            <div
+                              className={`relative bg-gray-50 ${
+                                isQuantityLimit ? 'opacity-100' : 'opacity-30'
+                              }`}
+                            >
                               <div
                                 className="px-6 py-4 mt-8"
                                 style={{
@@ -1014,7 +1017,9 @@ export function OrderBundles({
                                             )}{' '}
                                             /{' '}
                                           </span>
-                                          <span>3 Family Meals + 1 Free breakfast</span>
+                                          <span>
+                                            3 Family Meals + 1 Free breakfast
+                                          </span>
                                         </label>
                                       </div>
                                     </div>
