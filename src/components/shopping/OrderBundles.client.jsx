@@ -738,7 +738,7 @@ export function OrderBundles({
                         <div className="block text-gray-800 text-2xl font-bold mb-2 -ml-4">
                           3. Choose your Price
                         </div>
-                        <div className="flex flex-wrap -mx-4 mb-24">
+                        <div className="flex flex-wrap -mx-4 mb-0 lg:mb-24">
                           <div className="lg:w-[50%] md:w-full sm-max:w-full px-2">
                             <div className="relative  bg-gray-50">
                               <div
@@ -1002,16 +1002,16 @@ export function OrderBundles({
                               </span>
                               <br />
                             </p>
-                            <div className="flex justify-between -mx-2">
-                              <div className=" grow py-4 px-2 mb-4 md:mb-0">
+                            <div className="flex items-center gap-4 py-4">
+                              <div className="grow">
                                 <input
                                   ref={discountCodeInputRef}
-                                  className="max-w-[256px] py-3 px-4 mb-2 md:mb-0 border-[#707070] focus:bg-white border focus:outline-none"
+                                  className="w-full py-3 px-4 border-[#707070] focus:bg-white border focus:outline-none"
                                   defaultValue={newDiscountCodes.join(' ')}
                                   disabled={newDiscountCodes.length > 0}
                                 />
                               </div>
-                              <div className="flex items-center py-4  mb-4 md:mb-0">
+                              <div className="flex-none flex items-center">
                                 {newDiscountCodes.length === 0 && (
                                   <button
                                     className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
