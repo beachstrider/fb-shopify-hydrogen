@@ -12,7 +12,7 @@ export function PartyTime() {
                 Party Time?
               </h1>
             </div>
-            <div className="flex item-center justify-around flex-col flex-col-reverse md:flex-row py-6 px-4">
+            <div className="flex item-center justify-around flex-col-reverse md:flex-row py-6 px-4">
               <div className="w-full md:w-1/2">
                 <p className="font-opensans text-3xl py-2">
                   We love a good party! Whether it’s for the Super Bowl, a
@@ -22,16 +22,16 @@ export function PartyTime() {
                 </p>
                 <div className="flex items-center pt-[40px] flex-col md:flex-row">
                   <Link to="/catering">
-                    <button className="font-opensans font-bold bg-[#A60D1E] text-white font-bold px-4 py-2 mb-2 md:mb-0">
+                    <button className="font-opensans bg-[#A60D1E] text-white font-bold px-4 py-2 mb-2 md:mb-0">
                       Cater Your Event
                     </button>
                   </Link>
-                  <a
+                  <Link
                     to="/how-it-works"
-                    className="font-opensans font-bold text-[#A60D1E] mx-[20px] font-bold underline"
+                    className="font-opensans text-[#A60D1E] mx-[20px] font-bold underline"
                   >
-                    <Link to="/how-it-works"> LEARN MORE </Link>
-                  </a>
+                    LEARN MORE
+                  </Link>
                 </div>
               </div>
               <div className="w-full md:w-1/2">
