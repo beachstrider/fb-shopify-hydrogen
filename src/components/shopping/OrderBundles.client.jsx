@@ -570,7 +570,7 @@ export function OrderBundles({
                       <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
                         <div className="flex items-center gap-6 text-gray-800  mb-2">
                           <div className="text-2xl font-bold">
-                            1.1 Party Size?
+                            2. Party Size?
                           </div>
                         </div>
                         <div
@@ -609,7 +609,8 @@ export function OrderBundles({
                   <div className="mb-14">
                     <div className="flex items-center gap-6 text-gray-800  mb-2">
                       <div className="text-2xl font-bold">
-                        2. Choose your Meals
+                        {bundle.handle === 'event-feastbox' ? '3' : '2'}. Choose
+                        your Meals
                       </div>
                       <div className="text-sm">({quantityStatus} of 3)</div>
                     </div>
