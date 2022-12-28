@@ -224,10 +224,10 @@ export function Influencers() {
 
       <div className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-[#231F20]">
         <div className="container max-w-screen-xl m-auto">
-          <h1 className="font-bungee text-center mt-5 text-6xl text-white uppercase font-extrabold leading-[80px]">
+          <h1 className="font-bungee text-center mt-5 text-3xl md:text-6xl text-white uppercase font-extrabold md:leading-[80px] leading-[50px]">
             Welcome to the robot-free zone
           </h1>
-          <p className="font-sens mb-6 text-center text-4xl text-white capitalize px-6">
+          <p className="font-sens mb-6 text-center md:text-4xl text-xl text-white capitalize px-6">
             Just clean, Natural ingredients Prepared by Clean, Natural Humans
           </p>
         </div>
