@@ -33,29 +33,29 @@ export function Catering() {
             </div>
 
             <div className="w-full md:w-1/2 ml-8 mt-3">
-              <p className="font-[700] text-[30px]">Feed up to 20 people</p>
-              <p className="font-[700] text-[45px] lg:text-[60px] ">
+              <p className="font-[700] text-[30px] sm-max:text-[20px]">Feed up to 20 people</p>
+              <p className="font-[700] text-[45px] lg:text-[60px] sm-max:text-[35px]">
                 Be the Host
               </p>
-              <p className="font-[700] text-[45px] lg:text-[60px]  mt-[-20px]">
+              <p className="font-[700] text-[45px]  sm-max:text-[35px] lg:text-[60px]  mt-[-20px]">
                 With the{' '}
                 <span className="bg-contain pb-3 bg-bottom bg-[url(https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/most_underline.png)] bg-no-repeat">
                   Most!
                 </span>
               </p>
-              <p className="font-[500] mt-5 text-[30px] w-[83%] leading-9">
+              <p className="font-[500] mt-5 text-[30px] w-[83%] leading-9 sm-max:text-[20px]">
                 Everybody loves a good party! Whether it’s for the Super Bowl, a
                 birthday, holiday, banquet, bachelor party, we want to be there!
                 Or at least our food does… (an invite would be cool too).
               </p>
 
-              <div className="md:text-center md:text-left mt-8 md:flex gap-12">
+              <div className="md:text-left mt-8 md:flex gap-12 text-center pr-[55px]">
                 <Link to={'/shop/bundle'}>
                   <button className="bg-[#A60D1E] px-12 py-2 text-[25px]">
                     Get Eating!
                   </button>
                 </Link>
-                <p className="text-[30px] font-bold mt-1">
+                <p className="text-[30px] font-bold mt-1 sm-max:text-[20px]">
                   100% Money-Back Guarantee!
                 </p>
               </div>
@@ -75,12 +75,14 @@ export function Catering() {
               <img
                 className="w-full"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/mom_daughter_mobile.png"
+                alt=''
               />
             </div>
             <div className="w-full bg-[#231f20] py-10 px-6 md:py-0 md:px-0">
               <img
                 className="w-full"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good_mobile.png"
+                alt=''
               />
             </div>
           </div>
