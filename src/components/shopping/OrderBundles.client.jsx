@@ -945,11 +945,7 @@ export function OrderBundles({
                             </div>
                           </div>
                           <div className="lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2">
-                            <div
-                              className={`relative bg-gray-50 ${
-                                isQuantityLimit ? 'opacity-100' : 'opacity-30'
-                              }`}
-                            >
+                            <div className={`relative bg-gray-50`}>
                               <div
                                 className="px-6 py-4 mt-8"
                                 style={{
