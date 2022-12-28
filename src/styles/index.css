@@ -153,6 +153,14 @@ shop-pay-button {
     transform: rotate(-7deg); 
   }
 
+  .flat-offer{
+      height: 125px;
+    width: 125px;
+    background-color: #DB9707;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
   .price-underline::before{
     content: "";
     position: absolute;

@@ -28,47 +28,7 @@ export function Influencers() {
             </div>
           </div>
         </div>
-        {/* <div className="bg-right bg-center bg-no-repeat bg-cover z-0 pb-5 bg-[#231F20]">
-          <div className="container max-w-screen-xl mx-auto">
-            <div className="md:flex block items-start justify-between h-full">
-              <div className="w-full md:w-1/2 relative">
-                <img
-                  src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/plate.png"
-                  className=" object-cover mx-auto md:max-w-md max-w-[350px] h-auto md:mt-[-60px] mt-0"
-                  alt=""
-                />
-                <img
-                  src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/down_arrows.png"
-                  className="absolute object-cover w-[100px] max-w-md h-auto md:top-[-85px] right-0 top-[40px]"
-                  alt=""
-                />
-              </div>
-              <div className="text-white text-lg mt-5 w-full sm:w-[50%-100px] md:w-1/2 md:pl-[100px] px-6 md:px-0">
-                <div className="px-2">
-                  <h5 className="font-bold pt-[30px]">3 Meals Feeding 5 People Each</h5>
-                  <h2 className="font-bold text-5xl my-1">
-                    MouthWatering Grub <br />
-                    For Only <span className="text-[#DB9707]">$149.95</span>/
-                  </h2>
-                  <p className="mt-10">
-                    Here's to epic flavors with ready -to-eat convenence at a{' '}
-                    <br />
-                    fraction of the cost of restaurent delivery.Now that was a{' '}
-                    <br />
-                    mouthful ! just like our food.{' '}
-                  </p>
-                  <div className="flex items-center mt-9  pb-6">
-                    <Link to="/shop/bundle">
-                        <button className="px-6 bg-[#A60D1E] text-white font-bold py-2 w-[190px]">
-                            Get Eating
-                        </button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
+
         <div className="bg-right bg-center bg-no-repeat bg-cover z-0  bg-[#231F20]">
           <div className="container  mx-auto">
             <div className="md:flex block items-start justify-between h-full">
@@ -84,6 +44,7 @@ export function Influencers() {
                   alt=""
                 />
               </div>
+
               <div className="text-white text-lg mt-5 w-full sm:w-[50%-100px] md:w-1/2 md:pl-[100px] py-6">
                 <div className="md:px-2 px-3">
                   <h5 className="font-opensans font-extrabold">
@@ -118,6 +79,11 @@ export function Influencers() {
                       <h2></h2>
                     </div> */}
                   </div>
+
+                  <div className="md:mt-[-480px] md:ml-[454px] bg-[#DB9707] md:w-40 md:h-40 rounded-full md:text-3xl text-center font-bold flex justify-center items-center invisible sm:visible md:visible lg:visible ">
+                      <p>SAVE <br/> $40</p>
+                  </div>
+
                 </div>
               </div>
             </div>
