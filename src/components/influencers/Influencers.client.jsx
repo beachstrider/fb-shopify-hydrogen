@@ -167,7 +167,7 @@ export function Influencers() {
        <img className='text-right bg-right absolute overflow-hidden bg-no-repeat bg-cover' src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/triangles_right.png" alt="" />
       </span>  */}
         <div className="container max-w-screen-xl m-auto px-6 md:px-2">
-          <h1 className="font-bungee md:text-center text-left text-[30px] md:text-[35px] lg:text-[46px] text-white uppercase font-normal md:leading-[80px] mt-0 md:mt-[-66px]">
+          <h1 className="font-bungee md:text-center text-left text-[20px] md:text-[35px] lg:text-[46px] text-white uppercase font-normal md:leading-[80px] mt-0 md:mt-[-66px]">
             Every order Feeds another
           </h1>
           <div className="bg-white max-w-3xl px-5 py-4 m-auto mt-[25px]">
