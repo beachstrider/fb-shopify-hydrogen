@@ -303,6 +303,7 @@ export function OrderBundles({
   async function fetchContents(contents) {
     const product_ids = [];
     const config_ids = {};
+    const bundle_config_content_ids = {};
 
     for await (const content of contents) {
       const res = (
@@ -319,6 +320,8 @@ export function OrderBundles({
         product_ids.push(el.platform_product_id);
         config_ids[`gid://shopify/Product/${el.platform_product_id}`] =
           el.contents.bundle_configuration_id;
+        bundle_config_content_ids[`gid://shopify/Product/${el.platform_product_id}`] =
+          el.bundle_configuration_contents_id;
       });
     }
 
@@ -331,6 +334,7 @@ export function OrderBundles({
         products.map((product) => ({
           ...product,
           bundleConfigurationId: config_ids[product.id],
+          bundle_configuration_contents_id: bundle_config_content_ids[product.id],
         })),
       );
     } else {
@@ -490,7 +494,7 @@ export function OrderBundles({
           const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
 
           const items = cartInfo[bundle.handle].meals.map((el) => ({
-            bundle_configuration_content_id: el.bundleConfigurationId,
+            bundle_configuration_content_id: el.bundle_configuration_contents_id,
             platform_product_variant_id: parseInt(
               el.variants.nodes[
                 cartInfo[bundle.handle].partySizeIndex
