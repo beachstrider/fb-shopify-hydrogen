@@ -5,7 +5,7 @@ export function Catering() {
     <section className="text-white">
       <div className="overflow-hidden">
         <div className="bg-image object-cover bg-cover bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/hero_bg_mobile.png')] md:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/hero_bg.png')] bg-no-repeat">
-          <div className="pl-10 font-bungee md:ml-8 lg:ml-8 pb-12 pt-24 w-[60%] text-[50px] leading-[50px] md:text-[80px] md:leading-[80px] relative">
+          <div className="pl-10 font-bungee md:ml-8 lg:ml-8 pb-12 pt-24 w-[65%] text-[50px] lg:text-[140px] lg:leading-[140px] leading-[50px] md:text-[80px] md:leading-[80px] relative">
             A BOX
             <br />
             NEVER
@@ -26,7 +26,7 @@ export function Catering() {
           <div className="md:flex">
             <div className="w-full md:w-1/2 ">
               <img
-                className="mx-auto w-[90%] pb-8"
+                className="mx-auto w-[90%] pb-8 block sm-max:hidden"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/host_most.png"
                 alt=""
               />
@@ -63,7 +63,7 @@ export function Catering() {
           </div>
         </div>
 
-        <div>
+        <div className='bg-[#231F20]'>
           <div className="w-0 md:w-full">
             <img
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good.png"
@@ -87,7 +87,7 @@ export function Catering() {
             </div>
           </div>
           <div className="bg-[#231f20] md:bg-[#DB9707]">
-            <div className="md:flex">
+            <div className="md:flex relative">
               <div className="w-full md:w-[calc(100%-300px)] pl-6 pr-6  py-10 md:pl-[100px] md:py-[50px]  md:pr-[70px]">
                 <p className="text-[20px]">
                   FEASTbox has partnered with Full of Hope to reach our goal of
@@ -97,7 +97,7 @@ export function Catering() {
                   to a local family in need.
                 </p>
               </div>
-              <div className="w-full md:w-[300px] relative pb-[20px]">
+              <div className="w-full md:w-[300px] absolute right-[30px] top-[-50px]">
                 <img
                   className="w-0 md:absolute md:top-0 md:right-10 md:w-[200px]"
                   src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/full_of_hope.png"
