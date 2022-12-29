@@ -546,12 +546,12 @@ export function OrderBundles({
           <div className="flex flex-wrap">
             <div className="w-full md:w-1/1 xl:w-1/2 lg:w-1/2">
               <div className="relative left-0 top-0 ">
-                {/*<img
+                <img
                   className="object-cover w-full md:h-1/2"
                   src={bundle?.variants?.nodes[0]?.image?.url}
                   alt="FeastBox bundle"
                   onLoad={() => setIsInitialDataLoading(false)}
-                />*/}
+                />
               </div>
             </div>
             <div className="w-full md:w-1/1 lg:w-1/2 xl:w-1/2 px-8">
