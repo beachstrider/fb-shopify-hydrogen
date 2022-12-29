@@ -209,6 +209,10 @@ export function OrderBundles({
       cartInfo[bundle.handle]?.priceType === 'recuring'
         ? 'Recurring'
         : 'Onetime';
+    const frequency =
+      cartInfo[bundle.handle]?.priceType === 'recuring'
+        ? cartInfo[bundle.handle].frequencyValue
+        : 'N/A';
     const selectedMeals = cartInfo[bundle.handle].meals.map((el) => {
       return {
         title: el.variants.nodes[
@@ -242,6 +246,10 @@ export function OrderBundles({
       {
         key: 'Purchase Type',
         value: purchaseType, // issue on checkout without updating cart
+      },
+      {
+        key: 'Frequency',
+        value: frequency, // issue on checkout without updating cart
       },
     ];
   }
