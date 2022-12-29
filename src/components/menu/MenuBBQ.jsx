@@ -9,7 +9,7 @@ export function MenuBbq() {
 
         <div className="flex flex-col lg:pr-[15%] py-[15%] lg:mb-[50px] relative">
           <br/><h3 className="font-bungee lg:text-[5rem] md:text-[4rem] sm-max:text-[3rem] text-white">BBQ FEAST</h3>
-          <p className="font-opensans lg:text-[30px] md:text-[25px] sm-max:text-[20px] tracking-tighter text-white">WARNING: may include fall-off-the-bone tender brisket, mac n’ cheese that puts your mom’s recipe to shame, the fluffiest rolls you’ve ever sunk your teeth into, and a mid-life crisis where you quit your corporate job, move to a farm in Kansas, and adopt a horse named Sally.</p>
+          <p className="font-opensans lg:text-[30px] md:text-[25px] sm-max:text-[20px] tracking-tighter text-white md:mr-14">WARNING: may include fall-off-the-bone tender brisket, mac n’ cheese that puts your mom’s recipe to shame, the fluffiest rolls you’ve ever sunk your teeth into, and a mid-life crisis where you quit your corporate job, move to a farm in Kansas, and adopt a horse named Sally.</p>
         </div>
       </div>
     </div>
