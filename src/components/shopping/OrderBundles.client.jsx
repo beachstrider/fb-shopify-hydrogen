@@ -118,7 +118,7 @@ export function OrderBundles({
 
   useEffect(() => {
     setIsProductsLoading(true);
-    let contentResult = null;
+    let contentResult = [];
     const contents = [...cartInfo[bundle.handle].bundleContents].filter(
       (content) => {
         const dateNow = new Date(cartInfo[bundle.handle].deliveryDate)
@@ -209,6 +209,10 @@ export function OrderBundles({
       cartInfo[bundle.handle]?.priceType === 'recuring'
         ? 'Recurring'
         : 'Onetime';
+    const frequency =
+      cartInfo[bundle.handle]?.priceType === 'recuring'
+        ? cartInfo[bundle.handle].frequencyValue
+        : 'N/A';
     const selectedMeals = cartInfo[bundle.handle].meals.map((el) => {
       return {
         title: el.variants.nodes[
@@ -242,6 +246,10 @@ export function OrderBundles({
       {
         key: 'Purchase Type',
         value: purchaseType, // issue on checkout without updating cart
+      },
+      {
+        key: 'Frequency',
+        value: frequency, // issue on checkout without updating cart
       },
     ];
   }
@@ -303,7 +311,8 @@ export function OrderBundles({
   async function fetchContents(contents) {
     const product_ids = [];
     const config_ids = {};
-
+    const bundle_config_content_ids = {};
+console.log('contents', contents);
     for await (const content of contents) {
       const res = (
         await axios.get(
@@ -319,6 +328,8 @@ export function OrderBundles({
         product_ids.push(el.platform_product_id);
         config_ids[`gid://shopify/Product/${el.platform_product_id}`] =
           el.contents.bundle_configuration_id;
+        bundle_config_content_ids[`gid://shopify/Product/${el.platform_product_id}`] =
+          el.bundle_configuration_contents_id;
       });
     }
 
@@ -331,6 +342,7 @@ export function OrderBundles({
         products.map((product) => ({
           ...product,
           bundleConfigurationId: config_ids[product.id],
+          bundle_configuration_contents_id: bundle_config_content_ids[product.id],
         })),
       );
     } else {
@@ -490,7 +502,7 @@ export function OrderBundles({
           const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
 
           const items = cartInfo[bundle.handle].meals.map((el) => ({
-            bundle_configuration_content_id: el.bundleConfigurationId,
+            bundle_configuration_content_id: el.bundle_configuration_contents_id,
             platform_product_variant_id: parseInt(
               el.variants.nodes[
                 cartInfo[bundle.handle].partySizeIndex
@@ -542,12 +554,12 @@ export function OrderBundles({
           <div className="flex flex-wrap">
             <div className="w-full md:w-1/1 xl:w-1/2 lg:w-1/2">
               <div className="relative left-0 top-0 ">
-                {/*<img
+                <img
                   className="object-cover w-full md:h-1/2"
                   src={bundle?.variants?.nodes[0]?.image?.url}
                   alt="FeastBox bundle"
                   onLoad={() => setIsInitialDataLoading(false)}
-                />*/}
+                />
               </div>
             </div>
             <div className="w-full md:w-1/1 lg:w-1/2 xl:w-1/2 px-8">
