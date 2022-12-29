@@ -11,7 +11,7 @@ const Index = () => {
   } = useLocalization();
   return (
     <Layout>
-      <Seo type="page" data={{title: 'Menus'}} />
+      <Seo type="noindex" data={{title: 'Menus'}} />
       <MenuBanner />
       <MenuBbq />
       <MenuItalian />
