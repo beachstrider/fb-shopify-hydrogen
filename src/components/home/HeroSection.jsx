@@ -18,7 +18,7 @@ export function HeroSection() {
             </div>
           </div>
         </div>
-        <div className="bg-right bg-center bg-no-repeat bg-cover z-0  bg-[#231F20]">
+        <div className="bg-right bg-center bg-no-repeat bg-cover z-0  bg-[#231F20] mt-[-5px]">
           <div className="mx-auto">
             <div className="md:flex block items-start justify-between h-full">
               <div className="w-full md:w-1/2 relative">
