@@ -10,8 +10,8 @@ const Tabs = ({metafields}) => {
     setSelectedTag(index);
   };
 
-  console.log('url', embedLink);
-  console.log('meta', metafields);
+  // console.log('url', embedLink);
+  // console.log('meta', metafields);
 
   useEffect(() => {
     loadScript(embedLink);
