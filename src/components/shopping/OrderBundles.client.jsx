@@ -118,7 +118,7 @@ export function OrderBundles({
 
   useEffect(() => {
     setIsProductsLoading(true);
-    let contentResult = null;
+    let contentResult = [];
     const contents = [...cartInfo[bundle.handle].bundleContents].filter(
       (content) => {
         const dateNow = new Date(cartInfo[bundle.handle].deliveryDate)
@@ -304,7 +304,7 @@ export function OrderBundles({
     const product_ids = [];
     const config_ids = {};
     const bundle_config_content_ids = {};
-
+console.log('contents', contents);
     for await (const content of contents) {
       const res = (
         await axios.get(
