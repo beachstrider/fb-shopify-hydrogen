@@ -229,7 +229,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
         <nav className="flex items-right gap-8">
           {/* Top level menu items */}
           {(menu?.items || []).map((item, key) => (
-            <Link key={key} to={item.to} target={item.target}>
+            <Link key={key} className={'font-bold'} to={item.to} target={item.target}>
               {item.title}
             </Link>
           ))}
@@ -238,7 +238,7 @@ function DesktopHeader({countryCode, isHome, menu, openCart, title, token}) {
       <div className="flex items-center gap-2 font-light">
         <Link
           to={'/shop/bundle'}
-          className="text-sm inline-block bg-white text-black py-1 px-4 uppercase text-xs"
+          className="text-sm inline-block bg-white text-black py-1 px-4 uppercase text-xs hidden"
         >
           SHOP NOW
         </Link>
