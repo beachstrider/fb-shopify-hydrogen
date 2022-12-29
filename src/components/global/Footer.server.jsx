@@ -129,7 +129,7 @@ export function Footer({menu}) {
               <div className="w-auto p-2">
                 <div className="flex flex-wrap -m-1.5">
                   <div className="w-auto p-1">
-                    <Link to="https://www.facebook.com/quickfreshlife/" target={'blank'}>
+                    <Link to="https://www.facebook.com/feastbox.meals" target={'blank'}>
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="bi bi-facebook text-white"
@@ -145,7 +145,7 @@ export function Footer({menu}) {
                     </Link>
                   </div>
                   <div className="w-auto p-1">
-                    <Link to="https://www.youtube.com/channel/UCr8y_tjQTdGOV4_esdwX0-w" target={'blank'}>
+                    <Link to="https://youtube.com/@feastbox" target={'blank'}>
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="bi bi-youtube bi-twitter text-white"
@@ -161,7 +161,7 @@ export function Footer({menu}) {
                     </Link>
                   </div>
                   <div className="w-auto p-1">
-                    <Link to="https://www.instagram.com/quickfreshlife/" target={'blank'}>
+                    <Link to="https://instagram.com/feastbox.meals/" target={'blank'}>
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="text-white"
@@ -177,7 +177,7 @@ export function Footer({menu}) {
                     </Link>
                   </div>
                   <div className="w-auto p-1">
-                    <Link to="https://www.tiktok.com/@quickfresh?is_from_webapp=1&sender_device=pc" target={'blank'}>
+                    <Link to="https://www.tiktok.com/@feastbox.meals" target={'blank'}>
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="bi bi-tiktok text-white"

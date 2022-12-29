@@ -6,6 +6,8 @@ import {
   today,
   // isFuture,
   // sortByDateProperty,
+  formatUTCDate,
+  getNextWeekDay,
   dayjs,
   getUsaStandard,
   getISO,
@@ -59,6 +61,7 @@ export function OrderBundles({
   customerAccessToken,
   customerId = '',
 }) {
+  const CDN_CACHE_ENV_MODE = 'development'; //production
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
   const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
@@ -78,7 +81,8 @@ export function OrderBundles({
     id,
     lines,
     checkoutUrl,
-
+    attributes,
+    cartAttributesUpdate,
     cartCreate,
     linesAdd,
     linesRemove,
@@ -193,11 +197,31 @@ export function OrderBundles({
     cartToken = cartToken !== '' ? cartToken.substring(19) : 'xxx';
     customerId =
       customerId !== '' ? customerId.substring(23) : 'unauthenticated customer';
+    const purchaseType =
+      cartInfo[bundle.handle]?.priceType === 'recuring'
+        ? 'Recurring'
+        : 'Onetime';
+    const selectedMeals = cartInfo[bundle.handle].meals.map((el) => {
+      return {
+        title: el.variants.nodes[
+          cartInfo[bundle.handle].partySizeIndex
+        ]?.metafields?.find((x) => x?.key === 'display_name')?.value,
+        qty: el.quantity,
+      };
+    });
+    const mealsProperties = selectedMeals.map((meal, index) => {
+      return meal.title + ' (qty: ' + meal.qty + ') ';
+    });
 
     return [
+      //No need customer ID for now: if needed later we will
+      // {
+      //   key: 'Customer Id', //when customer logged in then get from there (this will be shopify customer ID)
+      //   value: customerId,
+      // },
       {
-        key: 'Customer Id', //when customer logged in then get from there (this will be shopify customer ID)
-        value: customerId,
+        key: 'Selected Meals',
+        value: mealsProperties.toString(), //delivery date format will be 2022-12-26
       },
       {
         key: 'Delivery_Date',
@@ -207,12 +231,16 @@ export function OrderBundles({
         key: 'Cart Token',
         value: cartToken, // issue on checkout without updating cart
       },
+      {
+        key: 'Purchase Type',
+        value: purchaseType, // issue on checkout without updating cart
+      },
     ];
   }
 
   async function fetchDeliveryDates() {
-    const res = (await axios.get(`${caching_server}/delivery_dates_dev.json`))
-      .data;
+    const deliveryDateCacheUrl = CDN_CACHE_ENV_MODE === 'production' ? 'delivery_dates.json' : 'delivery_dates_dev.json';
+    const res = (await axios.get(`${caching_server}/${deliveryDateCacheUrl}`)).data;
 
     const today = new Date();
     today.setHours(0);
@@ -242,8 +270,9 @@ export function OrderBundles({
   }
 
   async function fetchBundle() {
+    const bundleCacheUrl = CDN_CACHE_ENV_MODE === 'production' ? 'bundles.json' : 'bundles_dev.json';
     const bundleDataRes = (
-      await axios.get(`${caching_server}/bundles_dev.json`)
+      await axios.get(`${caching_server}/${bundleCacheUrl}`)
     ).data.find((el) => el.platform_product_id === bundleIdNumber);
 
     const {data: config} = await axios.get(
@@ -320,6 +349,7 @@ export function OrderBundles({
       [bundle.handle]: {
         ...cartInfo[bundle.handle],
         deliveryDate: newSlots[0].date,
+        deliveryDay: newSlots[0].day,
       },
     });
 
@@ -421,6 +451,22 @@ export function OrderBundles({
       linesAdd([line]);
     }, [API_CALLING_INTERVAL]);
 
+    // add cart note attribute its required
+    setTimeout(() => {
+      cartAttributesUpdate({
+        attributes: {
+          'delivery-date': formatUTCDate(
+            cartInfo[bundle.handle].deliveryDate,
+            'YYYY-MM-DD',
+          ),
+          'delivery-day': cartInfo[bundle.handle].deliveryDay
+            ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format('dddd')
+            : '',
+        },
+        cartId: id
+      });
+    }, [API_CALLING_INTERVAL]);
+
     setTimeout(() => {
       if (
         discountCodeInputRef.current !== null &&
@@ -498,7 +544,7 @@ export function OrderBundles({
             </div>
             <div className="w-full md:w-1/1 lg:w-1/2 xl:w-1/2 px-8">
               <div className="">
-                <div className="mt-2 lg:mt-16 font-bold">
+                <div className="mt-2 font-bold">
                   <div className="lg:text-[60px] text-[36px]">
                     {bundle?.title}
                   </div>
