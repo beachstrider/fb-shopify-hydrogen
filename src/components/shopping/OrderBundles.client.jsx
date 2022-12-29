@@ -118,16 +118,24 @@ export function OrderBundles({
 
   useEffect(() => {
     setIsProductsLoading(true);
+    let contentResult = null;
     const contents = [...cartInfo[bundle.handle].bundleContents].filter(
       (content) => {
-        return dayjs(cartInfo[bundle.handle].deliveryDate).isBetween(
-          content.deliver_after,
-          content.deliver_before,
-        );
+        const dateNow = new Date(cartInfo[bundle.handle].deliveryDate)
+        const deliverAfter = new Date(content.deliver_after)
+        const deliverBefore = new Date(content.deliver_before)
+        //old logic from previous application
+        if (dateNow > deliverAfter && dateNow < deliverBefore) {
+          console.log('date found', deliverAfter)
+          contentResult = [content];
+        }
+        // return dayjs(cartInfo[bundle.handle].deliveryDate).isBetween(
+        //   content.deliver_after,
+        //   content.deliver_before,
+        // );
       },
     );
-
-    fetchContents(contents);
+    fetchContents(contentResult);
   }, [cartInfo[bundle.handle].deliveryDate]);
 
   useEffect(() => {
@@ -534,12 +542,12 @@ export function OrderBundles({
           <div className="flex flex-wrap">
             <div className="w-full md:w-1/1 xl:w-1/2 lg:w-1/2">
               <div className="relative left-0 top-0 ">
-                <img
+                {/*<img
                   className="object-cover w-full md:h-1/2"
                   src={bundle?.variants?.nodes[0]?.image?.url}
                   alt="FeastBox bundle"
                   onLoad={() => setIsInitialDataLoading(false)}
-                />
+                />*/}
               </div>
             </div>
             <div className="w-full md:w-1/1 lg:w-1/2 xl:w-1/2 px-8">
