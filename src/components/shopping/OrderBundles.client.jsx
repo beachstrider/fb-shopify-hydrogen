@@ -544,7 +544,7 @@ export function OrderBundles({
             </div>
             <div className="w-full md:w-1/1 lg:w-1/2 xl:w-1/2 px-8">
               <div className="">
-                <div className="mt-2 lg:mt-16 font-bold">
+                <div className="mt-2 font-bold">
                   <div className="lg:text-[60px] text-[36px]">
                     {bundle?.title}
                   </div>
