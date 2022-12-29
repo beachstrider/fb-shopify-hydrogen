@@ -144,7 +144,7 @@ export function AboutUs() {
         </h1>
         <div className="flex justify-center flex-wrap">
           <div className="mt-[30px] flex lg:p-[50px] md:p-[40px] sm-max:p-[25px] bg-white justify-center relative">
-            <div className="relative mr-[25px]">
+            <div className="relative mr-[10px]">
               <img
                 className="lg:w-[90px] sm-max:w-50px"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
@@ -154,7 +154,7 @@ export function AboutUs() {
                 0
               </span>
             </div>
-            <div className="relative mr-[25px]">
+            <div className="relative mr-[10px]">
               <img
                 className="lg:w-[90px] sm-max:w-50px"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
@@ -164,7 +164,7 @@ export function AboutUs() {
                 0
               </span>
             </div>
-            <div className="relative mr-[25px]">
+            <div className="relative mr-[10px]">
               <img
                 className="lg:w-[90px] sm-max:w-50px"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
@@ -174,7 +174,7 @@ export function AboutUs() {
                 0
               </span>
             </div>
-            <div className="relative mr-[25px]">
+            <div className="relative mr-[10px]">
               <img
                 className="lg:w-[90px] sm-max:w-50px"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
@@ -184,7 +184,7 @@ export function AboutUs() {
                 0
               </span>
             </div>
-            <div className="relative mr-[25px]">
+            <div className="relative mr-[10px]">
               <img
                 className="lg:w-[90px] sm-max:w-50px"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
