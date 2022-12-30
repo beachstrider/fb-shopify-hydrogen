@@ -548,7 +548,7 @@ export function OrderBundles({
 
           await axios.post(`/api/bundle/carts`, cartData);
 
-          // location.href = checkoutUrl;
+          location.href = checkoutUrl;
         }, [API_CALLING_INTERVAL]);
       }, [API_CALLING_INTERVAL]);
     }, [API_CALLING_INTERVAL * 2]);
