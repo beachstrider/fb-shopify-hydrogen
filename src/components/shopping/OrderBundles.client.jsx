@@ -685,8 +685,8 @@ export function OrderBundles({
                   <div className="mb-14">
                     <div className="flex items-center gap-6 text-gray-800  mb-2">
                       <div className="md:text-2xl text-lg font-bold">
-                        {bundle.handle === 'event-feastbox' ? '3' : '2'}.
-                        Choose. Choose your Meals
+                        {bundle.handle === 'event-feastbox' ? '3' : '2'}. Choose
+                        your Meals
                       </div>
                       <div className="text-sm">
                         ({currentQuantity} of{' '}
@@ -829,7 +829,7 @@ export function OrderBundles({
                           ))
                         ) : (
                           <div className="w-full flex justify-center items-center py-8 text-lg">
-                            <div>No available products</div>
+                            <div>No available meals</div>
                           </div>
                         )}
                       </div>
@@ -1108,7 +1108,7 @@ export function OrderBundles({
                                 style={{fontSize: 18}}
                                 className=" font-bold"
                               >
-                                Discount Applied:
+                                Discount Coupon:
                               </span>
                               <br />
                             </p>
