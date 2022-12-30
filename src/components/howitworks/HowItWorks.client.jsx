@@ -122,7 +122,7 @@ export function HowItWorks() {
                 </span>{' '}
                 spread!
               </p>
-              <Link to="http://fullofhope.org" target="_blank">
+              <Link to="/shop/bundle/family-feastbox" target="_blank">
                 <div className="pr-6">
                   <button className="font-opensans md:ml-0 lg:ml-0 text-[25px] md:text-[25px] md:mr-6 lg:text-[25px] font-semibold btn bg-[#A60D1E] sm:px-6 sm:py-2 px-4 py-1 sm:mr-8 mr-5 mt-8 sm:mt-8 float-right">
                     Hungry? Order now

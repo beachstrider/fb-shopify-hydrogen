@@ -331,7 +331,7 @@ const Index = ({subscription, subscription_id, user}) => {
             <div className="flex flex-wrap -mx-4 -mb-0">
               <div className="w-full px-4 md:w-1/1 xl:w-3/3 lg:w-3/3">
                 <div className="xl:pl-10">
-                  <h1 className="font-bold text-lg">Coming soon...</h1>
+                  <h1 className="font-bold text-xlg">Coming soon...</h1>
                   {/*<div className="mb-10 pb-10">
                     <div
                       style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}
@@ -688,7 +688,7 @@ const Index = ({subscription, subscription_id, user}) => {
             {/*-------End Subscription Box--------------------------*/}
             <div className="mb-10">
               <hr style={{margin: '20px 0'}} />
-              <div className="py-3">
+              {/*<div className="py-3">
                 <div className="flex justify-between">
                   <span className="font-bold text-lg font-medium">
                     Next Delivery
@@ -698,22 +698,21 @@ const Index = ({subscription, subscription_id, user}) => {
                   </span>
                 </div>
               </div>
-              <hr style={{margin: '20px 0'}} />
+              <hr style={{margin: '20px 0'}} />*/}
               <div className="py-3">
                 <div className="flex justify-between">
-                  <span className="font-bold font-medium text-lg">
+                 {/* <span className="font-bold font-medium text-lg">
                     Frequency
-                  </span>
+                  </span>*/}
                   <span className="font-bold font-heading">
                     <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-                      {/*--kachava form------*/}
                       <style
                         dangerouslySetInnerHTML={{
                           __html:
                             '\n                            .edit-frequency__item-action {\n                              display: flex;\n                              flex-wrap: wrap;\n                              justify-content: space-between;\n                              align-items: center;\n                            }\n                            .radio-buttons {\n                              display: flex;\n                              flex-wrap: wrap;\n                              align-items: center;\n                              margin: 0 -6px;\n                            }\n                            .radio-button {\n                              padding-left: 20px;\n                              padding-right: 20px;\n                            }\n                            .radio-button input[type=radio] {\n                              position: absolute;\n                              clip: rect(0 0 0 0);\n                                             margin: -1px;\n                            }\n                            .radio-button label {\n                              display: inline-flex;\n                              align-items: center;\n                              transition: .4s;\n                              transition-property: background-color,color;\n                            }\n                            .radio-button .radio-button__label {\n                              padding-left: 4px;\n                              text-transform: uppercase;\n                            }\n                            /*.radio-button .radio-button__check {\n                            display: flex;\n                            visibility: hidden;\n                            opacity: 0;\n                            margin-left: -19px;\n                            padding-bottom: 2px;\n                            transition: .2s all;\n                            }*/\n                          ',
                         }}
                       />
-                      <div className="edit-frequency__item-action text-right">
+                      {/*<div className="edit-frequency__item-action text-right">
                         <div>
                           <div className="radio-buttons">
                             {subscription.product.subscription_defaults.order_interval_frequency_options.map(
@@ -771,16 +770,16 @@ const Index = ({subscription, subscription_id, user}) => {
                             defaultValue={14}
                           />
                         </div>
-                      </div>
+                      </div>*/}
                       <span className="text-sm">
-                        (Choose how often you want your order to be placed)
+                      {/*  (Choose how often you want your order to be placed)*/}
                       </span>
                     </div>
                   </span>
                 </div>
               </div>
               <hr style={{margin: '20px 0'}} />
-              <div className="py-3">
+              {/*<div className="py-3">
                 <div className="flex justify-between">
                   <span className="font-bold text-base md:text-xl font-bold font-heading">
                     Shipping Address
@@ -839,7 +838,7 @@ const Index = ({subscription, subscription_id, user}) => {
                     </Link>
                   </div>
                 </div>
-              </div>
+              </div>*/}
             </div>
           </div>
         </div>

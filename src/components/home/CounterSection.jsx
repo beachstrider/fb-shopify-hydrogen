@@ -63,7 +63,7 @@ export function CounterSection() {
 
         <h3 className="text-left md:text-center md:text-center text-[25px] text-white capitalize font-normal leading-[40px]">
           <a className="underline text-[#DB9707]">
-          <Link to="/how-it-works"> Learn More </Link> 
+          <Link to="https://fullofhope.org" target="_blank"> Learn More </Link>
           </a>{' '}
           About Full of Hope
         </h3>
