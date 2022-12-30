@@ -504,7 +504,7 @@ export function OrderBundles({
                 ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format(
                     'dddd',
                   )
-                : 'XXX',
+                : 'N/A',
             },
           ];
           console.log('attributes', attributes);
@@ -512,16 +512,23 @@ export function OrderBundles({
 
           const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
 
-          const items = cartInfo[bundle.handle].meals.map((el) => ({
-            bundle_configuration_content_id:
-              el.bundle_configuration_contents_id,
-            platform_product_variant_id: parseInt(
-              el.variants.nodes[
-                cartInfo[bundle.handle].variantIndex + 1
-              ]?.id.split('ProductVariant/')[1],
-            ),
-            quantity: el.quantity,
-          }));
+          console.log('meals', cartInfo[bundle.handle].meals);
+          const items = cartInfo[bundle.handle].meals.map((el) => {
+            // update variant index based on bundle product when bundle product is Family feastbox then variant index defaul
+            // but when Event feastbox then variant index will +1 as meals variant for eventbox start from 1 index in shopify
+            let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
+            if (bundle.handle === 'event-feastbox') {
+              dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
+            }
+            return {
+              bundle_configuration_content_id:
+                el.bundle_configuration_contents_id,
+              platform_product_variant_id: parseInt(
+                el.variants.nodes[dynamicVariantIndex]?.id.split('ProductVariant/')[1],
+              ),
+              quantity: el.quantity,
+            };
+          });
 
           const cartData = {
             platform_customer_id: null, //if customer logged in then save shopify customer idp
