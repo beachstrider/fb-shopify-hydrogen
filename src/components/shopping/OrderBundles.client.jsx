@@ -81,7 +81,6 @@ export function OrderBundles({
     id,
     lines,
     checkoutUrl,
-    attributes,
     cartAttributesUpdate,
     cartCreate,
     linesAdd,
@@ -121,12 +120,12 @@ export function OrderBundles({
     let contentResult = [];
     const contents = [...cartInfo[bundle.handle].bundleContents].filter(
       (content) => {
-        const dateNow = new Date(cartInfo[bundle.handle].deliveryDate)
-        const deliverAfter = new Date(content.deliver_after)
-        const deliverBefore = new Date(content.deliver_before)
+        const dateNow = new Date(cartInfo[bundle.handle].deliveryDate);
+        const deliverAfter = new Date(content.deliver_after);
+        const deliverBefore = new Date(content.deliver_before);
         //old logic from previous application
         if (dateNow > deliverAfter && dateNow < deliverBefore) {
-          console.log('date found', deliverAfter)
+          console.log('date found', deliverAfter);
           contentResult = [content];
         }
         // return dayjs(cartInfo[bundle.handle].deliveryDate).isBetween(
@@ -255,8 +254,12 @@ export function OrderBundles({
   }
 
   async function fetchDeliveryDates() {
-    const deliveryDateCacheUrl = CDN_CACHE_ENV_MODE === 'production' ? 'delivery_dates.json' : 'delivery_dates_dev.json';
-    const res = (await axios.get(`${caching_server}/${deliveryDateCacheUrl}`)).data;
+    const deliveryDateCacheUrl =
+      CDN_CACHE_ENV_MODE === 'production'
+        ? 'delivery_dates.json'
+        : 'delivery_dates_dev.json';
+    const res = (await axios.get(`${caching_server}/${deliveryDateCacheUrl}`))
+      .data;
 
     const today = new Date();
     today.setHours(0);
@@ -286,7 +289,8 @@ export function OrderBundles({
   }
 
   async function fetchBundle() {
-    const bundleCacheUrl = CDN_CACHE_ENV_MODE === 'production' ? 'bundles.json' : 'bundles_dev.json';
+    const bundleCacheUrl =
+      CDN_CACHE_ENV_MODE === 'production' ? 'bundles.json' : 'bundles_dev.json';
     const bundleDataRes = (
       await axios.get(`${caching_server}/${bundleCacheUrl}`)
     ).data.find((el) => el.platform_product_id === bundleIdNumber);
@@ -312,7 +316,7 @@ export function OrderBundles({
     const product_ids = [];
     const config_ids = {};
     const bundle_config_content_ids = {};
-console.log('contents', contents);
+    console.log('contents', contents);
     for await (const content of contents) {
       const res = (
         await axios.get(
@@ -328,8 +332,9 @@ console.log('contents', contents);
         product_ids.push(el.platform_product_id);
         config_ids[`gid://shopify/Product/${el.platform_product_id}`] =
           el.contents.bundle_configuration_id;
-        bundle_config_content_ids[`gid://shopify/Product/${el.platform_product_id}`] =
-          el.bundle_configuration_contents_id;
+        bundle_config_content_ids[
+          `gid://shopify/Product/${el.platform_product_id}`
+        ] = el.bundle_configuration_contents_id;
       });
     }
 
@@ -342,7 +347,8 @@ console.log('contents', contents);
         products.map((product) => ({
           ...product,
           bundleConfigurationId: config_ids[product.id],
-          bundle_configuration_contents_id: bundle_config_content_ids[product.id],
+          bundle_configuration_contents_id:
+            bundle_config_content_ids[product.id],
         })),
       );
     } else {
@@ -471,22 +477,6 @@ console.log('contents', contents);
       linesAdd([line]);
     }, [API_CALLING_INTERVAL]);
 
-    // add cart note attribute its required
-    setTimeout(() => {
-      cartAttributesUpdate({
-        attributes: {
-          'delivery-date': formatUTCDate(
-            cartInfo[bundle.handle].deliveryDate,
-            'YYYY-MM-DD',
-          ),
-          'delivery-day': cartInfo[bundle.handle].deliveryDay
-            ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format('dddd')
-            : '',
-        },
-        cartId: id
-      });
-    }, [API_CALLING_INTERVAL]);
-
     setTimeout(() => {
       if (
         discountCodeInputRef.current !== null &&
@@ -499,10 +489,32 @@ console.log('contents', contents);
         });
 
         setTimeout(async () => {
+          // add cart note attribute its required
+          const attributes = [
+            {
+              key: 'delivery-date',
+              value: formatUTCDate(
+                cartInfo[bundle.handle].deliveryDate,
+                'YYYY-MM-DD',
+              ),
+            },
+            {
+              key: 'delivery-day',
+              value: cartInfo[bundle.handle].deliveryDay
+                ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format(
+                    'dddd',
+                  )
+                : 'XXX',
+            },
+          ];
+          console.log('attributes', attributes);
+          cartAttributesUpdate(attributes);
+
           const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
 
           const items = cartInfo[bundle.handle].meals.map((el) => ({
-            bundle_configuration_content_id: el.bundle_configuration_contents_id,
+            bundle_configuration_content_id:
+              el.bundle_configuration_contents_id,
             platform_product_variant_id: parseInt(
               el.variants.nodes[
                 cartInfo[bundle.handle].partySizeIndex
@@ -536,7 +548,7 @@ console.log('contents', contents);
 
           await axios.post(`/api/bundle/carts`, cartData);
 
-          location.href = checkoutUrl;
+          // location.href = checkoutUrl;
         }, [API_CALLING_INTERVAL]);
       }, [API_CALLING_INTERVAL]);
     }, [API_CALLING_INTERVAL * 2]);
