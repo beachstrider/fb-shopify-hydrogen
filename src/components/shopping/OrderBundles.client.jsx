@@ -50,7 +50,7 @@ function getCartInfo(param) {
       totalPrice: 0,
       meals: [],
       mealQuantity: 0,
-      varientIndex: 0,
+      variantIndex: 0,
     },
   };
 }
@@ -182,7 +182,7 @@ export function OrderBundles({
 
   const totalPrice = (() => {
     let price =
-      bundle.variants.nodes[cartInfo[bundle.handle].varientIndex]?.priceV2
+      bundle.variants.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
         .amount;
     if (cartInfo[bundle.handle].priceType === 'recuring') {
       price =
@@ -215,7 +215,7 @@ export function OrderBundles({
     const selectedMeals = cartInfo[bundle.handle].meals.map((el) => {
       return {
         title: el.variants.nodes[
-          cartInfo[bundle.handle].varientIndex
+          cartInfo[bundle.handle].variantIndex
         ]?.metafields?.find((x) => x?.key === 'display_name')?.value,
         qty: el.quantity,
       };
@@ -299,7 +299,7 @@ export function OrderBundles({
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
 
-    // await initCart(bundle.variants.nodes[cartInfo[bundle.handle].varientIndex].id);
+    // await initCart(bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id);
 
     setCartInfo({
       ...cartInfo,
@@ -387,7 +387,7 @@ export function OrderBundles({
       ...cartInfo,
       [bundle.handle]: {
         ...cartInfo[bundle.handle],
-        varientIndex: e.target.value,
+        variantIndex: Number(e.target.value),
       },
     });
   }
@@ -397,8 +397,8 @@ export function OrderBundles({
 
     const productIndex = newProductsInCart.findIndex(
       (el) =>
-        el.variants.nodes[cartInfo[bundle.handle].varientIndex].id ===
-        product.variants.nodes[cartInfo[bundle.handle].varientIndex].id,
+        el.variants.nodes[cartInfo[bundle.handle].variantIndex].id ===
+        product.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
     );
 
     if (typeof diff === 'undefined') {
@@ -444,7 +444,7 @@ export function OrderBundles({
 
     const line = {
       merchandiseId:
-        bundle.variants.nodes[cartInfo[bundle.handle].varientIndex].id,
+        bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
       sellingPlanId: undefined,
       quantity: 1,
       attributes: getAttributes(
@@ -516,9 +516,9 @@ export function OrderBundles({
             bundle_configuration_content_id:
               el.bundle_configuration_contents_id,
             platform_product_variant_id: parseInt(
-              el.variants.nodes[cartInfo[bundle.handle].varientIndex]?.id.split(
-                'ProductVariant/',
-              )[1],
+              el.variants.nodes[
+                cartInfo[bundle.handle].variantIndex + 1
+              ]?.id.split('ProductVariant/')[1],
             ),
             quantity: el.quantity,
           }));
@@ -530,16 +530,16 @@ export function OrderBundles({
               cartInfo[bundle.handle].bundleData.platform_product_id,
             platform_variant_id: parseInt(
               bundle.variants.nodes[
-                cartInfo[bundle.handle].varientIndex
+                cartInfo[bundle.handle].variantIndex
               ]?.id.split('ProductVariant/')[1],
             ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
             subscription_type:
               bundle.variants.nodes[
-                cartInfo[bundle.handle].varientIndex
+                cartInfo[bundle.handle].variantIndex
               ]?.title.split(' /')[0],
             subscription_sub_type:
               bundle.variants.nodes[
-                cartInfo[bundle.handle].varientIndex
+                cartInfo[bundle.handle].variantIndex
               ]?.title.split('/ ')[1],
             bundle_id: cartInfo[bundle.handle].bundleData.id,
             delivery_day: getDayUsa(cartInfo[bundle.handle].deliveryDate),
@@ -650,7 +650,7 @@ export function OrderBundles({
                             className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
                             name="week"
                             onChange={handlePartyChange}
-                            value={cartInfo[bundle.handle].varientIndex}
+                            value={cartInfo[bundle.handle].variantIndex}
                             style={{borderWidth: 0, backgroundImage: 'none'}}
                           >
                             <option disabled value={-1}>
@@ -698,17 +698,17 @@ export function OrderBundles({
                                 <MealItem
                                   title={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].varientIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ].metafields?.find(
                                       (x) => x?.key === 'display_name',
                                     )?.value
                                   }
                                   image={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].varientIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ]?.image
                                       ? product.variants.nodes[
-                                          cartInfo[bundle.handle].varientIndex
+                                          cartInfo[bundle.handle].variantIndex
                                         ].image?.url
                                       : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                                   }
@@ -719,7 +719,7 @@ export function OrderBundles({
                                   }
                                   metafields={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].varientIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ].metafields
                                   }
                                 />
@@ -727,10 +727,10 @@ export function OrderBundles({
                                 {cartInfo[bundle.handle].meals.findIndex(
                                   (el) =>
                                     el.variants.nodes[
-                                      cartInfo[bundle.handle].varientIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ].id ===
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].varientIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ].id,
                                 ) === -1 ? (
                                   <div className="mt-2 px-4 text-center">
@@ -774,11 +774,11 @@ export function OrderBundles({
                                           (el) =>
                                             el.variants.nodes[
                                               cartInfo[bundle.handle]
-                                                .varientIndex
+                                                .variantIndex
                                             ].id ===
                                             product.variants.nodes[
                                               cartInfo[bundle.handle]
-                                                .varientIndex
+                                                .variantIndex
                                             ].id,
                                         ).quantity
                                       }
