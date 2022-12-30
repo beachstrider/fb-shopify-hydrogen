@@ -132,7 +132,7 @@ export function AboutUs() {
           alt=""
         />
         <img
-          className="lg:hidden md:block sm-max:block absolute bottom-0 left-4"
+          className="lg:hidden md:block sm-max:block md:absolute bottom-[-54px] left-4"
           src={
             'https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/triangles_mobile.png'
           }
