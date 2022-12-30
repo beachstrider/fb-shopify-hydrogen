@@ -7,7 +7,7 @@ const initialHeaders = {
   'Content-Type': 'application/json',
 };
 
-const baseURL = 'https://bundle-builder-api.speedwayapp.com/api/';
+// const baseURL = 'https://bundle-builder-api.speedwayapp.com/api/';
 const baseURL = 'https://bundle-builder-api-dev.speedwayapp.com/api/';
 
 // const shop = 'feastboxmeals.myshopify.com';
