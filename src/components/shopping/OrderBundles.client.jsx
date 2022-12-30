@@ -766,7 +766,7 @@ export function OrderBundles({
                                       ? product.variants.nodes[
                                         getVariantIndexDynamically()
                                         ].title.split('/ ')[1]
-                                      : ''
+                                      : 'Serves 5'
                                   }
                                 />
 
