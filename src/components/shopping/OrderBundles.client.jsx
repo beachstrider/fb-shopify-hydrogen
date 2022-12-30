@@ -61,8 +61,8 @@ export function OrderBundles({
   customerAccessToken,
   customerId = '',
 }) {
-  // const CDN_CACHE_ENV_MODE = 'development';
-  const CDN_CACHE_ENV_MODE = 'production';
+  const CDN_CACHE_ENV_MODE = 'development';
+  // const CDN_CACHE_ENV_MODE = 'production';
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
   const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
