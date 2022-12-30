@@ -129,7 +129,7 @@ export function AccountCreateForm() {
             </button>
           </div>
 
-          <button
+          {/* <button
             type="button"
             className="block py-2 text-lg text-center mt-8 font-bold w-full"
             href="#"
@@ -140,8 +140,8 @@ export function AccountCreateForm() {
             }}
           >
             Sign in with Google
-          </button>
-          <button
+          </button> */}
+          {/* <button
             type="button"
             className="block py-2 text-lg text-center  font-bold w-full"
             style={{
@@ -151,8 +151,8 @@ export function AccountCreateForm() {
             }}
           >
             Sign in with Facebook
-          </button>
-          <button
+          </button> */}
+          {/* <button
             type="button"
             className="block py-2 text-lg text-center  font-bold w-full "
             style={{
@@ -162,7 +162,7 @@ export function AccountCreateForm() {
             }}
           >
             Sign in with Amazon
-          </button>
+          </button> */}
 
           <div className="flex items-center mt-4">
             <p className="align-baseline text-sm">
