@@ -623,7 +623,7 @@ export function OrderBundles({
                   <div className="lg:text-[60px] text-[36px]">
                     {bundle?.title}
                   </div>
-                  {bundle.handle === 'family-feastbox' && (
+                  {bundle.handle === 'family-feastbox' ? (
                     <div className="lg:flex lg:gap-2">
                       <div className="font-bold text-md">Feeding a party?</div>
                       <Link
@@ -632,6 +632,17 @@ export function OrderBundles({
                         reloadDocument
                       >
                         Try our Event Box
+                      </Link>
+                    </div>
+                  ):(
+                    <div className="lg:flex lg:gap-2">
+                      <div className="font-bold text-md">Too much food?</div>
+                      <Link
+                        className="font-bold text-md text-[#DB9707] underline"
+                        to="/shop/bundle/family-feastbox"
+                        reloadDocument
+                      >
+                        Choose our Family Box
                       </Link>
                     </div>
                   )}
