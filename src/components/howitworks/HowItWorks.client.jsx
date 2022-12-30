@@ -30,7 +30,7 @@ export function HowItWorks() {
                 className="font-opensans text-center mb-0 sm:mt-12 md:mt-5 text-[30px] md:text-3xl 
               lg:text-[55px]"
               >
-                A Look Into the World of FEASTbox
+                A Look Into the World of <span className='relative'>FEASTbox<span className='absolute bg-[#DB9707] -bottom-[10px] w-full lg:h-[15px] md:h-[15px] sm-max:h-[5px] -rotate-[3deg] rounded-[10px] left-0'></span></span>
               </p>
             </div>
           </div>
@@ -112,9 +112,10 @@ export function HowItWorks() {
               </h2>
               <p className="font-opensans mt-[-20px] md:mt-1 lg:mt-1 w-[90%] ml-7 md:ml-3 lg:ml-10 text-[16px] sm:text-5xl md:text-3xl lg:text-5xl card-para mr-5 md:px-0 lg:px-0 text-right pr-12">
                 Lay out the feast, pass out the plates & watch the drool, I mean
-                <span className="ml-4 bg-contain pb-3 bg-bottom bg-[url(https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/underline_2.png)] bg-no-repeat">
-                  smiles,
-                </span>{' '}
+                <span className="relative ml-4 bg-contain bg-[url(https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/how_it_works/underline_2.png)] bg-no-repeat">
+                    smiles,
+                    <span className='absolute bg-[#DB9707] -bottom-[6px] w-full lg:h-[15px] md:h-[15px] sm-max:h-[5px] -rotate-[3deg] rounded-[10px] left-0'></span>
+                  </span>{' '}
                 spread!
               </p>
               <Link to={'/shop/bundle'}>

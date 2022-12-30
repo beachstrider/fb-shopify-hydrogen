@@ -89,7 +89,7 @@ export function OrderBundles({
     buyerIdentityUpdate,
     discountCodesUpdate,
   } = useCart();
-  console.log('cartInfo', cartInfo);
+  // console.log('cartInfo', cartInfo);
 
   const bundleIdNumber = Number(bundle.id.substring(22));
   const discountCodeInputRef = useRef(null);
@@ -116,6 +116,30 @@ export function OrderBundles({
     fetchAll();
   }, []);
 
+  //////
+
+  useEffect(() => {
+    const price =
+      bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
+        ?.amount;
+    const adjustmentPercentage =
+      bundle?.sellingPlanGroups?.nodes[0]?.sellingPlans?.nodes[0]
+        ?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage;
+
+    const cost = getFullCost(
+      price - (price * adjustmentPercentage) / 100,
+      bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
+        ?.currencyCode,
+    );
+
+    console.log('bundle=====>', bundle);
+    console.log('price=====>', price);
+    console.log('adjustmentPercentage=====>', adjustmentPercentage);
+    console.log('cost=====>', cost);
+  }, []);
+
+  //////
+
   useEffect(() => {
     setIsProductsLoading(true);
     let contentResult = [];
@@ -126,7 +150,6 @@ export function OrderBundles({
         const deliverBefore = new Date(content.deliver_before);
         //old logic from previous application
         if (dateNow > deliverAfter && dateNow < deliverBefore) {
-          console.log('date found', deliverAfter);
           contentResult = [content];
         }
         // return dayjs(cartInfo[bundle.handle].deliveryDate).isBetween(
@@ -317,7 +340,6 @@ export function OrderBundles({
     const product_ids = [];
     const config_ids = {};
     const bundle_config_content_ids = {};
-    console.log('contents', contents);
     for await (const content of contents) {
       const res = (
         await axios.get(
@@ -432,6 +454,13 @@ export function OrderBundles({
     });
   }
 
+  const getVariantIndexDynamically = () => {
+    let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
+    if (bundle.handle === 'event-feastbox') {
+      dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
+    }
+    return dynamicVariantIndex;
+  };
   async function handleCheckout() {
     setIsCheckoutProcessing(true);
     if (!cartInfo[bundle.handle].meals.length || !isQuantityLimit) {
@@ -508,12 +537,10 @@ export function OrderBundles({
                 : 'N/A',
             },
           ];
-          console.log('attributes', attributes);
           cartAttributesUpdate(attributes);
 
           const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
 
-          console.log('meals', cartInfo[bundle.handle].meals);
           const items = cartInfo[bundle.handle].meals.map((el) => {
             // update variant index based on bundle product when bundle product is Family feastbox then variant index defaul
             // but when Event feastbox then variant index will +1 as meals variant for eventbox start from 1 index in shopify
@@ -525,7 +552,9 @@ export function OrderBundles({
               bundle_configuration_content_id:
                 el.bundle_configuration_contents_id,
               platform_product_variant_id: parseInt(
-                el.variants.nodes[dynamicVariantIndex]?.id.split('ProductVariant/')[1],
+                el.variants.nodes[dynamicVariantIndex]?.id.split(
+                  'ProductVariant/',
+                )[1],
               ),
               quantity: el.quantity,
             };
@@ -567,6 +596,8 @@ export function OrderBundles({
     setNewDiscountCodes([discountCodeInputRef.current.value]);
   }
 
+  // console.log('--', bundle);
+
   return (
     <Loading className="py-20" isLoading={isInitialDataLoading}>
       <section className="bg-[#EFEFEF]">
@@ -576,7 +607,11 @@ export function OrderBundles({
               <div className="relative left-0 top-0 ">
                 <img
                   className="object-cover w-full md:h-1/2"
-                  src={bundle?.variants?.nodes[0]?.image?.url}
+                  src={
+                    bundle?.variants?.nodes[
+                      cartInfo[bundle.handle].variantIndex
+                    ]?.image?.url
+                  }
                   alt="FeastBox bundle"
                   onLoad={() => setIsInitialDataLoading(false)}
                 />
@@ -706,29 +741,25 @@ export function OrderBundles({
                                 <MealItem
                                   title={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].variantIndex
-                                    ].metafields?.find(
+                                      getVariantIndexDynamically()
+                                      ].metafields?.find(
                                       (x) => x?.key === 'display_name',
                                     )?.value
                                   }
                                   image={
-                                    product.variants.nodes[
-                                      cartInfo[bundle.handle].variantIndex
-                                    ]?.image
-                                      ? product.variants.nodes[
-                                          cartInfo[bundle.handle].variantIndex
-                                        ].image?.url
+                                    product.featuredImage
+                                      ? product.featuredImage.url
                                       : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                                   }
-                                  modalimage={
-                                    product.variants.nodes[1].image
-                                      ? product.variants.nodes[1].image?.url
-                                      : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
-                                  }
+                                  modalimage={product.variants.nodes[getVariantIndexDynamically()].image
+                                    ? product.variants.nodes[
+                                      getVariantIndexDynamically()
+                                      ].image?.url
+                                    : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'}
                                   metafields={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].variantIndex
-                                    ].metafields
+                                      getVariantIndexDynamically()
+                                      ].metafields
                                   }
                                   serveAs={typeof bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.metafields[0]?.value != 'undefined' ? bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.metafields[0]?.value : 5 }
                                 />
@@ -911,13 +942,20 @@ export function OrderBundles({
                                               <strike>
                                                 {getFullCost(
                                                   typeof bundle?.variants
-                                                    ?.nodes[0]?.priceV2
-                                                    ?.amount !== 'undefined'
-                                                    ? bundle?.variants?.nodes[0]
-                                                        ?.priceV2?.amount
+                                                    ?.nodes[
+                                                    cartInfo[bundle.handle]
+                                                      .variantIndex
+                                                  ]?.priceV2?.amount !==
+                                                    'undefined'
+                                                    ? bundle?.variants?.nodes[
+                                                        cartInfo[bundle.handle]
+                                                          .variantIndex
+                                                      ]?.priceV2?.amount
                                                     : undefined,
-                                                  bundle?.variants?.nodes[0]
-                                                    ?.priceV2?.currencyCode,
+                                                  bundle?.variants?.nodes[
+                                                    cartInfo[bundle.handle]
+                                                      .variantIndex
+                                                  ]?.priceV2?.currencyCode,
                                                 )}
                                               </strike>
                                             </span>
@@ -927,8 +965,10 @@ export function OrderBundles({
                                             >
                                               {(() => {
                                                 const price =
-                                                  bundle?.variants?.nodes[0]
-                                                    ?.priceV2?.amount;
+                                                  bundle?.variants?.nodes[
+                                                    cartInfo[bundle.handle]
+                                                      .variantIndex
+                                                  ]?.priceV2?.amount;
                                                 const adjustmentPercentage =
                                                   bundle?.sellingPlanGroups
                                                     ?.nodes[0]?.sellingPlans
@@ -948,8 +988,10 @@ export function OrderBundles({
                                                         adjustmentPercentage) /
                                                         100
                                                     ).toFixed(2),
-                                                    bundle?.variants?.nodes[0]
-                                                      ?.priceV2?.currencyCode,
+                                                    bundle?.variants?.nodes[
+                                                      cartInfo[bundle.handle]
+                                                        .variantIndex
+                                                    ]?.priceV2?.currencyCode,
                                                   );
 
                                                 return '';
@@ -1000,8 +1042,9 @@ export function OrderBundles({
                                     <p>
                                       {(() => {
                                         const price =
-                                          bundle?.variants?.nodes[0]?.priceV2
-                                            ?.amount;
+                                          bundle?.variants?.nodes[
+                                            cartInfo[bundle.handle].variantIndex
+                                          ]?.priceV2?.amount;
                                         const adjustmentPercentage =
                                           bundle?.sellingPlanGroups?.nodes[0]
                                             ?.sellingPlans?.nodes[0]
@@ -1021,8 +1064,10 @@ export function OrderBundles({
                                             'Save ' +
                                             getFullCost(
                                               diff,
-                                              bundle?.variants?.nodes[0]
-                                                ?.priceV2?.currencyCode,
+                                              bundle?.variants?.nodes[
+                                                cartInfo[bundle.handle]
+                                                  .variantIndex
+                                              ]?.priceV2?.currencyCode,
                                             )
                                           );
                                         }
@@ -1088,10 +1133,14 @@ export function OrderBundles({
                                             style={{fontSize: 18}}
                                           >
                                             {getFullCost(
-                                              bundle?.variants?.nodes[0]
-                                                ?.priceV2?.amount,
-                                              bundle?.variants?.nodes[0]
-                                                ?.priceV2?.currencyCode,
+                                              bundle?.variants?.nodes[
+                                                cartInfo[bundle.handle]
+                                                  .variantIndex
+                                              ]?.priceV2?.amount,
+                                              bundle?.variants?.nodes[
+                                                cartInfo[bundle.handle]
+                                                  .variantIndex
+                                              ]?.priceV2?.currencyCode,
                                             )}{' '}
                                             /{' '}
                                           </span>
@@ -1140,7 +1189,9 @@ export function OrderBundles({
                               </div>
                             </div>
                             <div className="flex items-center gap-4">
-                              <p className="text-gray-700 text-sm font-bold">*Shipping and discounts calculated at checkout.</p>
+                              <p className="text-gray-700 text-sm font-bold">
+                                *Shipping and discounts calculated at checkout.
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -1151,7 +1202,9 @@ export function OrderBundles({
                         Total:{' '}
                         {getFullCost(
                           totalPrice,
-                          bundle.variants?.nodes[0]?.priceV2?.currencyCode,
+                          bundle.variants?.nodes[
+                            cartInfo[bundle.handle].variantIndex
+                          ]?.priceV2?.currencyCode,
                         )}
                       </span>
                       <div className="flex flex-col sm:flex-row items-center gap-4">
