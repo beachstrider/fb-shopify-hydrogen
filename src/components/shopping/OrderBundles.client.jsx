@@ -454,6 +454,13 @@ export function OrderBundles({
     });
   }
 
+  const getVariantIndexDynamically = () => {
+    let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
+    if (bundle.handle === 'event-feastbox') {
+      dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
+    }
+    return dynamicVariantIndex;
+  };
   async function handleCheckout() {
     setIsCheckoutProcessing(true);
     if (!cartInfo[bundle.handle].meals.length || !isQuantityLimit) {
@@ -734,29 +741,25 @@ export function OrderBundles({
                                 <MealItem
                                   title={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].variantIndex
-                                    ].metafields?.find(
+                                      getVariantIndexDynamically()
+                                      ].metafields?.find(
                                       (x) => x?.key === 'display_name',
                                     )?.value
                                   }
                                   image={
-                                    product.variants.nodes[
-                                      cartInfo[bundle.handle].variantIndex
-                                    ]?.image
-                                      ? product.variants.nodes[
-                                          cartInfo[bundle.handle].variantIndex
-                                        ].image?.url
+                                    product.featuredImage
+                                      ? product.featuredImage.url
                                       : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                                   }
-                                  modalimage={
-                                    product.variants.nodes[1].image
-                                      ? product.variants.nodes[1].image?.url
-                                      : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
-                                  }
+                                  modalimage={product.variants.nodes[getVariantIndexDynamically()].image
+                                    ? product.variants.nodes[
+                                      getVariantIndexDynamically()
+                                      ].image?.url
+                                    : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'}
                                   metafields={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].variantIndex
-                                    ].metafields
+                                      getVariantIndexDynamically()
+                                      ].metafields
                                   }
                                 />
 
