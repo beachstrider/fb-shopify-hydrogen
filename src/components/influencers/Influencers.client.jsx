@@ -131,7 +131,7 @@ export function Influencers() {
                 family in need.
               </p>
               <div className="text-center md:text-left pt-5">
-                <Link to="/how-it-works">
+                <Link to="http://fullofhope.org" target="_blank">
                   <button className="bg-[#A60D1E] text-white font-bold px-7 py-3">
                     Learn More
                   </button>
@@ -274,7 +274,7 @@ export function Influencers() {
           </Marquee>
         </div>
         <div className="text-center py-5">
-          <Link to="http://fullofhope.org" target="_blank">
+          <Link to="/how-it-works">
             <button className="bg-[#A60D1E] text-white font-bold px-8 py-2">
               Learn More
             </button>
