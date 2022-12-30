@@ -1034,7 +1034,7 @@ export function OrderBundles({
                             </div>
                           </div>
                           <div
-                            className={`lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2 ${
+                            className={`lg:w-[50%] md:w-full sm-max:w-full px-2 ${
                               !isQuantityLimit ? 'opacity-50' : ''
                             }`}
                           >
@@ -1136,6 +1136,9 @@ export function OrderBundles({
                                   </div>
                                 )}
                               </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <p className="text-gray-700 text-sm font-bold">*Shipping and discounts calculated at checkout.</p>
                             </div>
                           </div>
                         </div>
