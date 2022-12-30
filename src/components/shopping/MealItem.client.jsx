@@ -48,14 +48,14 @@ export function MealItem({title, image, modalimage, metafields}) {
       </MealModal> */}
       {openModal ? (
         <>
-          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none xsm:m-3">
             <div className="relative w-auto my-10 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 shadow-lg relative flex flex-col w-80 sm:w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
                 <button
                   type="button"
-                  className="absolute top-[15px] right-[10px] text-gray-800"
+                  className="absolute top-[8px] right-[8px] text-gray-800 xsm:bg-white xsm:rounded-full p-1"
                   onClick={() => setOpenModal(false)}
                 >
                   <span className="sr-only">Close</span>
@@ -72,7 +72,7 @@ export function MealItem({title, image, modalimage, metafields}) {
                     />
                   </svg>
                 </button>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 px-5 py-5">
+                <div className="modelwrap grid grid-cols-1 gap-4 sm:grid-cols-2 px-5 py-5 xsm:h-[500px] xsm:overflow-auto">
                   <div>
                     <img
                       alt="Laptop"

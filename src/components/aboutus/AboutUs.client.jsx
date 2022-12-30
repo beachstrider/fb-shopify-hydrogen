@@ -5,8 +5,9 @@ export function AboutUs() {
     <section className="lg:pt-[100px] text-white pt-25 pb-8 bg-[url('../assets/join_bg.png')]">
       <div className="top-banner">
         <div className="banner-section relative">
-          <div className=" sm-max:p-[50px] md:p-[50px] md-only:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/hero_image.png')] sm-max:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/hero_image.png')]">
-            <h1 className="font-bungee lg:text-center md:text-start font-extrabold lg:text-[90px] md:text-[70px] sm-max:text-[60px] lg:leading-[90px] md:leading-[70px] sm-max:leading-[60px] md:mt-[-30px] mt-[-22px] mb-[29px] -tracking-[-7px]">
+          <div className="sm-max:px-[40px] sm-max:pt-[27px] md:p-[50px] md-only:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/hero_image.png')] sm-max:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/hero_bg_mobile.png')]">
+            <h1 className="font-bungee lg:text-center md:text-start font-extrabold lg:text-[90px] md:text-[70px] sm-max:text-[37px]
+             lg:leading-[90px] md:leading-[70px] sm-max:leading-[42px] md:mt-[-30px] mt-[195px] mb-[5px] md:-tracking-[-7px] -tracking-[-1px]">
               HERE’S THE FEASTBOX 411
             </h1>
             <p className="font-opensans lg:text-right md:text-start sm-max:text-start font-medium font-sans lg:text-[30px] md:text-[20px] sm:text-[20px]">
@@ -23,7 +24,7 @@ export function AboutUs() {
               />
             </div>
             <div className="lg:w-5/12 md:w-full sm-max:w-full">
-              <h2 className="font-opensans custom-font lg:text-center sm-max:mt-16 mt-12 text-start font-bold bg-[#DB9707] lg:ml-[-50px] lg:text-[60px] md:text-[40px] sm-max:text-[35px] -tracking-[3.5px] px-[30px]">
+              <h2 className="font-opensans custom-font lg:text-center sm-max:mt-6 mt-12 text-start font-bold bg-[#DB9707] lg:ml-[-50px] lg:text-[60px] md:text-[40px] sm-max:text-[35px] -tracking-[3.5px] px-[30px]">
                 WHO EVEN ARE WE?
               </h2>
               <p className="font-opensans  lg:p-12 md:px-[7%] md:py-[22px] sm-max:px-[7%] sm-max:py-[22px] text-[25px] lg:text-[30px] md:text-[20px] sm-max:text-[20px] text-white">
@@ -131,7 +132,7 @@ export function AboutUs() {
           alt=""
         />
         <img
-          className="lg:hidden md:block sm-max:block absolute bottom-0 left-4"
+          className="lg:hidden md:block sm-max:block md:absolute bottom-[-54px] left-4"
           src={
             'https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/triangles_mobile.png'
           }
@@ -144,7 +145,7 @@ export function AboutUs() {
         </h1>
         <div className="flex justify-center flex-wrap">
           <div className="mt-[30px] flex lg:p-[50px] md:p-[40px] sm-max:p-[25px] bg-white justify-center relative">
-            <div className="relative mr-[25px]">
+            <div className="relative mr-[10px]">
               <img
                 className="lg:w-[90px] sm-max:w-50px"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
@@ -154,7 +155,7 @@ export function AboutUs() {
                 0
               </span>
             </div>
-            <div className="relative mr-[25px]">
+            <div className="relative mr-[10px]">
               <img
                 className="lg:w-[90px] sm-max:w-50px"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
@@ -164,7 +165,7 @@ export function AboutUs() {
                 0
               </span>
             </div>
-            <div className="relative mr-[25px]">
+            <div className="relative mr-[10px]">
               <img
                 className="lg:w-[90px] sm-max:w-50px"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
@@ -174,7 +175,7 @@ export function AboutUs() {
                 0
               </span>
             </div>
-            <div className="relative mr-[25px]">
+            <div className="relative mr-[10px]">
               <img
                 className="lg:w-[90px] sm-max:w-50px"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
@@ -184,7 +185,7 @@ export function AboutUs() {
                 0
               </span>
             </div>
-            <div className="relative mr-[25px]">
+            <div className="relative mr-[10px]">
               <img
                 className="lg:w-[90px] sm-max:w-50px"
                 src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"

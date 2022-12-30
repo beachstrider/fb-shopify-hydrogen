@@ -10,8 +10,8 @@ const Tabs = ({metafields}) => {
     setSelectedTag(index);
   };
 
-  console.log('url', embedLink);
-  console.log('meta', metafields);
+  // console.log('url', embedLink);
+  // console.log('meta', metafields);
 
   useEffect(() => {
     loadScript(embedLink);
@@ -82,30 +82,30 @@ const Tabs = ({metafields}) => {
                 className="relative mx-auto font-bold overflow-hidden"
               >
                 <div className="text-left text-black">
-                  <p>
+                  <p className='text-[15px] font-normal'>
                     {metafields?.find((x) => x?.key === 'description')?.value}
                   </p>
-                  <h3 className="font-bold text-lg">What&apos;s in the box</h3>
-                  <div>
+                  <h3 className="font-bold text-2xl font-bold pt-2">What&apos;s in the box?</h3>
+                  <div className='py-2'>
                     <p className="font-bold text-sm">Main courses</p>
-                    <span className="text-sm">
+                    <span className="text-[14px] font-normal">
                       {metafields?.find((x) => x?.key === 'main_course')?.value}
                     </span>
                   </div>
                   <div className="py-2">
                     <p className="font-bold text-sm">Side Dishes</p>
-                    <span className="text-sm">
+                    <span className="text-[14px] font-normal">
                       {metafields?.find((x) => x?.key === 'side_dishes')?.value}
                     </span>
                   </div>
                   <div>
                     <p className="font-bold text-sm">Sauce</p>
-                    <span className="text-sm">
+                    <span className="text-[14px] font-normal">
                       {metafields?.find((x) => x?.key === 'sauce')?.value}
                     </span>
                   </div>
-                  <h3 className="font-bold text-lg">Allergens</h3>
-                  <span className="text-sm">
+                  <h3 className="font-bold text-2xl font-bold pt-2">Allergens</h3>
+                  <span className="text-[14px] font-normal">
                     {metafields?.find((x) => x?.key === 'allergens')?.value}
                   </span>
                 </div>

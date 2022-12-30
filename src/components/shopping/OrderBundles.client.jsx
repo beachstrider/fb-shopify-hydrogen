@@ -50,7 +50,7 @@ function getCartInfo(param) {
       totalPrice: 0,
       meals: [],
       mealQuantity: 0,
-      partySizeIndex: 0,
+      variantIndex: 0,
     },
   };
 }
@@ -61,7 +61,7 @@ export function OrderBundles({
   customerAccessToken,
   customerId = '',
 }) {
-  const CDN_CACHE_ENV_MODE = 'production';
+  const CDN_CACHE_ENV_MODE = 'production'; //development
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
   const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
@@ -81,7 +81,6 @@ export function OrderBundles({
     id,
     lines,
     checkoutUrl,
-    attributes,
     cartAttributesUpdate,
     cartCreate,
     linesAdd,
@@ -118,16 +117,24 @@ export function OrderBundles({
 
   useEffect(() => {
     setIsProductsLoading(true);
+    let contentResult = [];
     const contents = [...cartInfo[bundle.handle].bundleContents].filter(
       (content) => {
-        return dayjs(cartInfo[bundle.handle].deliveryDate).isBetween(
-          content.deliver_after,
-          content.deliver_before,
-        );
+        const dateNow = new Date(cartInfo[bundle.handle].deliveryDate);
+        const deliverAfter = new Date(content.deliver_after);
+        const deliverBefore = new Date(content.deliver_before);
+        //old logic from previous application
+        if (dateNow > deliverAfter && dateNow < deliverBefore) {
+          console.log('date found', deliverAfter);
+          contentResult = [content];
+        }
+        // return dayjs(cartInfo[bundle.handle].deliveryDate).isBetween(
+        //   content.deliver_after,
+        //   content.deliver_before,
+        // );
       },
     );
-
-    fetchContents(contents);
+    fetchContents(contentResult);
   }, [cartInfo[bundle.handle].deliveryDate]);
 
   useEffect(() => {
@@ -175,7 +182,7 @@ export function OrderBundles({
 
   const totalPrice = (() => {
     let price =
-      bundle.variants.nodes[cartInfo[bundle.handle].partySizeIndex]?.priceV2
+      bundle.variants.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
         .amount;
     if (cartInfo[bundle.handle].priceType === 'recuring') {
       price =
@@ -201,10 +208,14 @@ export function OrderBundles({
       cartInfo[bundle.handle]?.priceType === 'recuring'
         ? 'Recurring'
         : 'Onetime';
+    const frequency =
+      cartInfo[bundle.handle]?.priceType === 'recuring'
+        ? cartInfo[bundle.handle].frequencyValue
+        : 'N/A';
     const selectedMeals = cartInfo[bundle.handle].meals.map((el) => {
       return {
         title: el.variants.nodes[
-          cartInfo[bundle.handle].partySizeIndex
+          cartInfo[bundle.handle].variantIndex
         ]?.metafields?.find((x) => x?.key === 'display_name')?.value,
         qty: el.quantity,
       };
@@ -235,12 +246,20 @@ export function OrderBundles({
         key: 'Purchase Type',
         value: purchaseType, // issue on checkout without updating cart
       },
+      {
+        key: 'Frequency',
+        value: frequency, // issue on checkout without updating cart
+      },
     ];
   }
 
   async function fetchDeliveryDates() {
-    const deliveryDateCacheUrl = CDN_CACHE_ENV_MODE === 'production' ? 'delivery_dates.json' : 'delivery_dates_dev.json';
-    const res = (await axios.get(`${caching_server}/${deliveryDateCacheUrl}`)).data;
+    const deliveryDateCacheUrl =
+      CDN_CACHE_ENV_MODE === 'production'
+        ? 'delivery_dates.json'
+        : 'delivery_dates_dev.json';
+    const res = (await axios.get(`${caching_server}/${deliveryDateCacheUrl}`))
+      .data;
 
     const today = new Date();
     today.setHours(0);
@@ -270,7 +289,8 @@ export function OrderBundles({
   }
 
   async function fetchBundle() {
-    const bundleCacheUrl = CDN_CACHE_ENV_MODE === 'production' ? 'bundles.json' : 'bundles_dev.json';
+    const bundleCacheUrl =
+      CDN_CACHE_ENV_MODE === 'production' ? 'bundles.json' : 'bundles_dev.json';
     const bundleDataRes = (
       await axios.get(`${caching_server}/${bundleCacheUrl}`)
     ).data.find((el) => el.platform_product_id === bundleIdNumber);
@@ -279,7 +299,7 @@ export function OrderBundles({
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
 
-    // await initCart(bundle.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id);
+    // await initCart(bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id);
 
     setCartInfo({
       ...cartInfo,
@@ -295,7 +315,8 @@ export function OrderBundles({
   async function fetchContents(contents) {
     const product_ids = [];
     const config_ids = {};
-
+    const bundle_config_content_ids = {};
+    console.log('contents', contents);
     for await (const content of contents) {
       const res = (
         await axios.get(
@@ -311,6 +332,9 @@ export function OrderBundles({
         product_ids.push(el.platform_product_id);
         config_ids[`gid://shopify/Product/${el.platform_product_id}`] =
           el.contents.bundle_configuration_id;
+        bundle_config_content_ids[
+          `gid://shopify/Product/${el.platform_product_id}`
+        ] = el.bundle_configuration_contents_id;
       });
     }
 
@@ -323,6 +347,8 @@ export function OrderBundles({
         products.map((product) => ({
           ...product,
           bundleConfigurationId: config_ids[product.id],
+          bundle_configuration_contents_id:
+            bundle_config_content_ids[product.id],
         })),
       );
     } else {
@@ -361,7 +387,7 @@ export function OrderBundles({
       ...cartInfo,
       [bundle.handle]: {
         ...cartInfo[bundle.handle],
-        partySizeIndex: e.target.value,
+        variantIndex: Number(e.target.value),
       },
     });
   }
@@ -371,8 +397,8 @@ export function OrderBundles({
 
     const productIndex = newProductsInCart.findIndex(
       (el) =>
-        el.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id ===
-        product.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id,
+        el.variants.nodes[cartInfo[bundle.handle].variantIndex].id ===
+        product.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
     );
 
     if (typeof diff === 'undefined') {
@@ -418,7 +444,7 @@ export function OrderBundles({
 
     const line = {
       merchandiseId:
-        bundle.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id,
+        bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
       sellingPlanId: undefined,
       quantity: 1,
       attributes: getAttributes(
@@ -451,22 +477,6 @@ export function OrderBundles({
       linesAdd([line]);
     }, [API_CALLING_INTERVAL]);
 
-    // add cart note attribute its required
-    setTimeout(() => {
-      cartAttributesUpdate({
-        attributes: {
-          'delivery-date': formatUTCDate(
-            cartInfo[bundle.handle].deliveryDate,
-            'YYYY-MM-DD',
-          ),
-          'delivery-day': cartInfo[bundle.handle].deliveryDay
-            ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format('dddd')
-            : '',
-        },
-        cartId: id
-      });
-    }, [API_CALLING_INTERVAL]);
-
     setTimeout(() => {
       if (
         discountCodeInputRef.current !== null &&
@@ -479,17 +489,46 @@ export function OrderBundles({
         });
 
         setTimeout(async () => {
+          // add cart note attribute its required
+          const attributes = [
+            {
+              key: 'delivery-date',
+              value: formatUTCDate(
+                cartInfo[bundle.handle].deliveryDate,
+                'YYYY-MM-DD',
+              ),
+            },
+            {
+              key: 'delivery-day',
+              value: cartInfo[bundle.handle].deliveryDay
+                ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format(
+                    'dddd',
+                  )
+                : 'N/A',
+            },
+          ];
+          console.log('attributes', attributes);
+          cartAttributesUpdate(attributes);
+
           const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
 
-          const items = cartInfo[bundle.handle].meals.map((el) => ({
-            bundle_configuration_content_id: el.bundleConfigurationId,
-            platform_product_variant_id: parseInt(
-              el.variants.nodes[
-                cartInfo[bundle.handle].partySizeIndex
-              ]?.id.split('ProductVariant/')[1],
-            ),
-            quantity: el.quantity,
-          }));
+          console.log('meals', cartInfo[bundle.handle].meals);
+          const items = cartInfo[bundle.handle].meals.map((el) => {
+            // update variant index based on bundle product when bundle product is Family feastbox then variant index defaul
+            // but when Event feastbox then variant index will +1 as meals variant for eventbox start from 1 index in shopify
+            let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
+            if (bundle.handle === 'event-feastbox') {
+              dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
+            }
+            return {
+              bundle_configuration_content_id:
+                el.bundle_configuration_contents_id,
+              platform_product_variant_id: parseInt(
+                el.variants.nodes[dynamicVariantIndex]?.id.split('ProductVariant/')[1],
+              ),
+              quantity: el.quantity,
+            };
+          });
 
           const cartData = {
             platform_customer_id: null, //if customer logged in then save shopify customer idp
@@ -498,16 +537,16 @@ export function OrderBundles({
               cartInfo[bundle.handle].bundleData.platform_product_id,
             platform_variant_id: parseInt(
               bundle.variants.nodes[
-                cartInfo[bundle.handle].partySizeIndex
+                cartInfo[bundle.handle].variantIndex
               ]?.id.split('ProductVariant/')[1],
             ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
             subscription_type:
               bundle.variants.nodes[
-                cartInfo[bundle.handle].partySizeIndex
+                cartInfo[bundle.handle].variantIndex
               ]?.title.split(' /')[0],
             subscription_sub_type:
               bundle.variants.nodes[
-                cartInfo[bundle.handle].partySizeIndex
+                cartInfo[bundle.handle].variantIndex
               ]?.title.split('/ ')[1],
             bundle_id: cartInfo[bundle.handle].bundleData.id,
             delivery_day: getDayUsa(cartInfo[bundle.handle].deliveryDate),
@@ -544,7 +583,7 @@ export function OrderBundles({
             </div>
             <div className="w-full md:w-1/1 lg:w-1/2 xl:w-1/2 px-8">
               <div className="">
-                <div className="mt-2 lg:mt-16 font-bold">
+                <div className="mt-2 font-bold">
                   <div className="lg:text-[60px] text-[36px]">
                     {bundle?.title}
                   </div>
@@ -618,7 +657,7 @@ export function OrderBundles({
                             className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
                             name="week"
                             onChange={handlePartyChange}
-                            value={cartInfo[bundle.handle].partySizeIndex}
+                            value={cartInfo[bundle.handle].variantIndex}
                             style={{borderWidth: 0, backgroundImage: 'none'}}
                           >
                             <option disabled value={-1}>
@@ -646,8 +685,8 @@ export function OrderBundles({
                   <div className="mb-14">
                     <div className="flex items-center gap-6 text-gray-800  mb-2">
                       <div className="md:text-2xl text-lg font-bold">
-                        {bundle.handle === 'event-feastbox' ? '3' : '2'}.
-                        Choose. Choose your Meals
+                        {bundle.handle === 'event-feastbox' ? '3' : '2'}. Choose
+                        your Meals
                       </div>
                       <div className="text-sm">
                         ({currentQuantity} of{' '}
@@ -666,17 +705,17 @@ export function OrderBundles({
                                 <MealItem
                                   title={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].partySizeIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ].metafields?.find(
                                       (x) => x?.key === 'display_name',
                                     )?.value
                                   }
                                   image={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].partySizeIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ]?.image
                                       ? product.variants.nodes[
-                                          cartInfo[bundle.handle].partySizeIndex
+                                          cartInfo[bundle.handle].variantIndex
                                         ].image?.url
                                       : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                                   }
@@ -687,7 +726,7 @@ export function OrderBundles({
                                   }
                                   metafields={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].partySizeIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ].metafields
                                   }
                                 />
@@ -695,10 +734,10 @@ export function OrderBundles({
                                 {cartInfo[bundle.handle].meals.findIndex(
                                   (el) =>
                                     el.variants.nodes[
-                                      cartInfo[bundle.handle].partySizeIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ].id ===
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].partySizeIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ].id,
                                 ) === -1 ? (
                                   <div className="mt-2 px-4 text-center">
@@ -742,11 +781,11 @@ export function OrderBundles({
                                           (el) =>
                                             el.variants.nodes[
                                               cartInfo[bundle.handle]
-                                                .partySizeIndex
+                                                .variantIndex
                                             ].id ===
                                             product.variants.nodes[
                                               cartInfo[bundle.handle]
-                                                .partySizeIndex
+                                                .variantIndex
                                             ].id,
                                         ).quantity
                                       }
@@ -790,7 +829,7 @@ export function OrderBundles({
                           ))
                         ) : (
                           <div className="w-full flex justify-center items-center py-8 text-lg">
-                            <div>No available products</div>
+                            <div>No available meals</div>
                           </div>
                         )}
                       </div>
@@ -995,7 +1034,7 @@ export function OrderBundles({
                             </div>
                           </div>
                           <div
-                            className={`lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2 ${
+                            className={`lg:w-[50%] md:w-full sm-max:w-full px-2 ${
                               !isQuantityLimit ? 'opacity-50' : ''
                             }`}
                           >
@@ -1069,7 +1108,7 @@ export function OrderBundles({
                                 style={{fontSize: 18}}
                                 className=" font-bold"
                               >
-                                Discount Applied:
+                                Discount Coupon:
                               </span>
                               <br />
                             </p>
@@ -1097,6 +1136,9 @@ export function OrderBundles({
                                   </div>
                                 )}
                               </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <p className="text-gray-700 text-sm font-bold">*Shipping and discounts calculated at checkout.</p>
                             </div>
                           </div>
                         </div>

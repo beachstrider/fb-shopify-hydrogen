@@ -96,7 +96,7 @@ const Index = ({subscription, subscription_id, user}) => {
       //     alert('The subscription info is updated.');
       //   };
     };
-    getData(subscription_id);
+    // getData(subscription_id);
   }, []);
 
   const getOrdersToShow = async (subscription_id) => {
@@ -331,8 +331,8 @@ const Index = ({subscription, subscription_id, user}) => {
             <div className="flex flex-wrap -mx-4 -mb-0">
               <div className="w-full px-4 md:w-1/1 xl:w-3/3 lg:w-3/3">
                 <div className="xl:pl-10">
-                  <div className="mb-10 pb-10">
-                    {/*--------------Step 1--------------------------------------*/}
+                  <h1 className="font-bold text-lg">Coming soon...</h1>
+                  {/*<div className="mb-10 pb-10">
                     <div
                       style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}
                     >
@@ -368,7 +368,6 @@ const Index = ({subscription, subscription_id, user}) => {
                         </div>
                       </div>
                     </div>
-                    {/*--------------Step 2--------------------------------------*/}
                     <div className="flex justify-between">
                       <div
                         className="block text-gray-800 text-lg font-bold mb-2"
@@ -388,7 +387,6 @@ const Index = ({subscription, subscription_id, user}) => {
                     </div>
 
                     <div className="flex flex-wrap -mx-2 -mb-2">
-                      {/*--1----*/}
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2">
                         <div className="text-center">
                           <button
@@ -468,7 +466,6 @@ const Index = ({subscription, subscription_id, user}) => {
                           </div>
                         </div>
                       </div>
-                      {/*--2----*/}
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
                         <div className="text-center">
                           <button
@@ -503,7 +500,6 @@ const Index = ({subscription, subscription_id, user}) => {
                           </div>
                         </div>
                       </div>
-                      {/*--3----*/}
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
                         <div className="text-center">
                           <button
@@ -538,7 +534,6 @@ const Index = ({subscription, subscription_id, user}) => {
                           </div>
                         </div>
                       </div>
-                      {/*--4----*/}
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
                         <div className="text-center">
                           <button
@@ -573,7 +568,6 @@ const Index = ({subscription, subscription_id, user}) => {
                           </div>
                         </div>
                       </div>
-                      {/*--5----*/}
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
                         <div className="text-center">
                           <button
@@ -616,7 +610,7 @@ const Index = ({subscription, subscription_id, user}) => {
                       Breakfast Meals
                     </div>
                     <div className="flex flex-wrap -mx-2 -mb-2">
-                      {/*--1----*/}
+                      --1----
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
                         <div className="text-center">
                           <button
@@ -651,7 +645,7 @@ const Index = ({subscription, subscription_id, user}) => {
                           </div>
                         </div>
                       </div>
-                      {/*--2----*/}
+                      --2----
                       <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
                         <div className="text-center">
                           <button
@@ -687,7 +681,7 @@ const Index = ({subscription, subscription_id, user}) => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div>*/}
                 </div>
               </div>
             </div>

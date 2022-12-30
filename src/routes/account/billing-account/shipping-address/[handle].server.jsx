@@ -59,12 +59,6 @@ export default function Account({response}) {
       <AccountPageLayout user={customer} currentPath="billing-account">
         <ShippingAddress address={shippingAddress} />
       </AccountPageLayout>
-      <div
-        id="version_mark"
-        className="fixed flex justify-center items-center right-40 top-0 mt-20 z-10 p-20 text-2xl bg-white bg-opacity-60"
-      >
-        BETA, Dec 9 - Jason
-      </div>
     </Layout>
   );
 }

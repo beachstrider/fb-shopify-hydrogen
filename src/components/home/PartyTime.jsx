@@ -2,7 +2,7 @@ import {Link} from '@shopify/hydrogen';
 export function PartyTime() {
   return (
     <section className="">
-      <div className="">
+      <div className="relative">
         <div className=" h-[120px] bg-[#DB9707]"></div>
         <div className=" h-auto bg-[#FFFFFF]">
           <div className="container max-w-screen-xl mx-auto">
@@ -43,7 +43,7 @@ export function PartyTime() {
             </div>
           </div>
         </div>
-        <div className="h-[100px] bg-[#FFFFFF] bg-right bg-center bg-no-repeat bg-cover pb-6 bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/triangles_all_mobile.png')] md:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/triangles_top.png')]"></div>
+        <img className="hidden sm-max:block w-full absolute bottom-[-75px] z-[3]" src={'https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/triangles_all_mobile.png'} alt='' />
       </div>
     </section>
   );

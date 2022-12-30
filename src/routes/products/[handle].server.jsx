@@ -75,7 +75,8 @@ export default function Product() {
   });
 
   return (
-    <Layout>
+    <NotFound />
+    /*<Layout>
       <Suspense>
         <Seo type="product" data={product} />
       </Suspense>
@@ -123,11 +124,11 @@ export default function Product() {
             </div>
           </div>
         </Section>
-        {/* <Suspense>
+        {/!* <Suspense>
           <ProductSwimlane title="Related Products" data={id} />
-        </Suspense>*/}
+        </Suspense>*!/}
       </ProductOptionsProvider>
-    </Layout>
+    </Layout>*/
   );
 }
 
