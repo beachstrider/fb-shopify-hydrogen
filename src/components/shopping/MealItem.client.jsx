@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Tabs from '../Tabs.client';
 import {MealModal} from '../global';
 
-export function MealItem({title, image, modalimage, metafields, serveAs}) {
+export function MealItem({title, image, modalimage, metafields, variant_title}) {
   const [openModal, setOpenModal] = useState(false);
 
   return (
@@ -22,7 +22,7 @@ export function MealItem({title, image, modalimage, metafields, serveAs}) {
           alt="Meals"
         />
         <h3 className="font-bold font-heading text-sm text-center">{title}</h3>
-        <div className="text-center text-sm mb-2 ">Serves: {serveAs}</div>
+        <div className="text-center text-sm mb-2 ">{variant_title}</div>
       </button>
 
       {/* <MealModal open={openModal} close={() => setOpenModal(false)}>

@@ -761,7 +761,13 @@ export function OrderBundles({
                                       getVariantIndexDynamically()
                                       ].metafields
                                   }
-                                  serveAs={typeof bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.metafields[0]?.value != 'undefined' ? bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.metafields[0]?.value : 5 }
+                                  variant_title={
+                                    bundle.handle === 'event-feastbox'
+                                      ? product.variants.nodes[
+                                        getVariantIndexDynamically()
+                                        ].title.split('/ ')[1]
+                                      : ''
+                                  }
                                 />
 
                                 {cartInfo[bundle.handle].meals.findIndex(
