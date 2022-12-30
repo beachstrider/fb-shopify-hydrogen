@@ -40,8 +40,8 @@ function App({request}) {
           data={{
             title: 'FeastBox',
             description:
-              "A custom storefront powered by Hydrogen, Shopify's React-based framework for building headless.",
-            titleTemplate: `%s · Hydrogen`,
+              "Mouthwatering Grub | Clean Ingredients | Every Order Feeds Another",
+            titleTemplate: `%s · FEASTbox`,
           }}
         />
         <CartProvider
