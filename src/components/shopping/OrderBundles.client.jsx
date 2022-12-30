@@ -730,6 +730,7 @@ export function OrderBundles({
                                       cartInfo[bundle.handle].variantIndex
                                     ].metafields
                                   }
+                                  serveAs={typeof bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.metafields[0]?.value != 'undefined' ? bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.metafields[0]?.value : 5 }
                                 />
 
                                 {cartInfo[bundle.handle].meals.findIndex(
