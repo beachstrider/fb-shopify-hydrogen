@@ -1141,7 +1141,7 @@ export function OrderBundles({
                                             /{' '}
                                           </span>
                                           <span>
-                                            3 Family Meals + 1 Free breakfast
+                                            3 Family Meals
                                           </span>
                                         </label>
                                       </div>
