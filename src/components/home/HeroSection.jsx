@@ -11,7 +11,7 @@ export function HeroSection() {
                   {' '}
                   A BOX <br />
                   NEVER <br />
-                  TESTED <br />
+                  TASTED <br />
                   SO GOOD
                 </span>
               </div>
