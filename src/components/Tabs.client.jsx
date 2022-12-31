@@ -43,8 +43,8 @@ const Tabs = ({metafields}) => {
               <span
                 className={
                   selectedTag === 1
-                    ? 'text-[#DB9707]  border-b-2 border-b-[#DB9707]'
-                    : 'text-black'
+                    ? 'text-[#DB9707]  border-b-2 border-b-[#DB9707] text-sm'
+                    : 'text-black text-sm'
                 }
               >
                 Details
@@ -66,15 +66,15 @@ const Tabs = ({metafields}) => {
               <span
                 className={
                   selectedTag === 2
-                    ? 'text-[#DB9707] border-b-2 border-b-[#DB9707]'
-                    : 'text-black'
+                    ? 'text-[#DB9707] border-b-2 border-b-[#DB9707] text-sm'
+                    : 'text-black text-sm'
                 }
               >
                 Nutrition
               </span>
             </button>
           </div>
-          <div className="my-2 relative text-black">
+          <div className="relative text-black">
             {selectedTag === 1 && (
               <div
                 role="tablist"
@@ -82,30 +82,30 @@ const Tabs = ({metafields}) => {
                 className="relative mx-auto font-bold overflow-hidden"
               >
                 <div className="text-left text-black">
-                  <p className='text-[15px] font-normal'>
+                  <p className='text-xs font-normal'>
                     {metafields?.find((x) => x?.key === 'description')?.value}
                   </p>
-                  <h3 className="font-bold text-2xl font-bold pt-2">What&apos;s in the box?</h3>
+                  <h3 className="font-bold text-xl lg:text-2xl font-bold pt-2">What&apos;s in the box?</h3>
                   <div className='py-2'>
-                    <p className="font-bold text-sm">Main courses</p>
-                    <span className="text-[14px] font-normal">
+                    <p className="font-bold text-xs">Main courses</p>
+                    <span className="text-xs font-normal">
                       {metafields?.find((x) => x?.key === 'main_course')?.value}
                     </span>
                   </div>
-                  <div className="py-2">
-                    <p className="font-bold text-sm">Side Dishes</p>
-                    <span className="text-[14px] font-normal">
+                  <div className="pb-2">
+                    <p className="font-bold text-xs">Side Dishes</p>
+                    <span className="text-xs font-normal">
                       {metafields?.find((x) => x?.key === 'side_dishes')?.value}
                     </span>
                   </div>
                   <div>
-                    <p className="font-bold text-sm">Sauce</p>
-                    <span className="text-[14px] font-normal">
+                    <p className="font-bold text-xs">Sauce</p>
+                    <span className="text-xs font-normal">
                       {metafields?.find((x) => x?.key === 'sauce')?.value}
                     </span>
                   </div>
-                  <h3 className="font-bold text-2xl font-bold pt-2">Allergens</h3>
-                  <span className="text-[14px] font-normal">
+                  <h3 className="font-bold text-xl lg:text-2xl font-bold">Allergens</h3>
+                  <span className="text-xs font-normal">
                     {metafields?.find((x) => x?.key === 'allergens')?.value}
                   </span>
                 </div>
