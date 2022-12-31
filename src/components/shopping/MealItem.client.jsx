@@ -49,13 +49,13 @@ export function MealItem({title, image, modalimage, metafields, variant_title}) 
       {openModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none xsm:m-3">
-            <div className="relative w-auto my-10 mx-auto max-w-3xl">
+            <div className="relative w-auto my-10 mx-auto max-w-4xl">
               {/*content*/}
               <div className="border-0 shadow-lg relative flex flex-col w-80 sm:w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
                 <button
                   type="button"
-                  className="absolute top-[8px] right-[8px] text-gray-800 xsm:bg-white xsm:rounded-full p-1"
+                  className="absolute top-[8px] md:top-[20px]  right-[8px] text-gray-800 xsm:bg-white xsm:rounded-full p-1"
                   onClick={() => setOpenModal(false)}
                 >
                   <span className="sr-only">Close</span>
@@ -72,8 +72,8 @@ export function MealItem({title, image, modalimage, metafields, variant_title}) 
                     />
                   </svg>
                 </button>
-                <div className="modelwrap grid grid-cols-1 gap-4 sm:grid-cols-2 px-5 py-5 xsm:h-[500px] xsm:overflow-auto">
-                  <div>
+                <div className="modelwrap grid grid-cols-1 md:grid-cols-4  lg:grid-cols-3 gap-4 sm:grid-cols-2 px-5 py-5 xsm:h-[500px] xsm:overflow-auto">
+                  <div className=' md:col-span-2 lg:col-span-2'>
                     <img
                       alt="Laptop"
                       src={
@@ -81,11 +81,11 @@ export function MealItem({title, image, modalimage, metafields, variant_title}) 
                           ? modalimage
                           : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                       }
-                      className="h-full max-w-full object-fill"
+                      className="h-full max-w-full lg:max-w-[515px] object-fill"
                     />
                   </div>
-                  <div className="pl-5">
-                    <h1 className="text-lg font-bold text-left mb-4 text-black">
+                  <div className="md:ml-0 lg:ml-[-34px] h-full">
+                    <h1 className="text-xl lg:text-2xl font-bold text-left text-black">
                       {
                         metafields?.find((x) => x?.key === 'display_name')
                           ?.value
@@ -97,7 +97,7 @@ export function MealItem({title, image, modalimage, metafields, variant_title}) 
 
                 <div
                   onClick={() => setOpenModal(false)}
-                  className="bg-[#DB9707] py-4 text-white text-bold text-base cursor-pointer"
+                  className="bg-[#DB9707] py-4 text-white text-bold text-base cursor-pointer mt-7"
                 >
                   Close
                 </div>
