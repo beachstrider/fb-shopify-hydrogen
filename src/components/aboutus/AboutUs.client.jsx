@@ -1,3 +1,4 @@
+
 import {Link} from '@shopify/hydrogen';
 
 export function AboutUs() {
@@ -141,7 +142,7 @@ export function AboutUs() {
       </div>
       <div className="card-section mx-auto mt-[90px] sm-max:mt-[20px] p-[50px] pb-[100px] bg-[#DB9707] relative">
         <h1 className="font-opensans text-center text-white font-bold lg:text-[40px] md:text-[30px] sm-max:text-[30px]">
-          Help us reach our goal of 100,000 families fed in 2023
+          Help us reach our goal of 200,000 families fed in 2023
         </h1>
         <div className="flex justify-center flex-wrap">
           <div className="mt-[30px] flex lg:p-[50px] md:p-[40px] sm-max:p-[25px] bg-white justify-center relative">
