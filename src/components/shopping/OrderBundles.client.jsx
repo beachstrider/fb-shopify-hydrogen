@@ -105,13 +105,13 @@ export function OrderBundles({
   })();
 
   useEffect(() => {
-    if (newDiscountCodes.length > 0){
-    }else{
+    if (newDiscountCodes.length > 0) {
+    } else {
     }
   }, [newDiscountCodes]);
 
   const identifyDiscountAmount = () => {
-    console.log('newDiscountCodes', newDiscountCodes);
+    // console.log('newDiscountCodes', newDiscountCodes);
     if (typeof newDiscountCodes != 'undefined' && newDiscountCodes.length > 0) {
       return 40;
     } else {
@@ -650,7 +650,7 @@ export function OrderBundles({
                         Try our Event Box
                       </Link>
                     </div>
-                  ):(
+                  ) : (
                     <div className="lg:flex lg:gap-2">
                       <div className="font-bold text-md">Too much food?</div>
                       <Link
@@ -769,7 +769,7 @@ export function OrderBundles({
                                   title={
                                     product.variants.nodes[
                                       getVariantIndexDynamically()
-                                      ].metafields?.find(
+                                    ].metafields?.find(
                                       (x) => x?.key === 'display_name',
                                     )?.value
                                   }
@@ -778,20 +778,24 @@ export function OrderBundles({
                                       ? product.featuredImage.url
                                       : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                                   }
-                                  modalimage={product.variants.nodes[getVariantIndexDynamically()].image
-                                    ? product.variants.nodes[
+                                  modalimage={
+                                    product.variants.nodes[
                                       getVariantIndexDynamically()
-                                      ].image?.url
-                                    : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'}
+                                    ].image
+                                      ? product.variants.nodes[
+                                          getVariantIndexDynamically()
+                                        ].image?.url
+                                      : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                                  }
                                   metafields={
                                     product.variants.nodes[
                                       getVariantIndexDynamically()
-                                      ].metafields
+                                    ].metafields
                                   }
                                   variant_title={
                                     bundle.handle === 'event-feastbox'
                                       ? product.variants.nodes[
-                                        getVariantIndexDynamically()
+                                          getVariantIndexDynamically()
                                         ].title.split('/ ')[1]
                                       : 'Serves 5'
                                   }
@@ -902,7 +906,7 @@ export function OrderBundles({
                     </Loading>
                   </div>
                   <div className="container mx-auto px-4 mt-5">
-                    {bundle.handle === 'family-feastbox' && (
+                    {bundle.handle === 'family-feastbox' ? (
                       <div className="max-w-4xl mx-auto">
                         <div className="block text-gray-800 md:text-2xl text-lg font-bold mb-2 -ml-4">
                           3. Choose your Price
@@ -1015,12 +1019,13 @@ export function OrderBundles({
                                                   'undefined'
                                                 )
                                                   return getFullCost(
-                                                    ((
+                                                    (
                                                       price -
                                                       (price *
                                                         adjustmentPercentage) /
                                                         100
-                                                    ).toFixed(6)) -(identifyDiscountAmount()),
+                                                    ).toFixed(6) -
+                                                      identifyDiscountAmount(),
                                                     bundle?.variants?.nodes[
                                                       cartInfo[bundle.handle]
                                                         .variantIndex
@@ -1096,7 +1101,7 @@ export function OrderBundles({
                                           return (
                                             'Save ' +
                                             getFullCost(
-                                              diff + (identifyDiscountAmount()),
+                                              diff + identifyDiscountAmount(),
                                               bundle?.variants?.nodes[
                                                 cartInfo[bundle.handle]
                                                   .variantIndex
@@ -1169,25 +1174,27 @@ export function OrderBundles({
                                                   bundle?.variants?.nodes[
                                                     cartInfo[bundle.handle]
                                                       .variantIndex
-                                                    ]?.priceV2?.amount,
+                                                  ]?.priceV2?.amount,
                                                   bundle?.variants?.nodes[
                                                     cartInfo[bundle.handle]
                                                       .variantIndex
-                                                    ]?.priceV2?.currencyCode,
+                                                  ]?.priceV2?.currencyCode,
                                                 )}{' '}
                                               </strike>
                                             </span>
-                                            ) : ('')
-                                          }
+                                          ) : (
+                                            ''
+                                          )}
                                           <span
                                             className="font-bold"
                                             style={{fontSize: 18}}
                                           >
                                             {getFullCost(
-                                              (bundle?.variants?.nodes[
+                                              bundle?.variants?.nodes[
                                                 cartInfo[bundle.handle]
                                                   .variantIndex
-                                              ]?.priceV2?.amount)-(identifyDiscountAmount()),
+                                              ]?.priceV2?.amount -
+                                                identifyDiscountAmount(),
                                               bundle?.variants?.nodes[
                                                 cartInfo[bundle.handle]
                                                   .variantIndex
@@ -1195,9 +1202,7 @@ export function OrderBundles({
                                             )}{' '}
                                             /{' '}
                                           </span>
-                                          <span>
-                                            3 Family Meals
-                                          </span>
+                                          <span>3 Family Meals</span>
                                         </label>
                                       </div>
                                     </div>
@@ -1247,24 +1252,85 @@ export function OrderBundles({
                           </div>
                         </div>
                       </div>
+                    ) : (
+                      <div>
+                        <p style={{color: '#DB9725', marginTop: 10}}>
+                          <span style={{fontSize: 18}} className=" font-bold">
+                            Discount Coupon:
+                          </span>
+                          <br />
+                        </p>
+                        <div className="flex items-center gap-4 py-4">
+                          <div className="grow">
+                            <input
+                              ref={discountCodeInputRef}
+                              className="w-full py-3 px-4 border-[#707070] focus:bg-white border focus:outline-none"
+                              defaultValue={newDiscountCodes.join(' ')}
+                              disabled={newDiscountCodes.length > 0}
+                            />
+                          </div>
+                          <div className="flex-none flex items-center">
+                            {newDiscountCodes.length === 0 && (
+                              <button
+                                className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
+                                onClick={handleSubmitDiscountCode}
+                              >
+                                Apply
+                              </button>
+                            )}
+                            {newDiscountCodes.length > 0 && (
+                              <div className="text-lg font-bold text-[#DB9707]">
+                                Code Applied
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <p className="text-gray-700 text-sm font-bold">
+                            *Shipping and discounts calculated at checkout.
+                          </p>
+                        </div>
+                      </div>
                     )}
                     <div className="flex flex-col gap-2 mt-10 text-center sm:text-left">
                       <span className="font-bold md:text-[28px] text-lg text-right">
                         Total:{' '}
-                        {bundle.handle == 'event-feastbox' ?
+                        {bundle.handle == 'event-feastbox' ? (
+                          <>
+                            <span className="mr-2">
+                              {newDiscountCodes.length > 0 ? (
+                                <strike>
+                                  {getFullCost(
+                                    totalPrice,
+                                    bundle.variants?.nodes[
+                                      cartInfo[bundle.handle].variantIndex
+                                      ]?.priceV2?.currencyCode,
+                                  )}
+                                </strike>
+                              ) : (
+                                ''
+                              )}
+                            </span>
+                            <span>
+                              {getFullCost(
+                                parseFloat(
+                                  totalPrice - identifyDiscountAmount(),
+                                ),
+                                bundle.variants?.nodes[
+                                  cartInfo[bundle.handle].variantIndex
+                                ]?.priceV2?.currencyCode,
+                              )}
+                            </span>
+
+                          </>
+                        ) : (
                           getFullCost(
-                              totalPrice,
-                              bundle.variants?.nodes[
-                                cartInfo[bundle.handle].variantIndex
-                              ]?.priceV2?.currencyCode,
-                          )
-                          : getFullCost(
-                              parseFloat(totalPrice - identifyDiscountAmount()),
+                            parseFloat(totalPrice - identifyDiscountAmount()),
                             bundle.variants?.nodes[
                               cartInfo[bundle.handle].variantIndex
-                              ]?.priceV2?.currencyCode,
+                            ]?.priceV2?.currencyCode,
                           )
-                        }
+                        )}
                       </span>
                       <div className="flex flex-col sm:flex-row items-center gap-4">
                         <button
