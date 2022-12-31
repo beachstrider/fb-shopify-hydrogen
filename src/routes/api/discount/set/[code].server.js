@@ -1,8 +1,6 @@
 export async function api(request, {params: {code}, session}) {
   const {discountCodes} = await session.get();
-  const newDiscountCodes =
-    typeof discountCodes === 'undefined' ? [] : discountCodes;
-
+  const newDiscountCodes = typeof discountCodes === 'undefined' ? [] : [];
   if (newDiscountCodes.indexOf(code) === -1) {
     newDiscountCodes.push(code);
   }

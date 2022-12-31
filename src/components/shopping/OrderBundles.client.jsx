@@ -105,6 +105,21 @@ export function OrderBundles({
   })();
 
   useEffect(() => {
+    if (newDiscountCodes.length > 0){
+    }else{
+    }
+  }, [newDiscountCodes]);
+
+  const identifyDiscountAmount = () => {
+    console.log('newDiscountCodes', newDiscountCodes);
+    if (typeof newDiscountCodes != 'undefined' && newDiscountCodes.length > 0) {
+      return 40;
+    } else {
+      return 0;
+    }
+  };
+
+  useEffect(() => {
     if (typeof id === 'undefined') cartCreate({});
 
     async function fetchAll() {
@@ -132,10 +147,10 @@ export function OrderBundles({
         ?.currencyCode,
     );
 
-    console.log('bundle=====>', bundle);
-    console.log('price=====>', price);
-    console.log('adjustmentPercentage=====>', adjustmentPercentage);
-    console.log('cost=====>', cost);
+    // console.log('bundle=====>', bundle);
+    // console.log('price=====>', price);
+    // console.log('adjustmentPercentage=====>', adjustmentPercentage);
+    // console.log('cost=====>', cost);
   }, []);
 
   //////
@@ -217,9 +232,10 @@ export function OrderBundles({
               el.options[0].value === cartInfo[bundle.handle].frequencyValue,
           )?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage) /
           100;
+      price = price.toFixed(3);
     }
 
-    return price;
+    return parseFloat(price);
   })();
 
   function getAttributes(cartToken, customerId, deliveryDate) {
@@ -999,12 +1015,12 @@ export function OrderBundles({
                                                   'undefined'
                                                 )
                                                   return getFullCost(
-                                                    (
+                                                    ((
                                                       price -
                                                       (price *
                                                         adjustmentPercentage) /
                                                         100
-                                                    ).toFixed(2),
+                                                    ).toFixed(6)) -(identifyDiscountAmount()),
                                                     bundle?.variants?.nodes[
                                                       cartInfo[bundle.handle]
                                                         .variantIndex
@@ -1080,7 +1096,7 @@ export function OrderBundles({
                                           return (
                                             'Save ' +
                                             getFullCost(
-                                              diff,
+                                              diff + (identifyDiscountAmount()),
                                               bundle?.variants?.nodes[
                                                 cartInfo[bundle.handle]
                                                   .variantIndex
@@ -1145,15 +1161,33 @@ export function OrderBundles({
                                             ONE-TIME
                                           </span>
                                           <br />
+
+                                          {newDiscountCodes.length > 0 ? (
+                                            <span className="mr-2">
+                                              <strike>
+                                                {getFullCost(
+                                                  bundle?.variants?.nodes[
+                                                    cartInfo[bundle.handle]
+                                                      .variantIndex
+                                                    ]?.priceV2?.amount,
+                                                  bundle?.variants?.nodes[
+                                                    cartInfo[bundle.handle]
+                                                      .variantIndex
+                                                    ]?.priceV2?.currencyCode,
+                                                )}{' '}
+                                              </strike>
+                                            </span>
+                                            ) : ('')
+                                          }
                                           <span
                                             className="font-bold"
                                             style={{fontSize: 18}}
                                           >
                                             {getFullCost(
-                                              bundle?.variants?.nodes[
+                                              (bundle?.variants?.nodes[
                                                 cartInfo[bundle.handle]
                                                   .variantIndex
-                                              ]?.priceV2?.amount,
+                                              ]?.priceV2?.amount)-(identifyDiscountAmount()),
                                               bundle?.variants?.nodes[
                                                 cartInfo[bundle.handle]
                                                   .variantIndex
@@ -1217,12 +1251,20 @@ export function OrderBundles({
                     <div className="flex flex-col gap-2 mt-10 text-center sm:text-left">
                       <span className="font-bold md:text-[28px] text-lg text-right">
                         Total:{' '}
-                        {getFullCost(
-                          totalPrice,
-                          bundle.variants?.nodes[
-                            cartInfo[bundle.handle].variantIndex
-                          ]?.priceV2?.currencyCode,
-                        )}
+                        {bundle.handle == 'event-feastbox' ?
+                          getFullCost(
+                              totalPrice,
+                              bundle.variants?.nodes[
+                                cartInfo[bundle.handle].variantIndex
+                              ]?.priceV2?.currencyCode,
+                          )
+                          : getFullCost(
+                              parseFloat(totalPrice - identifyDiscountAmount()),
+                            bundle.variants?.nodes[
+                              cartInfo[bundle.handle].variantIndex
+                              ]?.priceV2?.currencyCode,
+                          )
+                        }
                       </span>
                       <div className="flex flex-col sm:flex-row items-center gap-4">
                         <button
