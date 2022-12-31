@@ -11,7 +11,7 @@ export function HeroSection() {
                   {' '}
                   A BOX <br />
                   NEVER <br />
-                  TESTED <br />
+                  TASTED <br />
                   SO GOOD
                 </span>
               </div>
@@ -39,8 +39,8 @@ export function HeroSection() {
                     3 Family Meals a Week
                   </h5>
                   <h2 className="font-opensans font-bold text-5xl xsm-only:text-4xl my-1">
-                    MouthWatering Grub <br />
-                    For{' '}
+                    Mouthwatering Grub<br />
+                    for{' '}
                     <span className="text-[#DB9707] price-underline">
                       $8.50
                     </span>
@@ -61,8 +61,8 @@ export function HeroSection() {
                     </Link>
                     <div className="ml-[20]">
                       <h2 className="font-opensans font-extrabold xsm:mt-2 xsm:ml-0 ml-5 text-2xl">
-                        Subscribe now for free <br />
-                        Breakfast! Cancel anytime!{' '}
+                        Subscribe now for FREE <br />
+                        BREAKFAST! Cancel anytime!{' '}
                       </h2>
                       <h2></h2>
                     </div>
