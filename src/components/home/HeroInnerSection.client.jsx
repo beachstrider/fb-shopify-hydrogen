@@ -1,6 +1,17 @@
 import Marquee from 'react-fast-marquee';
 import {Link} from '@shopify/hydrogen';
+import axios from 'axios';
+import {useEffect} from 'react';
+
 export function HeroInnerSection() {
+  //initialize a new token when in home page
+  useEffect(() => {
+    const getToken = async () => {
+      const res = (await axios.get(`/api/token`)).data;
+    }
+    getToken();
+  }, []);
+
   return (
     <section className="min-h-fit  bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover pb-5 bg-[#231F20]">
       <div className="container max-w-screen-xl m-auto">

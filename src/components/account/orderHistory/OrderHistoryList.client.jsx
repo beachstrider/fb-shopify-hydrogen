@@ -117,7 +117,7 @@ const Index = ({orders}) => {
                         marginRight: '20px',
                       }}
                       className="rounded-lg mb-0"
-                      src={order.line_items[0].images.large}
+                      src={order?.line_items[0]?.images?.large}
                       alt="img"
                     />
                   </div>

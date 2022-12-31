@@ -85,7 +85,7 @@ function SeoForHomepage() {
       data={{
         title: name,
         description,
-        titleTemplate: '%s · Powered by Hydrogen',
+        titleTemplate: '%s | Mouthwatering Grub | Clean Ingredients | Every Order Feeds Another',
       }}
     />
   );

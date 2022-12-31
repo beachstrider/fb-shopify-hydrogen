@@ -50,7 +50,7 @@ function getCartInfo(param) {
       totalPrice: 0,
       meals: [],
       mealQuantity: 0,
-      partySizeIndex: 0,
+      variantIndex: 0,
     },
   };
 }
@@ -61,7 +61,8 @@ export function OrderBundles({
   customerAccessToken,
   customerId = '',
 }) {
-  const CDN_CACHE_ENV_MODE = 'development'; //production
+  const CDN_CACHE_ENV_MODE = 'development';
+  // const CDN_CACHE_ENV_MODE = 'production';
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
   const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
@@ -81,7 +82,6 @@ export function OrderBundles({
     id,
     lines,
     checkoutUrl,
-    attributes,
     cartAttributesUpdate,
     cartCreate,
     linesAdd,
@@ -89,7 +89,7 @@ export function OrderBundles({
     buyerIdentityUpdate,
     discountCodesUpdate,
   } = useCart();
-  console.log('cartInfo', cartInfo);
+  // console.log('cartInfo', cartInfo);
 
   const bundleIdNumber = Number(bundle.id.substring(22));
   const discountCodeInputRef = useRef(null);
@@ -116,17 +116,40 @@ export function OrderBundles({
     fetchAll();
   }, []);
 
+  //////
+
+  useEffect(() => {
+    const price =
+      bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
+        ?.amount;
+    const adjustmentPercentage =
+      bundle?.sellingPlanGroups?.nodes[0]?.sellingPlans?.nodes[0]
+        ?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage;
+
+    const cost = getFullCost(
+      price - (price * adjustmentPercentage) / 100,
+      bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
+        ?.currencyCode,
+    );
+
+    console.log('bundle=====>', bundle);
+    console.log('price=====>', price);
+    console.log('adjustmentPercentage=====>', adjustmentPercentage);
+    console.log('cost=====>', cost);
+  }, []);
+
+  //////
+
   useEffect(() => {
     setIsProductsLoading(true);
     let contentResult = [];
     const contents = [...cartInfo[bundle.handle].bundleContents].filter(
       (content) => {
-        const dateNow = new Date(cartInfo[bundle.handle].deliveryDate)
-        const deliverAfter = new Date(content.deliver_after)
-        const deliverBefore = new Date(content.deliver_before)
+        const dateNow = new Date(cartInfo[bundle.handle].deliveryDate);
+        const deliverAfter = new Date(content.deliver_after);
+        const deliverBefore = new Date(content.deliver_before);
         //old logic from previous application
         if (dateNow > deliverAfter && dateNow < deliverBefore) {
-          console.log('date found', deliverAfter)
           contentResult = [content];
         }
         // return dayjs(cartInfo[bundle.handle].deliveryDate).isBetween(
@@ -183,7 +206,7 @@ export function OrderBundles({
 
   const totalPrice = (() => {
     let price =
-      bundle.variants.nodes[cartInfo[bundle.handle].partySizeIndex]?.priceV2
+      bundle.variants.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
         .amount;
     if (cartInfo[bundle.handle].priceType === 'recuring') {
       price =
@@ -216,7 +239,7 @@ export function OrderBundles({
     const selectedMeals = cartInfo[bundle.handle].meals.map((el) => {
       return {
         title: el.variants.nodes[
-          cartInfo[bundle.handle].partySizeIndex
+          cartInfo[bundle.handle].variantIndex
         ]?.metafields?.find((x) => x?.key === 'display_name')?.value,
         qty: el.quantity,
       };
@@ -255,8 +278,12 @@ export function OrderBundles({
   }
 
   async function fetchDeliveryDates() {
-    const deliveryDateCacheUrl = CDN_CACHE_ENV_MODE === 'production' ? 'delivery_dates.json' : 'delivery_dates_dev.json';
-    const res = (await axios.get(`${caching_server}/${deliveryDateCacheUrl}`)).data;
+    const deliveryDateCacheUrl =
+      CDN_CACHE_ENV_MODE === 'production'
+        ? 'delivery_dates.json'
+        : 'delivery_dates_dev.json';
+    const res = (await axios.get(`${caching_server}/${deliveryDateCacheUrl}`))
+      .data;
 
     const today = new Date();
     today.setHours(0);
@@ -286,7 +313,8 @@ export function OrderBundles({
   }
 
   async function fetchBundle() {
-    const bundleCacheUrl = CDN_CACHE_ENV_MODE === 'production' ? 'bundles.json' : 'bundles_dev.json';
+    const bundleCacheUrl =
+      CDN_CACHE_ENV_MODE === 'production' ? 'bundles.json' : 'bundles_dev.json';
     const bundleDataRes = (
       await axios.get(`${caching_server}/${bundleCacheUrl}`)
     ).data.find((el) => el.platform_product_id === bundleIdNumber);
@@ -295,7 +323,7 @@ export function OrderBundles({
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
 
-    // await initCart(bundle.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id);
+    // await initCart(bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id);
 
     setCartInfo({
       ...cartInfo,
@@ -312,7 +340,6 @@ export function OrderBundles({
     const product_ids = [];
     const config_ids = {};
     const bundle_config_content_ids = {};
-console.log('contents', contents);
     for await (const content of contents) {
       const res = (
         await axios.get(
@@ -328,8 +355,9 @@ console.log('contents', contents);
         product_ids.push(el.platform_product_id);
         config_ids[`gid://shopify/Product/${el.platform_product_id}`] =
           el.contents.bundle_configuration_id;
-        bundle_config_content_ids[`gid://shopify/Product/${el.platform_product_id}`] =
-          el.bundle_configuration_contents_id;
+        bundle_config_content_ids[
+          `gid://shopify/Product/${el.platform_product_id}`
+        ] = el.bundle_configuration_contents_id;
       });
     }
 
@@ -342,7 +370,8 @@ console.log('contents', contents);
         products.map((product) => ({
           ...product,
           bundleConfigurationId: config_ids[product.id],
-          bundle_configuration_contents_id: bundle_config_content_ids[product.id],
+          bundle_configuration_contents_id:
+            bundle_config_content_ids[product.id],
         })),
       );
     } else {
@@ -381,7 +410,7 @@ console.log('contents', contents);
       ...cartInfo,
       [bundle.handle]: {
         ...cartInfo[bundle.handle],
-        partySizeIndex: e.target.value,
+        variantIndex: Number(e.target.value),
       },
     });
   }
@@ -391,8 +420,8 @@ console.log('contents', contents);
 
     const productIndex = newProductsInCart.findIndex(
       (el) =>
-        el.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id ===
-        product.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id,
+        el.variants.nodes[cartInfo[bundle.handle].variantIndex].id ===
+        product.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
     );
 
     if (typeof diff === 'undefined') {
@@ -425,6 +454,13 @@ console.log('contents', contents);
     });
   }
 
+  const getVariantIndexDynamically = () => {
+    let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
+    if (bundle.handle === 'event-feastbox') {
+      dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
+    }
+    return dynamicVariantIndex;
+  };
   async function handleCheckout() {
     setIsCheckoutProcessing(true);
     if (!cartInfo[bundle.handle].meals.length || !isQuantityLimit) {
@@ -438,7 +474,7 @@ console.log('contents', contents);
 
     const line = {
       merchandiseId:
-        bundle.variants.nodes[cartInfo[bundle.handle].partySizeIndex].id,
+        bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
       sellingPlanId: undefined,
       quantity: 1,
       attributes: getAttributes(
@@ -471,22 +507,6 @@ console.log('contents', contents);
       linesAdd([line]);
     }, [API_CALLING_INTERVAL]);
 
-    // add cart note attribute its required
-    setTimeout(() => {
-      cartAttributesUpdate({
-        attributes: {
-          'delivery-date': formatUTCDate(
-            cartInfo[bundle.handle].deliveryDate,
-            'YYYY-MM-DD',
-          ),
-          'delivery-day': cartInfo[bundle.handle].deliveryDay
-            ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format('dddd')
-            : '',
-        },
-        cartId: id
-      });
-    }, [API_CALLING_INTERVAL]);
-
     setTimeout(() => {
       if (
         discountCodeInputRef.current !== null &&
@@ -499,17 +519,46 @@ console.log('contents', contents);
         });
 
         setTimeout(async () => {
+          // add cart note attribute its required
+          const attributes = [
+            {
+              key: 'delivery-date',
+              value: formatUTCDate(
+                cartInfo[bundle.handle].deliveryDate,
+                'YYYY-MM-DD',
+              ),
+            },
+            {
+              key: 'delivery-day',
+              value: cartInfo[bundle.handle].deliveryDay
+                ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format(
+                    'dddd',
+                  )
+                : 'N/A',
+            },
+          ];
+          cartAttributesUpdate(attributes);
+
           const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
 
-          const items = cartInfo[bundle.handle].meals.map((el) => ({
-            bundle_configuration_content_id: el.bundle_configuration_contents_id,
-            platform_product_variant_id: parseInt(
-              el.variants.nodes[
-                cartInfo[bundle.handle].partySizeIndex
-              ]?.id.split('ProductVariant/')[1],
-            ),
-            quantity: el.quantity,
-          }));
+          const items = cartInfo[bundle.handle].meals.map((el) => {
+            // update variant index based on bundle product when bundle product is Family feastbox then variant index defaul
+            // but when Event feastbox then variant index will +1 as meals variant for eventbox start from 1 index in shopify
+            let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
+            if (bundle.handle === 'event-feastbox') {
+              dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
+            }
+            return {
+              bundle_configuration_content_id:
+                el.bundle_configuration_contents_id,
+              platform_product_variant_id: parseInt(
+                el.variants.nodes[dynamicVariantIndex]?.id.split(
+                  'ProductVariant/',
+                )[1],
+              ),
+              quantity: el.quantity,
+            };
+          });
 
           const cartData = {
             platform_customer_id: null, //if customer logged in then save shopify customer idp
@@ -518,16 +567,16 @@ console.log('contents', contents);
               cartInfo[bundle.handle].bundleData.platform_product_id,
             platform_variant_id: parseInt(
               bundle.variants.nodes[
-                cartInfo[bundle.handle].partySizeIndex
+                cartInfo[bundle.handle].variantIndex
               ]?.id.split('ProductVariant/')[1],
             ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
             subscription_type:
               bundle.variants.nodes[
-                cartInfo[bundle.handle].partySizeIndex
+                cartInfo[bundle.handle].variantIndex
               ]?.title.split(' /')[0],
             subscription_sub_type:
               bundle.variants.nodes[
-                cartInfo[bundle.handle].partySizeIndex
+                cartInfo[bundle.handle].variantIndex
               ]?.title.split('/ ')[1],
             bundle_id: cartInfo[bundle.handle].bundleData.id,
             delivery_day: getDayUsa(cartInfo[bundle.handle].deliveryDate),
@@ -547,6 +596,8 @@ console.log('contents', contents);
     setNewDiscountCodes([discountCodeInputRef.current.value]);
   }
 
+  // console.log('--', bundle);
+
   return (
     <Loading className="py-20" isLoading={isInitialDataLoading}>
       <section className="bg-[#EFEFEF]">
@@ -556,7 +607,11 @@ console.log('contents', contents);
               <div className="relative left-0 top-0 ">
                 <img
                   className="object-cover w-full md:h-1/2"
-                  src={bundle?.variants?.nodes[0]?.image?.url}
+                  src={
+                    bundle?.variants?.nodes[
+                      cartInfo[bundle.handle].variantIndex
+                    ]?.image?.url
+                  }
                   alt="FeastBox bundle"
                   onLoad={() => setIsInitialDataLoading(false)}
                 />
@@ -568,7 +623,7 @@ console.log('contents', contents);
                   <div className="lg:text-[60px] text-[36px]">
                     {bundle?.title}
                   </div>
-                  {bundle.handle === 'family-feastbox' && (
+                  {bundle.handle === 'family-feastbox' ? (
                     <div className="lg:flex lg:gap-2">
                       <div className="font-bold text-md">Feeding a party?</div>
                       <Link
@@ -577,6 +632,17 @@ console.log('contents', contents);
                         reloadDocument
                       >
                         Try our Event Box
+                      </Link>
+                    </div>
+                  ):(
+                    <div className="lg:flex lg:gap-2">
+                      <div className="font-bold text-md">Too much food?</div>
+                      <Link
+                        className="font-bold text-md text-[#DB9707] underline"
+                        to="/shop/bundle/family-feastbox"
+                        reloadDocument
+                      >
+                        Choose our Family Box
                       </Link>
                     </div>
                   )}
@@ -638,7 +704,7 @@ console.log('contents', contents);
                             className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
                             name="week"
                             onChange={handlePartyChange}
-                            value={cartInfo[bundle.handle].partySizeIndex}
+                            value={cartInfo[bundle.handle].variantIndex}
                             style={{borderWidth: 0, backgroundImage: 'none'}}
                           >
                             <option disabled value={-1}>
@@ -666,8 +732,8 @@ console.log('contents', contents);
                   <div className="mb-14">
                     <div className="flex items-center gap-6 text-gray-800  mb-2">
                       <div className="md:text-2xl text-lg font-bold">
-                        {bundle.handle === 'event-feastbox' ? '3' : '2'}.
-                        Choose. Choose your Meals
+                        {bundle.handle === 'event-feastbox' ? '3' : '2'}. Choose
+                        your Meals
                       </div>
                       <div className="text-sm">
                         ({currentQuantity} of{' '}
@@ -686,39 +752,42 @@ console.log('contents', contents);
                                 <MealItem
                                   title={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].partySizeIndex
-                                    ].metafields?.find(
+                                      getVariantIndexDynamically()
+                                      ].metafields?.find(
                                       (x) => x?.key === 'display_name',
                                     )?.value
                                   }
                                   image={
-                                    product.variants.nodes[
-                                      cartInfo[bundle.handle].partySizeIndex
-                                    ]?.image
-                                      ? product.variants.nodes[
-                                          cartInfo[bundle.handle].partySizeIndex
-                                        ].image?.url
+                                    product.featuredImage
+                                      ? product.featuredImage.url
                                       : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                                   }
-                                  modalimage={
-                                    product.variants.nodes[1].image
-                                      ? product.variants.nodes[1].image?.url
-                                      : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
-                                  }
+                                  modalimage={product.variants.nodes[getVariantIndexDynamically()].image
+                                    ? product.variants.nodes[
+                                      getVariantIndexDynamically()
+                                      ].image?.url
+                                    : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'}
                                   metafields={
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].partySizeIndex
-                                    ].metafields
+                                      getVariantIndexDynamically()
+                                      ].metafields
+                                  }
+                                  variant_title={
+                                    bundle.handle === 'event-feastbox'
+                                      ? product.variants.nodes[
+                                        getVariantIndexDynamically()
+                                        ].title.split('/ ')[1]
+                                      : 'Serves 5'
                                   }
                                 />
 
                                 {cartInfo[bundle.handle].meals.findIndex(
                                   (el) =>
                                     el.variants.nodes[
-                                      cartInfo[bundle.handle].partySizeIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ].id ===
                                     product.variants.nodes[
-                                      cartInfo[bundle.handle].partySizeIndex
+                                      cartInfo[bundle.handle].variantIndex
                                     ].id,
                                 ) === -1 ? (
                                   <div className="mt-2 px-4 text-center">
@@ -762,11 +831,11 @@ console.log('contents', contents);
                                           (el) =>
                                             el.variants.nodes[
                                               cartInfo[bundle.handle]
-                                                .partySizeIndex
+                                                .variantIndex
                                             ].id ===
                                             product.variants.nodes[
                                               cartInfo[bundle.handle]
-                                                .partySizeIndex
+                                                .variantIndex
                                             ].id,
                                         ).quantity
                                       }
@@ -810,7 +879,7 @@ console.log('contents', contents);
                           ))
                         ) : (
                           <div className="w-full flex justify-center items-center py-8 text-lg">
-                            <div>No available products</div>
+                            <div>No available meals</div>
                           </div>
                         )}
                       </div>
@@ -890,13 +959,20 @@ console.log('contents', contents);
                                               <strike>
                                                 {getFullCost(
                                                   typeof bundle?.variants
-                                                    ?.nodes[0]?.priceV2
-                                                    ?.amount !== 'undefined'
-                                                    ? bundle?.variants?.nodes[0]
-                                                        ?.priceV2?.amount
+                                                    ?.nodes[
+                                                    cartInfo[bundle.handle]
+                                                      .variantIndex
+                                                  ]?.priceV2?.amount !==
+                                                    'undefined'
+                                                    ? bundle?.variants?.nodes[
+                                                        cartInfo[bundle.handle]
+                                                          .variantIndex
+                                                      ]?.priceV2?.amount
                                                     : undefined,
-                                                  bundle?.variants?.nodes[0]
-                                                    ?.priceV2?.currencyCode,
+                                                  bundle?.variants?.nodes[
+                                                    cartInfo[bundle.handle]
+                                                      .variantIndex
+                                                  ]?.priceV2?.currencyCode,
                                                 )}
                                               </strike>
                                             </span>
@@ -906,8 +982,10 @@ console.log('contents', contents);
                                             >
                                               {(() => {
                                                 const price =
-                                                  bundle?.variants?.nodes[0]
-                                                    ?.priceV2?.amount;
+                                                  bundle?.variants?.nodes[
+                                                    cartInfo[bundle.handle]
+                                                      .variantIndex
+                                                  ]?.priceV2?.amount;
                                                 const adjustmentPercentage =
                                                   bundle?.sellingPlanGroups
                                                     ?.nodes[0]?.sellingPlans
@@ -927,8 +1005,10 @@ console.log('contents', contents);
                                                         adjustmentPercentage) /
                                                         100
                                                     ).toFixed(2),
-                                                    bundle?.variants?.nodes[0]
-                                                      ?.priceV2?.currencyCode,
+                                                    bundle?.variants?.nodes[
+                                                      cartInfo[bundle.handle]
+                                                        .variantIndex
+                                                    ]?.priceV2?.currencyCode,
                                                   );
 
                                                 return '';
@@ -979,8 +1059,9 @@ console.log('contents', contents);
                                     <p>
                                       {(() => {
                                         const price =
-                                          bundle?.variants?.nodes[0]?.priceV2
-                                            ?.amount;
+                                          bundle?.variants?.nodes[
+                                            cartInfo[bundle.handle].variantIndex
+                                          ]?.priceV2?.amount;
                                         const adjustmentPercentage =
                                           bundle?.sellingPlanGroups?.nodes[0]
                                             ?.sellingPlans?.nodes[0]
@@ -1000,8 +1081,10 @@ console.log('contents', contents);
                                             'Save ' +
                                             getFullCost(
                                               diff,
-                                              bundle?.variants?.nodes[0]
-                                                ?.priceV2?.currencyCode,
+                                              bundle?.variants?.nodes[
+                                                cartInfo[bundle.handle]
+                                                  .variantIndex
+                                              ]?.priceV2?.currencyCode,
                                             )
                                           );
                                         }
@@ -1015,7 +1098,7 @@ console.log('contents', contents);
                             </div>
                           </div>
                           <div
-                            className={`lg:w-[50%] md:w-full sm-max:w-full mb-20 px-2 ${
+                            className={`lg:w-[50%] md:w-full sm-max:w-full px-2 ${
                               !isQuantityLimit ? 'opacity-50' : ''
                             }`}
                           >
@@ -1067,15 +1150,19 @@ console.log('contents', contents);
                                             style={{fontSize: 18}}
                                           >
                                             {getFullCost(
-                                              bundle?.variants?.nodes[0]
-                                                ?.priceV2?.amount,
-                                              bundle?.variants?.nodes[0]
-                                                ?.priceV2?.currencyCode,
+                                              bundle?.variants?.nodes[
+                                                cartInfo[bundle.handle]
+                                                  .variantIndex
+                                              ]?.priceV2?.amount,
+                                              bundle?.variants?.nodes[
+                                                cartInfo[bundle.handle]
+                                                  .variantIndex
+                                              ]?.priceV2?.currencyCode,
                                             )}{' '}
                                             /{' '}
                                           </span>
                                           <span>
-                                            3 Family Meals + 1 Free breakfast
+                                            3 Family Meals
                                           </span>
                                         </label>
                                       </div>
@@ -1089,7 +1176,7 @@ console.log('contents', contents);
                                 style={{fontSize: 18}}
                                 className=" font-bold"
                               >
-                                Discount Applied:
+                                Discount Coupon:
                               </span>
                               <br />
                             </p>
@@ -1118,6 +1205,11 @@ console.log('contents', contents);
                                 )}
                               </div>
                             </div>
+                            <div className="flex items-center gap-4">
+                              <p className="text-gray-700 text-sm font-bold">
+                                *Shipping and discounts calculated at checkout.
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1127,7 +1219,9 @@ console.log('contents', contents);
                         Total:{' '}
                         {getFullCost(
                           totalPrice,
-                          bundle.variants?.nodes[0]?.priceV2?.currencyCode,
+                          bundle.variants?.nodes[
+                            cartInfo[bundle.handle].variantIndex
+                          ]?.priceV2?.currencyCode,
                         )}
                       </span>
                       <div className="flex flex-col sm:flex-row items-center gap-4">

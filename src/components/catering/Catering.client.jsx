@@ -50,7 +50,7 @@ export function Catering() {
               </p>
 
               <div className="md:text-left mt-8 md:flex gap-12 text-center pr-[55px]">
-                <Link to={'/shop/bundle'}>
+                <Link to={'/shop/bundle/event-feastbox'}>
                   <button className="bg-[#A60D1E] px-12 py-2 text-[25px]">
                     Get Eating!
                   </button>
