@@ -87,7 +87,7 @@ export function MealItem({title, image, modalimage, metafields, variant_title}) 
                   <div className="md:ml-0 lg:ml-[-34px] h-full">
                     <h1 className="text-xl lg:text-2xl font-bold text-left text-black">
                       {
-                        metafields?.find((x) => x?.key === 'display_name')
+                        metafields?.find((x) => x?.key === 'detailed_name')
                           ?.value
                       }
                     </h1>
