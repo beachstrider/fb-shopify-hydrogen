@@ -117,7 +117,7 @@ const Tabs = ({metafields}) => {
               className={
                 selectedTag === 2
                   ? 'tab-panel text-center overflow-y-scroll sm:h-auto'
-                  : 'absolute top-0 invisible opacity-0 tab-panel text-center overflow-y-scroll sm:h-auto'
+                  : 'absolute top-0 invisible opacity-0 tab-panel text-center overflow-y-scroll sm:h-full'
               }
             >
               <iframe
