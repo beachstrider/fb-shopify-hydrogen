@@ -116,11 +116,12 @@ const Tabs = ({metafields}) => {
               id="panel-2"
               className={
                 selectedTag === 2
-                  ? 'tab-panel text-center'
-                  : 'absolute top-0 invisible opacity-0 tab-panel text-center'
+                  ? 'tab-panel text-center h-fit'
+                  : 'absolute top-0 invisible opacity-0 tab-panel text-center h-fit'
               }
             >
               <iframe
+                className="w-full h-full"
                 title="Nutritions"
                 allowFullScreen
                 srcDoc={`

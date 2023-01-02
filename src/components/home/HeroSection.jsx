@@ -55,7 +55,7 @@ export function HeroSection() {
                   </p>
                   <div className="flex xsm:block items-center mt-9">
                     <Link to="/shop/bundle">
-                      <button className="font-opensans font-bold px-6 py-2 bg-[#A60D1E] text-white font-bold px-4 px-5 w-[190px] xsm:w-full">
+                      <button className="getEating font-opensans font-bold px-6 py-2 bg-[#A60D1E] text-white font-bold px-4 px-5 w-[190px] xsm:w-full">
                         Get Eating
                       </button>
                     </Link>

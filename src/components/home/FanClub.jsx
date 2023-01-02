@@ -3,7 +3,7 @@ export function FanClub() {
     <section className="min-h-fit bg-[#231F20] bg-right bg-center relative overflow-hidden bg-no-repeat bg-cover py-10 bg-image bg-[url('../assets/join_feastbox_bg.png')]">
       <div className="container max-w-screen-xl m-auto">
         <h1 className="font-opensans text-center text-[60px] xsm:text-[55px] text-white capitalize font-bold leading-[70px] pt-[70px]">
-          Join the <a className="text-underline-round">FEASTbox</a> Fan Club
+          Join the <a className="text-underline-round">FEASTbox</a> fan Club
         </h1>
         <p className="font-opensans text-center text-[20px] mt-5 text-white">
           Deals, announcements, new cuisines, sent right to your inbox.
