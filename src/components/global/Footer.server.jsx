@@ -52,14 +52,15 @@ export function Footer({menu}) {
                     How it Works
                   </Link>
                 </li>
-                <li className="">
+
+                {/* <li className="">
                   <Link
                     className="leading-relaxed text-white"
                     to="/influencers"
                   >
                     Influencers
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
             <div className="w-full sm:w-1/2 lg:w-2/12 p-6">

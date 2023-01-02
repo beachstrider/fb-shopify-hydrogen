@@ -185,12 +185,7 @@ export function Influencers() {
               </div>
               <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
                 <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[55px]">
-                  0
-                </div>
-              </div>
-              <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
-                <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[55px]">
-                  0
+                  1
                 </div>
               </div>
               <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
@@ -201,6 +196,11 @@ export function Influencers() {
               <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
                 <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[55px]">
                   1
+                </div>
+              </div>
+              <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+                <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[55px]">
+                  0
                 </div>
               </div>
             </div>
