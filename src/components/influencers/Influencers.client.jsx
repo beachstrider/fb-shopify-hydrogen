@@ -266,7 +266,7 @@ export function Influencers() {
             </div>
             <div className="w-1/4 ml-[10px]">
               <img
-                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/carousel_1.png"
+                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/carousel_4.png"
                 className="w-[350px] h-full"
                 alt=""
               />
