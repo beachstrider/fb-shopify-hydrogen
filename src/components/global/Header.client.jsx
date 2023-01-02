@@ -111,13 +111,15 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
         >
           <IconMenu />
         </button>
+        <Link to='/'>
         <Image
           src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_75/fb/logo/fb_logo_white.png"
           width={'auto'}
           height={'auto'}
           alt={'Feastbox'}
           className="w-16"
-        />
+          />
+        </Link>
       </div>
 
       <Link
