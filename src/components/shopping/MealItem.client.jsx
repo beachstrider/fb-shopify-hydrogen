@@ -81,7 +81,7 @@ export function MealItem({title, image, modalimage, metafields, variant_title}) 
                           ? modalimage
                           : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
                       }
-                      className="h-full max-w-full lg:max-w-[515px] object-fill"
+                      className="md:h-full sm:h-auto max-w-full lg:max-w-[515px] object-fill"
                     />
                   </div>
                   <div className="md:ml-0 lg:ml-[-34px] h-full">
