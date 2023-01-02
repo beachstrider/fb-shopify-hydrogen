@@ -52,6 +52,7 @@ export function Footer({menu}) {
                     How it Works
                   </Link>
                 </li>
+
                 {/* <li className="">
                   <Link
                     className="leading-relaxed text-white"
