@@ -5,7 +5,7 @@ export const headers1 = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-Recharge-Version': '2021-11',
-  'X-Recharge-Access-Token':'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
+  'X-Recharge-Access-Token':'sk_1x1_4721690318b959676d4ff9637849545f3ccebf0d0b4af4bd39fd7d3cc7bbeb0c',
 
 };
 //dev 'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
@@ -14,7 +14,7 @@ export const headers2 = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-Recharge-Version': '2021-01',
-  'X-Recharge-Access-Token':'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
+  'X-Recharge-Access-Token':'sk_1x1_4721690318b959676d4ff9637849545f3ccebf0d0b4af4bd39fd7d3cc7bbeb0c',
 };
 
 export const baseURL = 'https://api.rechargeapps.com/';
