@@ -116,7 +116,7 @@ export function Footer({menu}) {
               </h3>
               <ul>
                 <li className="">
-                <ButtonMailto label="Phone: 1-888-503-6539" mailto="tel:5555555555" />
+                <ButtonMailto label="Phone: 1-888-503-6539" mailto="tel:1-888-503-6539" />
                 </li>
                 <li className="">
                 <ButtonMailto label="Email: support@feastbox.com" mailto="mailto:support@feastbox.com" />
