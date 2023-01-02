@@ -156,7 +156,7 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
       <div className="flex items-center justify-end w-full gap-4">
         <Link
           to={'/shop/bundle/family-feastbox'}
-          className="truncate text-white border font-bold py-2 px-6 focus:outline-none"
+          className="truncate text-white border font-bold py-2 px-2 focus:outline-none"
         >
           Get Started
         </Link>
