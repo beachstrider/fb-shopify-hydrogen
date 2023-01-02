@@ -173,7 +173,7 @@ export function AboutUs() {
                 alt=""
               />
               <span className="absolute top-[50%] left-[25%] sm-max:left-[17%] leading-[0] font-[600] text-white text-[6em] md:text-[5em] sm-max:text-[3em]">
-                0
+                1
               </span>
             </div>
             <div className="relative mr-[10px]">
@@ -193,7 +193,7 @@ export function AboutUs() {
                 alt=""
               />
               <span className="absolute top-[50%] left-[25%] sm-max:left-[17%] leading-[0] font-[600] text-white text-[6em] md:text-[5em] sm-max:text-[3em]">
-                0
+                1
               </span>
             </div>
             <div className="relative">
@@ -203,7 +203,7 @@ export function AboutUs() {
                 alt=""
               />
               <span className="absolute top-[50%] left-[25%] sm-max:left-[17%] leading-[0] font-[600] text-white text-[6em] md:text-[5em] sm-max:text-[3em]">
-                1
+                0
               </span>
             </div>
             <p className="font-opensans absolute bottom-[-60px] right-0 text-right text-black font-bold  lg:text-[40px] md:text-[30px] sm-max:text-[25px]">
