@@ -1293,7 +1293,7 @@ export function OrderBundles({
                       </div>
                     )}
                     <div className="flex flex-col gap-2 mt-10 text-center sm:text-left">
-                      <span className="font-bold md:text-[28px] text-lg text-right">
+                      <span className="font-bold md:text-[28px] text-lg mb-1 text-right md:text-left">
                         Total:{' '}
                         {bundle.handle == 'event-feastbox' ? (
                           <>
