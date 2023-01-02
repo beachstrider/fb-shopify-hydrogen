@@ -61,8 +61,8 @@ export function OrderBundles({
   customerAccessToken,
   customerId = '',
 }) {
-  const CDN_CACHE_ENV_MODE = 'development';
-  // const CDN_CACHE_ENV_MODE = 'production';
+  // const CDN_CACHE_ENV_MODE = 'development';
+  const CDN_CACHE_ENV_MODE = 'production';
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
   const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
@@ -676,7 +676,7 @@ export function OrderBundles({
                         style={{boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)'}}
                       >
                         <select
-                          className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
+                          className="addWeek removeWeek appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
                           name="week"
                           onChange={handleWeekChange}
                           value={selectedWeekIndex}
@@ -812,7 +812,7 @@ export function OrderBundles({
                                 ) === -1 ? (
                                   <div className="mt-2 px-4 text-center">
                                     <button
-                                      className="w-full text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] md:w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
+                                      className="addMeal w-full text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] md:w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
                                       onClick={() => handleUpdateCart(product)}
                                       disabled={isQuantityLimit}
                                     >
@@ -822,7 +822,7 @@ export function OrderBundles({
                                 ) : (
                                   <div className="flex mt-2 lg:justify-center font-semibold font-heading px-4">
                                     <button
-                                      className="hover:text-gray-700 text-center bg-[#DB9707] text-white"
+                                      className="removeMeal hover:text-gray-700 text-center bg-[#DB9707] text-white"
                                       onClick={() =>
                                         handleUpdateCart(product, -1)
                                       }
@@ -861,7 +861,7 @@ export function OrderBundles({
                                       }
                                     </div>
                                     <button
-                                      className="hover:text-gray-700 text-center bg-[#DB9707] text-white disabled:bg-[#bdac89]"
+                                      className="addMeal hover:text-gray-700 text-center bg-[#DB9707] text-white disabled:bg-[#bdac89]"
                                       onClick={() =>
                                         handleUpdateCart(product, 1)
                                       }
@@ -949,6 +949,7 @@ export function OrderBundles({
                                         {' '}
                                         <label>
                                           <input
+                                            className="subscribeSave"
                                             id="subscribe_save"
                                             type="radio"
                                             name="price_type"
@@ -1063,7 +1064,11 @@ export function OrderBundles({
                                     <p>
                                       Delivery Every:{' '}
                                       <button
-                                        className={`text-[#DB9725]`}
+                                        className={cartInfo[bundle.handle]
+                                            .frequencyValue === '7 Day(s)'
+                                            ? `Weekly text-[#DB9725]`
+                                            : `biWeekly text-[#DB9725]`
+                                        }
                                         onClick={handleToggleFrequency}
                                         disabled={!isQuantityLimit}
                                       >
@@ -1141,6 +1146,7 @@ export function OrderBundles({
                                         {' '}
                                         <label>
                                           <input
+                                            className="oneTime"
                                             id="one-time"
                                             type="radio"
                                             name="price_type"
@@ -1231,7 +1237,7 @@ export function OrderBundles({
                               <div className="flex-none flex items-center">
                                 {newDiscountCodes.length === 0 && (
                                   <button
-                                    className="inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
+                                    className="addCoupon removeCoupon failedCoupon inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
                                     onClick={handleSubmitDiscountCode}
                                   >
                                     Apply
@@ -1335,7 +1341,7 @@ export function OrderBundles({
                       <div className="flex flex-col sm:flex-row items-center gap-4">
                         <button
                           disabled={!isQuantityLimit || isCheckoutProcessing}
-                          className={`flex justify-center md:w-[264px] w-full py-5 text-lg text-white text-center bg-[#DB9707] disabled:bg-[#D8D8D8] uppercase font-bold`}
+                          className={`checkout flex justify-center md:w-[264px] w-full py-5 text-lg text-white text-center bg-[#DB9707] disabled:bg-[#D8D8D8] uppercase font-bold`}
                           onClick={handleCheckout}
                         >
                           {isCheckoutProcessing ? (
@@ -1379,7 +1385,7 @@ export function OrderBundles({
                             onClick={() =>
                               setIsDeliveryDateEditing(!isDeliveryDateEditing)
                             }
-                            className="text-[#DB9707] cursor-pointer"
+                            className="text-[#DB9707] cursor-pointer changeDeliveryDay"
                           >
                             <u>Change Delivery Day</u>
                           </span>
