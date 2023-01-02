@@ -80,7 +80,7 @@ export function Influencers() {
                     </div> */}
                   </div>
 
-                  <div className=" w-20 h-20 mt-[-20px] md:mt-[-460px] md:ml-[454px] bg-[#DB9707] md:w-40 md:h-40 rounded-full md:text-3xl text-center font-bold flex justify-center items-center invisible sm:invisible md:visible lg:visible ">
+                  <div className=" w-20 h-20  md:mt-[-460px] md:ml-[454px] bg-[#DB9707] md:w-40 md:h-40 rounded-full md:text-3xl text-center font-bold flex justify-center items-center invisible sm:invisible md:visible lg:visible ">
                     <p>
                       SAVE <br /> $40
                     </p>

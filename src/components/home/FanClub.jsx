@@ -11,6 +11,7 @@ export function FanClub() {
         <div>
           <div className="w-1/2 mx-auto px-2 flex items-center justify-center mt-[35px] pb-10 flex-col md:flex-row">
             <div className="klaviyo-form-TUxqyf"></div>
+            <div className="klaviyo-form-VLgYXP"></div>
           </div>
         </div>
       </div>
