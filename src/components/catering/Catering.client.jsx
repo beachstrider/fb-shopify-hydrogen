@@ -91,7 +91,7 @@ export function Catering() {
               <div className="w-full md:w-[calc(100%-300px)] pl-6 pr-6  py-10 md:pl-[100px] md:py-[50px]  md:pr-[70px]">
                 <p className="text-[20px]">
                   FEASTbox has partnered with Full of Hope to reach our goal of
-                  feeding 100,000 families in 2023. Learn more about Full of
+                  feeding 200,000 families in 2023. Learn more about Full of
                   Hope, a charity all about giving back and helping to feed
                   families. For every box purchased, FEASTbox will donate a meal
                   to a local family in need.
