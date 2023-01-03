@@ -50,11 +50,11 @@ export function Catering() {
 
               <div className="md:text-left mt-8 md:flex  gap-2 lg:gap-12 text-center">
                 <Link to={'/shop/bundle/event-feastbox'}>
-                  <button className="bg-[#A60D1E] px-6 lg:px-12 py-2 text-2 md:text-[15px] lg:text-[25px] text-[25px]">
+                  <button className="bg-[#A60D1E] px-6 lg:px-12 py-2 text-2 lg:text-[25px] text-[25px]">
                     Get Eating!
                   </button>
                 </Link>
-                <p className="md:text-[15px] lg:text-[25px] font-bold mt-1  text-[25px]">
+                <p className="lg:text-[25px] font-bold mt-1  text-[25px]">
                   100% Money-Back Guarantee!
                 </p>
               </div>
