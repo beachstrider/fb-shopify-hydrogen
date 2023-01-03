@@ -899,7 +899,7 @@ export function OrderBundles({
                           ))
                         ) : (
                           <div className="w-full flex justify-center items-center py-8 text-lg">
-                            <div>No available meals</div>
+                            <div>Choose your week above to see meals</div>
                           </div>
                         )}
                       </div>
@@ -1063,7 +1063,8 @@ export function OrderBundles({
                                     <p>
                                       Delivery Every:{' '}
                                       <button
-                                        className={cartInfo[bundle.handle]
+                                        className={
+                                          cartInfo[bundle.handle]
                                             .frequencyValue === '7 Day(s)'
                                             ? `Weekly text-[#DB9725]`
                                             : `biWeekly text-[#DB9725]`
@@ -1298,53 +1299,100 @@ export function OrderBundles({
                       </div>
                     )}
                     <div className="flex flex-col gap-2 mt-10 text-center sm:text-left">
-                      <span className="font-bold md:text-[28px] text-lg mb-1 text-right md:text-left">
-                        Total:{' '}
-                        {bundle.handle == 'event-feastbox' ? (
-                          <>
-                            <span className="mr-2">
-                              {newDiscountCodes.length > 0 ? (
-                                <strike>
-                                  {getFullCost(
-                                    totalPrice,
-                                    bundle.variants?.nodes[
-                                      cartInfo[bundle.handle].variantIndex
+                      <div className="text-left pb-2">
+                        <span className="font-bold md:text-[28px] text-lg mb-1">
+                          Total:{' '}
+                          {bundle.handle === 'event-feastbox' ? (
+                            <>
+                              <span className="mr-2">
+                                {newDiscountCodes.length > 0 ? (
+                                  <strike>
+                                    {getFullCost(
+                                      totalPrice,
+                                      bundle.variants?.nodes[
+                                        cartInfo[bundle.handle]?.variantIndex
                                       ]?.priceV2?.currencyCode,
+                                    )}
+                                  </strike>
+                                ) : (
+                                  ''
+                                )}
+                              </span>
+                              <span>
+                                {getFullCost(
+                                  parseFloat(
+                                    totalPrice - identifyDiscountAmount(),
+                                  ),
+                                  bundle.variants?.nodes[
+                                    cartInfo[bundle.handle]?.variantIndex
+                                  ]?.priceV2?.currencyCode,
+                                )}
+                              </span>
+                            </>
+                          ) : cartInfo[bundle.handle]?.priceType ===
+                            'recuring' ? (
+                            <>
+                             <span className="mr-2">
+                                <strike>
+                                {getFullCost(
+                                  typeof bundle?.variants
+                                    ?.nodes[
+                                    cartInfo[bundle.handle]
+                                      .variantIndex
+                                    ]?.priceV2?.amount !==
+                                  'undefined'
+                                    ? bundle?.variants?.nodes[
+                                      cartInfo[bundle.handle]
+                                        .variantIndex
+                                      ]?.priceV2?.amount
+                                    : undefined,
+                                  bundle?.variants?.nodes[
+                                    cartInfo[bundle.handle]
+                                      .variantIndex
+                                  ]?.priceV2?.currencyCode,
                                   )}
                                 </strike>
-                              ) : (
-                                ''
-                              )}
-                            </span>
-                            <span>
-                              {getFullCost(
-                                parseFloat(
-                                  totalPrice - identifyDiscountAmount(),
-                                ),
-                                bundle.variants?.nodes[
-                                  cartInfo[bundle.handle].variantIndex
-                                ]?.priceV2?.currencyCode,
-                              )}
-                            </span>
+                              </span>
+                              <span>
+                                {getFullCost(
+                                  parseFloat(totalPrice),
+                                  bundle.variants?.nodes[
+                                    cartInfo[bundle.handle]?.variantIndex
+                                    ]?.priceV2?.currencyCode,
+                                )}
+                              </span>
+                            </>
 
-                          </>
-                        ) : cartInfo[bundle.handle]?.priceType ===
-                          'recuring' ? (
-                          getFullCost(
-                            parseFloat(totalPrice),
-                            bundle.variants?.nodes[
-                              cartInfo[bundle.handle].variantIndex
-                            ]?.priceV2?.currencyCode,
-                          )
-                        ) : (
-                          getFullCost(
-                            parseFloat(totalPrice - identifyDiscountAmount()),
-                            bundle.variants?.nodes[
-                              cartInfo[bundle.handle].variantIndex
-                            ]?.priceV2?.currencyCode,
-                          )
-                        )}
-                      </span>
+                          ) : (
+                            <>
+                              <span className="mr-2">
+                                {newDiscountCodes.length > 0 ? (
+                                  <strike>
+                                    {getFullCost(
+                                      totalPrice,
+                                      bundle.variants?.nodes[
+                                        cartInfo[bundle.handle]?.variantIndex
+                                      ]?.priceV2?.currencyCode,
+                                    )}
+                                  </strike>
+                                ) : (
+                                  ''
+                                )}
+                              </span>
+                              <span>
+                                {getFullCost(
+                                  parseFloat(
+                                    totalPrice - identifyDiscountAmount(),
+                                  ),
+                                  bundle.variants?.nodes[
+                                    cartInfo[bundle.handle]?.variantIndex
+                                  ]?.priceV2?.currencyCode,
+                                )}
+                              </span>
+                            </>
+                          )}
+                        </span>
+                      </div>
                       <div className="flex flex-col sm:flex-row items-center gap-4">
                         <button
                           disabled={!isQuantityLimit || isCheckoutProcessing}
