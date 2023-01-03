@@ -32,11 +32,11 @@ export function Catering() {
             </div>
 
             <div className="lg:w-1/2 px-10 w-full">
-              <p className="font-[700] text-[30px] md:text-[20px]">Feed up to 20 people</p>
-              <p className="font-[700] text-[30px] md:text[45px] lg:text-[60px] md:text-[30px]">
+              <p className="font-[700] lg:text-[30px] text-[20px]">Feed up to 20 people</p>
+              <p className="font-[700] text-[30px] md:text[45px] lg:text-[60px]">
                 Be the Host
               </p>
-              <p className="font-[700] text-[30px]  md:text[45px] md:text-[30px] lg:text-[60px] md:mt-[-20px]">
+              <p className="font-[700] text-[30px]  md:text[45px] lg:text-[60px] lg:mt-[-20px] md:mt-[-16px]">
                 With the{' '}
                 <span className="bg-contain pb-3 bg-bottom bg-[url(https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/most_underline.png)] bg-no-repeat">
                   Most!
