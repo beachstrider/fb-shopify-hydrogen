@@ -64,7 +64,7 @@ export function Catering() {
         </div>
 
         <div className='bg-[#231F20]'>
-          <div className="w-0 md:w-full">
+          <div className="w-0 md:w-full 2xl:flex 2xl:justify-center">
             <img
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good.png"
               alt=""
