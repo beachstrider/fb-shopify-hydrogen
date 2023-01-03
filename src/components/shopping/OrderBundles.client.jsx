@@ -1025,8 +1025,7 @@ export function OrderBundles({
                                                       (price *
                                                         adjustmentPercentage) /
                                                         100
-                                                    ).toFixed(6) -
-                                                      identifyDiscountAmount(),
+                                                    ).toFixed(6),
                                                     bundle?.variants?.nodes[
                                                       cartInfo[bundle.handle]
                                                         .variantIndex
@@ -1106,7 +1105,7 @@ export function OrderBundles({
                                           return (
                                             'Save ' +
                                             getFullCost(
-                                              diff + identifyDiscountAmount(),
+                                              diff,
                                               bundle?.variants?.nodes[
                                                 cartInfo[bundle.handle]
                                                   .variantIndex
@@ -1329,6 +1328,14 @@ export function OrderBundles({
                             </span>
 
                           </>
+                        ) : cartInfo[bundle.handle]?.priceType ===
+                          'recuring' ? (
+                          getFullCost(
+                            parseFloat(totalPrice),
+                            bundle.variants?.nodes[
+                              cartInfo[bundle.handle].variantIndex
+                            ]?.priceV2?.currencyCode,
+                          )
                         ) : (
                           getFullCost(
                             parseFloat(totalPrice - identifyDiscountAmount()),

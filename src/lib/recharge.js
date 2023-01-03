@@ -278,9 +278,9 @@ export const getShippingAddress = (id) => {
 };
 
 export const sendPaymentMethodUpdateEmail = async ({
-  customer_id,
-  payment_method_id,
-}) => {
+                                                     customer_id,
+                                                     payment_method_id,
+                                                   }) => {
   try {
     await rechargeFetch(
       `customers/${customer_id}/notifications`,
