@@ -24,10 +24,8 @@ function headers(version) {
 
 function getBaseURL() {
   // eslint-disable-next-line no-undef
-  return Oxygen.env.RECHARGE_API_DOMAIN;
+  return `https://${Oxygen.env.RECHARGE_API_DOMAIN}/`;
 }
-
-export const baseURL = getBaseURL();
 
 const convertUrlParams = (params) => {
   return new URLSearchParams(params).toString();
@@ -40,7 +38,7 @@ export const rechargeFetch = async (
   headers = headers('2021-11'),
 ) => {
   const res = await fetch(
-    `${baseURL}${url}${
+    `${getBaseURL()}${url}${
       params && method === 'GET' ? '?' + convertUrlParams(params) : ''
     }`,
     {
@@ -68,7 +66,7 @@ export const rechargeFetchSync = (
   headers = headers('2021-11'),
 ) => {
   const data = fetchSync(
-    `${baseURL}${url}${
+    `${getBaseURL()}${url}${
       params && method === 'GET' ? '?' + convertUrlParams(params) : ''
     }`,
     {
