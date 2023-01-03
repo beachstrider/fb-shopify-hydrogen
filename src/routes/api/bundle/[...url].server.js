@@ -1,4 +1,5 @@
 export async function api(request, {session}) {
+  // eslint-disable-next-line no-undef
   const initialToken = Oxygen.env.BUNDLE_API_SECRET;
 
   const initialHeaders = {
@@ -7,9 +8,11 @@ export async function api(request, {session}) {
     'Content-Type': 'application/json',
   };
 
+  // eslint-disable-next-line no-undef
   const baseURL = `https://${Oxygen.env.BUNDLE_API_DOMAIN}/api/`;
 
-  const shop = Oxygen.env.PUBLIC_STORE_DOMAIN;
+  // eslint-disable-next-line no-undef
+  const shop = Oxygen.env.STORE_DOMAIN;
 
   const bundleBuilder = async (
     url,
@@ -36,7 +39,6 @@ export async function api(request, {session}) {
 
     return data;
   };
-
   const headers = {...initialHeaders};
   const method = request.method;
 
@@ -45,6 +47,9 @@ export async function api(request, {session}) {
 
   let params = {shop};
   let token;
+
+  // // eslint-disable-next-line no-undef
+  // return Oxygen.env.STORE_DOMAIN;
 
   if (session) {
     //this token preserve for long time but in our api end expire that token which cause api error
