@@ -326,6 +326,9 @@ export const getOrderHistory = (params) => {
 };
 
 export const getOrderDetail = (id) => {
+// eslint-disable-next-line no-undef
+const a = Oxygen.env.PUBLIC_STOREFRONT_ID;
+
   let {charge} = rechargeFetchSync(`charges/${id}`);
   return charge;
 };
