@@ -1,12 +1,33 @@
 import {fetchSync} from '@shopify/hydrogen';
 import {today} from '~/utils/dates';
 
+function headers(version) {
+  const data = {
+    '2021-11': {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-Recharge-Version': '2021-11',
+      // eslint-disable-next-line no-undef
+      'X-Recharge-Access-Token': Oxygen.env.RECHARGE_API_TOKEN,
+    },
+    '2021-01': {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-Recharge-Version': '2021-01',
+      // eslint-disable-next-line no-undef
+      'X-Recharge-Access-Token': Oxygen.env.RECHARGE_API_TOKEN,
+    },
+  };
+
+  return data[version];
+}
+
 export const headers1 = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-Recharge-Version': '2021-11',
-  'X-Recharge-Access-Token':'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
-
+  'X-Recharge-Access-Token':
+    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 };
 //dev 'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 
@@ -14,7 +35,8 @@ export const headers2 = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-Recharge-Version': '2021-01',
-  'X-Recharge-Access-Token':'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
+  'X-Recharge-Access-Token':
+    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
 };
 
 export const baseURL = 'https://api.rechargeapps.com/';
@@ -326,9 +348,6 @@ export const getOrderHistory = (params) => {
 };
 
 export const getOrderDetail = (id) => {
-// eslint-disable-next-line no-undef
-const a = Oxygen.env.PUBLIC_STOREFRONT_ID;
-
   let {charge} = rechargeFetchSync(`charges/${id}`);
   return charge;
 };
