@@ -4,14 +4,14 @@ import {today} from '~/utils/dates';
 function headers(version) {
   const data = {
     '2021-11': {
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
       'X-Recharge-Version': '2021-11',
       // eslint-disable-next-line no-undef
       'X-Recharge-Access-Token': Oxygen.env.RECHARGE_API_TOKEN,
     },
     '2021-01': {
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
       'X-Recharge-Version': '2021-01',
       // eslint-disable-next-line no-undef
@@ -22,24 +22,12 @@ function headers(version) {
   return data[version];
 }
 
-export const headers1 = {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-  'X-Recharge-Version': '2021-11',
-  'X-Recharge-Access-Token':
-    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
-};
-//dev 'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
+function getBaseURL() {
+  // eslint-disable-next-line no-undef
+  return Oxygen.env.RECHARGE_API_DOMAIN;
+}
 
-export const headers2 = {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-  'X-Recharge-Version': '2021-01',
-  'X-Recharge-Access-Token':
-    'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
-};
-
-export const baseURL = 'https://api.rechargeapps.com/';
+export const baseURL = getBaseURL();
 
 const convertUrlParams = (params) => {
   return new URLSearchParams(params).toString();
@@ -49,7 +37,7 @@ export const rechargeFetch = async (
   url,
   params,
   method = 'GET',
-  headers = headers1,
+  headers = headers('2021-11'),
 ) => {
   const res = await fetch(
     `${baseURL}${url}${
@@ -77,7 +65,7 @@ export const rechargeFetchSync = (
   url,
   params,
   method = 'GET',
-  headers = headers1,
+  headers = headers('2021-11'),
 ) => {
   const data = fetchSync(
     `${baseURL}${url}${
@@ -102,7 +90,12 @@ export const getSubscriptions = (params) => {
 
   if (typeof res.errors?.external_customer_id !== 'undefined') return [];
 
-  const {products} = rechargeFetchSync('products', {}, 'GET', headers2);
+  const {products} = rechargeFetchSync(
+    'products',
+    {},
+    'GET',
+    headers('2021-01'),
+  );
 
   const subscriptions = res.subscriptions.map((subscription) => {
     const {address} = rechargeFetchSync(`addresses/${subscription.address_id}`);
@@ -118,7 +111,12 @@ export const getSubscriptions = (params) => {
 
 export const getSubscription = (id) => {
   const {subscription} = rechargeFetchSync(`subscriptions/${id}`);
-  const {products} = rechargeFetchSync('products', {}, 'GET', headers2);
+  const {products} = rechargeFetchSync(
+    'products',
+    {},
+    'GET',
+    headers('2021-01'),
+  );
   const {address} = rechargeFetchSync(`addresses/${subscription.address_id}`);
 
   const product = products.find(
