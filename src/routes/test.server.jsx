@@ -1,6 +1,5 @@
-export default function Index() {
-  // eslint-disable-next-line no-undef
-  const a = Oxygen.env.PUBLIC_STOREFRONT_ID;
+const a = import.meta.env.PUBLIC_STOREFRONT_ID;
 
+export default function Index() {
   return a;
 }
