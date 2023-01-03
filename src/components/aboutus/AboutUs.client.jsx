@@ -6,7 +6,7 @@ export function AboutUs() {
     <section className="lg:pt-[100px] text-white pt-25 pb-8 bg-[url('../assets/join_bg.png')]">
       <div className="top-banner">
         <div className="banner-section relative">
-          <div className="sm-max:px-[40px] sm-max:pt-[27px] md:p-[50px] md-only:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/hero_image.png')] sm-max:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/hero_bg_mobile.png')]">
+          <div className="sm-max:px-[40px] sm-max:pt-[27px] md:p-[50px] lg-only:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/hero_image.png')] sm-max:bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/hero_bg_mobile.png')]">
             <h1 className="font-bungee lg:text-center md:text-start font-extrabold lg:text-[90px] md:text-[70px] sm-max:text-[37px]
              lg:leading-[90px] md:leading-[70px] sm-max:leading-[42px] md:mt-[-30px] mt-[195px] mb-[5px] md:-tracking-[-7px] -tracking-[-1px]">
               HERE’S THE FEASTBOX 411
