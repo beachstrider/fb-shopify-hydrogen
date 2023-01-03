@@ -20,8 +20,8 @@ export function HeroSection() {
         </div>
         <div className="bg-right bg-center bg-no-repeat bg-cover z-0  bg-[#231F20] mt-[-5px]">
           <div className="mx-auto">
-            <div className="md:flex block items-start justify-between h-full">
-              <div className="w-full md:w-1/2 relative">
+            <div className="lg:flex block items-start justify-between h-full">
+              <div className="w-full lg:w-1/2 relative">
                 <img
                   src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/food_slider_3.png"
                   className=" object-cover mx-auto w-full h-auto  mt-0"
@@ -29,17 +29,18 @@ export function HeroSection() {
                 />
                 <img
                   src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/down_arrows.png"
-                  className="absolute object-cover w-[100px] xsm:w-[50px] xsm:right-[12px] xsm:top-[-45px] xsm-only:right-[25px] xsm-only:top-[-40px] max-w-md max-w-xsm h-auto md:top-[-85px] right-[-50px] top-[40px]"
+                  className="absolute object-cover w-[100px] xsm:w-[50px] xsm:right-[12px] xsm:top-[-45px] xsm-only:right-[25px] xsm-only:top-[-40px] max-w-md max-w-xsm h-auto md:top-[-85px] md:right-[25px] lg:right-[-50px] top-[40px]"
                   alt=""
                 />
               </div>
-              <div className="text-white text-lg mt-5 w-full px-5 sm:w-[50%-100px] md:w-1/2 md:pl-[100px] py-6">
+              <div className="text-white text-lg mt-5 w-full px-5 sm:w-[50%-100px] md:w-full lg:w-1/2 md:pl-[100px] py-6">
                 <div className="px-2">
                   <h5 className="font-opensans font-extrabold">
                     3 Family Meals a Week
                   </h5>
                   <h2 className="font-opensans font-bold text-5xl xsm-only:text-4xl my-1">
-                    Mouthwatering Grub<br />
+                    Mouthwatering Grub
+                    <br />
                     for{' '}
                     <span className="text-[#DB9707] price-underline">
                       $8.50
