@@ -61,6 +61,9 @@ export function OrderBundles({
   customerAccessToken,
   customerId = '',
 }) {
+  console.log('===', import.meta.env.PUBLIC_CDN_CACHE_ENV_MODE);
+  const CDN_CACHE_ENV_MODE = 'development';
+  // const CDN_CACHE_ENV_MODE = 'production';
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
   const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
@@ -102,6 +105,12 @@ export function OrderBundles({
     return currentQuantity === cartInfo[bundle.handle].mealQuantity;
   })();
 
+  useEffect(() => {
+    if (newDiscountCodes.length > 0) {
+    } else {
+    }
+  }, [newDiscountCodes]);
+
   const identifyDiscountAmount = () => {
     // console.log('newDiscountCodes', newDiscountCodes);
     if (typeof newDiscountCodes != 'undefined' && newDiscountCodes.length > 0) {
@@ -122,6 +131,30 @@ export function OrderBundles({
 
     fetchAll();
   }, []);
+
+  //////
+
+  useEffect(() => {
+    const price =
+      bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
+        ?.amount;
+    const adjustmentPercentage =
+      bundle?.sellingPlanGroups?.nodes[0]?.sellingPlans?.nodes[0]
+        ?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage;
+
+    const cost = getFullCost(
+      price - (price * adjustmentPercentage) / 100,
+      bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
+        ?.currencyCode,
+    );
+
+    // console.log('bundle=====>', bundle);
+    // console.log('price=====>', price);
+    // console.log('adjustmentPercentage=====>', adjustmentPercentage);
+    // console.log('cost=====>', cost);
+  }, []);
+
+  //////
 
   useEffect(() => {
     setIsProductsLoading(true);
@@ -262,9 +295,10 @@ export function OrderBundles({
   }
 
   async function fetchDeliveryDates() {
-    const deliveryDateCacheUrl = import.meta.env.PROD
-      ? 'delivery_dates.json'
-      : 'delivery_dates_dev.json';
+    const deliveryDateCacheUrl =
+      CDN_CACHE_ENV_MODE === 'production'
+        ? 'delivery_dates.json'
+        : 'delivery_dates_dev.json';
     const res = (await axios.get(`${caching_server}/${deliveryDateCacheUrl}`))
       .data;
 
@@ -296,9 +330,8 @@ export function OrderBundles({
   }
 
   async function fetchBundle() {
-    const bundleCacheUrl = import.meta.env.PROD
-      ? 'bundles.json'
-      : 'bundles_dev.json';
+    const bundleCacheUrl =
+      CDN_CACHE_ENV_MODE === 'production' ? 'bundles.json' : 'bundles_dev.json';
     const bundleDataRes = (
       await axios.get(`${caching_server}/${bundleCacheUrl}`)
     ).data.find((el) => el.platform_product_id === bundleIdNumber);
