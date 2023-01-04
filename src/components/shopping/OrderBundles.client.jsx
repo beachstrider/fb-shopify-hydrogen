@@ -62,7 +62,6 @@ export function OrderBundles({
   customerId = '',
   CDN_CACHE_ENV_MODE,
 }) {
-  console.log('===', CDN_CACHE_ENV_MODE);
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
   const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
@@ -104,12 +103,6 @@ export function OrderBundles({
     return currentQuantity === cartInfo[bundle.handle].mealQuantity;
   })();
 
-  useEffect(() => {
-    if (newDiscountCodes.length > 0) {
-    } else {
-    }
-  }, [newDiscountCodes]);
-
   const identifyDiscountAmount = () => {
     // console.log('newDiscountCodes', newDiscountCodes);
     if (typeof newDiscountCodes != 'undefined' && newDiscountCodes.length > 0) {
@@ -131,48 +124,9 @@ export function OrderBundles({
     fetchAll();
   }, []);
 
-  //////
-
-  useEffect(() => {
-    const price =
-      bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
-        ?.amount;
-    const adjustmentPercentage =
-      bundle?.sellingPlanGroups?.nodes[0]?.sellingPlans?.nodes[0]
-        ?.priceAdjustments[0]?.adjustmentValue?.adjustmentPercentage;
-
-    const cost = getFullCost(
-      price - (price * adjustmentPercentage) / 100,
-      bundle?.variants?.nodes[cartInfo[bundle.handle].variantIndex]?.priceV2
-        ?.currencyCode,
-    );
-
-    // console.log('bundle=====>', bundle);
-    // console.log('price=====>', price);
-    // console.log('adjustmentPercentage=====>', adjustmentPercentage);
-    // console.log('cost=====>', cost);
-  }, []);
-
-  //////
-
   useEffect(() => {
     setIsProductsLoading(true);
     let contentResult = [];
-    const contents = [...cartInfo[bundle.handle].bundleContents].filter(
-      (content) => {
-        const dateNow = new Date(cartInfo[bundle.handle].deliveryDate);
-        const deliverAfter = new Date(content.deliver_after);
-        const deliverBefore = new Date(content.deliver_before);
-        //old logic from previous application
-        if (dateNow > deliverAfter && dateNow < deliverBefore) {
-          contentResult = [content];
-        }
-        // return dayjs(cartInfo[bundle.handle].deliveryDate).isBetween(
-        //   content.deliver_after,
-        //   content.deliver_before,
-        // );
-      },
-    );
     fetchContents(contentResult);
   }, [cartInfo[bundle.handle].deliveryDate]);
 
