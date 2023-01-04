@@ -12,55 +12,62 @@
   <link rel="preconnect" href="https://shop.app/" />
   <link rel="preconnect" href="https://hydrogen-preview.myshopify.com/" />
 
-  <script>(function (w, d, s, l, i) {
-      w[l] = w[l] || []; w[l].push({
-        'gtm.start':
-          new Date().getTime(), event: 'gtm.js'
-      }); var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', '<{ GTM_ID }>');</script>
+  <!-- Google Tag Manager -->
+  <script>
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+      var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', '<{ GTM_ID }>');
+  </script>
+  <!-- End Google Tag Manager -->
 
   <script type="text/javascript">
-    var _support = _support || { ui: {}, user: {} };
+    var _support = _support || { 'ui': {}, 'user': {} };
     _support['account'] = '<{ REAMAZE_ACCOUNT }>';
-    _support['ui']['contactMode'] = 'mixed';
+    _support['ui']['contactMode'] = 'anonymous';
     _support['ui']['enableKb'] = 'true';
     _support['ui']['styles'] = {
-      widgetColor: 'rgba(16, 162, 197, 1)',
+      widgetColor: 'rgb(219, 151, 7)',
       gradient: true,
     };
     _support['ui']['shoutboxFacesMode'] = 'default';
     _support['ui']['shoutboxHeaderLogo'] = true;
     _support['ui']['widget'] = {
+      icon: 'chat',
       displayOn: 'all',
       fontSize: 'default',
       allowBotProcessing: true,
       label: {
         text: 'Let us know if you have any questions! &#128522;',
-        mode: 'notification',
+        mode: "notification",
         delay: 3,
         duration: 30,
-        primary: 'I have a question',
-        secondary: 'No, thanks',
+        primary: "I have a question",
+        secondary: "No, thanks",
         sound: true,
       },
       position: 'bottom-right',
-      mobilePosition: 'bottom-right',
+      mobilePosition: 'bottom-right'
     };
     _support['apps'] = {
-      faq: { enabled: true },
       recentConversations: {},
-      orders: { enabled: true, enable_notes: true },
+      faq: {"enabled":true},
+      orders: {"enabled":true,"enable_notes":true}
     };
   </script>
 
   <script type="text/javascript" async src="https://cdn.reamaze.com/assets/reamaze.js"></script>
 
   <script async type="text/javascript"
-    src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=<{ KLAVIYO_COMPANY_ID }>"></script>
+    src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=<{ KLAVIYO_COMPANY_ID }>"
+  ></script>
 </head>
-
 <body>
   <div id="root"></div>
   <script type="module" src="/@shopify/hydrogen/entry-client"></script>
