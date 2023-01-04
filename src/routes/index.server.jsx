@@ -11,7 +11,13 @@ import {
 
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
 import {getHeroPlaceholder} from '~/lib/placeholders';
-import {HeroSection, HeroInnerSection, PartyTime, CounterSection, FanClub} from '~/components';
+import {
+  HeroSection,
+  HeroInnerSection,
+  PartyTime,
+  CounterSection,
+  FanClub,
+} from '~/components';
 
 import {Layout, ProductSwimlane} from '~/components/index.server';
 
@@ -62,7 +68,8 @@ function HomepageContent() {
       <HeroSection />
       <HeroInnerSection />
       <PartyTime />
-      <CounterSection />
+      {/* eslint-disable-next-line no-undef */}
+      <CounterSection CDN_CACHE_ENV_MODE={Oxygen.env.ENV_MODE} />
       <FanClub/>
     </div>
   );

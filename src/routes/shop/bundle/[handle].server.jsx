@@ -43,7 +43,7 @@ const Index = () => {
           customerAccessToken={customerAccessToken}
           discountCodes={discountCodes}
           // eslint-disable-next-line no-undef
-          CDN_CACHE_ENV_MODE={Oxygen.env.CDN_CACHE_ENV_MODE}
+          CDN_CACHE_ENV_MODE={Oxygen.env.ENV_MODE}
         />
       </Suspense>
     </Layout>
