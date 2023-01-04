@@ -12,7 +12,6 @@
   <link rel="preconnect" href="https://shop.app/" />
   <link rel="preconnect" href="https://hydrogen-preview.myshopify.com/" />
 
-  <!-- Google Tag Manager -->
   <script>(function (w, d, s, l, i) {
       w[l] = w[l] || []; w[l].push({
         'gtm.start':
@@ -20,12 +19,11 @@
       }); var f = d.getElementsByTagName(s)[0],
         j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
           'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-TXKT4XL');</script>
-  <!-- End Google Tag Manager -->
+    })(window, document, 'script', 'dataLayer', '<{ GTM_ID }>');</script>
 
   <script type="text/javascript">
     var _support = _support || { ui: {}, user: {} };
-    _support['account'] = 'feastbox-sandbox';
+    _support['account'] = '<{ REAMAZE_ACCOUNT }>';
     _support['ui']['contactMode'] = 'mixed';
     _support['ui']['enableKb'] = 'true';
     _support['ui']['styles'] = {
@@ -59,20 +57,17 @@
 
   <script type="text/javascript" async src="https://cdn.reamaze.com/assets/reamaze.js"></script>
 
-  <!--<script
-      async
-      type="text/javascript"
-      src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=UMcvkS"
-    ></script>-->
+  <script async type="text/javascript"
+    src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=<{ KLAVIYO_COMPANY_ID }>"></script>
 </head>
 
 <body>
   <div id="root"></div>
   <script type="module" src="/@shopify/hydrogen/entry-client"></script>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXKT4XL" height="0" width="0"
-      style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=<{ GTM_ID }>" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe>
+  </noscript>
 </body>
 
 </html>

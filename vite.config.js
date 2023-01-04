@@ -1,9 +1,10 @@
 /// <reference types="vitest" />
 import {defineConfig} from 'vite';
 import hydrogen from '@shopify/hydrogen/plugin';
+import VitePluginHtmlEnv from 'vite-plugin-html-env';
 
 export default defineConfig({
-  plugins: [hydrogen()],
+  plugins: [hydrogen(), VitePluginHtmlEnv({compiler: true, envPrefixes: ['']})],
   resolve: {
     alias: [{find: /^~\/(.*)/, replacement: '/src/$1'}],
   },
