@@ -127,6 +127,15 @@ export function OrderBundles({
   useEffect(() => {
     setIsProductsLoading(true);
     let contentResult = [];
+    [...cartInfo[bundle.handle].bundleContents].filter((content) => {
+      const dateNow = new Date(cartInfo[bundle.handle].deliveryDate);
+      const deliverAfter = new Date(content.deliver_after);
+      const deliverBefore = new Date(content.deliver_before);
+      //old logic from previous application
+      if (dateNow > deliverAfter && dateNow < deliverBefore) {
+        contentResult = [content];
+      }
+    });
     fetchContents(contentResult);
   }, [cartInfo[bundle.handle].deliveryDate]);
 
