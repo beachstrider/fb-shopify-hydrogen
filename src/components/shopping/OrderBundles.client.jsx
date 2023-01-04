@@ -61,6 +61,7 @@ export function OrderBundles({
   customerAccessToken,
   customerId = '',
 }) {
+  console.log('==', import.meta.env.PROD);
   const CDN_CACHE_ENV_MODE = 'development';
   // const CDN_CACHE_ENV_MODE = 'production';
   const [deliveryDates, setDeliveryDates] = useState([]);
