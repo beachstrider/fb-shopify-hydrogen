@@ -4,7 +4,15 @@ import hydrogen from '@shopify/hydrogen/plugin';
 import VitePluginHtmlEnv from 'vite-plugin-html-env';
 
 export default defineConfig({
-  plugins: [hydrogen(), VitePluginHtmlEnv({compiler: true, envPrefixes: ['']})],
+  plugins: [
+    hydrogen(),
+    VitePluginHtmlEnv({
+      compiler: true,
+      prefix: '%',
+      suffix: '%',
+      envPrefixes: [''],
+    }),
+  ],
   resolve: {
     alias: [{find: /^~\/(.*)/, replacement: '/src/$1'}],
   },

@@ -605,9 +605,8 @@ export function OrderBundles({
   async function handleSubmitDiscountCode() {
     await axios.get(`/api/discount/set/${discountCodeInputRef.current.value}`);
     setNewDiscountCodes([discountCodeInputRef.current.value]);
+    window.dataLayer.push({event: 'addCoupon'});
   }
-
-  // console.log('--', bundle);
 
   return (
     <Loading className="py-20" isLoading={isInitialDataLoading}>
