@@ -60,10 +60,9 @@ export function OrderBundles({
   discountCodes,
   customerAccessToken,
   customerId = '',
+  CDN_CACHE_ENV_MODE,
 }) {
-  console.log('===', import.meta.env.PUBLIC_CDN_CACHE_ENV_MODE);
-  const CDN_CACHE_ENV_MODE = 'development';
-  // const CDN_CACHE_ENV_MODE = 'production';
+  console.log('===', CDN_CACHE_ENV_MODE);
   const [deliveryDates, setDeliveryDates] = useState([]);
   const [products, setProducts] = useState([]);
   const [showMoneyBackModal, setShowMoneyBackModal] = useState(false);
