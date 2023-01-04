@@ -12,7 +12,7 @@ export async function api(request, {session}) {
   const baseURL = `https://${Oxygen.env.BUNDLE_API_DOMAIN}/api/`;
 
   // eslint-disable-next-line no-undef
-  const shop = Oxygen.env.STORE_DOMAIN;
+  const shop = Oxygen.env.PUBLIC_STORE_DOMAIN;
 
   const bundleBuilder = async (
     url,

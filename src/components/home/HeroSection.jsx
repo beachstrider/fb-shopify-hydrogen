@@ -47,12 +47,10 @@ export function HeroSection() {
                     </span>
                     / person
                   </h2>
-                  <p className="mt-20 font-opensans">
-                    Here's to epic flavors with ready-to-eat convenience at a{' '}
-                    <br />
-                    fraction of the cost of restaurant delivery. Now that was a{' '}
-                    <br />
-                    mouthful! Just like our food.{' '}
+                  <p className="mt-20 font-opensans md:max-w-lg">
+                    Here&apos;s to epic flavors with ready-to-eat convenience at
+                    a fraction of the cost of restaurant delivery. Now that was
+                    a mouthful! Just like our food.
                   </p>
                   <div className="flex xsm:block items-center mt-9">
                     <Link to="/shop/bundle">
@@ -65,7 +63,6 @@ export function HeroSection() {
                         Subscribe now for FREE <br />
                         BREAKFAST! Cancel anytime!{' '}
                       </h2>
-                      <h2></h2>
                     </div>
                   </div>
                 </div>

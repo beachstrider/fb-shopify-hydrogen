@@ -14,7 +14,8 @@ const Index = () => {
       <Suspense>
         <Seo type="noindex" data={{title: 'FeastBox How it works page'}} />
       </Suspense>
-      <Influencers/>
+      {/* eslint-disable-next-line no-undef */}
+      <Influencers CDN_CACHE_ENV_MODE={Oxygen.env.ENV_MODE} />
     </Layout>
   );
 };
