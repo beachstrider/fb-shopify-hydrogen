@@ -39,19 +39,19 @@ function MealCounterView({counterValue}) {
     <>
       {counterValue.length == 4 ? (
         <>
-          <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+          <div className="w-[100px] h-[175px] xsm:h-[73px] xsm:w-[42px] xsm:mr-[10px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
             <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[40px]">
               0
             </div>
           </div>
-          <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+          <div className="w-[100px] h-[175px] xsm:h-[73px]  xsm:w-[42px] xsm:mr-[10px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
             <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[40px]">
               0
             </div>
           </div>
         </>
       ) : (
-        <div className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
+        <div className="w-[100px] h-[175px] xsm:h-[73px] xsm:w-[42px] xsm:mr-[10px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]">
           <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[40px]">
             0
           </div>
@@ -60,7 +60,7 @@ function MealCounterView({counterValue}) {
       {counterValue.map((item, index) => (
         <div
           key={index}
-          className="w-[100px] h-[175px] xsm-only:h-[90px] xsm:h-[66px] xsm:mr-1 mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]"
+          className="w-[100px] h-[175px] xsm:h-[73px] xsm:w-[42px] xsm:mr-[10px] mr-5  bg-right bg-center overflow-hidden bg-no-repeat bg-cover bg-image bg-[url('https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/homepage/counter_number_bg.png')]"
         >
           <div className="text-white flex items-center justify-center h-full font-bold text-[70px] xsm:text-[40px]">
             {item}
