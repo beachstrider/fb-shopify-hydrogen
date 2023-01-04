@@ -419,6 +419,11 @@ export function OrderBundles({
     });
 
     setIsDeliveryDateEditing(false);
+
+    window.dataLayer.push({
+      event: 'changeWeek',
+      value: newWeek,
+    });
   }
 
   function handlePartyChange(e) {
@@ -455,9 +460,31 @@ export function OrderBundles({
       ...cartInfo,
       [bundle.handle]: {...cartInfo[bundle.handle], meals: newProductsInCart},
     });
+
+    if (typeof diff === 'undefined' || diff !== -1) {
+      window.dataLayer.push({
+        event: 'addMeal',
+      });
+    } else {
+      window.dataLayer.push({
+        event: 'removeMeal',
+      });
+    }
   }
 
+  console.log('dataLayer:', window.dataLayer);
+
   function handleToggleFrequency() {
+    if (cartInfo[bundle.handle].frequencyValue === '7 Day(s)') {
+      window.dataLayer.push({
+        event: 'deliveryBiWeekly',
+      });
+    } else {
+      window.dataLayer.push({
+        event: 'deliveryWeekly',
+      });
+    }
+
     setCartInfo({
       ...cartInfo,
       [bundle.handle]: {
@@ -477,7 +504,12 @@ export function OrderBundles({
     }
     return dynamicVariantIndex;
   };
+
   async function handleCheckout() {
+    window.dataLayer.push({
+      event: 'checkout',
+    });
+
     setIsCheckoutProcessing(true);
     if (!cartInfo[bundle.handle].meals.length || !isQuantityLimit) {
       alert(`Please select ${cartInfo[bundle.handle].mealQuantity} meal(s).`);
@@ -958,15 +990,19 @@ export function OrderBundles({
                                               cartInfo[bundle.handle]
                                                 .priceType === 'recuring'
                                             }
-                                            onClick={(e) =>
+                                            onClick={(e) => {
                                               setCartInfo({
                                                 ...cartInfo,
                                                 [bundle.handle]: {
                                                   ...cartInfo[bundle.handle],
                                                   priceType: e.target.value,
                                                 },
-                                              })
-                                            }
+                                              });
+
+                                              window.dataLayer.push({
+                                                event: 'subscribeSave',
+                                              });
+                                            }}
                                           />
                                           <span
                                             className={`ml-3 font-bold`}
@@ -1155,15 +1191,19 @@ export function OrderBundles({
                                               cartInfo[bundle.handle]
                                                 .priceType === 'onetime'
                                             }
-                                            onClick={(e) =>
+                                            onClick={(e) => {
                                               setCartInfo({
                                                 ...cartInfo,
                                                 [bundle.handle]: {
                                                   ...cartInfo[bundle.handle],
                                                   priceType: e.target.value,
                                                 },
-                                              })
-                                            }
+                                              });
+
+                                              window.dataLayer.push({
+                                                event: 'oneTime',
+                                              });
+                                            }}
                                           />
                                           <span
                                             className={`ml-3 font-bold`}
@@ -1332,24 +1372,19 @@ export function OrderBundles({
                           ) : cartInfo[bundle.handle]?.priceType ===
                             'recuring' ? (
                             <>
-                             <span className="mr-2">
+                              <span className="mr-2">
                                 <strike>
-                                {getFullCost(
-                                  typeof bundle?.variants
-                                    ?.nodes[
-                                    cartInfo[bundle.handle]
-                                      .variantIndex
-                                    ]?.priceV2?.amount !==
-                                  'undefined'
-                                    ? bundle?.variants?.nodes[
-                                      cartInfo[bundle.handle]
-                                        .variantIndex
-                                      ]?.priceV2?.amount
-                                    : undefined,
-                                  bundle?.variants?.nodes[
-                                    cartInfo[bundle.handle]
-                                      .variantIndex
-                                  ]?.priceV2?.currencyCode,
+                                  {getFullCost(
+                                    typeof bundle?.variants?.nodes[
+                                      cartInfo[bundle.handle].variantIndex
+                                    ]?.priceV2?.amount !== 'undefined'
+                                      ? bundle?.variants?.nodes[
+                                          cartInfo[bundle.handle].variantIndex
+                                        ]?.priceV2?.amount
+                                      : undefined,
+                                    bundle?.variants?.nodes[
+                                      cartInfo[bundle.handle].variantIndex
+                                    ]?.priceV2?.currencyCode,
                                   )}
                                 </strike>
                               </span>
@@ -1358,11 +1393,10 @@ export function OrderBundles({
                                   parseFloat(totalPrice),
                                   bundle.variants?.nodes[
                                     cartInfo[bundle.handle]?.variantIndex
-                                    ]?.priceV2?.currencyCode,
+                                  ]?.priceV2?.currencyCode,
                                 )}
                               </span>
                             </>
-
                           ) : (
                             <>
                               <span className="mr-2">
@@ -1495,6 +1529,11 @@ export function OrderBundles({
                                             deliveryDate: slot.date,
                                           });
                                           setIsDeliveryDateEditing(false);
+
+                                          window.dataLayer.push({
+                                            event: 'changeDeliveryDay',
+                                            value: slot.date,
+                                          });
                                         }}
                                       />
                                       <span className="ml-3 font-bold">
