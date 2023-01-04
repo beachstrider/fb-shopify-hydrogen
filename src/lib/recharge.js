@@ -1,23 +1,31 @@
 import {fetchSync} from '@shopify/hydrogen';
 import {today} from '~/utils/dates';
 
-export const headers1 = {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-  'X-Recharge-Version': '2021-11',
-  'X-Recharge-Access-Token':'sk_1x1_4721690318b959676d4ff9637849545f3ccebf0d0b4af4bd39fd7d3cc7bbeb0c',
+function getHeaders(version) {
+  const data = {
+    '2021-11': {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'X-Recharge-Version': '2021-11',
+      // eslint-disable-next-line no-undef
+      'X-Recharge-Access-Token': Oxygen.env.RECHARGE_API_TOKEN,
+    },
+    '2021-01': {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'X-Recharge-Version': '2021-01',
+      // eslint-disable-next-line no-undef
+      'X-Recharge-Access-Token': Oxygen.env.RECHARGE_API_TOKEN,
+    },
+  };
 
-};
-//dev 'sk_1x1_9681eab8e3b030293c2bb06c96e2b4fae179a401ed120628f928c438ceda38df',
+  return data[version];
+}
 
-export const headers2 = {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-  'X-Recharge-Version': '2021-01',
-  'X-Recharge-Access-Token':'sk_1x1_4721690318b959676d4ff9637849545f3ccebf0d0b4af4bd39fd7d3cc7bbeb0c',
-};
-
-export const baseURL = 'https://api.rechargeapps.com/';
+function getBaseURL() {
+  // eslint-disable-next-line no-undef
+  return `https://${Oxygen.env.RECHARGE_API_DOMAIN}/`;
+}
 
 const convertUrlParams = (params) => {
   return new URLSearchParams(params).toString();
@@ -27,10 +35,10 @@ export const rechargeFetch = async (
   url,
   params,
   method = 'GET',
-  headers = headers1,
+  headers = getHeaders('2021-11'),
 ) => {
   const res = await fetch(
-    `${baseURL}${url}${
+    `${getBaseURL()}${url}${
       params && method === 'GET' ? '?' + convertUrlParams(params) : ''
     }`,
     {
@@ -55,10 +63,10 @@ export const rechargeFetchSync = (
   url,
   params,
   method = 'GET',
-  headers = headers1,
+  headers = getHeaders('2021-11'),
 ) => {
   const data = fetchSync(
-    `${baseURL}${url}${
+    `${getBaseURL()}${url}${
       params && method === 'GET' ? '?' + convertUrlParams(params) : ''
     }`,
     {
@@ -80,7 +88,12 @@ export const getSubscriptions = (params) => {
 
   if (typeof res.errors?.external_customer_id !== 'undefined') return [];
 
-  const {products} = rechargeFetchSync('products', {}, 'GET', headers2);
+  const {products} = rechargeFetchSync(
+    'products',
+    {},
+    'GET',
+    getHeaders('2021-01'),
+  );
 
   const subscriptions = res.subscriptions.map((subscription) => {
     const {address} = rechargeFetchSync(`addresses/${subscription.address_id}`);
@@ -96,7 +109,12 @@ export const getSubscriptions = (params) => {
 
 export const getSubscription = (id) => {
   const {subscription} = rechargeFetchSync(`subscriptions/${id}`);
-  const {products} = rechargeFetchSync('products', {}, 'GET', headers2);
+  const {products} = rechargeFetchSync(
+    'products',
+    {},
+    'GET',
+    getHeaders('2021-01'),
+  );
   const {address} = rechargeFetchSync(`addresses/${subscription.address_id}`);
 
   const product = products.find(
@@ -278,9 +296,9 @@ export const getShippingAddress = (id) => {
 };
 
 export const sendPaymentMethodUpdateEmail = async ({
-                                                     customer_id,
-                                                     payment_method_id,
-                                                   }) => {
+  customer_id,
+  payment_method_id,
+}) => {
   try {
     await rechargeFetch(
       `customers/${customer_id}/notifications`,

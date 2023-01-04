@@ -1,7 +1,7 @@
-
 import {Link} from '@shopify/hydrogen';
+import {MealCounter} from '~/components';
 
-export function AboutUs() {
+export function AboutUs({CDN_CACHE_ENV_MODE}) {
   return (
     <section className="lg:pt-[100px] text-white pt-25 pb-8 bg-[url('../assets/join_bg.png')]">
       <div className="top-banner">
@@ -146,66 +146,7 @@ export function AboutUs() {
         </h1>
         <div className="flex justify-center flex-wrap">
           <div className="mt-[30px] flex lg:p-[50px] md:p-[40px] sm-max:p-[25px] bg-white justify-center relative">
-            <div className="relative mr-[10px]">
-              <img
-                className="lg:w-[90px] sm-max:w-50px"
-                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
-                alt=""
-              />
-              <span className="absolute top-[50%] leading-[0] font-[600] left-[25%] sm-max:left-[17%] text-white text-[6em] md:text-[5em] sm-max:text-[3em]">
-                0
-              </span>
-            </div>
-            <div className="relative mr-[10px]">
-              <img
-                className="lg:w-[90px] sm-max:w-50px"
-                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
-                alt=""
-              />
-              <span className="absolute top-[50%] left-[25%] sm-max:left-[17%] leading-[0] font-[600] text-white text-[6em] md:text-[5em] sm-max:text-[3em]">
-                0
-              </span>
-            </div>
-            <div className="relative mr-[10px]">
-              <img
-                className="lg:w-[90px] sm-max:w-50px"
-                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
-                alt=""
-              />
-              <span className="absolute top-[50%] left-[25%] sm-max:left-[17%] leading-[0] font-[600] text-white text-[6em] md:text-[5em] sm-max:text-[3em]">
-                1
-              </span>
-            </div>
-            <div className="relative mr-[10px]">
-              <img
-                className="lg:w-[90px] sm-max:w-50px"
-                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
-                alt=""
-              />
-              <span className="absolute top-[50%] left-[25%] sm-max:left-[17%] leading-[0] font-[600] text-white text-[6em] md:text-[5em] sm-max:text-[3em]">
-                0
-              </span>
-            </div>
-            <div className="relative mr-[10px]">
-              <img
-                className="lg:w-[90px] sm-max:w-50px"
-                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
-                alt=""
-              />
-              <span className="absolute top-[50%] left-[25%] sm-max:left-[17%] leading-[0] font-[600] text-white text-[6em] md:text-[5em] sm-max:text-[3em]">
-                1
-              </span>
-            </div>
-            <div className="relative">
-              <img
-                className="lg:w-[90px] sm-max:w-50px"
-                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/counter_number_bg.png"
-                alt=""
-              />
-              <span className="absolute top-[50%] left-[25%] sm-max:left-[17%] leading-[0] font-[600] text-white text-[6em] md:text-[5em] sm-max:text-[3em]">
-                0
-              </span>
-            </div>
+            <MealCounter CDN_CACHE_ENV_MODE={CDN_CACHE_ENV_MODE} />
             <p className="font-opensans absolute bottom-[-60px] right-0 text-right text-black font-bold  lg:text-[40px] md:text-[30px] sm-max:text-[25px]">
               MEALS SERVED
             </p>

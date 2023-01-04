@@ -14,7 +14,8 @@ const Index = () => {
       <Suspense>
         <Seo type="noindex" data={{title: 'About Us'}} />
       </Suspense>
-      <AboutUs />
+      {/* eslint-disable-next-line no-undef */}
+      <AboutUs CDN_CACHE_ENV_MODE={Oxygen.env.ENV_MODE} />
     </Layout>
   );
 };
