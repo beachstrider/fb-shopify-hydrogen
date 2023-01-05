@@ -2,7 +2,7 @@ export function ShoppingBanner({...props}) {
   return (
     <div className="w-full px-4 mb-8 md:mb-0 md:w-1/3">
       <div className="relative mb-10 h-[564px]">
-        <a
+        <span
           className="absolute top-1/2 left-0 ml-8 transform translate-1/2"
           href="#"
         >
@@ -18,13 +18,13 @@ export function ShoppingBanner({...props}) {
               fill="#1F40FF"
             ></path>
           </svg>
-        </a>
+        </span>
         <img
           className="object-cover w-full h-full"
           src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/shop/shop_hero.png"
           alt=""
         />
-        <a
+        <span
           className="absolute top-1/2 right-0 mr-8 transform translate-1/2"
           href="#"
         >
@@ -40,7 +40,7 @@ export function ShoppingBanner({...props}) {
               fill="#1F40FF"
             ></path>
           </svg>
-        </a>
+        </span>
       </div>
     </div>
   );

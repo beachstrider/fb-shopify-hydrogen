@@ -116,7 +116,7 @@ const UpdatePayment = ({paymentMethod}) => {
                             placeholder
                           />
                         </div>
-                        <a
+                        <span
                           className="block py-2 text-lg text-center uppercase font-bold"
                           href="#"
                           style={{
@@ -126,15 +126,15 @@ const UpdatePayment = ({paymentMethod}) => {
                           }}
                         >
                           Save
-                        </a>
+                        </span>
                         <p>
-                          <a
+                          <span
                             href="#"
                             style={{color: '#DB9707'}}
                             className="font-bold"
                           >
                             &lt; BACK
-                          </a>
+                          </span>
                         </p>
                       </form>
                     </div>
