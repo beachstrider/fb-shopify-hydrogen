@@ -202,7 +202,7 @@ export function Footer({menu}) {
         </div>
       </section>
       <div className='bg-[#231F20] text-center pt-8 pb-12'>
-        <p className='text-white'>© 2022 FEASTbox, All Rights Reserved</p>
+        <p className='text-white'>© 2023 FEASTbox, All Rights Reserved</p>
       </div>
     </div>
   );
