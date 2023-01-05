@@ -37,12 +37,12 @@ export function CounterSection({CDN_CACHE_ENV_MODE}) {
           </h3>
 
           <h3 className="text-left md:text-center md:text-center text-[25px] text-white capitalize font-normal leading-[40px]">
-            <a className="underline text-[#DB9707]">
+            <span className="underline text-[#DB9707]">
               <Link to="https://fullofhope.org" target="_blank">
                 {' '}
                 Learn More{' '}
               </Link>
-            </a>{' '}
+            </span>{' '}
             About Full of Hope
           </h3>
         </div>

@@ -26,11 +26,11 @@ export function PartyTime() {
                       Cater Your Event
                     </button>
                   </Link>
-                  <a to="/how-it-works"
+                  <span
                     className="font-opensans font-bold text-[#A60D1E] mx-[20px] font-bold underline"
                   >
                    <Link to="/how-it-works"> LEARN MORE </Link>
-                  </a>
+                  </span>
                 </div>
               </div>
               <div className="w-full md:w-1/2">
