@@ -24,11 +24,13 @@ export function AccountCreateForm() {
 
     const newEmailError = emailValidation(event.currentTarget.email);
     if (newEmailError) {
+      setIscreateProcessing(false);
       setEmailError(newEmailError);
     }
 
     const newPasswordError = passwordValidation(event.currentTarget.password);
     if (newPasswordError) {
+      setIscreateProcessing(false);
       setPasswordError(newPasswordError);
     }
 
