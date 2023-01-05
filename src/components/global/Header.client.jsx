@@ -122,38 +122,6 @@ function MobileHeader({countryCode, title, isHome, openCart, openMenu, token}) {
         </Link>
       </div>
 
-      <Link
-        className="flex items-center self-stretch leading-[1rem] md:leading-[4rem] justify-center flex-grow w-full h-full"
-        to="/"
-      >
-        <Heading
-          className="font-bold text-center p-8 lg:p-0 "
-          as={isHome ? 'h1' : 'h2'}
-        >
-          <div className="flex justify-between">
-            {/* <Image
-                src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_75/fb/logo/fb_logo_white.png"
-                width={'auto'}
-                height={'auto'}
-                alt={'Feastbox'}
-                className="w-16"
-              /> */}
-
-            {/* <Link
-              to={'/shop/bundle/event-feastbox'}
-              className=" text-white border font-bold py-1 px-2 focus:outline-none"
-            >
-              Get Started
-            </Link> */}
-          </div>
-          <Link
-            to={'/shop/bundle'}
-            className="text-sm inline-block bg-white text-black py-1 px-4 uppercase text-xs hidden"
-          >
-            SHOP NOW
-          </Link>
-        </Heading>
-      </Link>
 
       <div className="flex items-center justify-end w-full gap-4">
         <Link
