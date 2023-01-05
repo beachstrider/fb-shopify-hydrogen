@@ -54,6 +54,7 @@ export function AccountLoginForm({shopName}) {
         navigate('/account/subscriptions');
       }
     } else {
+      setIsSignInProcessing(false);
       setPasswordError(
         validity.valueMissing
           ? 'Please enter a password'
