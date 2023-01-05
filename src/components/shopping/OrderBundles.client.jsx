@@ -435,8 +435,6 @@ export function OrderBundles({
     }
   }
 
-  console.log('dataLayer:', window.dataLayer);
-
   function handleToggleFrequency() {
     if (cartInfo[bundle.handle].frequencyValue === '7 Day(s)') {
       window.dataLayer.push({
