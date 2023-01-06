@@ -15,6 +15,10 @@ import {
   addDays,
 } from '~/utils/dates';
 import {
+  encryptSubId,
+  decryptSubId,
+} from '~/utils/common';
+import {
   getOrderTrackingUrl,
   buildProductArrayFromVariant,
   buildProductArrayFromId,
@@ -23,7 +27,7 @@ import {MealItem} from '~/components/shopping/MealItem.client';
 import Loading from '~/components/Loading/index.client';
 
 const Index = ({subscription, subscription_id, user}) => {
-  console.log('subscription===', user);
+  // console.log('subscription===', user);
   const TOTAL_WEEKS_DISPLAY = 4;
   const TOTAL_WEEKS_PER_PAGE = 1;
   const STATUS_LOCKED = 'locked';
@@ -40,6 +44,7 @@ const Index = ({subscription, subscription_id, user}) => {
   const [limit, setLimit] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
   const [weeksMenu, setWeeksMenu] = useState([]);
+  const [activeWeekDate, setActiveWeekDate] = useState('');
   const [isMealSelectionLoading, setIsMealSelectionLoading] = useState(false);
 
   const {
@@ -100,6 +105,7 @@ const Index = ({subscription, subscription_id, user}) => {
     setChangedDeliveryDate(false);
   };
 
+  // Functions for Edit meal plan
   const createWeekList = (weeksMenu, deliverAfterDate) => {
     if (!weeksMenu.includes(dayjs(deliverAfterDate).format('YYYY-MM-DD'))) {
       weeksMenu.push(dayjs.utc(deliverAfterDate).format('YYYY-MM-DD'));
@@ -265,7 +271,7 @@ const Index = ({subscription, subscription_id, user}) => {
                         subscriptionArray[subscriptionObjKey].trackingUrl =
                           await getOrderTrackingUrl(
                             orderFound.platform_order_id,
-                            shopCustomer,
+                            user,
                           );
                       }
                     }
@@ -328,17 +334,22 @@ const Index = ({subscription, subscription_id, user}) => {
     }
 
     const itemsToDisplay = mapWeeksToDisplay(sortObjectKeys(subscriptionArray));
+    console.log('itemsToDisplayitemsToDisplay', itemsToDisplay);
     itemsToDisplay.forEach((item) => {
       activeWeeksLimit.push(5);
       activeWeeksArr.push(item);
     });
+    console.log('itemsToDisplay322222', itemsToDisplay);
 
     const sortedActiveWeeks = sortByDateProperty(
       activeWeeksArr,
       'subscriptionDate',
     );
+    console.log('weeksMenuweeksMenu', weeksMenu);
     const uniqueValues = uniqueArray([...weeksMenu]);
     const sortedDates = sortDatesArray(uniqueValues);
+    console.log('sortedDates', sortedDates);
+
     console.log('----subscriptionArray----', subscriptionArray);
     setSubscriptions(subscriptionArray);
     // console.log('----sortedDates----', sortedDates)
@@ -349,6 +360,16 @@ const Index = ({subscription, subscription_id, user}) => {
     setLimit(activeWeeksLimit);
   };
 
+  function handleWeekChange(e) {
+    const newWeek = e.target.value;
+    console.log(e.target.value);
+    setActiveWeekDate(newWeek);
+    console.log('newWeeknewWeek', newWeek);
+    console.log('subscriptions', typeof subscriptions);
+    const selectedSub = subscriptions.map((sub) => sub.subscriptionDate == newWeek)
+    console.log('selectedSub', selectedSub);
+    setActive(selectedSub);
+  }
   return (
     <Loading isLoading={isMealSelectionLoading}>
       <div className="flex flex-wrap -m-4">
@@ -379,6 +400,8 @@ const Index = ({subscription, subscription_id, user}) => {
                           <select
                             className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
                             name="week"
+                            onChange={handleWeekChange}
+                            value={activeWeekDate}
                             style={{borderWidth: 0, backgroundImage: 'none'}}
                           >
                             <option disabled value={-1}>
@@ -416,15 +439,15 @@ const Index = ({subscription, subscription_id, user}) => {
                               {getUsaStandard(addDays(sub.subscriptionDate, 6))}
                               )
                             </div>
-                            {/*<div className="text-xl font-medium mt-[19px]">
+                            <div className="text-xl font-medium mt-[19px]">
                               <Link
-                                to={`/account/subscriptions/${subscription.id}/edit-order`}
+                                to={`/account/subscriptions/${subscription.id}/edit-order/${encryptSubId(sub.subId)}?date=${sub.queryDate}`}
                               >
                                 <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
                                   Edit Order
                                 </button>
                               </Link>
-                            </div>*/}
+                            </div>
                           </div>
                           <div className="flex flex-wrap -mx-2 -mb-2">
                             {sub.items.length ? (
@@ -489,7 +512,7 @@ const Index = ({subscription, subscription_id, user}) => {
                   </div>
                 </div>
                 <hr style={{margin: '20px 0'}} />
-                {/*<div className="py-3">
+                <div className="py-3">
                   <div className="flex justify-between">
                     <span className="font-bold font-medium text-lg">
                       Frequency
@@ -561,7 +584,7 @@ const Index = ({subscription, subscription_id, user}) => {
                       </div>
                     </span>
                   </div>
-                </div>*/}
+                </div>
                 <hr style={{margin: '20px 0'}} />
                 <div className="py-3">
                   <div className="flex justify-between">
