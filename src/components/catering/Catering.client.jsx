@@ -14,7 +14,7 @@ export function Catering() {
             <br />
             SO GOOD
             <img
-              className="w-20 hidden lg:block lg:w-32 xl:36 2xl:w-42 bottom-[-120px] right-[calc(42%)] md:right-[calc(45%-140px)] lg:right-[calc(45%-220px)] lg:absolute visible xl:invisible"
+              className="w-20 hidden lg:block lg:w-32 xl:36 2xl:w-42 bottom-[-120px] right-[calc(42%)] md:right-[calc(45%-140px)] lg:right-[calc(45%-220px)] lg:absolute invisible xl:visible"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/down_arrows.png"
               alt=""
             />
