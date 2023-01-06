@@ -51,6 +51,7 @@ export async function api(request, {session}) {
     //this token preserve for long time but in our api end expire that token which cause api error
     token = (await session.get()).bundleBuilderAccountToken;
     let email = (await session.get()).customerEmail;
+    let oldEmail = (await session.get()).customerOldEmail;
     if (request.method === 'GET') {
       const query = urlObj.search;
       url = url + query;
@@ -60,7 +61,8 @@ export async function api(request, {session}) {
     }
 
     try {
-      if (typeof token === 'undefined') {
+      // if token not set then request for new token. Another logic is if the token set for previous logged-in user which has different email, so again set token for new user(email).
+      if (typeof token === 'undefined' || email !== oldEmail) {
         const newToken = (
           await bundleBuilder(`auth/user`, {shop, email}, 'POST')
         ).token;
