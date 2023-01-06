@@ -62,7 +62,7 @@ yarn.lock
 .yarn-integrity
 
 # dotenv environment variables file
-# .env
+.env
 .env.test
 
 # Serverless directories
