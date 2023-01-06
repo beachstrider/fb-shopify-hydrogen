@@ -28,7 +28,7 @@ export function AboutUs({CDN_CACHE_ENV_MODE}) {
               <h2 className="font-opensans custom-font lg:text-center sm-max:mt-6 mt-12 text-start font-bold bg-[#DB9707] lg:ml-[-50px] lg:text-[60px] md:text-[40px] sm-max:text-[35px] -tracking-[3.5px] px-[30px]">
                 WHO EVEN ARE WE?
               </h2>
-              <p className="font-opensans  lg:p-12 md:px-[7%] md:py-[22px] sm-max:px-[7%] sm-max:py-[22px] text-[25px] lg:text-[30px] md:text-[20px] sm-max:text-[20px] text-white">
+              <p className="font-opensans  lg:p-12 md:px-[7%] md:py-[22px] sm-max:px-[7%] sm-max:py-[22px] text-[25px] lg:text-[20px] md:text-[20px] sm-max:text-[20px] text-white">
                 FEASTbox solves the timeless “what’s for dinner?” question, one
                 box at a time. With incredible flavor, convenience, and fun
                 vibes, we believe that everybody deserves to drool over dinner.
@@ -44,10 +44,10 @@ export function AboutUs({CDN_CACHE_ENV_MODE}) {
       <div className="card-section mx-auto lg:mt-[90px] md:mt-[90px] sm-max:mt-[40px] lg:px-0 md:px-[7%] sm-max:px-[7%]">
         <div className="lg:grid grid-cols-2 sm-max:grid-cols-2 md:flex sm-max:flex md:flex-wrap sm-max:flex-wrap">
           <div className="w-auto lg:text-right pr-[35px] lg:pl-[30%] lg:order-1 md:order-2 sm-max:order-2">
-            <h2 className="font-opensans mt-10 mr-4 font-bold lg:text-[50px] md:text-[40px] sm-max:text-[35px]">
+            <h2 className="font-opensans mt-10 mr-4 font-bold text-[50px] lg:text-[40px] md:text-[40px] sm-max:text-[40px]">
               Feast Your Eyes on These Ingredients
             </h2>
-            <p className="font-opensans mt-1 card-para mr-5  lg:text-[30px] md:text-[20px] sm-max:text-[20px]">
+            <p className="font-opensans mt-1 card-para mr-5 text-[30px] lg:text-[20px] md:text-[20px] sm-max:text-[20px]">
               Our ish is local and clean and natural and… well, everything food
               you should be TBH. Over-processing is so 2020 and nobody liked
               2020.
@@ -87,10 +87,10 @@ export function AboutUs({CDN_CACHE_ENV_MODE}) {
           </div>
           <div className="w-auto text-start lg:pl-[35px] lg:pr-[30%] flex items-center">
             <div className="w-full">
-              <h2 className="font-opensans mt-10 lg:ml-4 font-bold lg:text-[50px] md:text-[40px] sm-max:text-[35px]">
+              <h2 className="font-opensans mt-10 lg:ml-4 font-bold text-[50px] lg:text-[40px] md:text-[40px] sm-max:text-[40px]">
                 Meet the Feastie Boys (and Girls)
               </h2>
-              <p className="font-opensans mt-1 card-para lg:ml-5 lg:text-[30px] md:text-[20px] sm-max:text-[20px]">
+              <p className="font-opensans mt-1 card-para lg:ml-5 sm-max:mb-[10px] text-[30px] lg:text-[20px] md:text-[20px] sm-max:text-[20px]">
                 Our epic team of dieticians, nutritionists, and chefs have
                 developed epic flavors that result in epic meals that mean epic
                 dinner experiences for smart EPIC subscribers like you.
@@ -104,10 +104,10 @@ export function AboutUs({CDN_CACHE_ENV_MODE}) {
         <div className="lg:grid grid-cols-2 sm-max:grid-cols-2 md:flex sm-max:flex flex-wrap">
           <div className="w-auto lg:text-right pr-[35px] lg:pl-[30%] flex items-center lg:order-1 md:order-2 sm-max:order-2 lg:mb-[120px]">
             <div className="w-full">
-              <h2 className="font-opensans mt-10 mr-4 font-bold lg:text-[50px] md:text-[40px] sm-max:text-[35px]">
+              <h2 className="font-opensans mt-10 mr-4 font-bold text-[50px] lg:text-[40px] md:text-[40px] sm-max:text-[40px]">
                 The Belly of the Feast!
               </h2>
-              <p className="font-opensans mt-1 card-para mr-5 lg:text-[30px] md:text-[20px] sm-max:text-[20px]">
+              <p className="font-opensans mt-1 card-para mr-5 text-[30px] lg:text-[20px] md:text-[20px] sm-max:text-[20px]">
                 Our kitchen, located in Springville, Utah, is staffed with real
                 human beings who chop every vegetable, trim every chunk of meat,
                 sort every grain of rice, all to bring you the BEST dinner
@@ -153,7 +153,7 @@ export function AboutUs({CDN_CACHE_ENV_MODE}) {
           </div>
         </div>
         <img
-          className="absolute sm-max:left-0 lg:left-[auto] lg:right-0 md:right-0  lg:bottom-[-40%] md:bottom-[-30%] sm-max:bottom-[-20%] lg:w-auto md:w-[15%] sm-max:w-[15%]"
+          className="absolute sm-max:left-0 lg:left-[auto] lg:right-0 md:right-0  lg:bottom-[-40%] md:bottom-[-30%] sm-max:bottom-[-10%] lg:w-auto md:w-[15%] sm-max:w-[15%]"
           src={
             'https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/about_us/arrows_down.png'
           }
@@ -161,7 +161,7 @@ export function AboutUs({CDN_CACHE_ENV_MODE}) {
         />
       </div>
       <div className="card-section mx-auto lg:p-[80px] md:p-[80px] sm-max:p-[10%] text-center">
-        <p className="font-opensans lg:w-8/12 md:w-12/12 mx-auto text-center lg:text-[25px] md:text-[20px] sm-max:text-[20px]">
+        <p className="font-opensans lg:w-8/12 md:w-12/12 mx-auto text-center text-[25px] lg:text-[20px] md:text-[20px] sm-max:text-[20px]">
           One of our passions is to provide delicious, clean, ready-to-eat meals
           for families who are experiencing financial, health, or other setbacks
           that make it difficult to consistently feed their family.
@@ -175,10 +175,10 @@ export function AboutUs({CDN_CACHE_ENV_MODE}) {
       <div className="card-section mx-auto lg:px-0 md:px-[7%] sm-max:px-[7%]">
         <div className="lg:grid md:flex sm-max:flex grid-cols-2 sm-max:grid-cols-2 flex-wrap">
           <div className="w-auto lg:px-[15%] md:px-0 sm-max:px-0 mt-10 lg:order-1 md:order-2 sm-max:order-2">
-            <h2 className="font-bungee mt-10 mr-4 font-bold text-[50px]">
+            <h2 className="font-bungee mt-10 mr-4 font-bold text-[50px] lg:text-[40px] md:text-[40px] sm-max:text-[40px]">
               FULL OF HOPE
             </h2>
-            <p className="font-opensans mt-1 text-[25px] card-para mr-5 lg:text-[25px] md:text-[20px] sm-max:text-[20px]">
+            <p className="font-opensans mt-1 text-[25px] card-para mr-5 text-[25px] lg:text-[20px] md:text-[20px] sm-max:text-[20px]">
               Our passion and relentless focus is to provide delicious, clean,
               ready-to-eat meals for families who are experiencing financial,
               health, or other setbacks that make it difficult to consistently
