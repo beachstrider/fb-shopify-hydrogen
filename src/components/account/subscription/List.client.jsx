@@ -1,7 +1,19 @@
 import {Link, Image} from '@shopify/hydrogen';
 import {getUsaStandard} from '~/utils/dates';
+import {useEffect} from 'react';
+import axios from "axios";
 
-const Index = ({subscriptions}) => {
+const Index = ({subscriptions, user}) => {
+  //initialize a new token when in home page
+  useEffect(() => {
+    const getToken = async () => {
+      await axios.post(`/api/bundleAuth/setSession`, {
+        email: user.email,
+      });
+      const res = (await axios.get(`/api/authToken`)).data;
+    };
+    getToken();
+  }, []);
   return (
     <div className="flex flex-wrap -m-4">
       <div className="w-full max-w-2xl mb-4 text-3xl uppercase font-bold">
