@@ -69,19 +69,20 @@ const buildProductArrayFromId = async (items, subType, shopProducts) =>
   new Promise((resolve) => {
     const foundProductArray = [];
     for (const item of items) {
-      const variant = shopProducts.filter(
-        (p) => Number(p.id) === Number(item.platform_product_id),
+      const matchProduct = shopProducts.filter(
+        (p) => p.id === `gid://shopify/Product/${item.platform_product_id}`,
       )[0];
-
-      if (
-        shopProducts.filter(
-          (p) => Number(p.id) === Number(item.platform_product_id),
-        ).length > 0
-      ) {
+      const variant = matchProduct?.variants?.nodes?.filter(
+        (v) => v.title.split('/ ')[1] === subType,
+      )[0];
+      if (variant) {
         foundProductArray.push({
-          title: variant.title,
-          platform_img:
-            variant?.images.length > 0 ? variant.images[0] : EMPTY_STATE_IMAGE,
+          title: variant.metafields?.find(
+            (x) => x?.key === 'display_name',
+          )?.value,
+          metafields: variant.metafields,
+          feature_image: matchProduct?.featuredImage?.url ? matchProduct?.featuredImage?.url : EMPTY_STATE_IMAGE,
+          variant_image: variant.image?.url ? variant.image?.url : EMPTY_STATE_IMAGE,
           quantity: item.default_quantity,
           type: subType,
         });
