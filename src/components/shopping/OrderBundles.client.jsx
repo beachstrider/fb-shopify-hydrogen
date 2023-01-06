@@ -77,19 +77,23 @@ export function OrderBundles({
   const [isProductsLoading, setIsProductsLoading] = useState(false);
   const [isCheckoutProcessing, setIsCheckoutProcessing] = useState(false);
 
+  const [errors, setErrors] = useState({
+    discountCode: '',
+  });
+
   const {
     id,
     lines,
     checkoutUrl,
-    cartAttributesUpdate,
     cartCreate,
-    linesAdd,
-    linesRemove,
+    linesUpdate,
+    cartAttributesUpdate,
     buyerIdentityUpdate,
     discountCodesUpdate,
   } = useCart();
 
   const bundleIdNumber = Number(bundle.id.substring(22));
+
   const discountCodeInputRef = useRef(null);
 
   const currentQuantity = (() => {
@@ -156,16 +160,31 @@ export function OrderBundles({
   })();
 
   useEffect(() => {
-    if (typeof id === 'undefined') cartCreate({});
+    if (typeof id === 'undefined') {
+      cartCreate({
+        lines: [
+          {
+            merchandiseId:
+              bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
+          },
+        ],
+      });
+    }
+
+    fetchAll();
 
     async function fetchAll() {
       await fetchDeliveryDates();
       await fetchBundle();
       setIsInitialDataLoading(false);
     }
-
-    fetchAll();
   }, []);
+
+  useEffect(() => {
+    if (typeof id !== 'undefined') {
+      discountCodesUpdate(discountCodes);
+    }
+  }, [id]);
 
   useEffect(() => {
     const oldCartInfo = localStorage.getItem('cartInfo');
@@ -462,6 +481,25 @@ export function OrderBundles({
     return dynamicVariantIndex;
   }
 
+  async function handleSubmitDiscountCode() {
+    try {
+      await axios.post(`/api/discount/set`, {
+        cartId: id,
+        code: discountCodeInputRef.current.value,
+      });
+
+      setNewDiscountCodes([discountCodeInputRef.current.value]);
+      window.dataLayer.push({event: 'addCoupon'});
+    } catch ({
+      response: {
+        data: {error},
+      },
+    }) {
+      setErrors({...errors, discountCode: error});
+      discountCodeInputRef.current.value = '';
+    }
+  }
+
   async function handleCheckout() {
     window.dataLayer.push({
       event: 'checkout',
@@ -499,107 +537,98 @@ export function OrderBundles({
       line.sellingPlanId = sellingPlanId;
     }
 
-    const removingLinesIds = lines
-      .filter(
-        (line) =>
-          !line.attributes.every((attr) => attr.key !== 'Delivery_Date'),
-      )
-      .map((el) => el.id);
+    const {id: lineId} = lines.find(
+      (line) =>
+        line.merchandise.id ===
+        bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
+    );
 
-    linesRemove(removingLinesIds);
+    let timeoutDeep = 0;
+
+    linesUpdate([
+      {
+        ...line,
+        id: lineId,
+      },
+    ]);
 
     setTimeout(() => {
-      linesAdd([line]);
-    }, [API_CALLING_INTERVAL]);
-
-    setTimeout(() => {
-      if (
-        discountCodeInputRef.current !== null &&
-        discountCodeInputRef.current.value !== null
-      )
-        discountCodesUpdate(discountCodeInputRef.current.value);
-      setTimeout(() => {
+      if (typeof customerAccessToken !== 'undefined') {
+        timeoutDeep = 1;
         buyerIdentityUpdate({
           customerAccessToken,
         });
+      }
 
-        setTimeout(async () => {
-          // add cart note attribute its required
-          const attributes = [
-            {
-              key: 'delivery-date',
-              value: formatUTCDate(
-                cartInfo[bundle.handle].deliveryDate,
-                'YYYY-MM-DD',
-              ),
-            },
-            {
-              key: 'delivery-day',
-              value: cartInfo[bundle.handle].deliveryDay
-                ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format(
-                    'dddd',
-                  )
-                : 'N/A',
-            },
-          ];
-          cartAttributesUpdate(attributes);
+      setTimeout(async () => {
+        const attributes = [
+          {
+            key: 'delivery-date',
+            value: formatUTCDate(
+              cartInfo[bundle.handle].deliveryDate,
+              'YYYY-MM-DD',
+            ),
+          },
+          {
+            key: 'delivery-day',
+            value: cartInfo[bundle.handle].deliveryDay
+              ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format(
+                  'dddd',
+                )
+              : 'N/A',
+          },
+        ];
+        cartAttributesUpdate(attributes);
 
-          const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
+        const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
 
-          const items = cartInfo[bundle.handle].meals.map((el) => {
-            // update variant index based on bundle product when bundle product is Family feastbox then variant index defaul
-            // but when Event feastbox then variant index will +1 as meals variant for eventbox start from 1 index in shopify
-            let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
-            if (bundle.handle === 'event-feastbox') {
-              dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
-            }
-            return {
-              bundle_configuration_content_id:
-                el.bundle_configuration_contents_id,
-              platform_product_variant_id: parseInt(
-                el.variants.nodes[dynamicVariantIndex]?.id.split(
-                  'ProductVariant/',
-                )[1],
-              ),
-              quantity: el.quantity,
-            };
-          });
-
-          const cartData = {
-            platform_customer_id: null, //if customer logged in then save shopify customer idp
-            platform_cart_token,
-            platform_product_id:
-              cartInfo[bundle.handle].bundleData.platform_product_id,
-            platform_variant_id: parseInt(
-              bundle.variants.nodes[
-                cartInfo[bundle.handle].variantIndex
-              ]?.id.split('ProductVariant/')[1],
-            ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
-            subscription_type:
-              bundle.variants.nodes[
-                cartInfo[bundle.handle].variantIndex
-              ]?.title.split(' /')[0],
-            subscription_sub_type:
-              bundle.variants.nodes[
-                cartInfo[bundle.handle].variantIndex
-              ]?.title.split('/ ')[1],
-            bundle_id: cartInfo[bundle.handle].bundleData.id,
-            delivery_day: getDayUsa(cartInfo[bundle.handle].deliveryDate),
-            contents: [...items],
+        const items = cartInfo[bundle.handle].meals.map((el) => {
+          // update variant index based on bundle product when bundle product is Family feastbox then variant index defaul
+          // but when Event feastbox then variant index will +1 as meals variant for eventbox start from 1 index in shopify
+          let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
+          if (bundle.handle === 'event-feastbox') {
+            dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
+          }
+          return {
+            bundle_configuration_content_id:
+              el.bundle_configuration_contents_id,
+            platform_product_variant_id: parseInt(
+              el.variants.nodes[dynamicVariantIndex]?.id.split(
+                'ProductVariant/',
+              )[1],
+            ),
+            quantity: el.quantity,
           };
+        });
 
-          await axios.post(`/api/bundle/carts`, cartData);
+        const cartData = {
+          platform_customer_id: null, //if customer logged in then save shopify customer idp
+          platform_cart_token,
+          platform_product_id:
+            cartInfo[bundle.handle].bundleData.platform_product_id,
+          platform_variant_id: parseInt(
+            bundle.variants.nodes[
+              cartInfo[bundle.handle].variantIndex
+            ]?.id.split('ProductVariant/')[1],
+          ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
+          subscription_type:
+            bundle.variants.nodes[
+              cartInfo[bundle.handle].variantIndex
+            ]?.title.split(' /')[0],
+          subscription_sub_type:
+            bundle.variants.nodes[
+              cartInfo[bundle.handle].variantIndex
+            ]?.title.split('/ ')[1],
+          bundle_id: cartInfo[bundle.handle].bundleData.id,
+          delivery_day: getDayUsa(cartInfo[bundle.handle].deliveryDate),
+          contents: [...items],
+        };
 
-          location.href = checkoutUrl;
-        }, [API_CALLING_INTERVAL]);
-      }, [API_CALLING_INTERVAL]);
-    }, [API_CALLING_INTERVAL * 2]);
-  }
+        await axios.post(`/api/bundle/carts`, cartData);
 
-  async function handleSubmitDiscountCode() {
-    await axios.get(`/api/discount/set/${discountCodeInputRef.current.value}`);
-    setNewDiscountCodes([discountCodeInputRef.current.value]);
-    window.dataLayer.push({event: 'addCoupon'});
+        location.href = checkoutUrl;
+      }, [API_CALLING_INTERVAL * timeoutDeep]);
+    }, [API_CALLING_INTERVAL]);
   }
 
   return (
@@ -1228,20 +1257,29 @@ export function OrderBundles({
                                   className="w-full py-3 px-4 border-[#707070] focus:bg-white border focus:outline-none"
                                   defaultValue={newDiscountCodes.join(' ')}
                                   disabled={newDiscountCodes.length > 0}
+                                  onChange={() =>
+                                    setErrors({...errors, discountCode: ''})
+                                  }
                                 />
                               </div>
                               <div className="flex-none flex items-center">
-                                {newDiscountCodes.length === 0 && (
-                                  <button
-                                    className="addCoupon removeCoupon failedCoupon inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
-                                    onClick={handleSubmitDiscountCode}
-                                  >
-                                    Apply
-                                  </button>
-                                )}
+                                {newDiscountCodes.length === 0 &&
+                                  errors.discountCode === '' && (
+                                    <button
+                                      className="addCoupon removeCoupon failedCoupon inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
+                                      onClick={handleSubmitDiscountCode}
+                                    >
+                                      Apply
+                                    </button>
+                                  )}
                                 {newDiscountCodes.length > 0 && (
                                   <div className="text-lg font-bold text-[#DB9707]">
                                     Code Applied
+                                  </div>
+                                )}
+                                {errors.discountCode !== '' && (
+                                  <div className="text-lg font-bold text-red-500">
+                                    {errors.discountCode}
                                   </div>
                                 )}
                               </div>

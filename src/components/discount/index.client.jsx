@@ -4,7 +4,10 @@ import axios from 'axios';
 export default function ({code, redirect}) {
   useEffect(() => {
     async function action() {
-      await axios.get(`/api/discount/set/${code}`);
+      await axios.post(`/api/discount/set`, {
+        code,
+        force: true,
+      });
       location.href = redirect;
     }
 
