@@ -1,91 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_32/fb/logo/fb-favicon.png"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FEASTbox</title>
-    <link rel="stylesheet" href="/src/styles/index.css" />
-    <link rel="preconnect" href="https://cdn.shopify.com" />
-    <link rel="preconnect" href="https://shop.app/" />
-    <link rel="preconnect" href="https://hydrogen-preview.myshopify.com/" />
 
-    <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != 'dataLayer' ? '&l=' + l : '';
-        j.async = true;
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, 'script', 'dataLayer', '%VITE_GTM_ID%');
-    </script>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml"
+    href="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_32/fb/logo/fb-favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FEASTbox</title>
+  <link rel="stylesheet" href="/src/styles/index.css" />
+  <link rel="preconnect" href="https://cdn.shopify.com" />
+  <link rel="preconnect" href="https://shop.app/" />
+  <link rel="preconnect" href="https://hydrogen-preview.myshopify.com/" />
 
-    <script type="text/javascript">
-      var _support = _support || {ui: {}, user: {}};
-      _support['account'] = 'feastbox-sandbox';
-      _support['ui']['contactMode'] = 'anonymous';
-      _support['ui']['enableKb'] = 'true';
-      _support['ui']['styles'] = {
-        widgetColor: 'rgb(219, 151, 7)',
-        gradient: true,
-      };
-      _support['ui']['shoutboxFacesMode'] = 'default';
-      _support['ui']['shoutboxHeaderLogo'] = true;
-      _support['ui']['widget'] = {
-        icon: 'chat',
-        displayOn: 'all',
-        fontSize: 'default',
-        allowBotProcessing: true,
-        label: {
-          text: 'Let us know if you have any questions! &#128522;',
-          mode: 'notification',
-          delay: 3,
-          duration: 30,
-          primary: 'I have a question',
-          secondary: 'No, thanks',
-          sound: true,
-        },
-        position: 'bottom-right',
-        mobilePosition: 'bottom-right',
-      };
-      _support['apps'] = {
-        recentConversations: {},
-        faq: {enabled: true},
-        orders: {enabled: true, enable_notes: true},
-      };
-    </script>
+  <script>
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', '%VITE_GTM_ID%');
+  </script>
 
-    <script
-      type="text/javascript"
-      async
-      src="https://cdn.reamaze.com/assets/reamaze.js"
-    ></script>
+  <script type="text/javascript">
+    var _support = _support || { ui: {}, user: {} };
+    _support['account'] = 'feastbox-sandbox';
+    _support['ui']['contactMode'] = 'anonymous';
+    _support['ui']['enableKb'] = 'true';
+    _support['ui']['styles'] = {
+      widgetColor: 'rgb(219, 151, 7)',
+      gradient: true,
+    };
+    _support['ui']['shoutboxFacesMode'] = 'default';
+    _support['ui']['shoutboxHeaderLogo'] = true;
+    _support['ui']['widget'] = {
+      icon: 'chat',
+      displayOn: 'all',
+      fontSize: 'default',
+      allowBotProcessing: true,
+      label: {
+        text: 'Let us know if you have any questions! &#128522;',
+        mode: 'notification',
+        delay: 3,
+        duration: 30,
+        primary: 'I have a question',
+        secondary: 'No, thanks',
+        sound: true,
+      },
+      position: 'bottom-right',
+      mobilePosition: 'bottom-right',
+    };
+    _support['apps'] = {
+      recentConversations: {},
+      faq: { enabled: true },
+      orders: { enabled: true, enable_notes: true },
+    };
+  </script>
 
-    <script
-      async
-      type="text/javascript"
-      src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=%VITE_KLAVIYO_COMPANY_ID%"
-    ></script>
-  </head>
+  <script type="text/javascript" async src="https://cdn.reamaze.com/assets/reamaze.js"></script>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/@shopify/hydrogen/entry-client"></script>
+  <script async type="text/javascript"
+    src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=%VITE_KLAVIYO_COMPANY_ID%"></script>
+</head>
 
-    <noscript>
-      <iframe
-        src="https://www.googletagmanager.com/ns.html?id=%VITE_GTM_ID%"
-        height="0"
-        width="0"
-        style="display: none; visibility: hidden"
-      ></iframe>
-    </noscript>
-  </body>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/@shopify/hydrogen/entry-client"></script>
+
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=%VITE_GTM_ID%" height="0" width="0"
+      style="display: none; visibility: hidden"></iframe>
+  </noscript>
+</body>
+
 </html>
