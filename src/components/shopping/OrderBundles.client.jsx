@@ -76,7 +76,12 @@ export function OrderBundles({
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
   const [isCheckoutProcessing, setIsCheckoutProcessing] = useState(false);
+  const [selectedGray, setSelectedGray] = useState(2);
 
+  const handleSelectGray = (index) => {
+    setSelectedGray(index);
+  };
+  
   const [errors, setErrors] = useState({
     discountCode: '',
   });
@@ -934,15 +939,15 @@ export function OrderBundles({
                               !isQuantityLimit ? 'opacity-50' : ''
                             }`}
                           >
-                            <div className="relative bg-gray-50">
+                            <div className={`relative ${selectedGray===2 ?'bg-[#F1F1F1]':'bg-gray-50'}`}>
                               <div
                                 className="px-6 py-4 mt-8"
                                 style={{
                                   boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
-                                  border: 'solid #DB9707 4px',
+                                  border: selectedGray === 2 ? '':'solid #DB9707 4px',
                                 }}
                               >
-                                <span
+                               {selectedGray === 2 ? '':     <span
                                   className="font-bold"
                                   style={{
                                     float: 'right',
@@ -954,7 +959,8 @@ export function OrderBundles({
                                   }}
                                 >
                                   Most Popular
-                                </span>
+                                </span>}
+                            
                                 {/*---radio---*/}
                                 <div className="mb-1">
                                   <div
@@ -983,14 +989,15 @@ export function OrderBundles({
                                                   priceType: e.target.value,
                                                 },
                                               });
-
+                                              handleSelectGray(1);
                                               window.dataLayer.push({
                                                 event: 'subscribeSave',
                                               });
                                             }}
+                                          
                                           />
                                           <span
-                                            className={`ml-3 font-bold`}
+                                            className={`ml-3 font-bold ${selectedGray === 2 ? 'text-[#BAB9B9]':''}`}
                                             style={{fontSize: 18}}
                                           >
                                             SUBSCRIBE &amp; SAVE
@@ -998,7 +1005,7 @@ export function OrderBundles({
                                           <br />
                                           <div style={{paddingBottom: 14}}>
                                             <span className="mr-2">
-                                              <strike>
+                                              <strike className={`${selectedGray === 2 ? 'text-[#BAB9B9]':''}`}>
                                                 {getFullCost(
                                                   typeof bundle?.variants
                                                     ?.nodes[
@@ -1019,7 +1026,7 @@ export function OrderBundles({
                                               </strike>
                                             </span>
                                             <span
-                                              className="font-bold"
+                                              className={`font-bold ${selectedGray === 2 ? 'text-[#BAB9B9]':''}`}
                                               style={{fontSize: 18}}
                                             >
                                               {(() => {
@@ -1057,7 +1064,7 @@ export function OrderBundles({
                                               })()}
                                               /{' '}
                                             </span>
-                                            <span>
+                                            <span className={`${selectedGray === 2 ? 'text-[#BAB9B9]':''}`}>
                                               {cartInfo[bundle.handle]
                                                 .mealQuantity +
                                                 ' Family Meals + 1 Free breakfast'}
@@ -1068,11 +1075,12 @@ export function OrderBundles({
                                     </div>
                                     <hr />
                                     <p
-                                      style={{color: '#DB9725', marginTop: 10}}
+                                      style={{marginTop: 10}}
+                                      className={`${selectedGray === 2 ? 'text-[#BAB9B9]':'text-[#DB9725]'}`}
                                     >
                                       <span
                                         style={{fontSize: 18}}
-                                        className=" font-bold"
+                                        className={`font-bold ${selectedGray === 2 ? 'text-[#BAB9B9]':''}`}
                                       >
                                         Limited Time Promotion:
                                       </span>{' '}
@@ -1081,7 +1089,7 @@ export function OrderBundles({
                                       Subscription. (A $60.00 value)
                                     </p>
                                     <br />
-                                    <p>
+                                    <p className={`${selectedGray === 2 ? 'text-[#BAB9B9]':''}`}>
                                       Delivery Every:{' '}
                                       <button
                                         className={
@@ -1090,6 +1098,7 @@ export function OrderBundles({
                                             ? `Weekly text-[#DB9725]`
                                             : `biWeekly text-[#DB9725]`
                                         }
+                                        style={{color:selectedGray===2 ?'#BAB9B9':'#DB9725'}}
                                         onClick={handleToggleFrequency}
                                         disabled={!isQuantityLimit}
                                       >
@@ -1103,7 +1112,7 @@ export function OrderBundles({
                                         &gt;{' '}
                                       </button>
                                     </p>
-                                    <p>
+                                    <p className={`${selectedGray === 2 ? 'text-[#BAB9B9]':''}`}>
                                       {(() => {
                                         const price =
                                           bundle?.variants?.nodes[
@@ -1138,7 +1147,7 @@ export function OrderBundles({
                                         return '';
                                       })()}
                                     </p>
-                                    <p>No Commitments, Cancel Anytime</p>
+                                    <p className={`${selectedGray === 2 ? 'text-[#BAB9B9]':''}`}>No Commitments, Cancel Anytime</p>
                                   </div>
                                 </div>
                               </div>
@@ -1149,12 +1158,12 @@ export function OrderBundles({
                               !isQuantityLimit ? 'opacity-50' : ''
                             }`}
                           >
-                            <div className={`relative bg-gray-50`}>
+                            <div className={`relative ${selectedGray === 1 ? 'bg-[#F1F1F1]' : 'bg-gray-50'}`}>
                               <div
                                 className="px-6 py-4 mt-8"
                                 style={{
                                   boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
-                                  border: 'solid #DB9707 4px',
+                                  border: selectedGray === 1 ? '':'solid #DB9707 4px',
                                 }}
                               >
                                 <div className="mb-1">
@@ -1184,14 +1193,14 @@ export function OrderBundles({
                                                   priceType: e.target.value,
                                                 },
                                               });
-
+                                              handleSelectGray(2);
                                               window.dataLayer.push({
                                                 event: 'oneTime',
                                               });
                                             }}
                                           />
                                           <span
-                                            className={`ml-3 font-bold`}
+                                            className={`ml-3 font-bold ${selectedGray === 1 ? 'text-[#BAB9B9]':''}`}
                                             style={{fontSize: 18}}
                                           >
                                             ONE-TIME
@@ -1200,7 +1209,7 @@ export function OrderBundles({
 
                                           {newDiscountCodes.length > 0 ? (
                                             <span className="mr-2">
-                                              <strike>
+                                              <strike className={`${selectedGray === 1 ? 'text-[#BAB9B9]':''}`}>
                                                 {getFullCost(
                                                   bundle?.variants?.nodes[
                                                     cartInfo[bundle.handle]
@@ -1217,7 +1226,7 @@ export function OrderBundles({
                                             ''
                                           )}
                                           <span
-                                            className="font-bold"
+                                            className={`font-bold ${selectedGray === 1 ? 'text-[#BAB9B9]':''}`}
                                             style={{fontSize: 18}}
                                           >
                                             {getFullCost(
@@ -1233,7 +1242,7 @@ export function OrderBundles({
                                             )}{' '}
                                             /{' '}
                                           </span>
-                                          <span>3 Family Meals</span>
+                                          <span className={`${selectedGray === 1 ? 'text-[#BAB9B9]':''}`}>3 Family Meals</span>
                                         </label>
                                       </div>
                                     </div>
