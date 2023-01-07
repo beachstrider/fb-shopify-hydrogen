@@ -5,7 +5,7 @@ import {useForm} from 'react-hook-form';
 import {getUsaStandard} from '~/utils/dates';
 import {today} from '~/utils/dates';
 
-const Index = ({subscription}) => {
+const Index = ({subscription, user}) => {
   const navigate = useNavigate();
   const [processOrder, setProcessOrder] = useState(false);
   const [processSkip, setProcessSkip] = useState(false);
@@ -41,7 +41,7 @@ const Index = ({subscription}) => {
         className="w-full mb-4 text-3xl text-center py-8"
         style={{margin: '20px'}}
       >
-        Josh, we're sorry to see you go!{' '}
+        {user?.firstName}, we're sorry to see you go!{' '}
         <span className="font-bold">Are you sure you want to cancel?</span>
       </div>
       {/*----------------2 boxes--------------*/}

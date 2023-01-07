@@ -3,6 +3,9 @@ import {defineConfig} from 'vite';
 import hydrogen from '@shopify/hydrogen/plugin';
 import VitePluginHtmlEnv from 'vite-plugin-html-env';
 
+/// eslint-disable-next-line no-undef
+// const env = () => Oxygen.env;
+
 export default defineConfig({
   plugins: [
     hydrogen(),
@@ -11,6 +14,7 @@ export default defineConfig({
       prefix: '%',
       suffix: '%',
       envPrefixes: [''],
+      // ...env(),
     }),
   ],
   resolve: {

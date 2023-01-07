@@ -22,7 +22,7 @@ export function MealItem({title, image, modalimage, metafields, variant_title}) 
           alt="Meals"
         />
         <h3 className="font-bold font-heading text-sm text-center">{title}</h3>
-        <div className="text-center text-sm mb-2 ">{variant_title}</div>
+        <div className="text-center text-sm">{variant_title}</div>
       </button>
 
       {/* <MealModal open={openModal} close={() => setOpenModal(false)}>

@@ -2,20 +2,51 @@ import {Image, useNavigate, Link, fetchSync, useCart} from '@shopify/hydrogen';
 import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import {useForm} from 'react-hook-form';
-import {getUsaStandard} from '~/utils/dates';
-import {dayjs, findWeekDayBetween, getCutOffDate} from '~/utils/dates';
-import {formatTodayDate} from '../../../utils/dates';
+import {
+  dayjs,
+  findWeekDayBetween,
+  getCutOffDate,
+  getTodayDate,
+  getUsaStandard,
+  sortByDateProperty,
+  uniqueArray,
+  sortDatesArray,
+  sortObjectKeys,
+  addDays,
+} from '~/utils/dates';
+import {
+  encryptSubId,
+  decryptSubId,
+} from '~/utils/common';
+import {
+  getOrderTrackingUrl,
+  buildProductArrayFromVariant,
+  buildProductArrayFromId,
+} from '~/utils/products';
+import {MealItem} from '~/components/shopping/MealItem.client';
+import Loading from '~/components/Loading/index.client';
 
 const Index = ({subscription, subscription_id, user}) => {
-  // console.log('subscription===', subscription);
+  // console.log('subscription===', user);
   const TOTAL_WEEKS_DISPLAY = 4;
   const TOTAL_WEEKS_PER_PAGE = 1;
+  const STATUS_LOCKED = 'locked';
+  const STATUS_PENDING = 'pending';
+  const STATUS_SENT = 'sent';
 
   const navigate = useNavigate();
   const [processOrder, setProcessOrder] = useState(false);
   const [processSkip, setProcessSkip] = useState(false);
   const [processCancel, setProcessCancel] = useState(false);
   const [processReactivate, setProcessReactivate] = useState(false);
+
+  const [active, setActive] = useState([]);
+  const [limit, setLimit] = useState([]);
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [weeksMenu, setWeeksMenu] = useState([]);
+  const [activeWeekDate, setActiveWeekDate] = useState('');
+  const [isMealSelectionLoading, setIsMealSelectionLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -74,6 +105,7 @@ const Index = ({subscription, subscription_id, user}) => {
     setChangedDeliveryDate(false);
   };
 
+  // Functions for Edit meal plan
   const createWeekList = (weeksMenu, deliverAfterDate) => {
     if (!weeksMenu.includes(dayjs(deliverAfterDate).format('YYYY-MM-DD'))) {
       weeksMenu.push(dayjs.utc(deliverAfterDate).format('YYYY-MM-DD'));
@@ -84,8 +116,13 @@ const Index = ({subscription, subscription_id, user}) => {
 
   useEffect(() => {
     const getData = async (subscription_id) => {
+      setIsMealSelectionLoading(true);
       // const userToken = await getToken()
       // await clearState()
+      // set customer email to session so that we can use it in apis call
+      await axios.post(`/api/bundleAuth/setSession`, {
+        email: user.email,
+      });
       await getOrdersToShow(subscription_id);
       // dispatch(setEmail(shopCustomer?.email || ''))
       // const onSubmit = async (data) => {
@@ -95,24 +132,35 @@ const Index = ({subscription, subscription_id, user}) => {
       //     });
       //     alert('The subscription info is updated.');
       //   };
+      setIsMealSelectionLoading(false);
     };
-    // getData(subscription_id);
+    getData(subscription_id);
   }, []);
 
+  const mapWeeksToDisplay = (subscriptions) => {
+    let count = 0;
+    const items = [];
+
+    for (const [key, value] of Object.entries(subscriptions)) {
+      if (count < TOTAL_WEEKS_PER_PAGE) {
+        items.push(value);
+        count++;
+      }
+    }
+
+    return items;
+  };
+  // get subscription lists
   const getOrdersToShow = async (subscription_id) => {
     console.log('----getOrdersToShow----');
-    const todayDate = formatTodayDate(new Date());
+    // const todayDate = formatTodayDate(new Date());
+    const todayDate = getTodayDate();
 
     console.log('user', user);
     const activeWeeksArr = [];
     const activeWeeksLimit = [];
     const weeksMenu = [];
     const subscriptionArray = {};
-
-    // set customer email to session so that we can use it in apis call
-    await axios.post(`/api/bundleAuth/setSession`, {
-      email: user.email,
-    });
 
     //get subscription data
     const subResponse = await axios.get(
@@ -121,7 +169,7 @@ const Index = ({subscription, subscription_id, user}) => {
     let subApi = subResponse.data;
     console.log('subApi', subApi);
 
-    var firstOrderDeliveryDate = todayDate;
+    // var firstOrderDeliveryDate = todayDate;
     // console.log('----subApi----', subApi)
     if (subApi) {
       for (const sub of subApi) {
@@ -152,33 +200,14 @@ const Index = ({subscription, subscription_id, user}) => {
               const cutoffDate = getCutOffDate(deliveryDate);
               const firstOrder = user.orders?.edges?.pop() || null;
 
-              if (firstOrderDeliveryDate === todayDate) {
-                try {
-                  firstOrderDeliveryDate = config.contents.find(
-                    (x) =>
-                      x.id === sub.orders[0]?.bundle_configuration_content_id,
-                  )?.deliver_before;
-                  firstOrderDeliveryDate =
-                    typeof firstOrderDeliveryDate !== 'undefined' &&
-                    firstOrderDeliveryDate != null
-                      ? firstOrderDeliveryDate
-                      : todayDate;
-                } catch (e) {
-                  firstOrderDeliveryDate = todayDate;
-                }
-              }
-
               const firstOrderDate =
                 (firstOrder && dayjs(firstOrder.node.processedAt).utc()) ||
                 dayjs().utc();
-
               // validates the first order to avoid displaying the week where the order was placed (always show next week)
-              console.log('firstOrderDeliveryDate', firstOrderDeliveryDate);
+              console.log('firstOrderDate', firstOrderDate);
+              // console.log('firstOrderDeliveryDate', firstOrderDeliveryDate);
               if (
                 subCount < TOTAL_WEEKS_DISPLAY &&
-                dayjs(content.deliver_before)
-                  .utc()
-                  .isSameOrAfter(firstOrderDeliveryDate) &&
                 dayjs(content.deliver_before).utc().isSameOrAfter(todayDate) &&
                 firstOrderDate.isSameOrBefore(content.deliver_after)
               ) {
@@ -242,24 +271,36 @@ const Index = ({subscription, subscription_id, user}) => {
                         subscriptionArray[subscriptionObjKey].trackingUrl =
                           await getOrderTrackingUrl(
                             orderFound.platform_order_id,
-                            shopCustomer,
+                            user,
                           );
                       }
                     }
                   } else {
-
                     const defaultProductsResponse = await axios.get(
                       `/api/bundleAuth/bundles/${config.bundle_id}/configurations/${config.id}/contents/${content.id}/products?is_default=1`,
                     );
                     const defaultProducts = defaultProductsResponse.data;
                     console.log('defaultProducts', defaultProducts);
-
-
-                    const thisProductsArray = await buildProductArrayFromId(
-                      defaultProducts.data.data,
-                      sub.subscription_sub_type,
-                      shopProducts,
+                    let product_ids = [];
+                    defaultProducts.map((el) => {
+                      product_ids.push(el.platform_product_id);
+                    });
+                    // if (product_ids.length) {
+                    const {data: products} = await axios.post(
+                      `/api/products/multiple`,
+                      {
+                        product_ids,
+                      },
                     );
+                    // }
+                    console.log('productsproducts', products);
+                    const thisProductsArray = await buildProductArrayFromId(
+                      defaultProducts,
+                      sub.subscription_sub_type,
+                      products,
+                    );
+                    console.log('thisProductsArray', thisProductsArray);
+                    console.log('subscriptionObjKey', subscriptionObjKey);
                     subscriptionArray[subscriptionObjKey].subId = sub.id;
                     subscriptionArray[subscriptionObjKey].bundleProductId =
                       sub.platform_product_id;
@@ -277,6 +318,11 @@ const Index = ({subscription, subscription_id, user}) => {
                       );
                     subscriptionArray[subscriptionObjKey].queryDate =
                       content.deliver_after;
+
+                    console.log(
+                      'subscriptionArraysubscriptionArray',
+                      subscriptionArray,
+                    );
                   }
                 }
                 subCount++;
@@ -287,52 +333,56 @@ const Index = ({subscription, subscription_id, user}) => {
       }
     }
 
-    /* const itemsToDisplay = mapWeeksToDisplay(
-      sortObjectKeys(subscriptionArray),
-      query.get('date')
-    )
+    const itemsToDisplay = mapWeeksToDisplay(sortObjectKeys(subscriptionArray));
+    console.log('itemsToDisplayitemsToDisplay', itemsToDisplay);
     itemsToDisplay.forEach((item) => {
-      activeWeeksLimit.push(5)
-      activeWeeksArr.push(item)
-    })
+      activeWeeksLimit.push(5);
+      activeWeeksArr.push(item);
+    });
+    console.log('itemsToDisplay322222', itemsToDisplay);
 
     const sortedActiveWeeks = sortByDateProperty(
       activeWeeksArr,
-      'subscriptionDate'
-    )
-    const uniqueValues = uniqueArray([...weeksMenu])
-    const sortedDates = sortDatesArray(uniqueValues)
-    // console.log('----subscriptionArray----', subscriptionArray)
-    setSubscriptions(subscriptionArray)
+      'subscriptionDate',
+    );
+    console.log('weeksMenuweeksMenu', weeksMenu);
+    const uniqueValues = uniqueArray([...weeksMenu]);
+    const sortedDates = sortDatesArray(uniqueValues);
+    console.log('sortedDates', sortedDates);
+
+    console.log('----subscriptionArray----', subscriptionArray);
+    setSubscriptions(subscriptionArray);
     // console.log('----sortedDates----', sortedDates)
-    setWeeksMenu(sortedDates)
-    // console.log('----sortedActiveWeeks----', sortedActiveWeeks)
-    setActive(sortedActiveWeeks)
+    setWeeksMenu(sortedDates);
+    console.log('----sortedActiveWeeks----', sortedActiveWeeks);
+    setActive(sortedActiveWeeks);
     // console.log('----activeWeeksLimit----', activeWeeksLimit)
-    setLimit(activeWeeksLimit)
-    setLoading(false)*/
+    setLimit(activeWeeksLimit);
   };
 
+  function handleWeekChange(e) {
+    const newWeek = e.target.value;
+    console.log(e.target.value);
+    setActiveWeekDate(newWeek);
+    console.log('newWeeknewWeek', newWeek);
+    console.log('subscriptions', typeof subscriptions);
+    const selectedSub = subscriptions.map((sub) => sub.subscriptionDate == newWeek)
+    console.log('selectedSub', selectedSub);
+    setActive(selectedSub);
+  }
   return (
-    <div className="flex flex-wrap -m-4">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="w-full flex justify-between max-w-2xl mb-4 text-3xl uppercase font-bold">
+    <Loading isLoading={isMealSelectionLoading}>
+      <div className="flex flex-wrap -m-4">
+        <div className="w-full flex justify-between mb-4 text-3xl uppercase font-bold">
           EDIT YOUR SUBSCRIPTION ({subscription_id})
         </div>
         <div className="w-full  p-4">
           {/*-------Subscription box--------------------------*/}
           <div className="container px-4 mx-auto subscription_box">
-            <style
-              dangerouslySetInnerHTML={{
-                __html:
-                  '\n                    .subscription_box{\n                      background-color: #EFEFEF;\n                      box-shadow: 0 0 2px #0000004d;\n                      border-radius: 5px;\n                      padding-top: 25px;\n                      padding-right: 15px;\n                      padding-left: 15px;\n                    }\n      \n      \n      \n                    #address:before {\n                      content: \'\';\n                      position: absolute;\n                      top: 50%;\n                      left: 0;\n                      width: 92%;\n                      height: 1px;\n                      background-color: #bca79c;\n                      margin: 0 40px;\n                    }\n                    .address{\n                      position: relative;\n                      z-index: 1;\n                      display: inline-block;\n                      padding-right: 20px;\n                      background-color: #EFEFEF;\n                      font-size: 16px;\n                      font-weight: 500;\n                      line-height: 1.3;\n                      color: #5a3b36;\n                    }\n      \n                    #product_count{\n                      position: relative;\n                      display: inline-block;\n      \n                    }\n      \n                    #product_count:before {\n                      content: "1";\n                      position: absolute;\n                      top: -10px;\n                      right: -10px;\n                      background-color: #bca79c;\n                      border-radius: 50px;\n                      width: 22px;\n                      height: 22px;\n                      text-align: center;\n                      font-size: 18px;\n                      font-weight: 700;\n                      line-height: 23px;\n                      color: #fff;\n                      z-index: 10;\n                    }\n      \n                    .discount_code__close-btn {\n                      /*position: absolute;*/\n                      top: 50%;\n                      right: 0;\n                      transform: translateY(-50%);\n                      display: flex;\n                      justify-content: center;\n                      align-items: center;\n                      width: 38px;\n                      height: 100%;\n                      padding: 0;\n                      background-color: transparent;\n                    }\n                  ',
-              }}
-            />
             <div className="flex flex-wrap -mx-4 -mb-0">
               <div className="w-full px-4 md:w-1/1 xl:w-3/3 lg:w-3/3">
                 <div className="xl:pl-10">
-                  <h1 className="font-bold text-xlg">Coming soon...</h1>
-                  {/*<div className="mb-10 pb-10">
+                  <div className="mb-10 pb-10">
                     <div
                       style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}
                     >
@@ -341,7 +391,7 @@ const Index = ({subscription, subscription_id, user}) => {
                           className="block text-gray-800 text-lg font-bold mb-2"
                           style={{fontSize: 24}}
                         >
-                          1. Choose your Week
+                          Choose your Week
                         </div>
                         <div
                           className="relative"
@@ -350,11 +400,19 @@ const Index = ({subscription, subscription_id, user}) => {
                           <select
                             className="appearance-none block w-full py-4 pl-6 mb-2 text-md text-darkgray-400 bg-white"
                             name="week"
+                            onChange={handleWeekChange}
+                            value={activeWeekDate}
                             style={{borderWidth: 0, backgroundImage: 'none'}}
                           >
                             <option disabled value={-1}>
                               --Choose an option--
                             </option>
+                            {weeksMenu.map((week, key) => (
+                              <option key={key} value={week}>
+                                {getUsaStandard(week)} -{' '}
+                                {getUsaStandard(addDays(week, 6))}
+                              </option>
+                            ))}
                           </select>
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg
@@ -368,482 +426,236 @@ const Index = ({subscription, subscription_id, user}) => {
                         </div>
                       </div>
                     </div>
-                    <div className="flex justify-between">
-                      <div
-                        className="block text-gray-800 text-lg font-bold mb-2"
-                        style={{fontSize: 24, marginTop: 20}}
-                      >
-                        2. Choose your Meals
-                      </div>
-                      <div className="text-xl font-medium mt-[19px]">
-                        <Link
-                          to={`/account/subscriptions/${subscription.id}/edit-order`}
-                        >
-                          <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
-                            Edit Order
-                          </button>
-                        </Link>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap -mx-2 -mb-2">
-                      <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2">
-                        <div className="text-center">
-                          <button
-                            className="block text-center font-bold font-heading"
-                            href="#"
-                          >
-                            <img
-                              className="mx-auto object-contain"
-                              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt="img"
-                            />
-                            <h3 className="font-bold font-heading text-sm text-center">
-                              BBQ FEASTbox
-                            </h3>
-                            <div className="text-center text-sm mb-2 ">
-                              Serves: 5
+                    {active.length > 0 ? (
+                      active.map((sub, key) => (
+                        <div key={key} className="mealSelection">
+                          <div className="flex justify-between">
+                            <div
+                              className="block text-gray-800 text-lg font-bold mb-2"
+                              style={{fontSize: 24, marginTop: 20}}
+                            >
+                              Choose your Meals (
+                              {getUsaStandard(sub.subscriptionDate)} -{' '}
+                              {getUsaStandard(addDays(sub.subscriptionDate, 6))}
+                              )
                             </div>
-                          </button>
-                          <div
-                            className="inline-flex items-center font-semibold font-heading text-gray-500 border border-gray-200 bg-white"
-                            style={{
-                              backgroundColor: '#DB9707',
-                              color: '#FFFFFF',
-                            }}
-                          >
-                            <button className="hover:text-gray-700 text-center">
-                              <svg
-                                width={24}
-                                height={2}
-                                viewBox="0 0 12 2"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
+                            <div className="text-xl font-medium mt-[19px]">
+                              <Link
+                                to={`/account/subscriptions/${subscription.id}/edit-order/${encryptSubId(sub.subId)}?date=${sub.queryDate}`}
                               >
-                                <g opacity="0.35">
-                                  <rect
-                                    x={12}
-                                    width={2}
-                                    height={12}
-                                    transform="rotate(90 12 0)"
-                                    fill="currentColor"
-                                  />
-                                </g>
-                              </svg>
-                            </button>
-                            <input
-                              className="w-8 m-0 px-2 text-center border-0 focus:ring-transparent focus:outline-none"
-                              type="number"
-                              placeholder={1}
-                              style={{padding: '0 !important'}}
-                            />
-                            <button className="hover:text-gray-700 text-center">
-                              <svg
-                                width={24}
-                                height={12}
-                                viewBox="0 0 12 12"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g opacity="0.35">
-                                  <rect
-                                    x={5}
-                                    width={2}
-                                    height={12}
-                                    fill="currentColor"
-                                  />
-                                  <rect
-                                    x={12}
-                                    y={5}
-                                    width={2}
-                                    height={12}
-                                    transform="rotate(90 12 5)"
-                                    fill="currentColor"
-                                  />
-                                </g>
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                        <div className="text-center">
-                          <button
-                            className="block text-center font-bold font-heading"
-                            href="#"
-                          >
-                            <img
-                              className="mx-auto object-contain"
-                              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt="img"
-                            />
-                            <h3 className="font-bold font-heading text-sm text-center">
-                              BBQ FEASTbox
-                            </h3>
-                            <div className="text-center text-sm mb-2 ">
-                              Serves: 5
+                                <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
+                                  Edit Order
+                                </button>
+                              </Link>
                             </div>
-                          </button>
-                          <div className="px-4 mb-4 xl:mb-0 text-center">
-                            <button
-                              className="text-center text-white font-bold font-heading uppercase transition"
-                              href="#"
-                              style={{
-                                backgroundColor: '#DB9707',
-                                color: '#FFFFFF',
-                                width: 80,
-                                padding: '3px 21px',
-                              }}
-                            >
-                              Add+
-                            </button>
+                          </div>
+                          <div className="flex flex-wrap -mx-2 -mb-2">
+                            {sub.items.length ? (
+                              sub.items.map((product, key) => (
+                                <div
+                                  key={key}
+                                  className="flex w-1/2 lg:w-1/5 sm:w-1/3 md:w-1/3 md:p-2 text-center mb-4"
+                                >
+                                  <div className="flex flex-col justify-between text-center">
+                                    <MealItem
+                                      title={product.title}
+                                      image={
+                                        product.feature_image
+                                          ? product.feature_image
+                                          : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                                      }
+                                      modalimage={
+                                        product.variant_image
+                                          ? product.variant_image
+                                          : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                                      }
+                                      metafields={product.metafields}
+                                      variant_title={
+                                        product.type.toLowerCase() === 'family'
+                                          ? 'Serves 5'
+                                          : product.type
+                                      }
+                                    />
+                                    <div className="text-sm font-bold">Quantity: {product.quantity}</div>
+                                  </div>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="w-full flex justify-center items-center py-8 text-lg">
+                                <div>Choose your week above to see meals</div>
+                              </div>
+                            )}
                           </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="mealSelection">
+                        <h2>No meal plan found.</h2>
                       </div>
-                      <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                        <div className="text-center">
-                          <button
-                            className="block text-center font-bold font-heading"
-                            href="#"
-                          >
-                            <img
-                              className="mx-auto object-contain"
-                              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt="img"
-                            />
-                            <h3 className="font-bold font-heading text-sm text-center">
-                              BBQ FEASTbox
-                            </h3>
-                            <div className="text-center text-sm mb-2 ">
-                              Serves: 5
-                            </div>
-                          </button>
-                          <div className="px-4 mb-4 xl:mb-0 text-center">
-                            <button
-                              className=" text-center text-white font-bold font-heading uppercase transition "
-                              href="#"
-                              style={{
-                                backgroundColor: '#DB9707',
-                                color: '#FFFFFF',
-                                width: 80,
-                                padding: '3px 21px',
-                              }}
-                            >
-                              Add+
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                        <div className="text-center">
-                          <button
-                            className="block text-center font-bold font-heading"
-                            href="#"
-                          >
-                            <img
-                              className="mx-auto object-contain"
-                              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt="img"
-                            />
-                            <h3 className="font-bold font-heading text-sm text-center">
-                              BBQ FEASTbox
-                            </h3>
-                            <div className="text-center text-sm mb-2 ">
-                              Serves: 5
-                            </div>
-                          </button>
-                          <div className="px-4 mb-4 xl:mb-0 text-center">
-                            <button
-                              className=" text-center text-white font-bold font-heading uppercase transition "
-                              href="#"
-                              style={{
-                                backgroundColor: '#DB9707',
-                                color: '#FFFFFF',
-                                width: 80,
-                                padding: '3px 21px',
-                              }}
-                            >
-                              Add+
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                        <div className="text-center">
-                          <button
-                            className="block text-center font-bold font-heading"
-                            href="#"
-                          >
-                            <img
-                              className="mx-auto object-contain"
-                              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt="img"
-                            />
-                            <h3 className="font-bold font-heading text-sm text-center">
-                              BBQ FEASTbox
-                            </h3>
-                            <div className="text-center text-sm mb-2 ">
-                              Serves: 5
-                            </div>
-                          </button>
-                          <div className="px-4 mb-4 xl:mb-0 text-center">
-                            <button
-                              className=" text-center text-white font-bold font-heading uppercase transition "
-                              href="#"
-                              style={{
-                                backgroundColor: '#DB9707',
-                                color: '#FFFFFF',
-                                width: 80,
-                                padding: '3px 21px',
-                              }}
-                            >
-                              Add+
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      className="block text-gray-800 text-lg font-bold mb-2"
-                      style={{fontSize: 24, marginTop: 20}}
-                    >
-                      Breakfast Meals
-                    </div>
-                    <div className="flex flex-wrap -mx-2 -mb-2">
-                      --1----
-                      <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                        <div className="text-center">
-                          <button
-                            className="block text-center font-bold font-heading"
-                            href="#"
-                          >
-                            <img
-                              className="mx-auto object-contain"
-                              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt="img"
-                            />
-                            <h3 className="font-bold font-heading text-sm text-center">
-                              BBQ FEASTbox
-                            </h3>
-                            <div className="text-center text-sm mb-2 ">
-                              Serves: 5
-                            </div>
-                          </button>
-                          <div className="px-4 mb-4 xl:mb-0 text-center">
-                            <button
-                              className="text-center text-white font-bold font-heading uppercase transition"
-                              href="#"
-                              style={{
-                                backgroundColor: '#DB9707',
-                                color: '#FFFFFF',
-                                width: 80,
-                                padding: '3px 21px',
-                              }}
-                            >
-                              Add+
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      --2----
-                      <div className="w-1/3 lg:w-1/5 sm:w-1/3 md:w-1/3 p-2 text-center">
-                        <div className="text-center">
-                          <button
-                            className="block text-center font-bold font-heading"
-                            href="#"
-                          >
-                            <img
-                              className="mx-auto object-contain"
-                              src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto,w_150/fb/web/shop/fb_meal_placeholder.png"
-                              alt="img"
-                            />
-                            <h3 className="font-bold font-heading text-sm text-center">
-                              BBQ FEASTbox
-                            </h3>
-                            <div className="text-center text-sm mb-2 ">
-                              Serves: 5
-                            </div>
-                          </button>
-                          <div className="px-4 mb-4 xl:mb-0 text-center">
-                            <button
-                              className="text-center text-white font-bold font-heading uppercase transition"
-                              href="#"
-                              style={{
-                                backgroundColor: '#DB9707',
-                                color: '#FFFFFF',
-                                width: 80,
-                                padding: '3px 21px',
-                              }}
-                            >
-                              Add+
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>*/}
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
             {/*-------End Subscription Box--------------------------*/}
-            <div className="mb-10">
-              <hr style={{margin: '20px 0'}} />
-              {/*<div className="py-3">
-                <div className="flex justify-between">
-                  <span className="font-bold text-lg font-medium">
-                    Next Delivery
-                  </span>
-                  <span className="font-bold font-heading">
-                    {getUsaStandard(subscription.next_charge_scheduled_at)}
-                  </span>
-                </div>
-              </div>
-              <hr style={{margin: '20px 0'}} />*/}
-              <div className="py-3">
-                <div className="flex justify-between">
-                 {/* <span className="font-bold font-medium text-lg">
-                    Frequency
-                  </span>*/}
-                  <span className="font-bold font-heading">
-                    <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-                      <style
-                        dangerouslySetInnerHTML={{
-                          __html:
-                            '\n                            .edit-frequency__item-action {\n                              display: flex;\n                              flex-wrap: wrap;\n                              justify-content: space-between;\n                              align-items: center;\n                            }\n                            .radio-buttons {\n                              display: flex;\n                              flex-wrap: wrap;\n                              align-items: center;\n                              margin: 0 -6px;\n                            }\n                            .radio-button {\n                              padding-left: 20px;\n                              padding-right: 20px;\n                            }\n                            .radio-button input[type=radio] {\n                              position: absolute;\n                              clip: rect(0 0 0 0);\n                                             margin: -1px;\n                            }\n                            .radio-button label {\n                              display: inline-flex;\n                              align-items: center;\n                              transition: .4s;\n                              transition-property: background-color,color;\n                            }\n                            .radio-button .radio-button__label {\n                              padding-left: 4px;\n                              text-transform: uppercase;\n                            }\n                            /*.radio-button .radio-button__check {\n                            display: flex;\n                            visibility: hidden;\n                            opacity: 0;\n                            margin-left: -19px;\n                            padding-bottom: 2px;\n                            transition: .2s all;\n                            }*/\n                          ',
-                        }}
-                      />
-                      {/*<div className="edit-frequency__item-action text-right">
-                        <div>
-                          <div className="radio-buttons">
-                            {subscription.product.subscription_defaults.order_interval_frequency_options.map(
-                              (frequency, key) => (
-                                <button
-                                  type="button"
-                                  key={key}
-                                  className="radio-button relative cursor-pointer"
-                                  onClick={() => {
-                                    setValue(
-                                      'order_interval_frequency',
-                                      Number(frequency),
-                                    );
-                                  }}
-                                >
-                                  <div className="font-bold flex items-center">
-                                    {frequency}
-                                    <span className="radio-button__label hide-mobile">
-                                      Days
-                                    </span>
-                                    <span
-                                      className="radio-button__check"
-                                      style={{
-                                        visibility: 'visible !important',
-                                      }}
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="19.52"
-                                        height="14.56"
-                                      >
-                                        {watch('order_interval_frequency') ===
-                                          Number(frequency) && (
-                                          <path
-                                            data-name="Icon awesome-check"
-                                            d="M6.63 14.28.3 7.93a.98.98 0 0 1 0-1.38l1.38-1.38a.98.98 0 0 1 1.38 0l4.27 4.27L16.48.3a.98.98 0 0 1 1.38 0l1.38 1.38a.98.98 0 0 1 0 1.38L8.01 14.27a.98.98 0 0 1-1.38 0Z"
-                                            fill="#5a3b36"
-                                          />
-                                        )}
-                                      </svg>
-                                    </span>
-                                  </div>
-                                </button>
-                              ),
-                            )}
-                          </div>
-                          <input
-                            type="hidden"
-                            name="order_interval_unit"
-                            defaultValue="day"
-                          />
-                          <input
-                            type="hidden"
-                            name="order_interval_frequency"
-                            defaultValue={14}
-                          />
-                        </div>
-                      </div>*/}
-                      <span className="text-sm">
-                      {/*  (Choose how often you want your order to be placed)*/}
-                      </span>
-                    </div>
-                  </span>
-                </div>
-              </div>
-              <hr style={{margin: '20px 0'}} />
-              {/*<div className="py-3">
-                <div className="flex justify-between">
-                  <span className="font-bold text-base md:text-xl font-bold font-heading">
-                    Shipping Address
-                  </span>
-                  <span className="font-heading text-xl">
-                    <Link
-                      to={`/account/billing-account/shipping-address/${subscription.address_id}`}
-                      className="font-bold underline"
-                      style={{fontSize: 14, float: 'right', color: '#DB9707'}}
-                    >
-                      Edit
-                    </Link>
-                    <br />
-                    <br />
-                    {subscription.address.first_name}{' '}
-                    {subscription.address.last_name}
-                    <br />
-                    {subscription.address.address1}
-                    <br />
-                    {subscription.address.address2}
-                    <br />
-                  </span>
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+              <div className="mb-10">
+                <hr style={{margin: '20px 0'}} />
+                <div className="py-3">
+                  <div className="flex justify-between">
+                    <span className="font-bold text-lg font-medium">
+                      Next Delivery
+                    </span>
+                    <span className="font-bold font-heading">
+                      {getUsaStandard(subscription.next_charge_scheduled_at)}
+                    </span>
+                  </div>
                 </div>
                 <hr style={{margin: '20px 0'}} />
-                <div
-                  className="flex justify-between"
-                  style={{margin: '40px 0'}}
-                >
-                  <div className="flex items-end">
-                    {isChanging && (
-                      <input
-                        type="submit"
-                        className="underline cursor-pointer font-bold"
-                        style={{fontSize: 14, float: 'right', color: '#DB9707'}}
-                        value="Save Changes"
-                      />
-                    )}
-                  </div>
-                  <div>
-                    <button
-                      className="font-bold underline"
-                      style={{fontSize: 14, float: 'right', color: '#DB9707'}}
-                      disabled={processSkip}
-                      onClick={handleSkipThisOrder}
-                    >
-                      Skip Next Order
-                    </button>
-                    <br />
-                    <Link
-                      className="font-bold underline"
-                      style={{fontSize: 14, float: 'right', color: '#DB9707'}}
-                      disabled={processCancel}
-                      to={`/account/subscriptions/${subscription.id}/cancel`}
-                    >
-                      Cancel Subscription
-                    </Link>
+                <div className="py-3">
+                  <div className="flex justify-between">
+                    <span className="font-bold font-medium text-lg">
+                      Frequency
+                    </span>
+                    <span className="font-bold font-heading">
+                      <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
+                        <div className="text-right">
+                          <div>
+                            <div className="radio-buttons">
+                              {subscription.product.subscription_defaults.order_interval_frequency_options.map(
+                                (frequency, key) => (
+                                  <button
+                                    type="button"
+                                    key={key}
+                                    className="radio-button relative cursor-pointer"
+                                    onClick={() => {
+                                      setValue(
+                                        'order_interval_frequency',
+                                        Number(frequency),
+                                      );
+                                    }}
+                                  >
+                                    <div className="font-bold flex items-center">
+                                      {frequency}
+                                      <span className="radio-button__label hide-mobile">
+                                        Days
+                                      </span>
+                                      <span
+                                        className="radio-button__check"
+                                        style={{
+                                          visibility: 'visible !important',
+                                        }}
+                                      >
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="19.52"
+                                          height="14.56"
+                                        >
+                                          {watch('order_interval_frequency') ===
+                                            Number(frequency) && (
+                                            <path
+                                              data-name="Icon awesome-check"
+                                              d="M6.63 14.28.3 7.93a.98.98 0 0 1 0-1.38l1.38-1.38a.98.98 0 0 1 1.38 0l4.27 4.27L16.48.3a.98.98 0 0 1 1.38 0l1.38 1.38a.98.98 0 0 1 0 1.38L8.01 14.27a.98.98 0 0 1-1.38 0Z"
+                                              fill="#5a3b36"
+                                            />
+                                          )}
+                                        </svg>
+                                      </span>
+                                    </div>
+                                  </button>
+                                ),
+                              )}
+                            </div>
+                            <input
+                              type="hidden"
+                              name="order_interval_unit"
+                              defaultValue="day"
+                            />
+                            <input
+                              type="hidden"
+                              name="order_interval_frequency"
+                              defaultValue={14}
+                            />
+                          </div>
+                        </div>
+                        <span className="text-sm">
+                          (Choose how often you want your order to be placed)
+                        </span>
+                      </div>
+                    </span>
                   </div>
                 </div>
-              </div>*/}
-            </div>
+                <hr style={{margin: '20px 0'}} />
+                <div className="py-3">
+                  <div className="flex justify-between">
+                    <span className="font-bold text-base md:text-xl font-bold font-heading">
+                      Shipping Address
+                    </span>
+                    <span className="font-heading text-xl">
+                      <Link
+                        to={`/account/billing-account/shipping-address/${subscription.address_id}`}
+                        className="font-bold underline"
+                        style={{fontSize: 14, float: 'right', color: '#DB9707'}}
+                      >
+                        Edit
+                      </Link>
+                      <br />
+                      <br />
+                      {subscription.address.first_name}{' '}
+                      {subscription.address.last_name}
+                      <br />
+                      {subscription.address.address1}
+                      <br />
+                      {subscription.address.address2}
+                      <br />
+                    </span>
+                  </div>
+                  <hr style={{margin: '20px 0'}} />
+                  <div
+                    className="flex justify-between"
+                    style={{margin: '40px 0'}}
+                  >
+                    <div className="flex items-end">
+                      {isChanging && (
+                        <input
+                          type="submit"
+                          className="underline cursor-pointer font-bold"
+                          style={{
+                            fontSize: 14,
+                            float: 'right',
+                            color: '#DB9707',
+                          }}
+                          value="Save Changes"
+                        />
+                      )}
+                    </div>
+                    <div>
+                      <button
+                        className="font-bold underline"
+                        style={{fontSize: 14, float: 'right', color: '#DB9707'}}
+                        disabled={processSkip}
+                        onClick={handleSkipThisOrder}
+                      >
+                        Skip Next Order
+                      </button>
+                      <br />
+                      <Link
+                        className="font-bold underline"
+                        style={{fontSize: 14, float: 'right', color: '#DB9707'}}
+                        disabled={processCancel}
+                        to={`/account/subscriptions/${subscription.id}/cancel`}
+                      >
+                        Cancel Subscription
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
-      </form>
-    </div>
+      </div>
+    </Loading>
   );
 };
 
