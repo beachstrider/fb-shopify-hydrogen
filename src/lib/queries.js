@@ -1,8 +1,10 @@
 import {gql} from '@shopify/hydrogen';
-import {PRODUCT_CARD_FRAGMENT} from '~/lib/fragments';
+import {PRODUCT_CARD_FRAGMENT, ORDER_FRAGMENT} from '~/lib/fragments';
 
 export const CUSTOMER_QUERY = gql`
   ${PRODUCT_CARD_FRAGMENT}
+  ${ORDER_FRAGMENT}
+
   query CustomerDetails(
     $customerAccessToken: String!
     $country: CountryCode
@@ -44,23 +46,29 @@ export const CUSTOMER_QUERY = gql`
             processedAt
             financialStatus
             fulfillmentStatus
-            currentTotalPrice {
-              amount
-              currencyCode
+            totalTaxV2 {
+              ...Money
             }
-            lineItems(first: 2) {
-              edges {
-                node {
-                  variant {
-                    image {
-                      url
-                      altText
-                      height
-                      width
-                    }
-                  }
-                  title
-                }
+            totalPriceV2 {
+              ...Money
+            }
+            totalShippingPriceV2 {
+              ...Money
+            }
+            subtotalPriceV2 {
+              ...Money
+            }
+            shippingAddress {
+              ...AddressFull
+            }
+            discountApplications(first: 100) {
+              nodes {
+                ...DiscountApplication
+              }
+            }
+            lineItems(first: 100) {
+              nodes {
+                ...LineItemFull
               }
             }
           }

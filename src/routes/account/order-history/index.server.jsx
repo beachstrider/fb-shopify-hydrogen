@@ -6,10 +6,11 @@ import {
   useLocalization,
   useShopQuery,
   useServerAnalytics,
+  flattenConnection,
 } from '@shopify/hydrogen';
 
 import {CUSTOMER_QUERY} from '~/lib/queries';
-import OrderHisotry from '~/components/account/orderHistory/OrderHistoryList.client';
+import OrderHisotry from '~/components/account/orderHistory/index.client';
 import {Layout} from '~/components/index.server';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
 import Loading from '~/components/Loading/index.client';
@@ -35,7 +36,7 @@ export default function Index({response}) {
       <Seo type="noindex" data={{title: 'Your Upcoming Orders'}} />
       <Suspense
         fallback={
-          <AccountPageLayout currentPath="order-schedules">
+          <AccountPageLayout currentPath="order-history">
             <Loading isLoading={true} />
           </AccountPageLayout>
         }
@@ -73,7 +74,10 @@ export function OrderHistory({
 
   return (
     <AccountPageLayout user={customer} currentPath="order-history">
-      <OrderHisotry orders={charges} user={customer} />
+      <OrderHisotry
+        orders={flattenConnection(customer.orders)}
+        user={customer}
+      />
     </AccountPageLayout>
   );
 }
