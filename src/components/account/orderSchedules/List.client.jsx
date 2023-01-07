@@ -55,7 +55,7 @@ const Index = ({external_customer_id, subscriptions}) => {
     <Loading isLoading={isLoading}>
       <div className="px-4 py-4">
         <div className="w-full mb-4 text-3xl uppercase font-bold text-center xl:text-left lg:text-left md:text-left">
-          YOUR UPCOMING ORDERS
+          You can edit or skip upcoming orders below.
         </div>
         <div className="w-full mb-4 text-lg text-left">
           Dates shown are delivery dates. Your payment will be charged 3-4 days
@@ -123,7 +123,10 @@ const Index = ({external_customer_id, subscriptions}) => {
                             </div>
                           </div>
                         </div>
-                        <hr style={{margin: '20px 0'}} />
+                        <div
+                          className="bg-[#db9707] h-px w-full"
+                          style={{margin: '20px 0'}}
+                        />
 
                         {order.line_items.map((subscription, key) => (
                           <div key={key}>
@@ -143,7 +146,7 @@ const Index = ({external_customer_id, subscriptions}) => {
                                   }}
                                   className="lg:text-left text-center w-full text-lg text-gray-500 leading-loose address"
                                 >
-                                  {order.shipping_address.address1}
+                                  ADDRESS: {order.shipping_address.address1}
                                 </span>
                               </div>
                               <div className="w-full lg:w-4/6 px-4">
@@ -216,7 +219,10 @@ const Index = ({external_customer_id, subscriptions}) => {
                                 </p>
                               </div>
                             </div>
-                            <hr style={{margin: '20px 0'}} />
+                            <div
+                              className="bg-[#db9707] h-px w-full"
+                              style={{margin: '20px 0'}}
+                            />
                           </div>
                         ))}
                         <div
@@ -224,18 +230,7 @@ const Index = ({external_customer_id, subscriptions}) => {
                           style={{maxWidth: '200px', marginLeft: 'auto'}}
                         >
                           <span style={{}}>TOTAL:</span>
-                          <span style={{}}>
-                            ${order.total_price}
-                            <br />
-                            <span>
-                              <div
-                                className="underline text-sm underline text-right"
-                                style={{}}
-                              >
-                                Details
-                              </div>
-                            </span>
-                          </span>
+                          <span style={{}}>${order.total_price}</span>
                         </div>
                       </div>
                     </div>
