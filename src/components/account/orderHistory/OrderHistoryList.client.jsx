@@ -26,7 +26,7 @@ const Index = ({orders, onSelect}) => {
       </div>
       {!orders.length ? (
         <div className="flex w-full justify-center items-center py-8 text-lg">
-          •••
+          You have no order history
         </div>
       ) : (
         orders.map((order, key) => (

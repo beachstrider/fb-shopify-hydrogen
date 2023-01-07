@@ -64,7 +64,7 @@ const Index = ({external_customer_id, subscriptions}) => {
         </div>
         {!activeOrders.length ? (
           <div className="flex w-full justify-center items-center py-8 text-lg">
-            No available orders
+            You have no active orders
           </div>
         ) : (
           <>
