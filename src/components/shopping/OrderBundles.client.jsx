@@ -41,6 +41,7 @@ function getCartInfo(param) {
 
   return {
     [param.handle]: {
+      cartId: undefined,
       handle: param.handle,
       bundleContents: [],
       bundleData: undefined,
@@ -76,6 +77,7 @@ export function OrderBundles({
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
   const [isCheckoutProcessing, setIsCheckoutProcessing] = useState(false);
+  const [isCartCreated, setIsCartCreated] = useState(false);
 
   const [errors, setErrors] = useState({
     discountCode: '',
@@ -83,6 +85,7 @@ export function OrderBundles({
 
   const {
     id,
+    status,
     lines,
     checkoutUrl,
     cartCreate,
@@ -92,9 +95,18 @@ export function OrderBundles({
     discountCodesUpdate,
   } = useCart();
 
-  const bundleIdNumber = Number(bundle.id.substring(22));
+  const isCartCreatedRef = useRef(false);
+  isCartCreatedRef.current = isCartCreated;
+
+  const idRef = useRef(null);
+  idRef.current = id;
+
+  const cartInfoRef = useRef(null);
+  cartInfoRef.current = cartInfo;
 
   const discountCodeInputRef = useRef(null);
+
+  const bundleIdNumber = Number(bundle.id.substring(22));
 
   const currentQuantity = (() => {
     let quantity = 0;
@@ -159,16 +171,14 @@ export function OrderBundles({
     return parseFloat(price);
   })();
 
+  const cartId =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('shopifyCartId')
+      : null;
+
   useEffect(() => {
-    if (typeof id === 'undefined') {
-      cartCreate({
-        lines: [
-          {
-            merchandiseId:
-              bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
-          },
-        ],
-      });
+    if (cartId === null) {
+      createInitialCart();
     }
 
     fetchAll();
@@ -182,7 +192,14 @@ export function OrderBundles({
 
   useEffect(() => {
     if (typeof id !== 'undefined') {
-      discountCodesUpdate(discountCodes);
+      if (
+        typeof cartInfo[bundle.handle].cartId === 'undefined' &&
+        isCartCreatedRef.current === false
+      ) {
+        createInitialCart();
+      } else {
+        discountCodesUpdate(discountCodes);
+      }
     }
   }, [id]);
 
@@ -191,7 +208,6 @@ export function OrderBundles({
     // const savingCartInfo = oldCartInfo !== null ? JSON.parse(oldCartInfo) : {};
     const savingCartInfo = oldCartInfo !== null ? {} : {};
     savingCartInfo[bundle.handle] = cartInfo[bundle.handle];
-
     localStorage.setItem('cartInfo', JSON.stringify(savingCartInfo));
   }, [cartInfo]);
 
@@ -213,6 +229,18 @@ export function OrderBundles({
       fetchContents(contentResult);
     }
   }, [selectedWeekIndex]);
+
+  function createInitialCart() {
+    cartCreate({
+      lines: [
+        {
+          merchandiseId:
+            bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
+        },
+      ],
+    });
+    setIsCartCreated(true);
+  }
 
   function identifyDiscountAmount() {
     // console.log('newDiscountCodes', newDiscountCodes);
@@ -314,15 +342,15 @@ export function OrderBundles({
     const bundleDataRes = (
       await axios.get(`${caching_server}/${bundleCacheUrl}`)
     ).data.find((el) => el.platform_product_id === bundleIdNumber);
-
     const {data: config} = await axios.get(
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
 
     setCartInfo({
-      ...cartInfo,
+      ...cartInfoRef.current,
       [bundle.handle]: {
-        ...cartInfo[bundle.handle],
+        ...cartInfoRef.current[bundle.handle],
+        cartId: idRef.current,
         bundleData: bundleDataRes,
         bundleContents: config.contents,
         mealQuantity: config.quantity,

@@ -12,7 +12,7 @@ export const AccountPageLayout = ({user, currentPath, children}) => {
                   className="text-3xl font-bold font-heading uppercase"
                   to="#"
                 >
-                  Hi {user.firstName}!
+                  Hi {user?.firstName}!
                 </Link>
               </p>
               <ul className="lg:mt-10 mt-4">
@@ -36,6 +36,7 @@ export const AccountPageLayout = ({user, currentPath, children}) => {
                         : 'text-xl text-gray-400 hover:text-gray-500'
                     }
                     to="/account/order-schedules"
+                    replace={true}
                   >
                     Order Schedules
                   </Link>

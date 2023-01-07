@@ -12,20 +12,43 @@ import {CUSTOMER_QUERY} from '~/lib/queries';
 import OrderHisotry from '~/components/account/orderHistory/OrderHistoryList.client';
 import {Layout} from '~/components/index.server';
 import {AccountPageLayout} from '~/components/account/AccountPageLayout.client';
+import Loading from '~/components/Loading/index.client';
 
 import {getOrderHistory} from '~/lib/recharge';
 
-export default function OrderHistory({response}) {
+export default function Index({response}) {
   response.cache(CacheNone());
 
   const {
     language: {isoCode: languageCode},
     country: {isoCode: countryCode},
   } = useLocalization();
+
   const {customerAccessToken} = useSession();
 
   if (!customerAccessToken) return response.redirect('/account/login');
 
+  const data = {languageCode, countryCode, customerAccessToken};
+
+  return (
+    <Layout>
+      <Seo type="noindex" data={{title: 'Your Upcoming Orders'}} />
+      <Suspense
+        fallback={
+          <AccountPageLayout currentPath="order-schedules">
+            <Loading isLoading={true} />
+          </AccountPageLayout>
+        }
+      >
+        <OrderHistory data={data} />
+      </Suspense>
+    </Layout>
+  );
+}
+
+export function OrderHistory({
+  data: {languageCode, countryCode, customerAccessToken},
+}) {
   const {data} = useShopQuery({
     query: CUSTOMER_QUERY,
     variables: {
@@ -38,8 +61,6 @@ export default function OrderHistory({response}) {
 
   const {customer} = data;
 
-  if (!customer) return response.redirect('/account/login');
-
   useServerAnalytics({
     shopify: {
       customerId: customer.id,
@@ -51,13 +72,8 @@ export default function OrderHistory({response}) {
   const charges = getOrderHistory({external_customer_id});
 
   return (
-    <Layout>
-      <Suspense>
-        <Seo type="noindex" data={{title: 'Billing And Account'}} />
-      </Suspense>
-      <AccountPageLayout user={customer} currentPath="order-history">
-        <OrderHisotry orders={charges} user={customer} />
-      </AccountPageLayout>
-    </Layout>
+    <AccountPageLayout user={customer} currentPath="order-history">
+      <OrderHisotry orders={charges} user={customer} />
+    </AccountPageLayout>
   );
 }
