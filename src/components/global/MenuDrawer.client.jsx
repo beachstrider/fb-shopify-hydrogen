@@ -31,9 +31,9 @@ function MenuMobileNav({menu, onClose}) {
       ))}
       <Link
         to={'/shop/bundle'}
-        className="hidden text-sm inline-block bg-black text-white px-2 py-2 uppercase"
+        className=" text-sm inline-block bg-black text-white px-2 py-2 uppercase"
       >
-        SHOP NOW
+        Get Started
       </Link>
     </nav>
   );
