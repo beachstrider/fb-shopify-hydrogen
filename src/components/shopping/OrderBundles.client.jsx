@@ -571,9 +571,7 @@ export function OrderBundles({
     }
 
     const {id: lineId} = lines.find(
-      (line) =>
-        line.merchandise.id ===
-        bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
+      (line) => line.merchandise.product.id === bundle.id,
     );
 
     let timeoutDeep = 0;
