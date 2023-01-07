@@ -1,9 +1,8 @@
-import {Image, useNavigate, Link} from '@shopify/hydrogen';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 
 import {getUsaStandard} from '~/utils/dates';
 
-const Index = ({orders}) => {
+const Index = ({orders, onSelect}) => {
   const [checked, setChecked] = useState(true);
   const [currentCheck, setCurrentCheck] = useState(0);
   const handleCheck = (event, key) => {
@@ -42,7 +41,7 @@ const Index = ({orders}) => {
               id={'check' + key}
               style={{position: 'absolute', opacity: 0, zIndex: -1}}
               checked={currentCheck == key && checked ? true : false}
-              onChange={() => handleCheck(event, key)}
+              onChange={(event) => handleCheck(event, key)}
             />
             <div>
               <div className="accordion past_orders active w-full">
@@ -51,29 +50,28 @@ const Index = ({orders}) => {
                     Order Date
                     <br />
                     <span className="text-sm xl:text-lg lg:text-lg md:text-md mb-4 md:mb-0 font-bold">
-                      {getUsaStandard(order.processed_at)}
+                      {getUsaStandard(order.processedAt)}
                     </span>
                   </div>
                   <div className="w-full md:w-5/12 lg:w-5/12 py-4 px-8 mb-4 lg:mb-0">
                     Status
                     <br />
                     <span className="text-sm xl:text-lg lg:text-lg md:text-md mb-4 md:mb-0 font-bold">
-                      {order.status}
+                      {order.fulfillmentStatus}
                     </span>
                   </div>
                   <div className="flex items-end w-full md:w-3/12 lg:w-3/12 py-4 px-8 mb-4 lg:mb-0">
                     <span className="text-sm xl:text-lg lg:text-lg md:text-md mb-4 md:mb-0 font-bold">
-                      {' '}
-                      Order #{' '}
+                      &nbsp; Order #&nbsp;
                     </span>
-                    <Link to={`/account/order-history/${order.id}`}>
+                    <button onClick={() => onSelect(order)}>
                       <span
-                        className="font-bold underline"
+                        className="font-bold underline "
                         style={{fontSize: '18px', color: '#DB9707'}}
                       >
-                        {order.id}
+                        {order.orderNumber}
                       </span>
-                    </Link>
+                    </button>
                   </div>
                   <div className="w-full md:w-1/12 lg:w-1/12 py-4 px-8 mb-4 lg:mb-0">
                     <label htmlFor={'check' + key} className="cursor-pointer">
@@ -117,7 +115,7 @@ const Index = ({orders}) => {
                         marginRight: '20px',
                       }}
                       className="rounded-lg mb-0"
-                      src={order?.line_items[0]?.images?.large}
+                      src={order.lineItems.nodes[0].variant?.image.src}
                       alt="img"
                     />
                   </div>
@@ -125,13 +123,13 @@ const Index = ({orders}) => {
                     <h2 className="mb-2 font-bold font-heading uppercase text-lg">
                       Products
                     </h2>
-                    {order.line_items.map((item, key) => (
+                    {order.lineItems.nodes.map(({title}, key) => (
                       <p
                         className="text-lg text-black-500"
                         style={{lineHeight: '1.2'}}
                         key={key}
                       >
-                        {item.quantity} x {item.variant_title}
+                        {title}
                       </p>
                     ))}
                   </div>

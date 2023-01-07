@@ -33,15 +33,19 @@ const Index = () => {
 
   return (
     <Layout>
-      <Seo type="noindex" data={{title: 'FeastBox Bundle'}} />
-      <OrderBundles
-        bundle={bundle}
-        customerId={customerId}
-        customerAccessToken={customerAccessToken}
-        discountCodes={discountCodes}
-        // eslint-disable-next-line no-undef
-        CDN_CACHE_ENV_MODE={Oxygen.env.ENV_MODE}
-      />
+      <Suspense>
+        <Seo type="noindex" data={{title: 'FeastBox Bundle'}} />
+      </Suspense>
+      <Suspense>
+        <OrderBundles
+          bundle={bundle}
+          customerId={customerId}
+          customerAccessToken={customerAccessToken}
+          discountCodes={discountCodes}
+          // eslint-disable-next-line no-undef
+          CDN_CACHE_ENV_MODE={Oxygen.env.ENV_MODE}
+        />
+      </Suspense>
     </Layout>
   );
 };

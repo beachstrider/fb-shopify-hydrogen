@@ -26,7 +26,7 @@ import AccountPageHeaderMenu from '~/components/account/PageHeaderMenu';
 import {Layout, ProductSwimlane} from '~/components/index.server';
 
 export default function Account({response}) {
-  return response.redirect('/account/subscriptions');
+  // return response.redirect('/account/subscriptions');
   // eslint-disable-next-line no-unreachable
   response.cache(CacheNone());
   const {
