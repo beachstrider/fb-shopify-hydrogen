@@ -35,7 +35,7 @@ export default function Index({response}) {
       <Seo type="noindex" data={{title: 'Your Upcoming Orders'}} />
       <Suspense
         fallback={
-          <AccountPageLayout currentPath="order-schedules">
+          <AccountPageLayout currentPath="billing-account">
             <Loading isLoading={true} />
           </AccountPageLayout>
         }
