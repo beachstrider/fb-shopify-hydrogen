@@ -4,26 +4,28 @@ import axios from 'axios';
 export function EditOrder({subid,date}) {
 
   const [productlist, setProductlist] = useState([])
-  
+  const [selectedItems, setSelectedItems] = useState([])
 
-  useEffect(()=>{
-    const subOrders = async ()=>{
+  const handleUpdateQuantity = (id, sub) => {
+    console.log(id, sub)
+  }
+  useEffect(() => {
+    const subOrders = async () => {
       var subData = await axios.get(
         `/api/bundleAuth/subscriptions/${subid}/orders`,
       );
       var bundleItem = await axios.get(
         `/api/bundleAuth/bundles/${subData.data[0].subscription.bundle_id}`
-      )
+      );
       const content = await axios.get(
         `/api/bundleAuth/bundles/${subData.data[0].subscription.bundle_id}/configurations/${bundleItem.data.configurations[0].id}/contents?is_enabled=1&deliver_after=${date}`
       );
       const product_ids = [];
-      content.data[0].products.map((pro)=>{
+      content.data[0].products.map((pro) => {
         product_ids.push(pro.platform_product_id)
-      })
+      });
 
-      const {data: products} = await axios.post(
-        `/api/products/multiple`,
+      const {data: products} = await axios.post(`/api/products/multiple`, 
         {
           product_ids,
         },
@@ -31,14 +33,23 @@ export function EditOrder({subid,date}) {
       
       
       for(var i = 0; i < products.length; i ++){
-        for(var j = 0; j < products[i].variants.nodes.length; j++){
-          products[i].variants.nodes[j].id = products[i].variants.nodes[j].id.replace("gid://shopify/ProductVariant/","")
+        for(var j = 0; j < products[i].variants.nodes.length; j ++){
+          for(var t = 0; t < subData.data[0].items.length; t ++){
+            products[i].variants.nodes[j].id = products[i].variants.nodes[j].id.replace("gid://shopify/ProductVariant/","")
+            if(products[i].variants.nodes[j].id == subData.data[0].items[t].platform_product_variant_id){
+              products[i].variants.nodes[j].quantity = subData.data[0].items[t].quantity
+            }else{
+              products[i].variants.nodes[j].quantity = 0
+            }
+          }
+          
         }
       }
       setProductlist(products)
       console.log(products)
-      // console.log(products)
-      // console.log("SubData", subData)
+      
+      setSelectedItems(subData.data[0].items);
+      console.log("SubData", subData.data[0].items)
       // console.log("BundleItem", bundleItem)
       // console.log("CONTENT", content)
     } 
@@ -65,8 +76,8 @@ export function EditOrder({subid,date}) {
 
         <div className="flex flex-wrap -mx-2 -mb-2">
           {/*--1----*/}
-          {productlist.map((item, key)=>(
-            item.variants.nodes.map((variant,v_index)=>(
+          {productlist.map((item)=>(
+            item.variants.nodes.map((variant, v_index)=>(
               <div className="w-1/3 lg:w-1/6 sm:w-1/3 md:w-1/3 p-2 border m-[5px]" key={v_index}>
                 <div className="text-center">
                   <button
@@ -83,20 +94,80 @@ export function EditOrder({subid,date}) {
                     </h3>
                     <div className="text-center text-sm mb-2 ">Serves: 5</div>
                   </button>
-                  <div className="px-4 mb-4 xl:mb-0 text-center">
-                    <button
-                      className=" text-center text-white font-bold font-heading uppercase transition "
-                      href="#"
-                      style={{
-                        backgroundColor: '#DB9707',
-                        color: '#FFFFFF',
-                        width: 80,
-                        padding: '3px 21px',
-                      }}
-                    >
-                      Add+
-                    </button>
-                  </div>
+                  {variant.quantity == 0 ? (
+                    <div className="px-4 mb-4 xl:mb-0 text-center">
+                      <button
+                        className="bg-[#DB9707] text-center w-[80px] px-[21px] py-[3px] text-white font-bold font-heading uppercase transition "
+                      >
+                        ADD+
+                      </button>
+                    </div>
+                  ) :(
+                    <div className="flex mt-2 lg:justify-center font-semibold font-heading px-4">
+                      <button
+                        className="removeMeal hover:text-gray-700 text-center bg-[#DB9707] text-white"
+                        onClick={() =>
+                          handleUpdateQuantity(variant.id, -1)
+                        }
+                      >
+                        <svg
+                          width={24}
+                          height={2}
+                          viewBox="0 0 12 2"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g opacity="0.35">
+                            <rect
+                              x={12}
+                              width={2}
+                              height={12}
+                              transform="rotate(90 12 0)"
+                              fill="currentColor"
+                            />
+                          </g>
+                        </svg>
+                      </button>
+                      <div className="grow w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
+                        {
+                        variant.quantity
+                        }
+                      </div>
+                      <button
+                        className="addMeal hover:text-gray-700 text-center bg-[#DB9707] text-white disabled:bg-[#bdac89]"
+                        onClick={() =>
+                          handleUpdateQuantity(variant.id, 1)
+                        }
+                      >
+                        <svg
+                          width={24}
+                          height={12}
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <g opacity="0.35">
+                            <rect
+                              x={5}
+                              width={2}
+                              height={12}
+                              fill="currentColor"
+                            />
+                            <rect
+                              x={12}
+                              y={5}
+                              width={2}
+                              height={12}
+                              transform="rotate(90 12 5)"
+                              fill="currentColor"
+                            />
+                          </g>
+                        </svg>
+                      </button>
+                    </div>
+                    )}
+                  
+                  
                 </div>
               </div>
             ))
