@@ -48,13 +48,13 @@ export function Catering() {
                 Or at least our food does… (an invite would be cool too).
               </p>
 
-              <div className="md:text-left mt-8 md:flex  gap-2 lg:gap-12 text-center">
+              <div className="md:text-left mt-8  xl:flex  gap-2 lg:gap-12 text-center">
                 <Link to={'/shop/bundle/event-feastbox'}>
-                  <button className="bg-[#A60D1E] px-6 lg:px-12 py-2 text-2 lg:text-[25px] text-[25px]">
+                  <button className="bg-[#A60D1E] px-6 lg:px-12 py-2 xl:truncate text-2 lg:text-[25px] text-[25px]">
                     Get Eating!
                   </button>
                 </Link>
-                <p className="lg:text-[25px] font-bold mt-1  text-[25px]">
+                <p className="lg:text-[25px] font-bold mt-1 xl:mt-[-7px] 2xl:mt-0 text-[25px]">
                   100% Money-Back Guarantee!
                 </p>
               </div>

@@ -131,8 +131,8 @@ export const getUpcomingOrders = async (params) => {
       .id;
     const {charges} = await rechargeFetch('charges', {
       customer_id,
-      status: ['queued'],
-      sort_by: 'scheduled_at-asc',
+      status: ['queued', 'skipped'],
+      sort_by: 'scheduled_at-desc',
       scheduled_at_min: today(),
     });
 
