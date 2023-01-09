@@ -16,10 +16,10 @@ const Index = ({subscriptions, user}) => {
   }, []);
   return (
     <div className="flex flex-wrap -m-4">
-      <div className="w-full max-w-2xl mb-4 text-3xl uppercase font-bold">
+      <div className="w-full max-w-2xl mb-4 text-3xl uppercase font-bold ml-4">
         YOUR SUBSCRIPTIONS
       </div>
-      <div className="w-full max-w-2xl mb-4 text-lg">
+      <div className="w-full max-w-2xl mb-4 text-lg ml-4">
         Edit your active subscription.
       </div>
       {!subscriptions.length ? (
