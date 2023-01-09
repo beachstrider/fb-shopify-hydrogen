@@ -1,29 +1,67 @@
+import {Link} from '@shopify/hydrogen';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import Loading from '~/components/Loading/index.client';
-import {Link} from "@shopify/hydrogen";
+import Spinner from '~/components/spinner/button';
 import {
   buildProductArrayFromVariant,
   buildProductArrayFromId,
 } from '~/utils/products';
-import {MealItem} from "../../shopping/MealItem.client";
+import {MealItem} from '../../shopping/MealItem.client';
+import {useNavigate} from "@shopify/hydrogen/client";
 
 export function EditOrder({subscription_id, subid, date}) {
   const sub_order_id = subid;
   const currentDate = date;
   const EMPTY_STATE_IMAGE =
     'https://cdn.shopify.com/shopifycloud/shopify/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_750x.gif';
+  const navigate = useNavigate();
 
   const [menuItem, setMenuItem] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [bundles, setBundles] = useState([]);
-  const [hasSavedItems, setHasSavedItems] = useState(true)
-
+  const [hasSavedItems, setHasSavedItems] = useState(true);
+  const [quantityLimit, setQuantityLimit] = useState(3);
+  const [isMealSaving, setIsMealSaving] = useState(false);
   const [isEditOrderLoading, setIsEditOrderLoading] = useState(false);
+  // get current quantity of meals
+  const currentQuantity = (() => {
+    let quantity = 0;
+    selectedItems.forEach((el) => (quantity += el.quantity));
+    return quantity;
+  })();
+  const isQuantityLimit = (() => {
+    return currentQuantity === quantityLimit;
+  })();
+  const getRemainingQty = (() => {
+    return quantityLimit - currentQuantity;
+  })();
 
-  const handleUpdateQuantity = (id, sub) => {
-    console.log(id, sub);
+  const getMealQuantity = (product) => {
+    const qty = selectedItems.find((el) => el.product_id == product.product_id )?.quantity;
+    if (typeof qty != 'undefined'){
+      return qty;
+    } else {
+      return 0;
+    }
   };
+  // handle meal selection
+  const handleMealSelection = (product, diff) => {
+    let newSelectedItems = [...selectedItems];
+    if (typeof diff === 'undefined') {
+      newSelectedItems.push({...product, quantity: 1});
+    } else {
+      const selectedIndex = selectedItems.findIndex((el) => el.product_id == product.product_id );
+      const quantity = (newSelectedItems[selectedIndex].quantity += diff);
+      if (quantity === 0) {
+        newSelectedItems = newSelectedItems.filter(
+          (el) => el.product_id !== product.product_id,
+        );
+      }
+    }
+    setSelectedItems(newSelectedItems);
+  };
+
   useEffect(() => {
     const getEditOrderData = async () => {
       // loader start
@@ -37,19 +75,19 @@ export function EditOrder({subscription_id, subid, date}) {
       savedItemsResponse = await getCustomerBundleItems(subscriptionOrders);
       savedItems = savedItemsResponse.currentItems;
 
-      let savedItemsExist = true
-      const totalItems = savedItems.length
-      let count = 0
+      let savedItemsExist = true;
+      const totalItems = savedItems.length;
+      let count = 0;
       savedItems.forEach((s) => {
         if (s.products.length === 0) {
-          count = count + 1
+          count = count + 1;
         }
 
         if (count === totalItems) {
-          savedItemsExist = false
+          savedItemsExist = false;
         }
-      })
-      setHasSavedItems(savedItemsExist && savedItems.length > 0)
+      });
+      setHasSavedItems(savedItemsExist && savedItems.length > 0);
       const bundleId = savedItemsResponse.bundleId;
       // console.log('savedItemsResponsesavedItemsResponse', savedItemsResponse);
       // console.log('savedItems', savedItems);
@@ -58,41 +96,47 @@ export function EditOrder({subscription_id, subid, date}) {
         `/api/bundleAuth/bundles/${bundleId}`,
       );
       if (bundleResponse.data.length === 0) {
-        throw new Error('Bundle could not be found')
+        throw new Error('Bundle could not be found');
       }
       const bundleData = bundleResponse?.data;
+      // set maximum meal quantity limit
+      setQuantityLimit(bundleData.configurations[0].quantity);
+      // get bundle config content filter by delivery date after
       const contentRespose = await axios.get(
         `/api/bundleAuth/bundles/${bundleId}/configurations/${bundleData.configurations[0].id}/contents?is_enabled=1&deliver_after=${currentDate}`,
       );
       if (contentRespose.data.length === 0) {
-        throw new Error('Meal item could not be found')
+        throw new Error('Meal item could not be found');
       }
       const contentData = contentRespose.data;
-      if (contentData.length > 0){
+      if (contentData.length > 0) {
         const product_ids = [];
         contentData[0].products.map((pro) => {
           product_ids.push(pro.platform_product_id);
         });
-        console.log('contentDatacontentData', contentData);
-        console.log('product_ids', product_ids);
         const {data: products} = await axios.post(`/api/products/multiple`, {
           product_ids,
         });
+        console.log('contentData', contentData);
         const thisProductsArray = await buildProductArrayFromId(
           contentData[0].products,
           subscriptionOrders[0].subscription.subscription_sub_type,
           products,
+          contentData[0].id,
+          contentData[0].bundle_configuration_id,
         );
 
-        console.log('thisProductsArray', thisProductsArray);
-
+        let mealsWithQuantity = [];
+        thisProductsArray.map((product) => {
+          if (product.quantity > 0) {
+            mealsWithQuantity.push(product);
+          }
+        });
         setMenuItem(thisProductsArray);
-      }else{
-        throw new Error('Meal item could not be found')
+        setSelectedItems(mealsWithQuantity);
+      } else {
+        throw new Error('Meal item could not be found');
       }
-
-
-      // setSelectedItems(subscriptionOrders.data[0].items);
       // console.log('SubData', subscriptionOrders.data[0].items);
       // console.log("BundleItem", bundleItem)
       // console.log("CONTENT", content)
@@ -106,27 +150,20 @@ export function EditOrder({subscription_id, subid, date}) {
     let currentBundleId = null;
     const currentItems = [];
     const currentBundles = [];
-    console.log('subscriptionOrderssubscriptionOrders', subscriptionOrders);
     if (subscriptionOrders.length > 0) {
       currentBundleId = subscriptionOrders[0].subscription.bundle_id;
 
       for (const order of subscriptionOrders) {
-        console.log('orderorder', order);
-
         const editItemsConfigArr = [];
-
         if (
           order.bundle_configuration_content?.deliver_after &&
           order.bundle_configuration_content?.deliver_after === currentDate
         ) {
-
           for (const product of order.items) {
-            console.log('productproduct', product);
             const currentProduct = [1];
             //await findProductFromVariant(
             //   product.platform_product_variant_id,
             // );
-
             if (Object.entries(currentProduct).length > 0) {
               editItemsConfigArr.push({
                 id: product.platform_product_variant_id,
@@ -139,13 +176,11 @@ export function EditOrder({subscription_id, subid, date}) {
               });
             }
           }
-
           currentItems.push({
             id: order.id,
             bundleId: currentBundleId,
             products: editItemsConfigArr,
           });
-
           // configuration content exists?
           if (
             order?.bundle_configuration_content?.deliver_after === currentDate
@@ -154,7 +189,6 @@ export function EditOrder({subscription_id, subid, date}) {
           }
         }
       }
-
       setBundles(currentBundles);
     }
     return {
@@ -163,13 +197,143 @@ export function EditOrder({subscription_id, subid, date}) {
     };
   };
 
+  const createNewOrder = async () => {
+    const separatedConfigurations = [];
+    selectedItems.forEach((item) => {
+      if (!separatedConfigurations[`config_${item.bundle_configuration_content_id}`]) {
+        separatedConfigurations[`config_${item.bundle_configuration_content_id}`] = []
+      }
+      separatedConfigurations[`config_${item.bundle_configuration_content_id}`].push({
+        bundle_configuration_content_id: item.bundle_configuration_content_id,
+        platform_product_variant_id: Number(item.variant_id),
+        quantity: item.quantity
+      })
+    });
+    for (const key of Object.keys(separatedConfigurations)) {
+      const subscriptionOrdersResponse = await axios.post(
+        `/api/bundleAuth/subscriptions/${sub_order_id}/orders`,
+        {
+          bundle_configuration_content_id: separatedConfigurations[key][0].bundle_configuration_content_id,
+          is_enabled: 1,
+          items: separatedConfigurations[key]
+        }
+      );
+    }
+    navigate('/account/subscriptions/' + subscription_id);
+  };
+
+  const handleSaveMeal = async () => {
+    console.log('Test');
+    setIsMealSaving(true);
+    const itemsToSave = []
+    // if (!hasSavedItems) {
+      console.log('saving...')
+      return createNewOrder();
+    // }
+/*
+    const getBundleProduct = (variantId) => {
+      let existingProduct = null
+      bundles.forEach((bundle) => {
+        const currentItem = bundle.items.find((p) => {
+          return Number(p.platform_product_variant_id) === Number(variantId)
+        })
+        if (currentItem) {
+          existingProduct = currentItem
+        }
+      })
+
+      return existingProduct
+    }
+
+    for (const item of intactMenuItems) {
+      for (const product of item.products) {
+        const cartItem = state.cart.find((c) => c.id === product.id)
+        const currentContent = bundles.find(
+          (b) =>
+            Number(b.bundle_configuration_content_id) ===
+            Number(product.configurationContentId)
+        )
+
+        const currentBundleProduct = getBundleProduct(product.id)
+        if (cartItem) {
+          if (
+            cartItem &&
+            cartItem.quantity > 0 &&
+            product.quantity === 0 &&
+            !currentBundleProduct
+          ) {
+            itemsToSave.push({
+              platform_product_variant_id: product.id,
+              quantity: cartItem.quantity,
+              contentId: currentContent.id,
+              configurationContentId:
+              currentContent.bundle_configuration_content_id
+            })
+          } else {
+            if (cartItem.quantity !== product.quantity) {
+              if (currentBundleProduct) {
+                itemsToSave.push({
+                  id: currentBundleProduct.id,
+                  platform_product_variant_id: product.id,
+                  contentId: currentContent.id,
+                  configurationContentId:
+                  currentContent.bundle_configuration_content_id,
+                  quantity: cartItem.quantity
+                })
+              }
+            }
+          }
+        } else {
+          if (currentBundleProduct) {
+            itemsToSave.push({
+              id: currentBundleProduct.id,
+              platform_product_variant_id: product.id,
+              contentId: currentContent.id,
+              configurationContentId:
+              currentContent.bundle_configuration_content_id,
+              quantity: 0
+            })
+          }
+        }
+      }
+    }
+
+    const separatedConfigurations = []
+
+    itemsToSave.forEach((item) => {
+      if (!separatedConfigurations[`config_${item.contentId}`]) {
+        separatedConfigurations[`config_${item.contentId}`] = []
+      }
+
+      separatedConfigurations[`config_${item.contentId}`].push({ ...item })
+    })
+
+    console.log('items to save>>', itemsToSave)
+    console.log('items>>>', separatedConfigurations)
+
+    for (const key of Object.keys(separatedConfigurations)) {
+      await updateSubscriptionOrder(
+        state.tokens.userToken,
+        orderId,
+        null,
+        separatedConfigurations[key][0].configurationContentId,
+        separatedConfigurations[key][0].contentId,
+        separatedConfigurations[key]
+      )
+    }
+*/
+
+    // setIsMealSaving(false);
+    // navigate('/account/subscriptions/' + subscription_id);
+  };
+
   return (
     <Loading isLoading={isEditOrderLoading}>
       <section className="">
         <div className="">
           <div className="banner-section  text-center">
             <h2 className="font-opensans text-[36px] font-bold">Edit Order</h2>
-            <div className="text-xl font-medium p-2">0 Meal Left </div>
+            <div className="text-xl font-medium p-2">{getRemainingQty} Meal Left </div>
           </div>
         </div>
         <hr />
@@ -203,19 +367,11 @@ export function EditOrder({subscription_id, subid, date}) {
                       }
                     />
 
-                   {/* {cartInfo[bundle.handle].meals.findIndex(
-                      (el) =>
-                        el.variants.nodes[
-                          cartInfo[bundle.handle].variantIndex
-                          ].id ===
-                        product.variants.nodes[
-                          cartInfo[bundle.handle].variantIndex
-                          ].id,
-                    ) === -1 ? (
+                    {getMealQuantity(product) === 0 ? (
                       <div className="mt-2 px-4 text-center">
                         <button
                           className="addMeal w-full text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] md:w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
-                          onClick={() => handleUpdateCart(product)}
+                          onClick={() => handleMealSelection(product)}
                           disabled={isQuantityLimit}
                         >
                           Add+
@@ -225,9 +381,7 @@ export function EditOrder({subscription_id, subid, date}) {
                       <div className="flex mt-2 lg:justify-center font-semibold font-heading px-4">
                         <button
                           className="removeMeal hover:text-gray-700 text-center bg-[#DB9707] text-white"
-                          onClick={() =>
-                            handleUpdateCart(product, -1)
-                          }
+                          onClick={() => handleMealSelection(product, -1)}
                         >
                           <svg
                             width={24}
@@ -248,25 +402,11 @@ export function EditOrder({subscription_id, subid, date}) {
                           </svg>
                         </button>
                         <div className="grow w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
-                          {
-                            cartInfo[bundle.handle].meals.find(
-                              (el) =>
-                                el.variants.nodes[
-                                  cartInfo[bundle.handle]
-                                    .variantIndex
-                                  ].id ===
-                                product.variants.nodes[
-                                  cartInfo[bundle.handle]
-                                    .variantIndex
-                                  ].id,
-                            ).quantity
-                          }
+                          {getMealQuantity(product)}
                         </div>
                         <button
                           className="addMeal hover:text-gray-700 text-center bg-[#DB9707] text-white disabled:bg-[#bdac89]"
-                          onClick={() =>
-                            handleUpdateCart(product, 1)
-                          }
+                          onClick={() => handleMealSelection(product, 1)}
                           disabled={isQuantityLimit}
                         >
                           <svg
@@ -295,14 +435,16 @@ export function EditOrder({subscription_id, subid, date}) {
                           </svg>
                         </button>
                       </div>
-                    )}*/}
+                    )}
                   </div>
                 </div>
               ))
             ) : (
               <div className="w-full py-8 items-center text-lg px-5">
                 <p className="flex text-lg">No items to choose</p>
-                <p className="flex text-sm">Please come back soon to choose your menu items.</p>
+                <p className="flex text-sm">
+                  Please come back soon to choose your menu items.
+                </p>
               </div>
             )}
           </div>
@@ -314,8 +456,17 @@ export function EditOrder({subscription_id, subid, date}) {
           >
             Cancel
           </Link>
-          <button className="border-2 border-[#DB9707] px-7 py-2 rounded-sm hover:bg-[#DB9707] font-bold text-xl hover:text-white">
-            Save
+          <button
+            onClick={() => handleSaveMeal()}
+            className="border-2 border-[#DB9707] px-7 py-2 rounded-sm hover:bg-[#DB9707] font-bold text-xl hover:text-white"
+          >
+            {isMealSaving ? (
+              <Spinner />
+            ) : (
+              <>
+                Save
+              </>
+            )}
           </button>
         </div>
       </section>

@@ -57,7 +57,7 @@ const Index = ({external_customer_id, subscriptions}) => {
         <div className="w-full mb-4 text-3xl uppercase font-bold text-center xl:text-left lg:text-left md:text-left">
           You can edit or skip upcoming orders below.
         </div>
-        <div className="w-full mb-4 text-lg text-left">
+        <div className="w-full mb-4 text-lg text-center md:text-left">
           Dates shown are delivery dates. Your payment will be charged 3-4 days
           before your order is shipped. You can edit or skip the upcoming orders
           below.

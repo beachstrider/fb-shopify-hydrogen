@@ -1,7 +1,7 @@
-import {Link, Image} from '@shopify/hydrogen';
-import {getUsaStandard} from '~/utils/dates';
+import {Link} from '@shopify/hydrogen';
+import axios from 'axios';
 import {useEffect} from 'react';
-import axios from "axios";
+import {getUsaStandard} from '~/utils/dates';
 
 const Index = ({subscriptions, user}) => {
   //initialize a new token when in home page
@@ -16,20 +16,25 @@ const Index = ({subscriptions, user}) => {
   }, []);
   return (
     <div className="flex flex-wrap">
-      <div className="w-full max-w-2xl mb-4 text-3xl uppercase font-bold">
-        YOUR SUBSCRIPTIONS
-      </div>
-      <div className="w-full max-w-2xl mb-4 text-lg">
-        Edit &amp; active subscription.
+      <div className="w-full max-w-2xl mb-4 text-3xl uppercase font-bold ml-4">
+        YOUR SUBSCRIPTION ORDERS
       </div>
       {!subscriptions.length ? (
-        <div className="flex w-full  max-w-2xl justify-center items-center py-8 text-lg">
-          •••
+        <div className="w-full py-2 text-lg ml-4">
+          <h3 className="py-5">You have no active subscriptions</h3>
+          <Link to={`/shop/bundle/family-feastbox`}>
+            <button className="bg-[#DB9707] px-3 py-2 rounded-sm text-white font-bold">
+              SUBSCRIBE AND SAVE NOW
+            </button>
+            </Link>
         </div>
       ) : (
         <>
+          <div className="w-full max-w-2xl mb-4 text-lg ml-4">
+            Edit your active subscription.
+          </div>
           {subscriptions.map((subscription, key) => (
-            <div key={key} className="w-full  p-4">
+            <div key={key} className="w-full p-4">
               {/*-------Subscription box--------------------------*/}
               <div className="container px-4 mx-auto subscription_box">
                 <style
@@ -80,6 +85,23 @@ const Index = ({subscriptions, user}) => {
                       />
                     </div>
                   </div>
+
+                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0 visible md:hidden overflow-hidden position: relative;">
+                    <div className="w-4/5 mb-4 md:mb-0">
+                      <Link
+                        className="block py-2 text-lg text-center uppercase font-bold "
+                        to={`/account/subscriptions/${subscription.id}`}
+                        style={{
+                          backgroundColor: '#DB9707',
+                          color: '#FFFFFF',
+                          marginBottom: 15,
+                        }}
+                      >
+                        Edit Subscription
+                      </Link>
+                    </div>
+                  </div>
+
                   <div className="w-full lg:w-1/5 px-4">
                     <h2 className="mb-2 font-bold font-heading uppercase text-lg">
                       Products
@@ -101,13 +123,13 @@ const Index = ({subscriptions, user}) => {
                     >
                       ${subscription.price}
                     </p>
-                    <Link
+                    {/* <Link
                       className="flex items-center text-lg font-bold text-gray-700 hover:text-gray-800"
                       to=""
                     >
                       <span className="underline text-sm">Details</span>
                       <span></span>
-                    </Link>
+                    </Link> */}
                   </div>
                   <div className="w-full lg:w-1/5 px-4">
                     <h2 className="mb-2 font-bold font-heading uppercase text-lg">
@@ -141,7 +163,7 @@ const Index = ({subscriptions, user}) => {
                 {/*---------------form open---------------*/}
                 <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
                   <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0 text-right"></div>
-                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
+                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0 invisible md:visible " >
                     <div className="w-full mb-4 md:mb-0">
                       <Link
                         className="block py-2 text-lg text-center uppercase font-bold "
