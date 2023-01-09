@@ -55,9 +55,7 @@ const Index = ({response}) => {
   const external_customer_id = customer.id.slice(23);
   return (
     <Layout>
-      <Suspense>
-        <Seo type="noindex" data={{title: 'FeastBox How it works page'}} />
-      </Suspense>
+      <Seo type="noindex" data={{title: 'FeastBox How it works page'}} />
       <AccountPageLayout user={customer} currentPath="subscriptions">
         <EditOrder subid={de_subid} date={date} />
       </AccountPageLayout>
