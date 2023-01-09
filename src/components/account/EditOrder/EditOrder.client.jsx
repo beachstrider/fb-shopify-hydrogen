@@ -226,11 +226,13 @@ export function EditOrder({subscription_id, subid, date}) {
     console.log('Test');
     setIsMealSaving(true);
     const itemsToSave = []
-    // if (!hasSavedItems) {
+    console.log('hasSavedItems', hasSavedItems);
+    if (!hasSavedItems) {
       console.log('saving...')
       return createNewOrder();
-    // }
-/*
+    }
+    console.log('bundlesbundles', bundles);
+
     const getBundleProduct = (variantId) => {
       let existingProduct = null
       bundles.forEach((bundle) => {
@@ -245,9 +247,9 @@ export function EditOrder({subscription_id, subid, date}) {
       return existingProduct
     }
 
-    for (const item of intactMenuItems) {
+    for (const item of menuItem) {
       for (const product of item.products) {
-        const cartItem = state.cart.find((c) => c.id === product.id)
+        const cartItem = selectedItems.find((c) => c.id === product.id)
         const currentContent = bundles.find(
           (b) =>
             Number(b.bundle_configuration_content_id) ===
@@ -312,18 +314,20 @@ export function EditOrder({subscription_id, subid, date}) {
     console.log('items>>>', separatedConfigurations)
 
     for (const key of Object.keys(separatedConfigurations)) {
-      await updateSubscriptionOrder(
-        state.tokens.userToken,
-        orderId,
-        null,
-        separatedConfigurations[key][0].configurationContentId,
-        separatedConfigurations[key][0].contentId,
-        separatedConfigurations[key]
-      )
-    }
-*/
 
-    // setIsMealSaving(false);
+      const subscriptionOrdersResponse = await axios.put(
+        `/api/bundleAuth/subscriptions/${sub_order_id}/orders/${separatedConfigurations[key][0].contentId}`,
+        {
+          platform_order_id: null,
+          bundle_configuration_content_id: separatedConfigurations[key][0].configurationContentId,
+          is_enabled: 1,
+          items: separatedConfigurations[key]
+        }
+      );
+      console.log('subscriptionOrdersResponse', subscriptionOrdersResponse);
+    }
+
+    setIsMealSaving(false);
     // navigate('/account/subscriptions/' + subscription_id);
   };
 

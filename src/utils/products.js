@@ -78,7 +78,6 @@ const buildProductArrayFromId = async (items, subType, shopProducts, config_cont
         (v) => v.title.split('/ ')[1] === subType,
       )[0];
       if (variant) {
-        console.log('variant', variant);
         foundProductArray.push({
           title: variant.metafields?.find(
             (x) => x?.key === 'display_name',
