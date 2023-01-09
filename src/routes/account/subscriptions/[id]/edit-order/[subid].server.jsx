@@ -21,8 +21,10 @@ import {CUSTOMER_QUERY} from '~/lib/queries';
 
 const Index = ({response}) => {
   response.cache(CacheNone());
+  const {id} = useRouteParams();
   const {subid} = useRouteParams();
   const de_subid = decryptSubId(subid);
+
   const date = useUrl().searchParams.get("date");
   console.log(date);
   const {
@@ -57,7 +59,7 @@ const Index = ({response}) => {
     <Layout>
       <Seo type="noindex" data={{title: 'FeastBox How it works page'}} />
       <AccountPageLayout user={customer} currentPath="subscriptions">
-        <EditOrder subid={de_subid} date={date} />
+        <EditOrder subscription_id={id} subid={de_subid} date={date} />
       </AccountPageLayout>
     </Layout>
   );

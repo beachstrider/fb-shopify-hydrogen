@@ -171,8 +171,8 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                 content.deliver_before,
               );
               const cutoffDate = getCutOffDate(deliveryDate);
-              // const firstOrderDate = dayjs('2023-01-03T11:12:51Z').utc();
-              const firstOrderDate = dayjs(firstOrder.processedAt).utc();
+              const firstOrderDate = dayjs('2023-01-03T11:12:51Z').utc();
+              // const firstOrderDate = dayjs(firstOrder.processedAt).utc();
               if (
                 dayjs(content.deliver_before).utc().isSameOrAfter(todayDate) &&
                 firstOrderDate.isSameOrBefore(content.deliver_after)

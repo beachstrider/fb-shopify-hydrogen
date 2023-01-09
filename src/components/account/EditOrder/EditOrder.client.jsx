@@ -1,13 +1,20 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import Loading from '~/components/Loading/index.client';
+import {Link} from "@shopify/hydrogen";
 
-export function EditOrder({subid, date}) {
+export function EditOrder({subscription_id, subid, date}) {
+  const sub_order_id = subid;
+  const currentDate = date;
+  const EMPTY_STATE_IMAGE =
+    'https://cdn.shopify.com/shopifycloud/shopify/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_750x.gif';
+
   const [productlist, setProductlist] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [bundles, setBundles] = useState([]);
+  const [hasSavedItems, setHasSavedItems] = useState(true)
+
   const [isEditOrderLoading, setIsEditOrderLoading] = useState(false);
-  const currentDate = date;
-  const sub_order_id = subid;
 
   const handleUpdateQuantity = (id, sub) => {
     console.log(id, sub);
@@ -16,44 +23,69 @@ export function EditOrder({subid, date}) {
     const getEditOrderData = async () => {
       // loader start
       setIsEditOrderLoading(true);
-      var subscriptionOrders = await axios.get(
+      var subscriptionOrdersResponse = await axios.get(
         `/api/bundleAuth/subscriptions/${sub_order_id}/orders`,
       );
-      var bundleItem = await axios.get(
-        `/api/bundleAuth/bundles/${subscriptionOrders.data[0].subscription.bundle_id}`,
-      );
-      const content = await axios.get(
-        `/api/bundleAuth/bundles/${subscriptionOrders.data[0].subscription.bundle_id}/configurations/${bundleItem.data.configurations[0].id}/contents?is_enabled=1&deliver_after=${currentDate}`,
-      );
-      const product_ids = [];
-      content.data[0].products.map((pro) => {
-        product_ids.push(pro.platform_product_id);
-      });
+      let subscriptionOrders = subscriptionOrdersResponse.data;
+      let savedItems = [];
+      let savedItemsResponse = null;
+      savedItemsResponse = await getCustomerBundleItems(subscriptionOrders);
+      savedItems = savedItemsResponse.currentItems;
 
-      const {data: products} = await axios.post(`/api/products/multiple`, {
-        product_ids,
-      });
-
-      for (var i = 0; i < products.length; i++) {
-        for (var j = 0; j < products[i].variants.nodes.length; j++) {
-          for (var t = 0; t < subscriptionOrders.data[0].items.length; t++) {
-            products[i].variants.nodes[j].id = products[i].variants.nodes[
-              j
-            ].id.replace('gid://shopify/ProductVariant/', '');
-            if (
-              products[i].variants.nodes[j].id ==
-              subscriptionOrders.data[0].items[t].platform_product_variant_id
-            ) {
-              products[i].variants.nodes[j].quantity =
-                subscriptionOrders.data[0].items[t].quantity;
-            } else {
-              products[i].variants.nodes[j].quantity = 0;
-            }
-          }
+      let savedItemsExist = true
+      const totalItems = savedItems.length
+      let count = 0
+      savedItems.forEach((s) => {
+        if (s.products.length === 0) {
+          count = count + 1
         }
+
+        if (count === totalItems) {
+          savedItemsExist = false
+        }
+      })
+      setHasSavedItems(savedItemsExist && savedItems.length > 0)
+      const bundleId = savedItemsResponse.bundleId;
+      // console.log('savedItemsResponsesavedItemsResponse', savedItemsResponse);
+      // console.log('savedItems', savedItems);
+
+      const bundleResponse = await axios.get(
+        `/api/bundleAuth/bundles/${bundleId}`,
+      );
+      if (bundleResponse.data.length === 0) {
+        throw new Error('Bundle could not be found')
       }
-      setProductlist(products);
-      console.log(products);
+      const bundleData = bundleResponse?.data;
+      const contentRespose = await axios.get(
+        `/api/bundleAuth/bundles/${bundleId}/configurations/${bundleData.configurations[0].id}/contents?is_enabled=1&deliver_after=${currentDate}`,
+      );
+      if (contentRespose.data.length === 0) {
+        throw new Error('Meal item could not be found')
+      }
+      const contentData = contentRespose.data;
+      if (contentData.length > 0){
+        const product_ids = [];
+        contentData[0].products.map((pro) => {
+          product_ids.push(pro.platform_product_id);
+        });
+        console.log('contentDatacontentData', contentData);
+        console.log('product_ids', product_ids);
+        const {data: products} = await axios.post(`/api/products/multiple`, {
+          product_ids,
+        });
+        // const thisProductsArray = await buildProductArrayFromId(
+        //   defaultProducts,
+        //   activeWeekData.subscription_sub_type,
+        //   products,
+        // );
+
+        console.log('products', products);
+
+        setProductlist(products);
+      }else{
+        throw new Error('Meal item could not be found')
+      }
+
 
       setSelectedItems(subscriptionOrders.data[0].items);
       console.log('SubData', subscriptionOrders.data[0].items);
@@ -64,6 +96,68 @@ export function EditOrder({subid, date}) {
     };
     getEditOrderData();
   }, []);
+
+  const getCustomerBundleItems = async (subscriptionOrders) => {
+    let currentBundleId = null;
+    const currentItems = [];
+    const currentBundles = [];
+    console.log('subscriptionOrderssubscriptionOrders', subscriptionOrders);
+    if (subscriptionOrders.length > 0) {
+      currentBundleId = subscriptionOrders[0].subscription.bundle_id;
+
+      for (const order of subscriptionOrders) {
+        console.log('orderorder', order);
+
+        const editItemsConfigArr = [];
+
+        if (
+          order.bundle_configuration_content?.deliver_after &&
+          order.bundle_configuration_content?.deliver_after === currentDate
+        ) {
+
+          for (const product of order.items) {
+            console.log('productproduct', product);
+            const currentProduct = [1];
+            //await findProductFromVariant(
+            //   product.platform_product_variant_id,
+            // );
+
+            if (Object.entries(currentProduct).length > 0) {
+              editItemsConfigArr.push({
+                id: product.platform_product_variant_id,
+                contentSelectionId: product.id,
+                subscriptionContentId: order.id,
+                title: 'default product',
+                image: EMPTY_STATE_IMAGE,
+                metafields: [],
+                quantity: product.quantity,
+              });
+            }
+          }
+
+          currentItems.push({
+            id: order.id,
+            bundleId: currentBundleId,
+            products: editItemsConfigArr,
+          });
+
+          // configuration content exists?
+          if (
+            order?.bundle_configuration_content?.deliver_after === currentDate
+          ) {
+            currentBundles.push(order);
+          }
+        }
+      }
+
+      setBundles(currentBundles);
+    }
+    return {
+      currentItems,
+      bundleId: currentBundleId,
+    };
+  };
+
   return (
     <Loading isLoading={isEditOrderLoading}>
       <section className="">
@@ -169,9 +263,12 @@ export function EditOrder({subid, date}) {
           </div>
         </div>
         <div className="m-auto bg-white pt-5 w-[100%] md:w-[100%] lg:w-[80%] flex justify-between">
-          <button className="border-2 border-red-500 px-7 py-2 rounded-sm hover:bg-red-500 font-bold text-xl hover:text-white">
+          <Link
+            className="border-2 border-red-500 px-7 py-2 rounded-sm hover:bg-red-500 font-bold text-xl hover:text-white"
+            to={`/account/subscriptions/${subscription_id}`}
+          >
             Cancel
-          </button>
+          </Link>
           <button className="border-2 border-[#DB9707] px-7 py-2 rounded-sm hover:bg-[#DB9707] font-bold text-xl hover:text-white">
             Save
           </button>
