@@ -101,13 +101,13 @@ const Index = ({subscriptions, user}) => {
                     >
                       ${subscription.price}
                     </p>
-                    <Link
+                    {/* <Link
                       className="flex items-center text-lg font-bold text-gray-700 hover:text-gray-800"
                       to=""
                     >
                       <span className="underline text-sm">Details</span>
                       <span></span>
-                    </Link>
+                    </Link> */}
                   </div>
                   <div className="w-full lg:w-1/5 px-4">
                     <h2 className="mb-2 font-bold font-heading uppercase text-lg">
