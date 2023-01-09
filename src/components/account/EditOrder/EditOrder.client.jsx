@@ -2,6 +2,11 @@ import {useState, useEffect} from 'react';
 import axios from 'axios';
 import Loading from '~/components/Loading/index.client';
 import {Link} from "@shopify/hydrogen";
+import {
+  buildProductArrayFromVariant,
+  buildProductArrayFromId,
+} from '~/utils/products';
+import {MealItem} from "../../shopping/MealItem.client";
 
 export function EditOrder({subscription_id, subid, date}) {
   const sub_order_id = subid;
@@ -9,7 +14,7 @@ export function EditOrder({subscription_id, subid, date}) {
   const EMPTY_STATE_IMAGE =
     'https://cdn.shopify.com/shopifycloud/shopify/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_750x.gif';
 
-  const [productlist, setProductlist] = useState([]);
+  const [menuItem, setMenuItem] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [bundles, setBundles] = useState([]);
   const [hasSavedItems, setHasSavedItems] = useState(true)
@@ -73,22 +78,22 @@ export function EditOrder({subscription_id, subid, date}) {
         const {data: products} = await axios.post(`/api/products/multiple`, {
           product_ids,
         });
-        // const thisProductsArray = await buildProductArrayFromId(
-        //   defaultProducts,
-        //   activeWeekData.subscription_sub_type,
-        //   products,
-        // );
+        const thisProductsArray = await buildProductArrayFromId(
+          contentData[0].products,
+          subscriptionOrders[0].subscription.subscription_sub_type,
+          products,
+        );
 
-        console.log('products', products);
+        console.log('thisProductsArray', thisProductsArray);
 
-        setProductlist(products);
+        setMenuItem(thisProductsArray);
       }else{
         throw new Error('Meal item could not be found')
       }
 
 
-      setSelectedItems(subscriptionOrders.data[0].items);
-      console.log('SubData', subscriptionOrders.data[0].items);
+      // setSelectedItems(subscriptionOrders.data[0].items);
+      // console.log('SubData', subscriptionOrders.data[0].items);
       // console.log("BundleItem", bundleItem)
       // console.log("CONTENT", content)
       // end laoder
@@ -171,38 +176,58 @@ export function EditOrder({subscription_id, subid, date}) {
         <div className="product-section m-5">
           <p className="text-[24px] text-left font-bold ">Meals</p>
           <div className="flex flex-wrap -mx-2">
-            {productlist.map((item) =>
-              item.variants.nodes.map((variant, v_index) => (
+            {menuItem.length ? (
+              menuItem.map((product, key) => (
                 <div
-                  className="w-1/3 lg:w-1/6 sm:w-1/3 md:w-1/3 p-2 border m-[5px]"
-                  key={v_index}
+                  key={key}
+                  className="flex w-1/2 lg:w-1/5 sm:w-1/3 md:w-1/3 md:p-2 text-center mb-4"
                 >
-                  <div className="text-center">
-                    <button
-                      className=" text-center font-bold font-heading"
-                      href="#"
-                    >
-                      <img
-                        className="mx-auto object-contain"
-                        src={variant.image.url}
-                        alt="img"
-                      />
-                      <h3 className="font-bold font-heading text-sm text-center">
-                        BBQ FEASTbox
-                      </h3>
-                      <div className="text-center text-sm mb-2 ">Serves: 5</div>
-                    </button>
-                    {variant.quantity == 0 ? (
-                      <div className="px-4 mb-4 xl:mb-0 text-center">
-                        <button className="bg-[#DB9707] text-center w-[80px] px-[21px] py-[3px] text-white font-bold font-heading uppercase transition ">
-                          ADD+
+                  <div className="flex flex-col justify-between text-center">
+                    <MealItem
+                      title={product.title}
+                      image={
+                        product.feature_image
+                          ? product.feature_image
+                          : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                      }
+                      modalimage={
+                        product.variant_image
+                          ? product.variant_image
+                          : 'https://www.freeiconspng.com/uploads/no-image-icon-6.png'
+                      }
+                      metafields={product.metafields}
+                      variant_title={
+                        product.type?.toLowerCase() === 'family'
+                          ? 'Serves 5'
+                          : product.type
+                      }
+                    />
+
+                   {/* {cartInfo[bundle.handle].meals.findIndex(
+                      (el) =>
+                        el.variants.nodes[
+                          cartInfo[bundle.handle].variantIndex
+                          ].id ===
+                        product.variants.nodes[
+                          cartInfo[bundle.handle].variantIndex
+                          ].id,
+                    ) === -1 ? (
+                      <div className="mt-2 px-4 text-center">
+                        <button
+                          className="addMeal w-full text-center text-white font-bold font-heading uppercase transition bg-[#DB9707] md:w-[80px] px-5 py-1 disabled:bg-[#bdac89]"
+                          onClick={() => handleUpdateCart(product)}
+                          disabled={isQuantityLimit}
+                        >
+                          Add+
                         </button>
                       </div>
                     ) : (
                       <div className="flex mt-2 lg:justify-center font-semibold font-heading px-4">
                         <button
                           className="removeMeal hover:text-gray-700 text-center bg-[#DB9707] text-white"
-                          onClick={() => handleUpdateQuantity(variant.id, -1)}
+                          onClick={() =>
+                            handleUpdateCart(product, -1)
+                          }
                         >
                           <svg
                             width={24}
@@ -223,11 +248,26 @@ export function EditOrder({subscription_id, subid, date}) {
                           </svg>
                         </button>
                         <div className="grow w-8 m-0 px-2 py-[2px] text-center border-0 focus:ring-transparent focus:outline-none bg-white text-gray-500">
-                          {variant.quantity}
+                          {
+                            cartInfo[bundle.handle].meals.find(
+                              (el) =>
+                                el.variants.nodes[
+                                  cartInfo[bundle.handle]
+                                    .variantIndex
+                                  ].id ===
+                                product.variants.nodes[
+                                  cartInfo[bundle.handle]
+                                    .variantIndex
+                                  ].id,
+                            ).quantity
+                          }
                         </div>
                         <button
                           className="addMeal hover:text-gray-700 text-center bg-[#DB9707] text-white disabled:bg-[#bdac89]"
-                          onClick={() => handleUpdateQuantity(variant.id, 1)}
+                          onClick={() =>
+                            handleUpdateCart(product, 1)
+                          }
+                          disabled={isQuantityLimit}
                         >
                           <svg
                             width={24}
@@ -255,10 +295,15 @@ export function EditOrder({subscription_id, subid, date}) {
                           </svg>
                         </button>
                       </div>
-                    )}
+                    )}*/}
                   </div>
                 </div>
-              )),
+              ))
+            ) : (
+              <div className="w-full py-8 items-center text-lg px-5">
+                <p className="flex text-lg">No items to choose</p>
+                <p className="flex text-sm">Please come back soon to choose your menu items.</p>
+              </div>
             )}
           </div>
         </div>
