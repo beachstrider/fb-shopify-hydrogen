@@ -23,7 +23,7 @@ import {
 import {MealItem} from '~/components/shopping/MealItem.client';
 import Loading from '~/components/Loading/index.client';
 
-const Index = ({subscription, subscription_id, user}) => {
+const Index = ({subscription, subscription_id, user, orders}) => {
   // console.log('subscription===', user);
   const TOTAL_WEEKS_DISPLAY = 4;
   const TOTAL_WEEKS_PER_PAGE = 1;
@@ -144,26 +144,23 @@ const Index = ({subscription, subscription_id, user}) => {
       `/api/bundleAuth/subscriptions?is_active=1&platform_subscription_id=${subscription_id}`,
     );
     let subApi = subResponse.data;
-    console.log('subApi', subApi);
-
+    const firstOrder = orders.length > 0 ? orders[orders.length - 1] : [];
+    // console.log('firstOrder', firstOrder);
     // var firstOrderDeliveryDate = todayDate;
-    // console.log('----subApi----', subApi)
     if (subApi) {
       for (const sub of subApi) {
         const subscriptionOrdersResponse = await axios.get(
           `/api/bundleAuth/subscriptions/${sub.id}/orders`,
         );
         const subscriptionOrders = subscriptionOrdersResponse.data;
-        console.log('----sub----', sub);
-        console.log('----subscriptionOrders----', subscriptionOrders);
+        // console.log('----sub----', sub);
+        // console.log('----subscriptionOrders----', subscriptionOrders);
 
         const configDataResponse = await axios.get(
           `/api/bundleAuth/bundles/${sub.bundle_id}/configurations`,
         );
         const configData = configDataResponse.data;
-        console.log('----configData----', configData);
-        console.log('----USERDATA----', user);
-
+        // console.log('----configData----', configData);
         if (configData.length > 0) {
           for (const config of configData) {
             for (const content of config.contents) {
@@ -174,20 +171,13 @@ const Index = ({subscription, subscription_id, user}) => {
                 content.deliver_before,
               );
               const cutoffDate = getCutOffDate(deliveryDate);
-              const firstOrder = user.orders?.edges?.pop() || null;
-
-              const firstOrderDate =
-                (firstOrder && dayjs(firstOrder.node.processedAt).utc()) ||
-                dayjs().utc();
-              // validates the first order to avoid displaying the week where the order was placed (always show next week)
-              console.log('firstOrderDate', firstOrderDate);
-              // console.log('firstOrderDeliveryDate', firstOrderDeliveryDate);
+              // const firstOrderDate = dayjs('2023-01-03T11:12:51Z').utc();
+              const firstOrderDate = dayjs(firstOrder.processedAt).utc();
               if (
                 dayjs(content.deliver_before).utc().isSameOrAfter(todayDate) &&
                 firstOrderDate.isSameOrBefore(content.deliver_after)
               ) {
                 // console.log('subscriptionOrders', subscriptionOrders);
-                console.log('content', content);
                 const orderedItems = subscriptionOrders.filter(
                   (ord) =>
                     ord.bundle_configuration_content.deliver_after ===
@@ -196,22 +186,17 @@ const Index = ({subscription, subscription_id, user}) => {
                 // console.log('orderedItems', orderedItems);
 
                 let weekMenuData = [];
-                weekMenuData['subscriptionDate'] = dayjs
-                  .utc(content.deliver_after)
-                  .format('YYYY-MM-DD');
-                weekMenuData['bundle_configuration_id'] =
-                  content.bundle_configuration_id;
+                weekMenuData['subscriptionDate'] = dayjs.utc(content.deliver_after).format('YYYY-MM-DD');
+                weekMenuData['bundle_configuration_id'] = content.bundle_configuration_id;
                 weekMenuData['content_id'] = content.id;
                 weekMenuData['bundle_id'] = config.bundle_id;
                 weekMenuData['config_quantity'] = config.quantity;
                 weekMenuData['delivery_day'] = sub.delivery_day;
                 weekMenuData['sub_id'] = sub.id;
                 weekMenuData['subscription_type'] = sub.subscription_type;
-                weekMenuData['subscription_sub_type'] =
-                  sub.subscription_sub_type;
-                //edit order
+                weekMenuData['subscription_sub_type'] = sub.subscription_sub_type;
                 weekMenuData['queryDate'] = content.deliver_after;
-
+                // order status set
                 if (orderedItems.length > 0) {
                   const orderFound = orderedItems[0];
                   let thisItemsArray = [];
@@ -251,7 +236,6 @@ const Index = ({subscription, subscription_id, user}) => {
 
     const sortedWeekMenu = sortByDateProperty(weeksMenu, 'subscriptionDate');
     setWeeksMenu(sortedWeekMenu);
-    console.log('weeksMenuweeksMenuweeksMenuweeksMenu', weeksMenu);
   };
 
   async function handleWeekChange(e) {
@@ -259,13 +243,11 @@ const Index = ({subscription, subscription_id, user}) => {
     const newWeekDateIndex = e.target.value;
     setActiveWeekDateIndex(newWeekDateIndex);
     const activeWeekData = weeksMenu[newWeekDateIndex];
-    console.log('activeWeekDataactiveWeekDataactiveWeekData', activeWeekData);
 
     if (activeWeekData.orderedItems.length > 0){
-
-    }else{
+      console.log('activeWeekData', activeWeekData);
       const defaultProductsResponse = await axios.get(
-        `/api/bundleAuth/bundles/${activeWeekData.bundle_id}/configurations/${activeWeekData.bundle_configuration_id}/contents/${activeWeekData.content_id}/products?is_default=1`,
+        `/api/bundleAuth/bundles/${activeWeekData.bundle_id}/configurations/${activeWeekData.bundle_configuration_id}/contents/${activeWeekData.content_id}/products`,
       );
       const defaultProducts = defaultProductsResponse.data;
       console.log('defaultProducts', defaultProducts);
@@ -278,18 +260,43 @@ const Index = ({subscription, subscription_id, user}) => {
           const {data: products} = await axios.post(`/api/products/multiple`, {
             product_ids,
           });
-          console.log('productsproducts', products);
+          const thisProductsArray = await buildProductArrayFromVariant(
+            activeWeekData.orderedItems,
+            activeWeekData.subscription_sub_type,
+            products,
+          );
+          // setActiveMeals(selectedSub);
+          let activeMealsData = [];
+          activeMealsData[0] = activeWeekData;
+          activeMealsData[0]['items'] = thisProductsArray;
+          setActiveMeals(activeMealsData);
+        }
+      }
+
+    }else{
+      const defaultProductsResponse = await axios.get(
+        `/api/bundleAuth/bundles/${activeWeekData.bundle_id}/configurations/${activeWeekData.bundle_configuration_id}/contents/${activeWeekData.content_id}/products?is_default=1`,
+      );
+      const defaultProducts = defaultProductsResponse.data;
+      // console.log('defaultProducts', defaultProducts);
+      if (defaultProducts) {
+        let product_ids = [];
+        defaultProducts.map((el) => {
+          product_ids.push(el.platform_product_id);
+        });
+        if (product_ids.length) {
+          const {data: products} = await axios.post(`/api/products/multiple`, {
+            product_ids,
+          });
           const thisProductsArray = await buildProductArrayFromId(
             defaultProducts,
             activeWeekData.subscription_sub_type,
             products,
           );
-          console.log('thisProductsArray', thisProductsArray);
           // setActiveMeals(selectedSub);
           let activeMealsData = [];
           activeMealsData[0] = activeWeekData;
           activeMealsData[0]['items'] = thisProductsArray;
-          console.log('activeMealsDataactiveMealsData', activeMealsData);
           setActiveMeals(activeMealsData);
         }
       }
@@ -310,10 +317,7 @@ const Index = ({subscription, subscription_id, user}) => {
                 <div className="pb-5">
                   <div className="bg-[#EFEFEF] py-4">
                     <div className="mb-2 bg-grey" style={{maxWidth: '100%'}}>
-                      <div
-                        className="block text-gray-800 text-lg font-bold mb-2"
-                        style={{fontSize: 24}}
-                      >
+                      <div className="block text-gray-800 text-lg font-bold mb-2">
                         Choose your Week
                       </div>
                       <div
@@ -358,17 +362,14 @@ const Index = ({subscription, subscription_id, user}) => {
                         activeMeals.map((mealItem, key) => (
                           <div key={key} className="mealSelection">
                             <div className="flex justify-between">
-                              <div
-                                className="block text-gray-800 text-lg font-bold mb-2 mr-2"
-                                style={{fontSize: 24, marginTop: 20}}
-                              >
+                              <div className="block text-gray-800 text-lg font-bold mb-2 ml-2">
                                 Choose your Meals (
                                 {getUsaStandard(mealItem.subscriptionDate)} -{' '}
                                 {getUsaStandard(addDays(mealItem.subscriptionDate, 6))}
                                 )
                               </div>
                               {mealItem.items.length > 0 ? (
-                                <div className="text-xl font-medium">
+                                <div className="text-xl font-medium mr-2">
                                   <Link
                                     to={`/account/subscriptions/${subscription.id}/edit-order/${encryptSubId(mealItem.sub_id)}?date=${mealItem.queryDate}`}
                                   >
