@@ -58,24 +58,19 @@ export function EditOrder({subid,date}) {
   return (
     <section className="">
       <div className="">
-        <div className="banner-section">
-          <h1 className="font-opensans text-[65px] leading-[70px] md:text-7xl lg:text-[65px] text-center font-extrabold">
+        <div className="banner-section  text-center">
+          <h2 className="font-opensans text-[36px] font-bold">
             Edit Order
-          </h1>
-          <div className="text-xl  font-medium mt-[19px] lg:ml-[451px]">
-            0 Meals Left{' '}
-            {/* <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white">
-              Clear Selections
-            </button> */}
+          </h2>
+          <div className="text-xl font-medium p-2">
+            0 Meal Left{' '}
           </div>
         </div>
       </div>
-      <div className="product-section mt-5">
-        <hr></hr>
-        <h1 className="lg:text-[50px] text-center font-bold ">Meals</h1>
-
+      <hr />
+      <div className="product-section m-5">
+        <p className="text-[24px] text-left font-bold ">Meals</p>
         <div className="flex flex-wrap -mx-2 -mb-2">
-          {/*--1----*/}
           {productlist.map((item)=>(
             item.variants.nodes.map((variant, v_index)=>(
               <div className="w-1/3 lg:w-1/6 sm:w-1/3 md:w-1/3 p-2 border m-[5px]" key={v_index}>
@@ -176,13 +171,9 @@ export function EditOrder({subid,date}) {
           
         </div>
       </div>
-      <div className="m-auto mt-[100px] bg-white py-6 px-12 w-[100%] md:w-[100%] lg:w-[68.5%] flex justify-between">
-        <button className="border-2 border-red-500 px-7 py-4 rounded-full hover:bg-red-500 font-semibold text-xl hover:text-white">
-          Cancel
-        </button>
-        <button className="border-2 border-[#DB9707] px-7 py-4 rounded-full hover:bg-[#DB9707] font-semibold text-xl hover:text-white">
-          Save
-        </button>
+      <div className="m-auto bg-white w-[100%] md:w-[100%] lg:w-[80%] flex justify-between">
+        <button className="border-2 border-red-500 px-7 py-2 rounded-sm hover:bg-red-500 font-bold text-xl hover:text-white">Cancel</button>
+        <button className="border-2 border-[#DB9707] px-7 py-2 rounded-sm hover:bg-[#DB9707] font-bold text-xl hover:text-white">Save</button>
       </div>
     </section>
   );

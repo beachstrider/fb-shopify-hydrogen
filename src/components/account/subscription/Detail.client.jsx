@@ -305,7 +305,7 @@ const Index = ({subscription, subscription_id, user, orders}) => {
   }
   return (
     <Loading isLoading={isMealSelectionLoading}>
-      <div className="flex flex-wrap -m-4">
+      <div className="flex flex-wrap">
         <div className="w-full flex justify-between mb-4 text-3xl uppercase font-bold">
           EDIT YOUR SUBSCRIPTION ({subscription_id})
         </div>

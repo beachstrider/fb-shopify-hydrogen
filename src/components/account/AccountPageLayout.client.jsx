@@ -3,7 +3,7 @@ import {Link} from '@shopify/hydrogen';
 export const AccountPageLayout = ({user, currentPath, children}) => {
   return (
     <div className="marker:before:">
-      <section className="lg:py-20 py-8">
+      <section className="lg:py-5 py-5">
         <div className="container px-4 mx-auto">
           <div className="flex flex-wrap -mx-4">
             <div className="w-full lg:w-1/5 px-4 mb-12 lg:mb-0">
