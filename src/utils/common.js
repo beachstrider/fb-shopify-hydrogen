@@ -5,5 +5,5 @@ export const encryptSubId = (id) => {
 
 export const decryptSubId = (id) => {
   const subId = Number(id);
-  return (subId/20232023)-20232023;
+  return (subId-20232023)/20232023;
 };
