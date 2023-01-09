@@ -195,29 +195,29 @@ const Index = ({subscription, subscription_id, user}) => {
                 );
                 // console.log('orderedItems', orderedItems);
 
+                let weekMenuData = [];
+                weekMenuData['subscriptionDate'] = dayjs
+                  .utc(content.deliver_after)
+                  .format('YYYY-MM-DD');
+                weekMenuData['bundle_configuration_id'] =
+                  content.bundle_configuration_id;
+                weekMenuData['content_id'] = content.id;
+                weekMenuData['bundle_id'] = config.bundle_id;
+                weekMenuData['config_quantity'] = config.quantity;
+                weekMenuData['delivery_day'] = sub.delivery_day;
+                weekMenuData['sub_id'] = sub.id;
+                weekMenuData['subscription_type'] = sub.subscription_type;
+                weekMenuData['subscription_sub_type'] =
+                  sub.subscription_sub_type;
+                //edit order
+                weekMenuData['queryDate'] = content.deliver_after;
+
                 if (orderedItems.length > 0) {
                   const orderFound = orderedItems[0];
                   let thisItemsArray = [];
                   for (const order of orderedItems) {
                     thisItemsArray = thisItemsArray.concat(order.items);
                   }
-
-                  let weekMenuData = [];
-                  weekMenuData['subscriptionDate'] = dayjs
-                    .utc(content.deliver_after)
-                    .format('YYYY-MM-DD');
-                  weekMenuData['bundle_configuration_id'] =
-                    content.bundle_configuration_id;
-                  weekMenuData['content_id'] = content.id;
-                  weekMenuData['bundle_id'] = config.bundle_id;
-                  weekMenuData['config_quantity'] = config.quantity;
-                  weekMenuData['delivery_day'] = sub.delivery_day;
-                  weekMenuData['sub_id'] = sub.id;
-                  weekMenuData['subscription_type'] = sub.subscription_type;
-                  weekMenuData['subscription_sub_type'] =
-                    sub.subscription_sub_type;
-                  //edit order
-                  weekMenuData['queryDate'] = content.deliver_after;
                   weekMenuData['orderedItems'] = thisItemsArray;
                   weekMenuData['status'] =
                     orderFound.platform_order_id !== null
@@ -235,23 +235,6 @@ const Index = ({subscription, subscription_id, user}) => {
                     }*/
 
                 } else {
-                  // if there is no saved or ordered item found.
-                  let weekMenuData = [];
-                  weekMenuData['subscriptionDate'] = dayjs
-                    .utc(content.deliver_after)
-                    .format('YYYY-MM-DD');
-                  weekMenuData['bundle_configuration_id'] =
-                    content.bundle_configuration_id;
-                  weekMenuData['content_id'] = content.id;
-                  weekMenuData['bundle_id'] = config.bundle_id;
-                  weekMenuData['config_quantity'] = config.quantity;
-                  weekMenuData['delivery_day'] = sub.delivery_day;
-                  weekMenuData['sub_id'] = sub.id;
-                  weekMenuData['subscription_type'] = sub.subscription_type;
-                  weekMenuData['subscription_sub_type'] =
-                    sub.subscription_sub_type;
-                  //edit order
-                  weekMenuData['queryDate'] = content.deliver_after;
                   weekMenuData['orderedItems'] = [];
                   weekMenuData['status'] = todayDate.isSameOrAfter(cutoffDate)
                     ? STATUS_LOCKED
@@ -324,9 +307,9 @@ const Index = ({subscription, subscription_id, user}) => {
           <div className="container px-5 mx-auto subscription_box">
             <div className="flex flex-wrap -mb-0">
               <div className="w-full md:w-1/1 xl:w-3/3 lg:w-3/3">
-                <div className="mb-10 pb-10">
-                  <div style={{backgroundColor: '#EFEFEF', padding: '20px 0'}}>
-                    <div className="mb-6 bg-grey" style={{maxWidth: '100%'}}>
+                <div className="pb-5">
+                  <div className="bg-[#EFEFEF] py-4">
+                    <div className="mb-2 bg-grey" style={{maxWidth: '100%'}}>
                       <div
                         className="block text-gray-800 text-lg font-bold mb-2"
                         style={{fontSize: 24}}
@@ -376,7 +359,7 @@ const Index = ({subscription, subscription_id, user}) => {
                           <div key={key} className="mealSelection">
                             <div className="flex justify-between">
                               <div
-                                className="block text-gray-800 text-lg font-bold mb-2"
+                                className="block text-gray-800 text-lg font-bold mb-2 mr-2"
                                 style={{fontSize: 24, marginTop: 20}}
                               >
                                 Choose your Meals (
@@ -384,18 +367,20 @@ const Index = ({subscription, subscription_id, user}) => {
                                 {getUsaStandard(addDays(mealItem.subscriptionDate, 6))}
                                 )
                               </div>
-                              <div className="text-xl font-medium mt-[19px]">
-                                <Link
-                                  to={`/account/subscriptions/${subscription.id}/edit-order/${encryptSubId(mealItem.sub_id)}?date=${mealItem.queryDate}`}
-                                >
-                                  <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white text-sm">
-                                    Edit Order
-                                  </button>
-                                </Link>
-                              </div>
+                              {mealItem.items.length > 0 ? (
+                                <div className="text-xl font-medium">
+                                  <Link
+                                    to={`/account/subscriptions/${subscription.id}/edit-order/${encryptSubId(mealItem.sub_id)}?date=${mealItem.queryDate}`}
+                                  >
+                                    <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white text-sm">
+                                      Edit Order
+                                    </button>
+                                  </Link>
+                                </div>
+                              ) : ''}
                             </div>
                             <div className="flex flex-wrap -mx-2 -mb-2">
-                              {mealItem.items.length ? (
+                              {mealItem.items.length > 0 ? (
                                 mealItem.items.map((product, key) => (
                                   <div
                                     key={key}
@@ -426,9 +411,9 @@ const Index = ({subscription, subscription_id, user}) => {
                                   </div>
                                 ))
                               ) : (
-                                <div className="w-full flex justify-center items-center py-8 text-lg">
-                                  <h2>No items to choose</h2>
-                                  <p>Please come back soon to choose your menu items.</p>
+                                <div className="w-full py-8 items-center text-lg px-5">
+                                  <p className="flex text-lg">No items to choose</p>
+                                  <p className="flex text-sm">Please come back soon to choose your menu items.</p>
                                 </div>
                               )}
                             </div>
