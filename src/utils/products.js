@@ -82,6 +82,7 @@ const buildProductArrayFromId = async (items, subType, shopProducts) =>
           title: variant.metafields?.find(
             (x) => x?.key === 'display_name',
           )?.value,
+          product_id: matchProduct.id,
           metafields: variant.metafields,
           feature_image: matchProduct?.featuredImage?.url ? matchProduct?.featuredImage?.url : EMPTY_STATE_IMAGE,
           variant_image: variant.image?.url ? variant.image?.url : EMPTY_STATE_IMAGE,
