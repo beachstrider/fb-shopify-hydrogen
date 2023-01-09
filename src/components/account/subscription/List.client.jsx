@@ -1,7 +1,7 @@
-import {Link, Image} from '@shopify/hydrogen';
-import {getUsaStandard} from '~/utils/dates';
+import {Link} from '@shopify/hydrogen';
+import axios from 'axios';
 import {useEffect} from 'react';
-import axios from "axios";
+import {getUsaStandard} from '~/utils/dates';
 
 const Index = ({subscriptions, user}) => {
   //initialize a new token when in home page
@@ -20,7 +20,7 @@ const Index = ({subscriptions, user}) => {
         YOUR SUBSCRIPTIONS
       </div>
       <div className="w-full max-w-2xl mb-4 text-lg">
-        Edit &amp; active subscription.
+        Edit your active subscription.
       </div>
       {!subscriptions.length ? (
         <div className="flex w-full  max-w-2xl justify-center items-center py-8 text-lg">
