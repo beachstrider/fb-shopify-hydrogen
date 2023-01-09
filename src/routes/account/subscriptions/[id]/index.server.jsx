@@ -7,6 +7,7 @@ import {
   useShopQuery,
   useServerAnalytics,
   useRouteParams,
+  flattenConnection,
 } from '@shopify/hydrogen';
 
 import {CUSTOMER_QUERY} from '~/lib/queries';
@@ -53,14 +54,13 @@ export default function Account({response}) {
 
   return (
     <Layout>
-      <Suspense>
-        <Seo type="noindex" data={{title: 'Account Subscription'}} />
-      </Suspense>
+      <Seo type="noindex" data={{title: 'Account Subscription'}} />
       <AccountPageLayout user={customer} currentPath="subscriptions">
         <SubscriptionDetail
           subscription={subscription}
           subscription_id={id}
           user={customer}
+          orders={flattenConnection(customer.orders)}
         />
       </AccountPageLayout>
     </Layout>
