@@ -140,8 +140,8 @@ const Index = ({subscriptions, user}) => {
                 </div>
                 {/*---------------form open---------------*/}
                 <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
-                  {/* <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0 text-right"></div> */}
-                  <div className="w-full md:w-1/5 px-4 mb-4 md:mb-0">
+                  <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0 text-right"></div>
+                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
                     <div className="w-full mb-4 md:mb-0">
                       <Link
                         className="block py-2 text-lg text-center uppercase font-bold "
