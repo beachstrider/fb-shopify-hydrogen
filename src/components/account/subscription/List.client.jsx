@@ -80,6 +80,23 @@ const Index = ({subscriptions, user}) => {
                       />
                     </div>
                   </div>
+
+                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0 visible md:invisible">
+                    <div className="w-4/5 mb-4 md:mb-0">
+                      <Link
+                        className="block py-2 text-lg text-center uppercase font-bold "
+                        to={`/account/subscriptions/${subscription.id}`}
+                        style={{
+                          backgroundColor: '#DB9707',
+                          color: '#FFFFFF',
+                          marginBottom: 15,
+                        }}
+                      >
+                        Edit Subscription
+                      </Link>
+                    </div>
+                  </div>
+
                   <div className="w-full lg:w-1/5 px-4">
                     <h2 className="mb-2 font-bold font-heading uppercase text-lg">
                       Products
@@ -141,7 +158,7 @@ const Index = ({subscriptions, user}) => {
                 {/*---------------form open---------------*/}
                 <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
                   <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0 text-right"></div>
-                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
+                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0 invisible md:visible">
                     <div className="w-full mb-4 md:mb-0">
                       <Link
                         className="block py-2 text-lg text-center uppercase font-bold "
