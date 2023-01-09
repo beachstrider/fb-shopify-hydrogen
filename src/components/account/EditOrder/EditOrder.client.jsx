@@ -1,25 +1,29 @@
+import {Link} from '@shopify/hydrogen';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import Loading from '~/components/Loading/index.client';
-import {Link} from '@shopify/hydrogen';
+import Spinner from '~/components/spinner/button';
 import {
   buildProductArrayFromVariant,
   buildProductArrayFromId,
 } from '~/utils/products';
 import {MealItem} from '../../shopping/MealItem.client';
+import {useNavigate} from "@shopify/hydrogen/client";
 
 export function EditOrder({subscription_id, subid, date}) {
   const sub_order_id = subid;
   const currentDate = date;
   const EMPTY_STATE_IMAGE =
     'https://cdn.shopify.com/shopifycloud/shopify/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_750x.gif';
+  const navigate = useNavigate();
 
   const [menuItem, setMenuItem] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [bundles, setBundles] = useState([]);
   const [hasSavedItems, setHasSavedItems] = useState(true);
-  const [isEditOrderLoading, setIsEditOrderLoading] = useState(false);
   const [quantityLimit, setQuantityLimit] = useState(3);
+  const [isMealSaving, setIsMealSaving] = useState(false);
+  const [isEditOrderLoading, setIsEditOrderLoading] = useState(false);
   // get current quantity of meals
   const currentQuantity = (() => {
     let quantity = 0;
@@ -113,10 +117,13 @@ export function EditOrder({subscription_id, subid, date}) {
         const {data: products} = await axios.post(`/api/products/multiple`, {
           product_ids,
         });
+        console.log('contentData', contentData);
         const thisProductsArray = await buildProductArrayFromId(
           contentData[0].products,
           subscriptionOrders[0].subscription.subscription_sub_type,
           products,
+          contentData[0].id,
+          contentData[0].bundle_configuration_id,
         );
 
         let mealsWithQuantity = [];
@@ -188,6 +195,136 @@ export function EditOrder({subscription_id, subid, date}) {
       currentItems,
       bundleId: currentBundleId,
     };
+  };
+
+  const createNewOrder = async () => {
+    const separatedConfigurations = [];
+    selectedItems.forEach((item) => {
+      if (!separatedConfigurations[`config_${item.bundle_configuration_content_id}`]) {
+        separatedConfigurations[`config_${item.bundle_configuration_content_id}`] = []
+      }
+      separatedConfigurations[`config_${item.bundle_configuration_content_id}`].push({
+        bundle_configuration_content_id: item.bundle_configuration_content_id,
+        platform_product_variant_id: Number(item.variant_id),
+        quantity: item.quantity
+      })
+    });
+    for (const key of Object.keys(separatedConfigurations)) {
+      const subscriptionOrdersResponse = await axios.post(
+        `/api/bundleAuth/subscriptions/${sub_order_id}/orders`,
+        {
+          bundle_configuration_content_id: separatedConfigurations[key][0].bundle_configuration_content_id,
+          is_enabled: 1,
+          items: separatedConfigurations[key]
+        }
+      );
+    }
+    navigate('/account/subscriptions/' + subscription_id);
+  };
+
+  const handleSaveMeal = async () => {
+    console.log('Test');
+    setIsMealSaving(true);
+    const itemsToSave = []
+    // if (!hasSavedItems) {
+      console.log('saving...')
+      return createNewOrder();
+    // }
+/*
+    const getBundleProduct = (variantId) => {
+      let existingProduct = null
+      bundles.forEach((bundle) => {
+        const currentItem = bundle.items.find((p) => {
+          return Number(p.platform_product_variant_id) === Number(variantId)
+        })
+        if (currentItem) {
+          existingProduct = currentItem
+        }
+      })
+
+      return existingProduct
+    }
+
+    for (const item of intactMenuItems) {
+      for (const product of item.products) {
+        const cartItem = state.cart.find((c) => c.id === product.id)
+        const currentContent = bundles.find(
+          (b) =>
+            Number(b.bundle_configuration_content_id) ===
+            Number(product.configurationContentId)
+        )
+
+        const currentBundleProduct = getBundleProduct(product.id)
+        if (cartItem) {
+          if (
+            cartItem &&
+            cartItem.quantity > 0 &&
+            product.quantity === 0 &&
+            !currentBundleProduct
+          ) {
+            itemsToSave.push({
+              platform_product_variant_id: product.id,
+              quantity: cartItem.quantity,
+              contentId: currentContent.id,
+              configurationContentId:
+              currentContent.bundle_configuration_content_id
+            })
+          } else {
+            if (cartItem.quantity !== product.quantity) {
+              if (currentBundleProduct) {
+                itemsToSave.push({
+                  id: currentBundleProduct.id,
+                  platform_product_variant_id: product.id,
+                  contentId: currentContent.id,
+                  configurationContentId:
+                  currentContent.bundle_configuration_content_id,
+                  quantity: cartItem.quantity
+                })
+              }
+            }
+          }
+        } else {
+          if (currentBundleProduct) {
+            itemsToSave.push({
+              id: currentBundleProduct.id,
+              platform_product_variant_id: product.id,
+              contentId: currentContent.id,
+              configurationContentId:
+              currentContent.bundle_configuration_content_id,
+              quantity: 0
+            })
+          }
+        }
+      }
+    }
+
+    const separatedConfigurations = []
+
+    itemsToSave.forEach((item) => {
+      if (!separatedConfigurations[`config_${item.contentId}`]) {
+        separatedConfigurations[`config_${item.contentId}`] = []
+      }
+
+      separatedConfigurations[`config_${item.contentId}`].push({ ...item })
+    })
+
+    console.log('items to save>>', itemsToSave)
+    console.log('items>>>', separatedConfigurations)
+
+    for (const key of Object.keys(separatedConfigurations)) {
+      await updateSubscriptionOrder(
+        state.tokens.userToken,
+        orderId,
+        null,
+        separatedConfigurations[key][0].configurationContentId,
+        separatedConfigurations[key][0].contentId,
+        separatedConfigurations[key]
+      )
+    }
+*/
+
+    // setIsMealSaving(false);
+    // navigate('/account/subscriptions/' + subscription_id);
   };
 
   return (
@@ -319,8 +456,17 @@ export function EditOrder({subscription_id, subid, date}) {
           >
             Cancel
           </Link>
-          <button className="border-2 border-[#DB9707] px-7 py-2 rounded-sm hover:bg-[#DB9707] font-bold text-xl hover:text-white">
-            Save
+          <button
+            onClick={() => handleSaveMeal()}
+            className="border-2 border-[#DB9707] px-7 py-2 rounded-sm hover:bg-[#DB9707] font-bold text-xl hover:text-white"
+          >
+            {isMealSaving ? (
+              <Spinner />
+            ) : (
+              <>
+                Save
+              </>
+            )}
           </button>
         </div>
       </section>
