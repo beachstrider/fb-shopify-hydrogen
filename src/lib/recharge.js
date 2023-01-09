@@ -226,6 +226,21 @@ export const updateNextChargeScheduledAt = async ({id, date}) => {
   return;
 };
 
+// export const updateFrequency = async ({id, frequency}) => {
+//   console.log("FREQUENCY",frequency)
+//   await rechargeFetch(
+//     `subscriptions/${id}`,
+//     {
+//       order_interval_unit: "day",
+//       order_interval_frequency: frequency,
+//       charge_interval_frequency: frequency,
+//     },
+//     'PUT',
+//   );
+  
+//   return;
+// }
+
 export const updateSubscription = async ({id, data}) => {
   await rechargeFetch(
     `subscriptions/${id}`,

@@ -22,6 +22,8 @@ import {
 } from '~/utils/products';
 import {MealItem} from '~/components/shopping/MealItem.client';
 import Loading from '~/components/Loading/index.client';
+import FrequencyConfirmModal from './FrequencyConfirmModal';
+import UpdateUpcomingDate from './UpdateUpcomingDate';
 
 const Index = ({subscription, subscription_id, user, orders}) => {
   // console.log('subscription===', user);
@@ -42,6 +44,8 @@ const Index = ({subscription, subscription_id, user, orders}) => {
   const [activeWeekDateIndex, setActiveWeekDateIndex] = useState(-1);
   const [isMealSelectionLoading, setIsMealSelectionLoading] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
+  const [showFrequencyConfirmModal, setShowFrequencyConfirmModal] = useState(false)
+  const [showUpcomingUpdateModal, setShowUpcomingUpdateModal] = useState(false)
 
   const {
     register,
@@ -464,10 +468,15 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                                       key={key}
                                       className="radio-button relative cursor-pointer"
                                       onClick={() => {
-                                        setValue(
+                                        if(watch(
                                           'order_interval_frequency',
-                                          Number(frequency),
-                                        );
+                                        ) !== Number(frequency)){
+                                          setValue(
+                                            'order_interval_frequency',
+                                            Number(frequency),
+                                          );
+                                          setShowFrequencyConfirmModal(true);
+                                        }
                                       }}
                                     >
                                       <div className="font-bold flex items-center">
@@ -501,6 +510,26 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                                     </button>
                                   ),
                                 )}
+                                {showFrequencyConfirmModal &&
+                                  <FrequencyConfirmModal 
+                                    setOpenModal={(showFrequencyConfirmModal)=>
+                                      setShowFrequencyConfirmModal(showFrequencyConfirmModal)
+                                    } 
+                                    setOpenUpcomingModal={(showUpcomingUpdateModal)=>
+                                      setShowUpcomingUpdateModal(showUpcomingUpdateModal)
+                                    }
+                                  />
+                                }
+                                {showUpcomingUpdateModal &&
+                                  <UpdateUpcomingDate 
+                                    setOpenUpcomingModal={(showUpcomingUpdateModal)=>
+                                      setShowUpcomingUpdateModal(showUpcomingUpdateModal)
+                                    } 
+                                    currentFrequency={watch('order_interval_frequency')}
+                                    subid={subscription_id}
+                                  />
+                                }
+                                
                               </div>
                               <input
                                 type="hidden"
