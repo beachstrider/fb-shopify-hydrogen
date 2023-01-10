@@ -131,8 +131,8 @@ export const getUpcomingOrders = async (params) => {
       .id;
     const {charges} = await rechargeFetch('charges', {
       customer_id,
-      status: ['queued'],
-      sort_by: 'scheduled_at-asc',
+      status: ['queued', 'skipped'],
+      sort_by: 'scheduled_at-desc',
       scheduled_at_min: today(),
     });
 
@@ -222,6 +222,20 @@ export const updateNextChargeScheduledAt = async ({id, date}) => {
     `subscriptions/${id}/set_next_charge_date`,
     {date},
     'POST',
+  );
+  return;
+};
+
+export const updateFrequency = async ({id, frequency}) => {
+  console.log("FREQUENCY",frequency)
+  await rechargeFetch(
+    `subscriptions/${id}`,
+    {
+      order_interval_unit: "day",
+      order_interval_frequency: frequency,
+      charge_interval_frequency: frequency,
+    },
+    'PUT',
   );
   return;
 };

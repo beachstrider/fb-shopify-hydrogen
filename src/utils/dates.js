@@ -55,21 +55,7 @@ export const getNextWeekDay = (weekDay, todayDate = dayjs()) =>
   dayjs(todayDate).weekday(weekDay).add(1, 'week');
 
 export const getTodayDate = () => {
-  const useQuery = () => {
-    const {search} = useLocation();
-    return React.useMemo(() => new URLSearchParams(search), [search]);
-  };
-  const query = useQuery();
-
-  // format: 2022-01-15T23:00:00.000-08:00
-  const forcedDate =
-    query.get('forced_date') && dayjs(query.get('forced_date'));
-  const todayDate =
-    process.env.ENVIRONMENT !== 'production' && forcedDate
-      ? forcedDate
-      : dayjs();
-
-  return todayDate;
+  return  dayjs();
 };
 
 export const sortDatesArray = (dates, sort = 'asc') =>
@@ -87,6 +73,19 @@ export const sortByDateProperty = (items, property, sort = 'asc') =>
 
     return sort === 'asc' ? dateA - dateB : dateA + dateB;
   });
+
+export const uniqueArray = (array) => {
+  return Array.from(new Set(array));
+};
+
+export const sortObjectKeys = (object) => {
+  return Object.keys(object)
+    .sort()
+    .reduce((result, key) => {
+      result[key] = object[key]
+      return result
+    }, {})
+}
 
 export const getShortDate = (date, config = {withYear: false}) => {
   const errorMessage = "date param isn't a correct date format";

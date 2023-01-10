@@ -43,18 +43,20 @@ const buildProductArrayFromVariant = async (items, subType, shopProducts) =>
     for (const variant of items) {
       const variantId = variant.platform_product_variant_id;
       for (const product of shopProducts) {
-        // const variant = product.variants.filter((v) => v.id === variantId)
-        if (
-          product.variants.filter((v) => Number(v.id) === Number(variantId))
-            .length > 0
-        ) {
+        const productVariant = product.variants?.nodes?.filter(
+          (v) => v.id === `gid://shopify/ProductVariant/${variantId}`,
+        );
+
+        if (productVariant.length > 0) {
+          const p_variant = productVariant[0];
           if (Number(variant.quantity) !== 0) {
             foundProductArray.push({
-              title: product.title,
-              platform_img:
-                product.images.length > 0
-                  ? product.images[0]
-                  : EMPTY_STATE_IMAGE,
+              title: p_variant.metafields?.find(
+                (x) => x?.key === 'display_name',
+              )?.value,
+              metafields: p_variant.metafields,
+              feature_image: product?.featuredImage?.url ? product?.featuredImage?.url : EMPTY_STATE_IMAGE,
+              variant_image: p_variant.image?.url ? p_variant.image?.url : EMPTY_STATE_IMAGE,
               quantity: variant.quantity,
               type: subType,
             });
@@ -65,25 +67,32 @@ const buildProductArrayFromVariant = async (items, subType, shopProducts) =>
     resolve(foundProductArray);
   });
 
-const buildProductArrayFromId = async (items, subType, shopProducts) =>
+const buildProductArrayFromId = async (items, subType, shopProducts, config_content_id=null, config_id=null) =>
   new Promise((resolve) => {
     const foundProductArray = [];
     for (const item of items) {
-      const variant = shopProducts.filter(
-        (p) => Number(p.id) === Number(item.platform_product_id),
+      const matchProduct = shopProducts.filter(
+        (p) => p.id === `gid://shopify/Product/${item.platform_product_id}`,
       )[0];
-
-      if (
-        shopProducts.filter(
-          (p) => Number(p.id) === Number(item.platform_product_id),
-        ).length > 0
-      ) {
+      const variant = matchProduct?.variants?.nodes?.filter(
+        (v) => v.title.split('/ ')[1] === subType,
+      )[0];
+      if (variant) {
         foundProductArray.push({
-          title: variant.title,
-          platform_img:
-            variant?.images.length > 0 ? variant.images[0] : EMPTY_STATE_IMAGE,
+          title: variant.metafields?.find(
+            (x) => x?.key === 'display_name',
+          )?.value,
+          product_id: matchProduct.id,
+          platform_product_only_id: Number(matchProduct.id.split('Product/')[1]),
+          variant_id: Number(variant.id.split('ProductVariant/')[1]),
+          metafields: variant.metafields,
+          feature_image: matchProduct?.featuredImage?.url ? matchProduct?.featuredImage?.url : EMPTY_STATE_IMAGE,
+          variant_image: variant.image?.url ? variant.image?.url : EMPTY_STATE_IMAGE,
+          intactQty: item.default_quantity,
           quantity: item.default_quantity,
           type: subType,
+          bundle_configuration_content_id: config_content_id,
+          bundle_configuration_id: config_id,
         });
       }
     }

@@ -107,12 +107,14 @@ export function Influencers({CDN_CACHE_ENV_MODE}) {
             <img
               className="w-full"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/catering/do_good_eat_good_mobile.png"
+              alt=''
             />
           </div>
           <div className="w-full">
             <img
               className="w-full"
               src="https://res.cloudinary.com/meals/image/upload/f_auto,q_auto/fb/web/influencer/mom_daughter_mobile.png"
+              alt=''
             />
           </div>
           {/* <div className="w-full bg-[#231f20] py-10 px-6 md:py-0 md:px-0">
@@ -188,12 +190,12 @@ export function Influencers({CDN_CACHE_ENV_MODE}) {
             Because we all deserve to drool over dinner.
           </h3>
           <h3 className="text-center md:text-center  md:text-[25px] text-[17px] text-white capitalize font-normal leading-[30px] md:leading-[40px]">
-            <a className="underline text-[#DB9707]">
+            <span className="underline text-[#DB9707]">
               <Link to="http://fullofhope.org" target="_blank">
                 {' '}
                 Learn More{' '}
               </Link>
-            </a>{' '}
+            </span>{' '}
             About Full of Hope
           </h3>
         </div>

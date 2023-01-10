@@ -40,41 +40,16 @@ export async function api(request, {session}) {
     return data;
   };
 
-  const headers = {...initialHeaders};
-  const method = request.method;
-  const urlObj = new URL(request.normalizedUrl);
-  let url = urlObj.pathname.substring(16);
-  let params = {shop};
-  let token;
-
   if (session) {
     //this token preserve for long time but in our api end expire that token which cause api error
-    token = (await session.get()).bundleBuilderAccountToken;
-    let email = (await session.get()).customerEmail;
-    let oldEmail = (await session.get()).customerOldEmail;
-    if (request.method === 'GET') {
-      const query = urlObj.search;
-      url = url + query;
-    } else {
-      const newData = await request.json();
-      params = {...params, ...newData};
-    }
-
     try {
-      // if token not set then request for new token. Another logic is if the token set for previous logged-in user which has different email, so again set token for new user(email).
-      if (typeof token === 'undefined' || email !== oldEmail) {
-        const newToken = (
-          await bundleBuilder(`auth/user`, {shop, email}, 'POST')
-        ).token;
-        token = `Bearer ${newToken}`;
-        await session.set('bundleBuilderAccountToken', token);
-      }
-      headers.authorization = token;
-
-      const {data} = await bundleBuilder(url, params, method, headers);
-
-      return data;
+      let email = (await session.get()).customerEmail;
+      const newToken = (await bundleBuilder(`auth/user`, {shop, email}, 'POST')).token;
+      const token = `Bearer ${newToken}`;
+      await session.set('bundleBuilderAccountToken', token);
+      return 0;
     } catch (error) {
+      // console.log(error);
       return new Response('Catch Error');
     }
   }

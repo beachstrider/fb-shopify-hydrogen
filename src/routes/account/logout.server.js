@@ -14,7 +14,7 @@ export async function api(request, {session}) {
     });
   }
 
-  await session.set('customerAccessToken', '');
+  await session.set('customerAccessToken', undefined);
 
   return new Response();
 }

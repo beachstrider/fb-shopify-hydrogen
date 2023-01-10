@@ -53,19 +53,19 @@ export function HeroSection() {
                     a fraction of the cost of restaurant delivery. Now that was
                     a mouthful! Just like our food.
                   </p>
-                  <div className="flex xsm:block items-center mt-9">
+                  <div className="lg:flex xsm:block md:block items-center mt-9">
                     <Link
                       to="/shop/bundle"
                       onClick={() =>
                         window.dataLayer.push({event: 'getEating'})
                       }
                     >
-                      <button className="getEating font-opensans font-bold px-6 py-2 bg-[#A60D1E] text-white font-bold px-4 px-5 w-[190px] xsm:w-full">
+                      <button className="getEating font-opensans font-bold px-6 py-2 bg-[#A60D1E] text-white font-bold px-4 px-5 w-[190px] xsm:w-full md:w-full lg:w-[190px]">
                         Get Eating
                       </button>
                     </Link>
                     <div className="ml-[20]">
-                      <h2 className="font-opensans font-extrabold xsm:mt-2 xsm:ml-0 ml-5 text-2xl">
+                      <h2 className="font-opensans font-extrabold xsm:mt-2 xsm:ml-0 md:ml-0 md:mt-5 lg:ml-5 lg:mt-[-1px]  text-2xl">
                         Subscribe now for FREE <br />
                         BREAKFAST! Cancel anytime!{' '}
                       </h2>

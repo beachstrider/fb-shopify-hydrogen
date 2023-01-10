@@ -17,6 +17,8 @@ import {getFullCost} from '~/utils/cost';
 import Loading from '~/components/Loading/index.client';
 import {MealItem} from './MealItem.client';
 import MoneyBackModal from './MoneyBackModal';
+import Spinner from '~/components/spinner/button';
+
 const LEAD_TIME = 3; // 3 days ahead of selecting delivery dates
 const caching_server =
   'https://bundle-api-cache-data.s3.us-west-2.amazonaws.com';
@@ -41,6 +43,7 @@ function getCartInfo(param) {
 
   return {
     [param.handle]: {
+      cartId: undefined,
       handle: param.handle,
       bundleContents: [],
       bundleData: undefined,
@@ -76,22 +79,40 @@ export function OrderBundles({
   const [isDeliveryDateEditing, setIsDeliveryDateEditing] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
   const [isCheckoutProcessing, setIsCheckoutProcessing] = useState(false);
+  const [isCartCreated, setIsCartCreated] = useState(false);
+  const [selectedGray, setSelectedGray] = useState(2);
+
+  const handleSelectGray = (index) => {
+    setSelectedGray(index);
+  };
+
+  const [errors, setErrors] = useState({
+    discountCode: '',
+  });
 
   const {
     id,
     lines,
     checkoutUrl,
-    cartAttributesUpdate,
     cartCreate,
-    linesAdd,
-    linesRemove,
+    linesUpdate,
+    cartAttributesUpdate,
     buyerIdentityUpdate,
     discountCodesUpdate,
   } = useCart();
-  // console.log('cartInfo', cartInfo);
+
+  const isCartCreatedRef = useRef(false);
+  isCartCreatedRef.current = isCartCreated;
+
+  const idRef = useRef(null);
+  idRef.current = id;
+
+  const cartInfoRef = useRef(null);
+  cartInfoRef.current = cartInfo;
+
+  const discountCodeInputRef = useRef(null);
 
   const bundleIdNumber = Number(bundle.id.substring(22));
-  const discountCodeInputRef = useRef(null);
 
   const currentQuantity = (() => {
     let quantity = 0;
@@ -102,51 +123,6 @@ export function OrderBundles({
   const isQuantityLimit = (() => {
     return currentQuantity === cartInfo[bundle.handle].mealQuantity;
   })();
-
-  const identifyDiscountAmount = () => {
-    // console.log('newDiscountCodes', newDiscountCodes);
-    if (typeof newDiscountCodes != 'undefined' && newDiscountCodes.length > 0) {
-      return 40;
-    } else {
-      return 0;
-    }
-  };
-
-  useEffect(() => {
-    if (typeof id === 'undefined') cartCreate({});
-
-    async function fetchAll() {
-      await fetchDeliveryDates();
-      await fetchBundle();
-      setIsInitialDataLoading(false);
-    }
-
-    fetchAll();
-  }, []);
-
-  useEffect(() => {
-    setIsProductsLoading(true);
-    let contentResult = [];
-    [...cartInfo[bundle.handle].bundleContents].filter((content) => {
-      const dateNow = new Date(cartInfo[bundle.handle].deliveryDate);
-      const deliverAfter = new Date(content.deliver_after);
-      const deliverBefore = new Date(content.deliver_before);
-      //old logic from previous application
-      if (dateNow > deliverAfter && dateNow < deliverBefore) {
-        contentResult = [content];
-      }
-    });
-    fetchContents(contentResult);
-  }, [cartInfo[bundle.handle].deliveryDate]);
-
-  useEffect(() => {
-    const oldCartInfo = localStorage.getItem('cartInfo');
-    // const savingCartInfo = oldCartInfo !== null ? JSON.parse(oldCartInfo) : {};
-    const savingCartInfo = oldCartInfo !== null ? {} : {};
-    savingCartInfo[bundle.handle] = cartInfo[bundle.handle];
-
-    localStorage.setItem('cartInfo', JSON.stringify(savingCartInfo));
-  }, [cartInfo]);
 
   const weeks = [...new Array(6)]
     .map((_, weekIndex) =>
@@ -201,6 +177,85 @@ export function OrderBundles({
     return parseFloat(price);
   })();
 
+  const cartId =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('shopifyCartId')
+      : null;
+
+  useEffect(() => {
+    if (cartId === null) {
+      createInitialCart();
+    }
+
+    fetchAll();
+
+    async function fetchAll() {
+      await fetchDeliveryDates();
+      await fetchBundle();
+      setIsInitialDataLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof id !== 'undefined') {
+      if (
+        typeof cartInfo[bundle.handle].cartId === 'undefined' &&
+        isCartCreatedRef.current === false
+      ) {
+        createInitialCart();
+      } else {
+        discountCodesUpdate(discountCodes);
+      }
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const oldCartInfo = localStorage.getItem('cartInfo');
+    // const savingCartInfo = oldCartInfo !== null ? JSON.parse(oldCartInfo) : {};
+    const savingCartInfo = oldCartInfo !== null ? {} : {};
+    savingCartInfo[bundle.handle] = cartInfo[bundle.handle];
+    localStorage.setItem('cartInfo', JSON.stringify(savingCartInfo));
+  }, [cartInfo]);
+
+  useEffect(() => {
+    if (selectedWeekIndex !== -1) {
+      setIsProductsLoading(true);
+
+      let contentResult = [];
+      [...cartInfo[bundle.handle].bundleContents].filter((content) => {
+        const dateNow = new Date(cartInfo[bundle.handle].deliveryDate);
+        const deliverAfter = new Date(content.deliver_after);
+        const deliverBefore = new Date(content.deliver_before);
+
+        if (dateNow > deliverAfter && dateNow < deliverBefore) {
+          contentResult = [content];
+        }
+      });
+
+      fetchContents(contentResult);
+    }
+  }, [selectedWeekIndex]);
+
+  function createInitialCart() {
+    cartCreate({
+      lines: [
+        {
+          merchandiseId:
+            bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id,
+        },
+      ],
+    });
+    setIsCartCreated(true);
+  }
+
+  function identifyDiscountAmount() {
+    if (typeof newDiscountCodes != 'undefined' && newDiscountCodes.length > 0) {
+      return 40;
+    } else {
+      return 0;
+    }
+  }
+
   function getAttributes(cartToken, customerId, deliveryDate) {
     deliveryDate =
       cartInfo[bundle.handle].deliveryDate !== '' ? deliveryDate : today();
@@ -228,11 +283,6 @@ export function OrderBundles({
     });
 
     return [
-      //No need customer ID for now: if needed later we will
-      // {
-      //   key: 'Customer Id', //when customer logged in then get from there (this will be shopify customer ID)
-      //   value: customerId,
-      // },
       {
         key: 'Selected Meals',
         value: mealsProperties.toString(), //delivery date format will be 2022-12-26
@@ -297,17 +347,15 @@ export function OrderBundles({
     const bundleDataRes = (
       await axios.get(`${caching_server}/${bundleCacheUrl}`)
     ).data.find((el) => el.platform_product_id === bundleIdNumber);
-
     const {data: config} = await axios.get(
       `/api/bundle/bundles/${bundleDataRes.id}/configurations/${bundleDataRes.configurations[0].id}`,
     );
 
-    // await initCart(bundle.variants.nodes[cartInfo[bundle.handle].variantIndex].id);
-
     setCartInfo({
-      ...cartInfo,
+      ...cartInfoRef.current,
       [bundle.handle]: {
-        ...cartInfo[bundle.handle],
+        ...cartInfoRef.current[bundle.handle],
+        cartId: idRef.current,
         bundleData: bundleDataRes,
         bundleContents: config.contents,
         mealQuantity: config.quantity,
@@ -458,13 +506,32 @@ export function OrderBundles({
     });
   }
 
-  const getVariantIndexDynamically = () => {
+  function getVariantIndexDynamically() {
     let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
     if (bundle.handle === 'event-feastbox') {
       dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
     }
     return dynamicVariantIndex;
-  };
+  }
+
+  async function handleSubmitDiscountCode() {
+    try {
+      await axios.post(`/api/discount/set`, {
+        cartId: id,
+        code: discountCodeInputRef.current.value,
+      });
+
+      setNewDiscountCodes([discountCodeInputRef.current.value]);
+      window.dataLayer.push({event: 'addCoupon'});
+    } catch ({
+      response: {
+        data: {error},
+      },
+    }) {
+      setErrors({...errors, discountCode: error});
+      discountCodeInputRef.current.value = '';
+    }
+  }
 
   async function handleCheckout() {
     window.dataLayer.push({
@@ -503,107 +570,96 @@ export function OrderBundles({
       line.sellingPlanId = sellingPlanId;
     }
 
-    const removingLinesIds = lines
-      .filter(
-        (line) =>
-          !line.attributes.every((attr) => attr.key !== 'Delivery_Date'),
-      )
-      .map((el) => el.id);
+    const {id: lineId} = lines.find(
+      (line) => line.merchandise.product.id === bundle.id,
+    );
 
-    linesRemove(removingLinesIds);
+    let timeoutDeep = 0;
+
+    linesUpdate([
+      {
+        ...line,
+        id: lineId,
+      },
+    ]);
 
     setTimeout(() => {
-      linesAdd([line]);
-    }, [API_CALLING_INTERVAL]);
-
-    setTimeout(() => {
-      if (
-        discountCodeInputRef.current !== null &&
-        discountCodeInputRef.current.value !== null
-      )
-        discountCodesUpdate(discountCodeInputRef.current.value);
-      setTimeout(() => {
+      if (typeof customerAccessToken !== 'undefined') {
+        timeoutDeep = 1;
         buyerIdentityUpdate({
           customerAccessToken,
         });
+      }
 
-        setTimeout(async () => {
-          // add cart note attribute its required
-          const attributes = [
-            {
-              key: 'delivery-date',
-              value: formatUTCDate(
-                cartInfo[bundle.handle].deliveryDate,
-                'YYYY-MM-DD',
-              ),
-            },
-            {
-              key: 'delivery-day',
-              value: cartInfo[bundle.handle].deliveryDay
-                ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format(
-                    'dddd',
-                  )
-                : 'N/A',
-            },
-          ];
-          cartAttributesUpdate(attributes);
+      setTimeout(async () => {
+        const attributes = [
+          {
+            key: 'delivery-date',
+            value: formatUTCDate(
+              cartInfo[bundle.handle].deliveryDate,
+              'YYYY-MM-DD',
+            ),
+          },
+          {
+            key: 'delivery-day',
+            value: cartInfo[bundle.handle].deliveryDay
+              ? getNextWeekDay(cartInfo[bundle.handle]?.deliveryDay).format(
+                  'dddd',
+                )
+              : 'N/A',
+          },
+        ];
+        cartAttributesUpdate(attributes);
 
-          const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
+        const platform_cart_token = id.split('Cart/')[1]; //her id contains the cart ID eg. 'gid://shopify/Cart/79b3694342d6c8504670e7731c6e34e6'
 
-          const items = cartInfo[bundle.handle].meals.map((el) => {
-            // update variant index based on bundle product when bundle product is Family feastbox then variant index defaul
-            // but when Event feastbox then variant index will +1 as meals variant for eventbox start from 1 index in shopify
-            let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
-            if (bundle.handle === 'event-feastbox') {
-              dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
-            }
-            return {
-              bundle_configuration_content_id:
-                el.bundle_configuration_contents_id,
-              platform_product_variant_id: parseInt(
-                el.variants.nodes[dynamicVariantIndex]?.id.split(
-                  'ProductVariant/',
-                )[1],
-              ),
-              quantity: el.quantity,
-            };
-          });
-
-          const cartData = {
-            platform_customer_id: null, //if customer logged in then save shopify customer idp
-            platform_cart_token,
-            platform_product_id:
-              cartInfo[bundle.handle].bundleData.platform_product_id,
-            platform_variant_id: parseInt(
-              bundle.variants.nodes[
-                cartInfo[bundle.handle].variantIndex
-              ]?.id.split('ProductVariant/')[1],
-            ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
-            subscription_type:
-              bundle.variants.nodes[
-                cartInfo[bundle.handle].variantIndex
-              ]?.title.split(' /')[0],
-            subscription_sub_type:
-              bundle.variants.nodes[
-                cartInfo[bundle.handle].variantIndex
-              ]?.title.split('/ ')[1],
-            bundle_id: cartInfo[bundle.handle].bundleData.id,
-            delivery_day: getDayUsa(cartInfo[bundle.handle].deliveryDate),
-            contents: [...items],
+        const items = cartInfo[bundle.handle].meals.map((el) => {
+          // update variant index based on bundle product when bundle product is Family feastbox then variant index defaul
+          // but when Event feastbox then variant index will +1 as meals variant for eventbox start from 1 index in shopify
+          let dynamicVariantIndex = cartInfo[bundle.handle].variantIndex;
+          if (bundle.handle === 'event-feastbox') {
+            dynamicVariantIndex = cartInfo[bundle.handle].variantIndex + 1;
+          }
+          return {
+            bundle_configuration_content_id:
+              el.bundle_configuration_contents_id,
+            platform_product_variant_id: parseInt(
+              el.variants.nodes[dynamicVariantIndex]?.id.split(
+                'ProductVariant/',
+              )[1],
+            ),
+            quantity: el.quantity,
           };
+        });
 
-          await axios.post(`/api/bundle/carts`, cartData);
+        const cartData = {
+          platform_customer_id: null, //if customer logged in then save shopify customer idp
+          platform_cart_token,
+          platform_product_id:
+            cartInfo[bundle.handle].bundleData.platform_product_id,
+          platform_variant_id: parseInt(
+            bundle.variants.nodes[
+              cartInfo[bundle.handle].variantIndex
+            ]?.id.split('ProductVariant/')[1],
+          ), // The format is look like "gid://shopify/ProductVariant/43857870848291" but need only: 43857870848291 (int)
+          subscription_type:
+            bundle.variants.nodes[
+              cartInfo[bundle.handle].variantIndex
+            ]?.title.split(' /')[0],
+          subscription_sub_type:
+            bundle.variants.nodes[
+              cartInfo[bundle.handle].variantIndex
+            ]?.title.split('/ ')[1],
+          bundle_id: cartInfo[bundle.handle].bundleData.id,
+          delivery_day: getDayUsa(cartInfo[bundle.handle].deliveryDate),
+          contents: [...items],
+        };
 
-          location.href = checkoutUrl;
-        }, [API_CALLING_INTERVAL]);
-      }, [API_CALLING_INTERVAL]);
-    }, [API_CALLING_INTERVAL * 2]);
-  }
+        await axios.post(`/api/bundle/carts`, cartData);
 
-  async function handleSubmitDiscountCode() {
-    await axios.get(`/api/discount/set/${discountCodeInputRef.current.value}`);
-    setNewDiscountCodes([discountCodeInputRef.current.value]);
-    window.dataLayer.push({event: 'addCoupon'});
+        location.href = checkoutUrl;
+      }, [API_CALLING_INTERVAL * timeoutDeep]);
+    }, [API_CALLING_INTERVAL]);
   }
 
   return (
@@ -909,27 +965,41 @@ export function OrderBundles({
                               !isQuantityLimit ? 'opacity-50' : ''
                             }`}
                           >
-                            <div className="relative bg-gray-50">
+                            <div
+                              className={`relative ${
+                                selectedGray === 2
+                                  ? 'bg-[#F1F1F1]'
+                                  : 'bg-gray-50'
+                              }`}
+                            >
                               <div
                                 className="px-6 py-4 mt-8"
                                 style={{
                                   boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
-                                  border: 'solid #DB9707 4px',
+                                  border:
+                                    selectedGray === 2
+                                      ? ''
+                                      : 'solid #DB9707 4px',
                                 }}
                               >
-                                <span
-                                  className="font-bold"
-                                  style={{
-                                    float: 'right',
-                                    backgroundColor: '#DB9725',
-                                    color: '#FFFFFF',
-                                    padding: '4px 44px',
-                                    marginTop: '-48px',
-                                    marginRight: '-28px',
-                                  }}
-                                >
-                                  Most Popular
-                                </span>
+                                {selectedGray === 2 ? (
+                                  ''
+                                ) : (
+                                  <span
+                                    className="font-bold"
+                                    style={{
+                                      float: 'right',
+                                      backgroundColor: '#DB9725',
+                                      color: '#FFFFFF',
+                                      padding: '4px 44px',
+                                      marginTop: '-48px',
+                                      marginRight: '-28px',
+                                    }}
+                                  >
+                                    Most Popular
+                                  </span>
+                                )}
+
                                 {/*---radio---*/}
                                 <div className="mb-1">
                                   <div
@@ -958,14 +1028,18 @@ export function OrderBundles({
                                                   priceType: e.target.value,
                                                 },
                                               });
-
+                                              handleSelectGray(1);
                                               window.dataLayer.push({
                                                 event: 'subscribeSave',
                                               });
                                             }}
                                           />
                                           <span
-                                            className={`ml-3 font-bold`}
+                                            className={`ml-3 font-bold ${
+                                              selectedGray === 2
+                                                ? 'text-[#BAB9B9]'
+                                                : ''
+                                            }`}
                                             style={{fontSize: 18}}
                                           >
                                             SUBSCRIBE &amp; SAVE
@@ -973,7 +1047,13 @@ export function OrderBundles({
                                           <br />
                                           <div style={{paddingBottom: 14}}>
                                             <span className="mr-2">
-                                              <strike>
+                                              <strike
+                                                className={`${
+                                                  selectedGray === 2
+                                                    ? 'text-[#BAB9B9]'
+                                                    : ''
+                                                }`}
+                                              >
                                                 {getFullCost(
                                                   typeof bundle?.variants
                                                     ?.nodes[
@@ -994,7 +1074,11 @@ export function OrderBundles({
                                               </strike>
                                             </span>
                                             <span
-                                              className="font-bold"
+                                              className={`font-bold ${
+                                                selectedGray === 2
+                                                  ? 'text-[#BAB9B9]'
+                                                  : ''
+                                              }`}
                                               style={{fontSize: 18}}
                                             >
                                               {(() => {
@@ -1032,7 +1116,13 @@ export function OrderBundles({
                                               })()}
                                               /{' '}
                                             </span>
-                                            <span>
+                                            <span
+                                              className={`${
+                                                selectedGray === 2
+                                                  ? 'text-[#BAB9B9]'
+                                                  : ''
+                                              }`}
+                                            >
                                               {cartInfo[bundle.handle]
                                                 .mealQuantity +
                                                 ' Family Meals + 1 Free breakfast'}
@@ -1043,11 +1133,20 @@ export function OrderBundles({
                                     </div>
                                     <hr />
                                     <p
-                                      style={{color: '#DB9725', marginTop: 10}}
+                                      style={{marginTop: 10}}
+                                      className={`${
+                                        selectedGray === 2
+                                          ? 'text-[#BAB9B9]'
+                                          : 'text-[#DB9725]'
+                                      }`}
                                     >
                                       <span
                                         style={{fontSize: 18}}
-                                        className=" font-bold"
+                                        className={`font-bold ${
+                                          selectedGray === 2
+                                            ? 'text-[#BAB9B9]'
+                                            : ''
+                                        }`}
                                       >
                                         Limited Time Promotion:
                                       </span>{' '}
@@ -1056,7 +1155,13 @@ export function OrderBundles({
                                       Subscription. (A $60.00 value)
                                     </p>
                                     <br />
-                                    <p>
+                                    <p
+                                      className={`${
+                                        selectedGray === 2
+                                          ? 'text-[#BAB9B9]'
+                                          : ''
+                                      }`}
+                                    >
                                       Delivery Every:{' '}
                                       <button
                                         className={
@@ -1065,6 +1170,12 @@ export function OrderBundles({
                                             ? `Weekly text-[#DB9725]`
                                             : `biWeekly text-[#DB9725]`
                                         }
+                                        style={{
+                                          color:
+                                            selectedGray === 2
+                                              ? '#BAB9B9'
+                                              : '#DB9725',
+                                        }}
                                         onClick={handleToggleFrequency}
                                         disabled={!isQuantityLimit}
                                       >
@@ -1078,7 +1189,13 @@ export function OrderBundles({
                                         &gt;{' '}
                                       </button>
                                     </p>
-                                    <p>
+                                    <p
+                                      className={`${
+                                        selectedGray === 2
+                                          ? 'text-[#BAB9B9]'
+                                          : ''
+                                      }`}
+                                    >
                                       {(() => {
                                         const price =
                                           bundle?.variants?.nodes[
@@ -1113,7 +1230,15 @@ export function OrderBundles({
                                         return '';
                                       })()}
                                     </p>
-                                    <p>No Commitments, Cancel Anytime</p>
+                                    <p
+                                      className={`${
+                                        selectedGray === 2
+                                          ? 'text-[#BAB9B9]'
+                                          : ''
+                                      }`}
+                                    >
+                                      No Commitments, Cancel Anytime
+                                    </p>
                                   </div>
                                 </div>
                               </div>
@@ -1124,12 +1249,21 @@ export function OrderBundles({
                               !isQuantityLimit ? 'opacity-50' : ''
                             }`}
                           >
-                            <div className={`relative bg-gray-50`}>
+                            <div
+                              className={`relative ${
+                                selectedGray === 1
+                                  ? 'bg-[#F1F1F1]'
+                                  : 'bg-gray-50'
+                              }`}
+                            >
                               <div
                                 className="px-6 py-4 mt-8"
                                 style={{
                                   boxShadow: '0 3px 10px rgb(0 0 0 / 0.2)',
-                                  border: 'solid #DB9707 4px',
+                                  border:
+                                    selectedGray === 1
+                                      ? ''
+                                      : 'solid #DB9707 4px',
                                 }}
                               >
                                 <div className="mb-1">
@@ -1159,14 +1293,18 @@ export function OrderBundles({
                                                   priceType: e.target.value,
                                                 },
                                               });
-
+                                              handleSelectGray(2);
                                               window.dataLayer.push({
                                                 event: 'oneTime',
                                               });
                                             }}
                                           />
                                           <span
-                                            className={`ml-3 font-bold`}
+                                            className={`ml-3 font-bold ${
+                                              selectedGray === 1
+                                                ? 'text-[#BAB9B9]'
+                                                : ''
+                                            }`}
                                             style={{fontSize: 18}}
                                           >
                                             ONE-TIME
@@ -1175,7 +1313,13 @@ export function OrderBundles({
 
                                           {newDiscountCodes.length > 0 ? (
                                             <span className="mr-2">
-                                              <strike>
+                                              <strike
+                                                className={`${
+                                                  selectedGray === 1
+                                                    ? 'text-[#BAB9B9]'
+                                                    : ''
+                                                }`}
+                                              >
                                                 {getFullCost(
                                                   bundle?.variants?.nodes[
                                                     cartInfo[bundle.handle]
@@ -1192,7 +1336,11 @@ export function OrderBundles({
                                             ''
                                           )}
                                           <span
-                                            className="font-bold"
+                                            className={`font-bold ${
+                                              selectedGray === 1
+                                                ? 'text-[#BAB9B9]'
+                                                : ''
+                                            }`}
                                             style={{fontSize: 18}}
                                           >
                                             {getFullCost(
@@ -1208,7 +1356,15 @@ export function OrderBundles({
                                             )}{' '}
                                             /{' '}
                                           </span>
-                                          <span>3 Family Meals</span>
+                                          <span
+                                            className={`${
+                                              selectedGray === 1
+                                                ? 'text-[#BAB9B9]'
+                                                : ''
+                                            }`}
+                                          >
+                                            3 Family Meals
+                                          </span>
                                         </label>
                                       </div>
                                     </div>
@@ -1232,20 +1388,29 @@ export function OrderBundles({
                                   className="w-full py-3 px-4 border-[#707070] focus:bg-white border focus:outline-none"
                                   defaultValue={newDiscountCodes.join(' ')}
                                   disabled={newDiscountCodes.length > 0}
+                                  onChange={() =>
+                                    setErrors({...errors, discountCode: ''})
+                                  }
                                 />
                               </div>
                               <div className="flex-none flex items-center">
-                                {newDiscountCodes.length === 0 && (
-                                  <button
-                                    className="addCoupon removeCoupon failedCoupon inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
-                                    onClick={handleSubmitDiscountCode}
-                                  >
-                                    Apply
-                                  </button>
-                                )}
+                                {newDiscountCodes.length === 0 &&
+                                  errors.discountCode === '' && (
+                                    <button
+                                      className="addCoupon removeCoupon failedCoupon inline-block py-3 px-6 text-white shadow bg-[#DB9707] p-[30px]"
+                                      onClick={handleSubmitDiscountCode}
+                                    >
+                                      Apply
+                                    </button>
+                                  )}
                                 {newDiscountCodes.length > 0 && (
                                   <div className="text-lg font-bold text-[#DB9707]">
                                     Code Applied
+                                  </div>
+                                )}
+                                {errors.discountCode !== '' && (
+                                  <div className="text-lg font-bold text-red-500">
+                                    {errors.discountCode}
                                   </div>
                                 )}
                               </div>
@@ -1394,24 +1559,7 @@ export function OrderBundles({
                           onClick={handleCheckout}
                         >
                           {isCheckoutProcessing ? (
-                            <>
-                              <svg
-                                aria-hidden="true"
-                                className="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-[#DB9707]"
-                                viewBox="0 0 100 101"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                  fill="currentColor"
-                                />
-                                <path
-                                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                  fill="currentFill"
-                                />
-                              </svg>
-                            </>
+                            <Spinner />
                           ) : (
                             <>
                               {isQuantityLimit

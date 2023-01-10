@@ -37,10 +37,7 @@ export function Footer({menu}) {
               </h3>
               <ul>
                 <li className="">
-                  <Link
-                    className="leading-relaxed text-white"
-                    to="/menus"
-                  >
+                  <Link className="leading-relaxed text-white" to="/menus">
                     Our Menu
                   </Link>
                 </li>
@@ -50,6 +47,16 @@ export function Footer({menu}) {
                     to="/how-it-works"
                   >
                     How it Works
+                  </Link>
+                </li>
+                <li className="">
+                  <Link className="leading-relaxed text-white" to="/about-us">
+                    About Us
+                  </Link>
+                </li>
+                <li className="">
+                  <Link className="leading-relaxed text-white" to="/catering">
+                    Catering
                   </Link>
                 </li>
 
@@ -69,10 +76,7 @@ export function Footer({menu}) {
               </h3>
               <ul>
                 <li className="">
-                  <Link
-                    className="leading-relaxed text-white"
-                    to="/faq"
-                  >
+                  <Link className="leading-relaxed text-white" to="/faq">
                     FAQs
                   </Link>
                 </li>
@@ -116,21 +120,31 @@ export function Footer({menu}) {
               </h3>
               <ul>
                 <li className="">
-                <ButtonMailto label="Phone: 1-888-503-6539" mailto="tel:1-888-503-6539" />
+                  <ButtonMailto
+                    label="Phone: 1-888-503-6539"
+                    mailto="tel:1-888-503-6539"
+                  />
                 </li>
                 <li className="">
-                <ButtonMailto label="Email: support@feastbox.com" mailto="mailto:support@feastbox.com" />
+                  <ButtonMailto
+                    label="Email: support@feastbox.com"
+                    mailto="mailto:support@feastbox.com"
+                  />
                 </li>
                 <li className=" font-medium text-white">
                   Address: <br />
                   676 W 1200 N Springville, UT 84663
-                  <br /><br/>
+                  <br />
+                  <br />
                 </li>
               </ul>
               <div className="w-auto p-2">
                 <div className="flex flex-wrap -m-1.5">
                   <div className="w-auto p-1">
-                    <Link to="https://www.facebook.com/feastbox.meals" target={'blank'}>
+                    <Link
+                      to="https://www.facebook.com/feastbox.meals"
+                      target={'blank'}
+                    >
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="bi bi-facebook text-white"
@@ -162,7 +176,10 @@ export function Footer({menu}) {
                     </Link>
                   </div>
                   <div className="w-auto p-1">
-                    <Link to="https://instagram.com/feastbox.meals/" target={'blank'}>
+                    <Link
+                      to="https://instagram.com/feastbox.meals/"
+                      target={'blank'}
+                    >
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="text-white"
@@ -178,7 +195,10 @@ export function Footer({menu}) {
                     </Link>
                   </div>
                   <div className="w-auto p-1">
-                    <Link to="https://www.tiktok.com/@feastbox.meals" target={'blank'}>
+                    <Link
+                      to="https://www.tiktok.com/@feastbox.meals"
+                      target={'blank'}
+                    >
                       <div className="flex items-center justify-center w-8 h-8 border border-gray-300 hover:border-gray-400 rounded-full">
                         <svg
                           className="bi bi-tiktok text-white"
@@ -195,14 +215,13 @@ export function Footer({menu}) {
                   </div>
                 </div>
               </div>
-              
             </div>
             <div className="w-full sm:w-1/2 lg:w-2/12 p-6"> </div>
           </div>
         </div>
       </section>
-      <div className='bg-[#231F20] text-center pt-8 pb-12'>
-        <p className='text-white'>© 2022 FEASTbox, All Rights Reserved</p>
+      <div className="bg-[#231F20] text-center pt-8 pb-12">
+        <p className="text-white">© 2023 FEASTbox, All Rights Reserved</p>
       </div>
     </div>
   );
