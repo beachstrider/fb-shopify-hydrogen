@@ -67,7 +67,7 @@ const buildProductArrayFromVariant = async (items, subType, shopProducts) =>
     resolve(foundProductArray);
   });
 
-const buildProductArrayFromId = async (items, subType, shopProducts) =>
+const buildProductArrayFromId = async (items, subType, shopProducts, config_content_id=null, config_id=null) =>
   new Promise((resolve) => {
     const foundProductArray = [];
     for (const item of items) {
@@ -83,11 +83,16 @@ const buildProductArrayFromId = async (items, subType, shopProducts) =>
             (x) => x?.key === 'display_name',
           )?.value,
           product_id: matchProduct.id,
+          platform_product_only_id: Number(matchProduct.id.split('Product/')[1]),
+          variant_id: Number(variant.id.split('ProductVariant/')[1]),
           metafields: variant.metafields,
           feature_image: matchProduct?.featuredImage?.url ? matchProduct?.featuredImage?.url : EMPTY_STATE_IMAGE,
           variant_image: variant.image?.url ? variant.image?.url : EMPTY_STATE_IMAGE,
+          intactQty: item.default_quantity,
           quantity: item.default_quantity,
           type: subType,
+          bundle_configuration_content_id: config_content_id,
+          bundle_configuration_id: config_id,
         });
       }
     }

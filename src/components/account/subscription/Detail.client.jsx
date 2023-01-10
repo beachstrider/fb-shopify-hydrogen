@@ -22,6 +22,8 @@ import {
 } from '~/utils/products';
 import {MealItem} from '~/components/shopping/MealItem.client';
 import Loading from '~/components/Loading/index.client';
+import FrequencyConfirmModal from './FrequencyConfirmModal';
+import UpdateUpcomingDate from './UpdateUpcomingDate';
 
 const Index = ({subscription, subscription_id, user, orders}) => {
   // console.log('subscription===', user);
@@ -42,6 +44,8 @@ const Index = ({subscription, subscription_id, user, orders}) => {
   const [activeWeekDateIndex, setActiveWeekDateIndex] = useState(-1);
   const [isMealSelectionLoading, setIsMealSelectionLoading] = useState(false);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
+  const [showFrequencyConfirmModal, setShowFrequencyConfirmModal] = useState(false)
+  const [showUpcomingUpdateModal, setShowUpcomingUpdateModal] = useState(false)
 
   const {
     register,
@@ -135,7 +139,7 @@ const Index = ({subscription, subscription_id, user, orders}) => {
 
   // get subscription lists
   const getOrdersToShow = async (subscription_id) => {
-    console.log('----getOrdersToShow----');
+    // console.log('----getOrdersToShow----');
     // const todayDate = formatTodayDate(new Date());
     const todayDate = getTodayDate();
     const weeksMenu = [];
@@ -171,8 +175,8 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                 content.deliver_before,
               );
               const cutoffDate = getCutOffDate(deliveryDate);
-              const firstOrderDate = dayjs('2023-01-03T11:12:51Z').utc();
-              // const firstOrderDate = dayjs(firstOrder.processedAt).utc();
+              // const firstOrderDate = dayjs('2023-01-03T11:12:51Z').utc();
+              const firstOrderDate = dayjs(firstOrder.processedAt).utc();
               if (
                 dayjs(content.deliver_before).utc().isSameOrAfter(todayDate) &&
                 firstOrderDate.isSameOrBefore(content.deliver_after)
@@ -245,12 +249,12 @@ const Index = ({subscription, subscription_id, user, orders}) => {
     const activeWeekData = weeksMenu[newWeekDateIndex];
 
     if (activeWeekData.orderedItems.length > 0){
-      console.log('activeWeekData', activeWeekData);
+      // console.log('activeWeekData', activeWeekData);
       const defaultProductsResponse = await axios.get(
         `/api/bundleAuth/bundles/${activeWeekData.bundle_id}/configurations/${activeWeekData.bundle_configuration_id}/contents/${activeWeekData.content_id}/products`,
       );
       const defaultProducts = defaultProductsResponse.data;
-      console.log('defaultProducts', defaultProducts);
+      // console.log('defaultProducts', defaultProducts);
       if (defaultProducts) {
         let product_ids = [];
         defaultProducts.map((el) => {
@@ -363,8 +367,7 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                           <div key={key} className="mealSelection">
                             <div className="flex justify-between">
                               <div className="block text-gray-800 text-lg font-bold mb-2 ml-2">
-                                Choose your Meals (
-                                {getUsaStandard(mealItem.subscriptionDate)} -{' '}
+                                Choose your Meals (Delivery week: {getUsaStandard(mealItem.subscriptionDate)} -{' '}
                                 {getUsaStandard(addDays(mealItem.subscriptionDate, 6))}
                                 )
                               </div>
@@ -439,7 +442,7 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                   <div className="py-3">
                     <div className="flex justify-between">
                       <span className="font-bold text-lg font-medium">
-                        Next Delivery:
+                        Next Order Date:
                       </span>
                       <span className="font-bold font-heading">
                         {getUsaStandard(subscription.next_charge_scheduled_at)}
@@ -447,7 +450,7 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                     </div>
                   </div>
                   <hr style={{margin: '20px 0'}} />
-                  <div className="py-3">
+                  {/*<div className="py-3">
                     <div className="flex justify-between">
                       <span className="font-bold font-medium text-lg">
                         Frequency:
@@ -464,10 +467,15 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                                       key={key}
                                       className="radio-button relative cursor-pointer"
                                       onClick={() => {
-                                        setValue(
+                                        if(watch(
                                           'order_interval_frequency',
-                                          Number(frequency),
-                                        );
+                                        ) !== Number(frequency)){
+                                          setValue(
+                                            'order_interval_frequency',
+                                            Number(frequency),
+                                          );
+                                          setShowFrequencyConfirmModal(true);
+                                        }
                                       }}
                                     >
                                       <div className="font-bold flex items-center">
@@ -501,6 +509,26 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                                     </button>
                                   ),
                                 )}
+                                {showFrequencyConfirmModal &&
+                                  <FrequencyConfirmModal 
+                                    setOpenModal={(showFrequencyConfirmModal)=>
+                                      setShowFrequencyConfirmModal(showFrequencyConfirmModal)
+                                    } 
+                                    setOpenUpcomingModal={(showUpcomingUpdateModal)=>
+                                      setShowUpcomingUpdateModal(showUpcomingUpdateModal)
+                                    }
+                                  />
+                                }
+                                {showUpcomingUpdateModal &&
+                                  <UpdateUpcomingDate 
+                                    setOpenUpcomingModal={(showUpcomingUpdateModal)=>
+                                      setShowUpcomingUpdateModal(showUpcomingUpdateModal)
+                                    } 
+                                    currentFrequency={watch('order_interval_frequency')}
+                                    subid={subscription_id}
+                                  />
+                                }
+                                
                               </div>
                               <input
                                 type="hidden"
@@ -520,7 +548,7 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                         </div>
                       </span>
                     </div>
-                  </div>
+                  </div>*/}
                   <hr style={{margin: '20px 0'}} />
                   <div className="py-3">
                     <div className="flex justify-between">

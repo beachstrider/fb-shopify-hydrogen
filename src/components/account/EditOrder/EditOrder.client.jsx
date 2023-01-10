@@ -1,25 +1,39 @@
+import {Link} from '@shopify/hydrogen';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import Loading from '~/components/Loading/index.client';
-import {Link} from '@shopify/hydrogen';
+import Spinner from '~/components/spinner/button';
 import {
   buildProductArrayFromVariant,
   buildProductArrayFromId,
 } from '~/utils/products';
+import {
+  dayjs,
+  findWeekDayBetween,
+  getCutOffDate,
+  getTodayDate,
+  getUsaStandard,
+  addDays,
+} from '~/utils/dates';
 import {MealItem} from '../../shopping/MealItem.client';
+import {useNavigate} from '@shopify/hydrogen/client';
 
 export function EditOrder({subscription_id, subid, date}) {
   const sub_order_id = subid;
   const currentDate = date;
   const EMPTY_STATE_IMAGE =
     'https://cdn.shopify.com/shopifycloud/shopify/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_750x.gif';
+  const navigate = useNavigate();
+  const today = getTodayDate();
 
   const [menuItem, setMenuItem] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [bundles, setBundles] = useState([]);
   const [hasSavedItems, setHasSavedItems] = useState(true);
-  const [isEditOrderLoading, setIsEditOrderLoading] = useState(false);
   const [quantityLimit, setQuantityLimit] = useState(3);
+  const [isMealSaving, setIsMealSaving] = useState(false);
+  const [disableEditing, setDisableEditing] = useState(false);
+  const [isEditOrderLoading, setIsEditOrderLoading] = useState(false);
   // get current quantity of meals
   const currentQuantity = (() => {
     let quantity = 0;
@@ -34,8 +48,10 @@ export function EditOrder({subscription_id, subid, date}) {
   })();
 
   const getMealQuantity = (product) => {
-    const qty = selectedItems.find((el) => el.product_id == product.product_id )?.quantity;
-    if (typeof qty != 'undefined'){
+    const qty = selectedItems.find(
+      (el) => el.product_id == product.product_id,
+    )?.quantity;
+    if (typeof qty != 'undefined') {
       return qty;
     } else {
       return 0;
@@ -47,7 +63,9 @@ export function EditOrder({subscription_id, subid, date}) {
     if (typeof diff === 'undefined') {
       newSelectedItems.push({...product, quantity: 1});
     } else {
-      const selectedIndex = selectedItems.findIndex((el) => el.product_id == product.product_id );
+      const selectedIndex = selectedItems.findIndex(
+        (el) => el.product_id == product.product_id,
+      );
       const quantity = (newSelectedItems[selectedIndex].quantity += diff);
       if (quantity === 0) {
         newSelectedItems = newSelectedItems.filter(
@@ -85,7 +103,6 @@ export function EditOrder({subscription_id, subid, date}) {
       });
       setHasSavedItems(savedItemsExist && savedItems.length > 0);
       const bundleId = savedItemsResponse.bundleId;
-      // console.log('savedItemsResponsesavedItemsResponse', savedItemsResponse);
       // console.log('savedItems', savedItems);
 
       const bundleResponse = await axios.get(
@@ -94,46 +111,136 @@ export function EditOrder({subscription_id, subid, date}) {
       if (bundleResponse.data.length === 0) {
         throw new Error('Bundle could not be found');
       }
-      const bundleData = bundleResponse?.data;
+      const currentApiBundle = bundleResponse?.data;
       // set maximum meal quantity limit
-      setQuantityLimit(bundleData.configurations[0].quantity);
-      // get bundle config content filter by delivery date after
-      const contentRespose = await axios.get(
-        `/api/bundleAuth/bundles/${bundleId}/configurations/${bundleData.configurations[0].id}/contents?is_enabled=1&deliver_after=${currentDate}`,
-      );
-      if (contentRespose.data.length === 0) {
-        throw new Error('Meal item could not be found');
-      }
-      const contentData = contentRespose.data;
-      if (contentData.length > 0) {
-        const product_ids = [];
-        contentData[0].products.map((pro) => {
-          product_ids.push(pro.platform_product_id);
-        });
-        const {data: products} = await axios.post(`/api/products/multiple`, {
-          product_ids,
-        });
-        const thisProductsArray = await buildProductArrayFromId(
-          contentData[0].products,
-          subscriptionOrders[0].subscription.subscription_sub_type,
-          products,
+      setQuantityLimit(currentApiBundle.configurations[0].quantity);
+      // get configuration content data
+      for (const configuration of currentApiBundle.configurations) {
+        const mappedProducts = [];
+        // Start product/content getting
+        // get bundle config content filter by delivery date after
+        const contentRespose = await axios.get(
+          `/api/bundleAuth/bundles/${bundleId}/configurations/${configuration.id}/contents?is_enabled=1&deliver_after=${currentDate}`,
         );
+        if (contentRespose.data.length === 0) {
+          throw new Error('Meal item could not be found');
+        }
+        const contentData = contentRespose.data;
+        if (contentData.length > 0) {
+          const product_ids = [];
+          contentData[0].products.map((pro) => {
+            product_ids.push(pro.platform_product_id);
+          });
+          const {data: products} = await axios.post(`/api/products/multiple`, {
+            product_ids,
+          });
+          // console.log('contentData', contentData);
+          const thisProductsArray = await buildProductArrayFromId(
+            contentData[0].products,
+            subscriptionOrders[0].subscription.subscription_sub_type,
+            products,
+            contentData[0].id,
+            contentData[0].bundle_configuration_id,
+          );
+          //check subscription order
+          const subscriptionBundle = contentData[0];
+          const subscriptionOrder = subscriptionOrders;
+          let currentSubscriptionData = null;
+          let hasPlatformId = false;
+          subscriptionOrder.forEach((subscription) => {
+            if (
+              subscription.bundle_configuration_content?.deliver_after ===
+                currentDate &&
+              subscription.platform_order_id
+            ) {
+              if (!hasPlatformId) {
+                hasPlatformId = true;
+              }
+            }
+            if (
+              subscription.bundle_configuration_content?.deliver_after ===
+              subscriptionBundle.deliver_after
+            ) {
+              currentSubscriptionData = subscription;
+            }
+          });
+          if (hasPlatformId) {
+            setDisableEditing(true);
+          } else {
+            const deliveryDay = currentSubscriptionData
+              ? currentSubscriptionData.subscription.delivery_day
+              : subscriptionOrder[0]?.subscription.delivery_day;
 
-        let mealsWithQuantity = [];
-        thisProductsArray.map((product) => {
-          if (product.quantity > 0) {
-            mealsWithQuantity.push(product);
+            const deliveryDate = findWeekDayBetween(
+              deliveryDay,
+              subscriptionBundle.deliver_after,
+              subscriptionBundle.deliver_before,
+            );
+
+            const cuttingOffDate = getCutOffDate(deliveryDate);
+
+            if (dayjs(today).isSameOrAfter(cuttingOffDate)) {
+              console.log('02 Disable edit');
+              setDisableEditing(true);
+            }
           }
-        });
-        setMenuItem(thisProductsArray);
-        setSelectedItems(mealsWithQuantity);
-      } else {
-        throw new Error('Meal item could not be found');
+          //End check subscription order
+          //Start product response
+          // console.log('savedItems', savedItems);
+          thisProductsArray.forEach((product) => {
+            let savedProduct = null;
+            savedItems.forEach((item) => {
+              const foundItem = item.products.find(
+                // i.id is variant id of that item
+                (i) => Number(i.id) === Number(product.variant_id),
+              );
+              if (foundItem) {
+                savedProduct = foundItem;
+              }
+            });
+
+            let quantity = 0;
+
+            if (savedProduct) {
+              quantity = savedProduct.quantity;
+            } else {
+              // set default quantities
+              const defaultContent = contentData[0]?.products.find(
+                (p) =>
+                  Number(p.platform_product_id) ===
+                  Number(product.platform_product_only_id),
+              );
+              quantity =
+                (savedItemsExist && savedItems.length > 0) ||
+                defaultContent.is_default === 0
+                  ? 0
+                  : defaultContent.default_quantity;
+            }
+
+            let intactQty = quantity;
+
+            mappedProducts.push({
+              ...product,
+              quantity,
+              intactQty,
+            });
+          });
+
+          let mealsWithQuantity = [];
+          mappedProducts.map((product) => {
+            if (product.quantity > 0) {
+              mealsWithQuantity.push(product);
+            }
+          });
+          setSelectedItems(mealsWithQuantity);
+          setMenuItem(mappedProducts);
+        } else {
+          throw new Error('Meal item could not be found');
+        }
+        // End product getting
       }
-      // console.log('SubData', subscriptionOrders.data[0].items);
-      // console.log("BundleItem", bundleItem)
-      // console.log("CONTENT", content)
-      // end laoder
+
+      // end Loader
       setIsEditOrderLoading(false);
     };
     getEditOrderData();
@@ -154,17 +261,11 @@ export function EditOrder({subscription_id, subid, date}) {
         ) {
           for (const product of order.items) {
             const currentProduct = [1];
-            //await findProductFromVariant(
-            //   product.platform_product_variant_id,
-            // );
             if (Object.entries(currentProduct).length > 0) {
               editItemsConfigArr.push({
                 id: product.platform_product_variant_id,
                 contentSelectionId: product.id,
                 subscriptionContentId: order.id,
-                title: 'default product',
-                image: EMPTY_STATE_IMAGE,
-                metafields: [],
                 quantity: product.quantity,
               });
             }
@@ -190,18 +291,166 @@ export function EditOrder({subscription_id, subid, date}) {
     };
   };
 
+  const createNewOrder = async () => {
+    const separatedConfigurations = [];
+    selectedItems.forEach((item) => {
+      if (
+        !separatedConfigurations[
+          `config_${item.bundle_configuration_content_id}`
+        ]
+      ) {
+        separatedConfigurations[
+          `config_${item.bundle_configuration_content_id}`
+        ] = [];
+      }
+      separatedConfigurations[
+        `config_${item.bundle_configuration_content_id}`
+      ].push({
+        bundle_configuration_content_id: item.bundle_configuration_content_id,
+        platform_product_variant_id: Number(item.variant_id),
+        quantity: item.quantity,
+      });
+    });
+    for (const key of Object.keys(separatedConfigurations)) {
+      const subscriptionOrdersResponse = await axios.post(
+        `/api/bundleAuth/subscriptions/${sub_order_id}/orders`,
+        {
+          bundle_configuration_content_id:
+            separatedConfigurations[key][0].bundle_configuration_content_id,
+          is_enabled: 1,
+          items: separatedConfigurations[key],
+        },
+      );
+    }
+    navigate('/account/subscriptions/' + subscription_id);
+  };
+
+  const handleSaveMeal = async () => {
+    if (currentQuantity > quantityLimit) {
+      setDisableEditing(true);
+      return false;
+    }
+    setIsMealSaving(true);
+    const itemsToSave = [];
+    if (!hasSavedItems) {
+      console.log('saving...');
+      return createNewOrder();
+    }
+    const getBundleProduct = (variantId) => {
+      let existingProduct = null;
+      bundles.forEach((bundle) => {
+        const currentItem = bundle.items.find((p) => {
+          return Number(p.platform_product_variant_id) === Number(variantId);
+        });
+        if (currentItem) {
+          existingProduct = currentItem;
+        }
+      });
+
+      return existingProduct;
+    };
+
+    for (const product of menuItem) {
+      const cartItem = selectedItems.find(
+        (c) => c.product_id === product.product_id,
+      );
+      const currentContent = bundles.find(
+        (b) =>
+          Number(b.bundle_configuration_content_id) ===
+          Number(product.bundle_configuration_content_id),
+      );
+
+      const currentBundleProduct = getBundleProduct(product.variant_id);
+      // console.log('cartItem', cartItem);
+      // console.log('product', product);
+      if (cartItem) {
+        if (
+          cartItem &&
+          cartItem.quantity > 0 &&
+          product.intactQty === 0 &&
+          !currentBundleProduct
+        ) {
+          itemsToSave.push({
+            platform_product_variant_id: product.variant_id,
+            quantity: cartItem.quantity,
+            contentId: currentContent.id,
+            configurationContentId:
+              currentContent.bundle_configuration_content_id,
+          });
+        } else {
+          if (cartItem.quantity !== product.intactQty) {
+            if (currentBundleProduct) {
+              itemsToSave.push({
+                id: currentBundleProduct.id,
+                platform_product_variant_id: product.variant_id,
+                contentId: currentContent.id,
+                configurationContentId:
+                  currentContent.bundle_configuration_content_id,
+                quantity: cartItem.quantity,
+              });
+            }
+          }
+        }
+      } else {
+        if (currentBundleProduct) {
+          itemsToSave.push({
+            id: currentBundleProduct.id,
+            platform_product_variant_id: product.variant_id,
+            contentId: currentContent.id,
+            configurationContentId:
+              currentContent.bundle_configuration_content_id,
+            quantity: 0,
+          });
+        }
+      }
+    }
+
+    const separatedConfigurations = [];
+
+    itemsToSave.forEach((item) => {
+      if (!separatedConfigurations[`config_${item.contentId}`]) {
+        separatedConfigurations[`config_${item.contentId}`] = [];
+      }
+
+      separatedConfigurations[`config_${item.contentId}`].push({...item});
+    });
+
+    // console.log('items to save>>', itemsToSave);
+    // console.log('items>>>', separatedConfigurations);
+
+    for (const key of Object.keys(separatedConfigurations)) {
+      const subscriptionOrdersResponse = await axios.put(
+        `/api/bundleAuth/subscriptions/${sub_order_id}/orders/${separatedConfigurations[key][0].contentId}`,
+        {
+          platform_order_id: null,
+          bundle_configuration_content_id:
+            separatedConfigurations[key][0].configurationContentId,
+          is_enabled: 1,
+          items: separatedConfigurations[key],
+        },
+      );
+    }
+    setIsMealSaving(false);
+    navigate('/account/subscriptions/' + subscription_id);
+  };
+
   return (
     <Loading isLoading={isEditOrderLoading}>
       <section className="">
         <div className="">
           <div className="banner-section  text-center">
             <h2 className="font-opensans text-[36px] font-bold">Edit Order</h2>
-            <div className="text-xl font-medium p-2">{getRemainingQty} Meal Left </div>
+            <div className="text-xl font-medium p-2">
+              {getRemainingQty} Meal Left{' '}
+            </div>
           </div>
         </div>
         <hr />
         <div className="product-section m-5">
-          <p className="text-[24px] text-left font-bold ">Meals</p>
+          <p className="text-[24px] text-left font-bold ">
+            Choose your Meals (Delivery week: {getUsaStandard(currentDate)} -{' '}
+            {getUsaStandard(addDays(currentDate, 6))})
+          </p>
           <div className="flex flex-wrap -mx-2">
             {menuItem.length ? (
               menuItem.map((product, key) => (
@@ -319,8 +568,12 @@ export function EditOrder({subscription_id, subid, date}) {
           >
             Cancel
           </Link>
-          <button className="border-2 border-[#DB9707] px-7 py-2 rounded-sm hover:bg-[#DB9707] font-bold text-xl hover:text-white">
-            Save
+          <button
+            disabled={disableEditing ? disableEditing : !isQuantityLimit}
+            onClick={() => handleSaveMeal()}
+            className="border-2 border-[#DB9707] px-7 py-2 rounded-sm hover:bg-[#DB9707] font-bold text-xl hover:text-white disabled:bg-[#bdac89] disabled:text-white disabled:border-0"
+          >
+            {isMealSaving ? <Spinner /> : <>Save</>}
           </button>
         </div>
       </section>
