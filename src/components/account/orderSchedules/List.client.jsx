@@ -1,3 +1,4 @@
+
 import {Image, useNavigate, Link} from '@shopify/hydrogen';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
@@ -64,7 +65,7 @@ const Index = ({external_customer_id, subscriptions}) => {
         </div>
         {!activeOrders.length ? (
           <div className="flex w-full justify-center items-center py-8 text-lg">
-            You have no active orders
+            You have no active subscription orders
           </div>
         ) : (
           <>
@@ -177,10 +178,10 @@ const Index = ({external_customer_id, subscriptions}) => {
                                         style={{lineHeight: '1.2'}}
                                       >
                                         {/* • {subscription.quantity} x{' '} */}
-                                        {subscription.title}
+                                        {subscription?.title}
                                       </p>
                                       <Link
-                                        to={`/account/subscriptions/${subscription.purchase_item_id}`}
+                                        to={`/account/subscriptions/${subscription?.purchase_item_id}`}
                                         className="underline text-lg"
                                         style={{marginTop: '8px'}}
                                       >
@@ -201,7 +202,7 @@ const Index = ({external_customer_id, subscriptions}) => {
                                   {
                                     subscriptions.find(
                                       (s) =>
-                                        s.id === subscription.purchase_item_id,
+                                        s.id === subscription?.purchase_item_id,
                                     ).order_interval_frequency
                                   }{' '}
                                   Days
@@ -215,7 +216,7 @@ const Index = ({external_customer_id, subscriptions}) => {
                                   className="mb-4 text-lg text-black-500 lg:px-0 px-8"
                                   style={{lineHeight: '1.2'}}
                                 >
-                                  ${subscription.total_price}
+                                  ${subscription?.total_price}
                                 </p>
                               </div>
                             </div>
@@ -349,10 +350,10 @@ const Index = ({external_customer_id, subscriptions}) => {
                                         style={{lineHeight: '1.2'}}
                                       >
                                         {/* • {subscription.quantity} x{' '} */}
-                                        {subscription.title}
+                                        {subscription?.title}
                                       </p>
                                       <Link
-                                        to={`/account/subscriptions/${subscription.purchase_item_id}`}
+                                        to={`/account/subscriptions/${subscription?.purchase_item_id}`}
                                         className="underline text-lg"
                                         style={{marginTop: '8px'}}
                                       >
@@ -373,7 +374,7 @@ const Index = ({external_customer_id, subscriptions}) => {
                                   {
                                     subscriptions.find(
                                       (s) =>
-                                        s.id === subscription.purchase_item_id,
+                                        s.id === subscription?.purchase_item_id,
                                     ).order_interval_frequency
                                   }{' '}
                                   Days
@@ -387,7 +388,7 @@ const Index = ({external_customer_id, subscriptions}) => {
                                   className="mb-4 text-lg text-black-500 lg:px-0 px-8"
                                   style={{lineHeight: '1.2'}}
                                 >
-                                  ${subscription.total_price}
+                                  ${subscription?.total_price}
                                 </p>
                               </div>
                             </div>
