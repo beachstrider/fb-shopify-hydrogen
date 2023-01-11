@@ -105,33 +105,14 @@ const Index = ({subscription, subscription_id, user, orders}) => {
     setChangedDeliveryDate(false);
   };
 
-  // Functions for Edit meal plan
-  const createWeekList = (weeksMenu, deliverAfterDate) => {
-    if (!weeksMenu.includes(dayjs(deliverAfterDate).format('YYYY-MM-DD'))) {
-      weeksMenu.push(dayjs.utc(deliverAfterDate).format('YYYY-MM-DD'));
-    }
-
-    return weeksMenu;
-  };
-
   useEffect(() => {
     const getData = async (subscription_id) => {
       setIsMealSelectionLoading(true);
-      // const userToken = await getToken()
-      // await clearState()
       // set customer email to session so that we can use it in apis call
       await axios.post(`/api/bundleAuth/setSession`, {
         email: user.email,
       });
       await getOrdersToShow(subscription_id);
-      // dispatch(setEmail(shopCustomer?.email || ''))
-      // const onSubmit = async (data) => {
-      //     await axios.post(`/api/account/subscriptions/update`, {
-      //       id: subscription.id,
-      //       data,
-      //     });
-      //     alert('The subscription info is updated.');
-      //   };
       setIsMealSelectionLoading(false);
     };
     getData(subscription_id);
@@ -366,7 +347,7 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                         activeMeals.map((mealItem, key) => (
                           <div key={key} className="mealSelection">
                             <div className="flex justify-between">
-                              <div className="block text-gray-800 text-lg font-bold mb-2 ml-2">
+                              <div className="block text-gray-800 text-lg font-bold mb-2 ml-2 mr-2">
                                 Choose your Meals (Delivery week: {getUsaStandard(mealItem.subscriptionDate)} -{' '}
                                 {getUsaStandard(addDays(mealItem.subscriptionDate, 6))}
                                 )
