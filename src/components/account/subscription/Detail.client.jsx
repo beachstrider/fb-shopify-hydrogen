@@ -361,7 +361,7 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                   </div>
                   {/* Choose meal Start */}
                   <Loading isLoading={isProductsLoading}>
-                    <div className="flex flex-wrap -mx-2 -mb-2">
+                    <div className="flex flex-wrap">
                       {activeMeals.length > 0 ? (
                         activeMeals.map((mealItem, key) => (
                           <div key={key} className="mealSelection">
@@ -383,7 +383,7 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                                 </div>
                               ) : ''}
                             </div>
-                            <div className="flex flex-wrap -mx-2 -mb-2">
+                            <div className="flex flex-wrap">
                               {mealItem.items.length > 0 ? (
                                 mealItem.items.map((product, key) => (
                                   <div
@@ -424,8 +424,9 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                           </div>
                         ))
                       ) : (
-                        <div className="w-full flex justify-center items-center py-8 text-lg">
-                          <div>Choose your week above to see meals</div>
+                        <div className="w-full items-center py-5 text-lg">
+                          <p className="text-lg">Choose your week above to see meals</p>
+                          <p className="text-sm">Please come back soon to choose your menu items.</p>
                         </div>
                       )}
                     </div>
