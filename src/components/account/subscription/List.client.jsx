@@ -60,7 +60,7 @@ const Index = ({subscriptions, user}) => {
                   <div className="w-full lg:w-1/5 px-4 mb-0 ">
                     <div
                       id="product_count"
-                      className="mb-6 before:content-none"
+                      className="mb-6 before:content-none xsm:ml-[32%] sm:ml-[36%] md:ml-[40%] lg:ml-[0px]"
                     >
                       <div className="absolute flex justify-center items-center z-10 -top-3 -right-3 rounded-full w-6 h-6 bg-[#bca79c] text-white font-bold">
                         {subscription.quantity}
@@ -81,7 +81,7 @@ const Index = ({subscriptions, user}) => {
                     </div>
                   </div>
 
-                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0 visible md:hidden overflow-hidden position: relative;">
+                  <div className="w-full lg:w-1/3 px-4 mb-4 md:mb-0 visible lg:hidden overflow-hidden position: relative;">
                     <div className="w-full mb-4 md:mb-0">
                       <Link
                         className="block py-2 text-lg text-center uppercase font-bold "
@@ -179,7 +179,7 @@ const Index = ({subscriptions, user}) => {
                 {/*---------------form open---------------*/}
                 <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
                   <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0 text-right"></div>
-                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0 invisible md:visible " >
+                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0 invisible lg:visible " >
                     <div className="w-full mb-4 md:mb-0">
                       <Link
                         className="block py-2 text-lg text-center uppercase font-bold "
