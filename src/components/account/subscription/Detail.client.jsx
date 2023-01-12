@@ -156,11 +156,8 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                 content.deliver_before,
               );
               const cutoffDate = getCutOffDate(deliveryDate);
-              const firstOrderDate = dayjs('2023-01-11T02:12:51Z').utc();
-              // const firstOrderDate = dayjs(firstOrder.processedAt).utc();
-              console.log('firstOrderDate',firstOrderDate);
-              console.log('content.deliver_before',content.deliver_before);
-              console.log('content.deliver_after',content.deliver_after);
+              // const firstOrderDate = dayjs('2023-01-11T02:12:51Z').utc();
+              const firstOrderDate = dayjs(firstOrder.processedAt).utc();
               //delivery before 18 >= 12
               //delivery after 11 <= 12
               if (
@@ -223,9 +220,6 @@ const Index = ({subscription, subscription_id, user, orders}) => {
         }
       }
     }
-
-    console.log('weeksMenu Last', weeksMenu);
-
     const sortedWeekMenu = sortByDateProperty(weeksMenu, 'subscriptionDate');
     setWeeksMenu(sortedWeekMenu);
   };
