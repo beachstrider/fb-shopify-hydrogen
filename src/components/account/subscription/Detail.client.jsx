@@ -105,33 +105,14 @@ const Index = ({subscription, subscription_id, user, orders}) => {
     setChangedDeliveryDate(false);
   };
 
-  // Functions for Edit meal plan
-  const createWeekList = (weeksMenu, deliverAfterDate) => {
-    if (!weeksMenu.includes(dayjs(deliverAfterDate).format('YYYY-MM-DD'))) {
-      weeksMenu.push(dayjs.utc(deliverAfterDate).format('YYYY-MM-DD'));
-    }
-
-    return weeksMenu;
-  };
-
   useEffect(() => {
     const getData = async (subscription_id) => {
       setIsMealSelectionLoading(true);
-      // const userToken = await getToken()
-      // await clearState()
       // set customer email to session so that we can use it in apis call
       await axios.post(`/api/bundleAuth/setSession`, {
         email: user.email,
       });
       await getOrdersToShow(subscription_id);
-      // dispatch(setEmail(shopCustomer?.email || ''))
-      // const onSubmit = async (data) => {
-      //     await axios.post(`/api/account/subscriptions/update`, {
-      //       id: subscription.id,
-      //       data,
-      //     });
-      //     alert('The subscription info is updated.');
-      //   };
       setIsMealSelectionLoading(false);
     };
     getData(subscription_id);
@@ -175,8 +156,10 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                 content.deliver_before,
               );
               const cutoffDate = getCutOffDate(deliveryDate);
-              // const firstOrderDate = dayjs('2023-01-03T11:12:51Z').utc();
+              // const firstOrderDate = dayjs('2023-01-11T02:12:51Z').utc();
               const firstOrderDate = dayjs(firstOrder.processedAt).utc();
+              //delivery before 18 >= 12
+              //delivery after 11 <= 12
               if (
                 dayjs(content.deliver_before).utc().isSameOrAfter(todayDate) &&
                 firstOrderDate.isSameOrBefore(content.deliver_after)
@@ -237,7 +220,6 @@ const Index = ({subscription, subscription_id, user, orders}) => {
         }
       }
     }
-
     const sortedWeekMenu = sortByDateProperty(weeksMenu, 'subscriptionDate');
     setWeeksMenu(sortedWeekMenu);
   };
@@ -366,20 +348,24 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                         activeMeals.map((mealItem, key) => (
                           <div key={key} className="mealSelection">
                             <div className="flex justify-between">
-                              <div className="block text-gray-800 text-lg font-bold mb-2 ml-2">
+                              <div className="block text-gray-800 text-lg font-bold mb-2 ml-2 mr-2">
                                 Choose your Meals (Delivery week: {getUsaStandard(mealItem.subscriptionDate)} -{' '}
                                 {getUsaStandard(addDays(mealItem.subscriptionDate, 6))}
                                 )
                               </div>
                               {mealItem.items.length > 0 ? (
                                 <div className="text-xl font-medium mr-2">
-                                  <Link
-                                    to={`/account/subscriptions/${subscription.id}/edit-order/${encryptSubId(mealItem.sub_id)}?date=${mealItem.queryDate}`}
-                                  >
+                                  {mealItem.status === "pending" ? (
+                                    <Link to={`/account/subscriptions/${subscription.id}/edit-order/${encryptSubId(mealItem.sub_id)}?date=${mealItem.queryDate}`}>
+                                      <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white text-sm">
+                                        Edit Order
+                                      </button>
+                                    </Link>
+                                  ) : (
                                     <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white text-sm">
-                                      Edit Order
+                                      Order summary
                                     </button>
-                                  </Link>
+                                  )}
                                 </div>
                               ) : ''}
                             </div>
