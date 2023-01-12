@@ -60,16 +60,16 @@ const Index = ({subscriptions, user}) => {
                   <div className="w-full lg:w-1/5 px-4 mb-0 ">
                     <div
                       id="product_count"
-                      className="mb-6 before:content-none xsm:ml-[32%] sm:ml-[36%] md:ml-[40%] lg:ml-[0px]"
+                      className="mb-6 before:content-none "
                     >
                       <div className="absolute flex justify-center items-center z-10 -top-3 -right-3 rounded-full w-6 h-6 bg-[#bca79c] text-white font-bold">
                         {subscription.quantity}
                       </div>
                       <img
                         style={{position: 'relative', zIndex: 1}}
-                        className="rounded-lg mb-0"
-                        width={100}
-                        height={100}
+                        className="rounded-lg mb-0 w-100 md:w-[1000px] lg:w-[100px]"
+                        // width={100}
+                        // height={100}
                         src={
                           typeof subscription?.product?.images?.small !==
                           'undefined'
@@ -171,7 +171,7 @@ const Index = ({subscriptions, user}) => {
                   </div>
                 </div>
                 {/*---------edit subscription button---------*/}
-                <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
+                <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0 ">
                   <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
                     <div className="w-full mb-4 md:mb-0"></div>
                   </div>
@@ -179,7 +179,7 @@ const Index = ({subscriptions, user}) => {
                 {/*---------------form open---------------*/}
                 <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
                   <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0 text-right"></div>
-                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0 invisible lg:visible " >
+                  <div className="w-full md:w-1/3 px-4  md:mb-0 invisible lg:visible " >
                     <div className="w-full mb-4 md:mb-0">
                       <Link
                         className="block py-2 text-lg text-center uppercase font-bold "
