@@ -156,8 +156,13 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                 content.deliver_before,
               );
               const cutoffDate = getCutOffDate(deliveryDate);
-              // const firstOrderDate = dayjs('2023-01-03T11:12:51Z').utc();
-              const firstOrderDate = dayjs(firstOrder.processedAt).utc();
+              const firstOrderDate = dayjs('2023-01-11T02:12:51Z').utc();
+              // const firstOrderDate = dayjs(firstOrder.processedAt).utc();
+              console.log('firstOrderDate',firstOrderDate);
+              console.log('content.deliver_before',content.deliver_before);
+              console.log('content.deliver_after',content.deliver_after);
+              //delivery before 18 >= 12
+              //delivery after 11 <= 12
               if (
                 dayjs(content.deliver_before).utc().isSameOrAfter(todayDate) &&
                 firstOrderDate.isSameOrBefore(content.deliver_after)
@@ -218,6 +223,8 @@ const Index = ({subscription, subscription_id, user, orders}) => {
         }
       }
     }
+
+    console.log('weeksMenu Last', weeksMenu);
 
     const sortedWeekMenu = sortByDateProperty(weeksMenu, 'subscriptionDate');
     setWeeksMenu(sortedWeekMenu);
@@ -354,13 +361,17 @@ const Index = ({subscription, subscription_id, user, orders}) => {
                               </div>
                               {mealItem.items.length > 0 ? (
                                 <div className="text-xl font-medium mr-2">
-                                  <Link
-                                    to={`/account/subscriptions/${subscription.id}/edit-order/${encryptSubId(mealItem.sub_id)}?date=${mealItem.queryDate}`}
-                                  >
+                                  {mealItem.status === "pending" ? (
+                                    <Link to={`/account/subscriptions/${subscription.id}/edit-order/${encryptSubId(mealItem.sub_id)}?date=${mealItem.queryDate}`}>
+                                      <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white text-sm">
+                                        Edit Order
+                                      </button>
+                                    </Link>
+                                  ) : (
                                     <button className="bg-[#DB9707] px-3 py-1 rounded-sm text-white text-sm">
-                                      Edit Order
+                                      Order summary
                                     </button>
-                                  </Link>
+                                  )}
                                 </div>
                               ) : ''}
                             </div>
