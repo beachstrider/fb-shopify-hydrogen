@@ -127,16 +127,19 @@ export const getSubscription = (id) => {
 
 export const getUpcomingOrders = async (params) => {
   try {
-    const customer_id = (await rechargeFetch('customers', params)).customers[0]
-      .id;
-    const {charges} = await rechargeFetch('charges', {
-      customer_id,
-      status: ['queued', 'skipped'],
-      sort_by: 'scheduled_at-desc',
-      scheduled_at_min: today(),
-    });
+    const customer_id = (await rechargeFetch('customers', params))?.customers[0]
+      ?.id;
+    if (customer_id){
+      const {charges} = await rechargeFetch('charges', {
+        customer_id,
+        status: ['queued', 'skipped'],
+        sort_by: 'scheduled_at-desc',
+        scheduled_at_min: today(),
+      });
+      return new Response(JSON.stringify(charges));
+    }
+    return new Response(JSON.stringify([]));
 
-    return new Response(JSON.stringify(charges));
   } catch (error) {
     return new Response(JSON.stringify(error.message), {status: 400});
   }
@@ -226,6 +229,20 @@ export const updateNextChargeScheduledAt = async ({id, date}) => {
   return;
 };
 
+export const updateFrequency = async ({id, frequency}) => {
+  console.log("FREQUENCY",frequency)
+  await rechargeFetch(
+    `subscriptions/${id}`,
+    {
+      order_interval_unit: "day",
+      order_interval_frequency: frequency,
+      charge_interval_frequency: frequency,
+    },
+    'PUT',
+  );
+  return;
+};
+
 export const updateSubscription = async ({id, data}) => {
   await rechargeFetch(
     `subscriptions/${id}`,
@@ -241,7 +258,6 @@ export const updateSubscription = async ({id, data}) => {
 
 export const getBillingInfo = (params) => {
   const res = rechargeFetchSync('subscriptions', params);
-
   if (typeof res.errors?.external_customer_id !== 'undefined')
     return {customer_id: null, shippingAddresses: [], paymentMethods: []};
 

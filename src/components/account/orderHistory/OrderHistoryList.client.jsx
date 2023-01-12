@@ -46,34 +46,38 @@ const Index = ({orders, onSelect}) => {
             <div>
               <div className="accordion past_orders active w-full">
                 <div className="flex flex-wrap">
-                  <div className="w-full md:w-3/12 lg:w-3/12 py-4 px-8 mb-4 lg:mb-0">
+                  <div className=" w-1/2 md:w-3/12 lg:w-3/12 pt-4 md:py-4 pl-5 md:pl-8 mb-4 lg:mb-0">
                     Order Date
                     <br />
                     <span className="text-sm xl:text-lg lg:text-lg md:text-md mb-4 md:mb-0 font-bold">
                       {getUsaStandard(order.processedAt)}
                     </span>
                   </div>
-                  <div className="w-full md:w-5/12 lg:w-5/12 py-4 px-8 mb-4 lg:mb-0">
+                  <div className="w-1/2  md:w-5/12 lg:w-5/12 pt-4 md:py-4 pl-8 mb-4 lg:mb-0">
                     Status
                     <br />
                     <span className="text-sm xl:text-lg lg:text-lg md:text-md mb-4 md:mb-0 font-bold">
                       {order.fulfillmentStatus}
                     </span>
                   </div>
-                  <div className="flex items-end w-full md:w-3/12 lg:w-3/12 py-4 px-8 mb-4 lg:mb-0">
-                    <span className="text-sm xl:text-lg lg:text-lg md:text-md mb-4 md:mb-0 font-bold">
-                      &nbsp; Order #&nbsp;
-                    </span>
-                    <button onClick={() => onSelect(order)}>
-                      <span
-                        className="font-bold underline "
-                        style={{fontSize: '18px', color: '#DB9707'}}
-                      >
-                        {order.orderNumber}
+                  <div className="flex items-center justify-start w-1/2 md:w-3/12 lg:w-3/12 pt-0 pb-4 md:py-4 pl-3 md:pl-8 mb-4 lg:mb-0">
+                    <div className='flex items-center justify-start'>
+                      <span className="text-sm xl:text-lg lg:text-lg md:text-md mb-0 font-bold">
+                        &nbsp; Order #&nbsp;
                       </span>
-                    </button>
+                      <button onClick={() => onSelect(order)}>
+                        <span
+                          className="font-bold underline "
+                          style={{fontSize: '18px', color: '#DB9707'}}
+                        >
+                          {order.orderNumber}
+                        </span>
+                      </button>
+                    </div>
+                 
+
                   </div>
-                  <div className="w-full md:w-1/12 lg:w-1/12 py-4 px-8 mb-4 lg:mb-0">
+                  <div className="w-1/2 md:w-1/12 lg:w-1/12 pt-0 pb-4 md:py-4 pl-8 mb-4 lg:mb-0">
                     <label htmlFor={'check' + key} className="cursor-pointer">
                       <span className="ml-4">
                         <svg
@@ -104,9 +108,9 @@ const Index = ({orders, onSelect}) => {
                 transition: 'all .3s',
               }}
             >
-              <div className="w-full lg:w-4/6 p-8">
+              <div className="w-full lg:w-4/6">
                 <div className="flex flex-wrap">
-                  <div className="w-full sm:w-1/3 md:w-1/3 lg:w-1/3 px-8 mb-4 lg:mb-0 text-center">
+                  <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/3 pl-2 pr-5 md:px-8 mb-4 lg:mb-0 text-center">
                     <img
                       style={{
                         position: 'relative',
@@ -119,13 +123,13 @@ const Index = ({orders, onSelect}) => {
                       alt="img"
                     />
                   </div>
-                  <div className="w-full sm:w-1/3 md:w-2/3 lg:w-2/3 px-8 mb-4 lg:mb-0">
+                  <div className="w-full sm:w-1/2 md:w-2/3 lg:w-2/3 px-2 md:px-8 mb-4 lg:mb-0">
                     <h2 className="mb-2 font-bold font-heading uppercase text-lg">
                       Products
                     </h2>
                     {order.lineItems.nodes.map(({title}, key) => (
                       <p
-                        className="text-lg text-black-500"
+                        className="text-md md:text-lg text-black-500"
                         style={{lineHeight: '1.2'}}
                         key={key}
                       >
