@@ -1,8 +1,5 @@
 # FEASTBOX Headless 
 
-[Run this template in JavaScript on StackBlitz](https://stackblitz.com/github/Shopify/hydrogen/tree/dist/templates/demo-store-js?file=package.json)
-
-[Run this template in JavaScript on StackBlitz](https://stackblitz.com/github/Shopify/hydrogen/tree/dist/templates/demo-store-js?file=package.json)
 
 ## Getting started
 
