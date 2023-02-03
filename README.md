@@ -1,8 +1,4 @@
-# Hydrogen Demo Store
-
-Hydrogen is a React framework and SDK that you can use to build fast and dynamic Shopify custom storefronts.
-
-[Check out the docs](https://shopify.dev/custom-storefronts/hydrogen)
+# FEASTBOX Headless 
 
 [Run this template in JavaScript on StackBlitz](https://stackblitz.com/github/Shopify/hydrogen/tree/dist/templates/demo-store-js?file=package.json)
 
