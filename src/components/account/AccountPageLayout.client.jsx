@@ -6,7 +6,7 @@ export const AccountPageLayout = ({user, currentPath, children}) => {
       <section className="lg:py-5 py-5">
         <div className="container px-4 mx-auto">
           <div className="flex flex-wrap -mx-4">
-            <div className="w-full lg:w-1/5 px-4 mb-12 lg:mb-0">
+            <div className="w-full lg:w-1/5 px-4 lg:mb-0">
               <p>
                 <Link
                   className="text-3xl font-bold font-heading uppercase"

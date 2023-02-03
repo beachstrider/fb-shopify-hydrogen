@@ -34,7 +34,7 @@ const Index = ({subscriptions, user}) => {
             Edit your active subscription.
           </div>
           {subscriptions.map((subscription, key) => (
-            <div key={key} className="w-full p-4">
+            <div key={key} className="w-full  p-4 ">
               {/*-------Subscription box--------------------------*/}
               <div className="container px-4 mx-auto subscription_box">
                 <style
@@ -62,19 +62,19 @@ const Index = ({subscriptions, user}) => {
                       {subscription.address.address1}
                     </span>
                   </div>
-                  <div className="w-full lg:w-1/5 px-4 mb-0">
+                  <div className="w-full lg:w-1/5 px-4 mb-0 ">
                     <div
                       id="product_count"
-                      className="mb-6 before:content-none"
+                      className="mb-6 before:content-none "
                     >
                       <div className="absolute flex justify-center items-center z-10 -top-3 -right-3 rounded-full w-6 h-6 bg-[#bca79c] text-white font-bold">
                         {subscription.quantity}
                       </div>
                       <img
                         style={{position: 'relative', zIndex: 1}}
-                        className="rounded-lg mb-0"
-                        width={100}
-                        height={100}
+                        className="rounded-lg mb-0 w-100 md:w-[1000px] lg:w-[100px]"
+                        // width={100}
+                        // height={100}
                         src={
                           typeof subscription?.product?.images?.small !==
                           'undefined'
@@ -86,8 +86,8 @@ const Index = ({subscriptions, user}) => {
                     </div>
                   </div>
 
-                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0 visible md:hidden overflow-hidden position: relative;">
-                    <div className="w-4/5 mb-4 md:mb-0">
+                  <div className="w-full lg:w-1/3 px-4 mb-4 md:mb-0 visible lg:hidden overflow-hidden position: relative;">
+                    <div className="w-full mb-4 md:mb-0">
                       <Link
                         className="block py-2 text-lg text-center uppercase font-bold "
                         to={`/account/subscriptions/${subscription.id}`}
@@ -102,27 +102,37 @@ const Index = ({subscriptions, user}) => {
                     </div>
                   </div>
 
-                  <div className="w-full lg:w-1/5 px-4">
-                    <h2 className="mb-2 font-bold font-heading uppercase text-lg">
+                  <div className="w-full lg:w-1/5 px-4 py-2 lg:py-0 grid  grid-cols-3 lg:grid-cols-1">
+                    <div>
+                    <h2 className="lg:mb-2 font-bold font-heading uppercase text-lg">
                       Products
                     </h2>
+                    </div>
+                    <div className='w-1/3'></div>
+                    <div>
                     <p
-                      className="mb-4 text-lg text-gray-500"
-                      style={{lineHeight: '1.2'}}
+                      className="text-sm lg:text-lg font-bold lg:font-normal text-black lg:text-gray-500 lg:mt-[-60px]"
+                      
                     >
                       {subscription.quantity} x {subscription.product_title}
                     </p>
+                    </div>
                   </div>
-                  <div className="w-full lg:w-1/5 px-4">
-                    <h2 className="mb-2 font-bold font-heading uppercase text-lg">
+
+                  <div className="w-full lg:w-1/5 px-4 py-2 lg:py-0 grid  grid-cols-3 lg:grid-cols-1 lg:visible">
+                  <div>
+                    <h2 className="lg:mb-2 font-bold font-heading uppercase text-lg">
                       Total
                     </h2>
+                    </div>
+                    <div className='w-1/3'></div>
+                    <div>
                     <p
-                      className="text-lg text-gray-500"
-                      style={{lineHeight: '1.2'}}
+                       className="text-lg lg:text-lg font-bold lg:font-normal text-black lg:text-gray-500 lg:mt-[-60px]"
                     >
                       ${subscription.price}
                     </p>
+                    </div>
                     {/* <Link
                       className="flex items-center text-lg font-bold text-gray-700 hover:text-gray-800"
                       to=""
@@ -131,31 +141,42 @@ const Index = ({subscriptions, user}) => {
                       <span></span>
                     </Link> */}
                   </div>
-                  <div className="w-full lg:w-1/5 px-4">
-                    <h2 className="mb-2 font-bold font-heading uppercase text-lg">
-                      Frequency
+                  <div className="w-full lg:w-1/5 px-4 py-2 lg:py-0 grid  grid-cols-3 lg:grid-cols-1">
+                    <div>
+                    <h2 className="lg:mb-2  font-heading uppercase text-lg lg:font-bold">
+                    FREQUENCY
                     </h2>
+                    </div>
+                    <div className='w-1/3'></div>
+                    <div>
                     <p
-                      className="text-lg text-gray-500"
-                      style={{lineHeight: '1.2'}}
+                      className="text-sm lg:text-lg font-bold lg:font-normal text-black lg:text-gray-500 lg:mt-[-60px]"
+                      
                     >
                       {subscription.order_interval_frequency} Days
                     </p>
+                    </div>
                   </div>
-                  <div className="w-full lg:w-1/5 px-4">
-                    <h2 className="mb-2 font-bold font-heading uppercase text-lg">
-                      Next Order
+
+                  <div className="w-full lg:w-1/5 px-4 py-2 lg:py-0 grid  grid-cols-3 lg:grid-cols-1">
+                    <div>
+                    <h2 className="lg:mb-2 font-heading uppercase text-lg lg:font-bold">
+                    NEXT ORDER
                     </h2>
+                    </div>
+                    <div className='w-1/3'></div>
+                    <div>
                     <p
-                      className="mb-4 text-lg text-gray-500"
-                      style={{lineHeight: '1.2'}}
+                      className="text-sm lg:text-lg font-bold lg:font-normal text-black lg:text-gray-500 lg:mt-[-60px]"
+                      
                     >
                       {getUsaStandard(subscription.next_charge_scheduled_at)}
                     </p>
+                    </div>
                   </div>
                 </div>
                 {/*---------edit subscription button---------*/}
-                <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
+                <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0 ">
                   <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0">
                     <div className="w-full mb-4 md:mb-0"></div>
                   </div>
@@ -163,7 +184,7 @@ const Index = ({subscriptions, user}) => {
                 {/*---------------form open---------------*/}
                 <div className="flex flex-wrap -mx-4 -mb-4 md:mb-0">
                   <div className="w-full md:w-2/3 px-4 mb-4 md:mb-0 text-right"></div>
-                  <div className="w-full md:w-1/3 px-4 mb-4 md:mb-0 invisible md:visible " >
+                  <div className="w-full md:w-1/3 px-4  md:mb-0 invisible lg:visible " >
                     <div className="w-full mb-4 md:mb-0">
                       <Link
                         className="block py-2 text-lg text-center uppercase font-bold "
